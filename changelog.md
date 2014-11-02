@@ -1,0 +1,137 @@
+#CHANGELOG#
+
+Ver 1.1.5 [2013-12-14]:
+----------------
+ - Fixed staff manager
+ - Fixed Category edit redirect
+ - FixedPlacement map
+ - Added First Four email block
+ - Fixed historic placement validation check
+ - Some minor updates
+ - Fixed edit/manage category pages
+ - Finished basic working system
+ - Fixed email issues when running from a cron/bin file
+ - Added option to dissable the auto-approve engine for courses
+ - Added option to remove supervisor field for comapnies and placements
+ - Clean up any var dumps no loner used
+ - Tested placement system for new Ag students
+ - Tag: Restore trunk composer.json
+ - Tag: Updated changelog.md file for tag: 1.1.2
+ - Tag: Updated composer.json for tag release
+ - Updated Table to work with anon objects
+ - Updated From js tkSubmitForm function
+ - Fixed it,
+
+
+Ver 1.1.4 [2013-12-14]:
+----------------
+ - Fixed edit/manage category pages
+ - Finished basic working system
+ - Fixed email issues when running from a cron/bin file
+ - Added option to dissable the auto-approve engine for courses
+ - Added option to remove supervisor field for comapnies and placements
+ - Clean up any var dumps no loner used
+ - Tested placement system for new Ag students
+ - Tag: Restore trunk composer.json
+ - Tag: Updated changelog.md file for tag: 1.1.2
+ - Tag: Updated composer.json for tag release
+ - Updated Table to work with anon objects
+ - Updated From js tkSubmitForm function
+ - Fixed it,
+ - Tag: Updated changelog.md file for tag: 1.1.1
+ - Added Files To Comments
+ - Fixed Form file field javascript
+ - Updated goals reporter studentNumber filter
+
+
+Ver 1.1.3 [2013-12-14]:
+----------------
+ - Fixed email issues when running from a cron/bin file
+ - Added option to dissable the auto-approve engine for courses
+ - Added option to remove supervisor field for comapnies and placements
+ - Clean up any var dumps no loner used
+ - Tested placement system for new Ag students
+ - Tag: Restore trunk composer.json
+ - Tag: Updated changelog.md file for tag: 1.1.2
+ - Tag: Updated composer.json for tag release
+ - Updated Table to work with anon objects
+ - Updated From js tkSubmitForm function
+ - Fixed it,
+ - Tag: Updated changelog.md file for tag: 1.1.1
+ - Added Files To Comments
+ - Fixed Form file field javascript
+ - Updated goals reporter studentNumber filter
+ - Added new multiple file upload Field
+ - Fixed login system
+ - Added Multiple file upload field
+
+
+Ver 1.1.3 [2013-12-14]:
+----------------
+ - Fixed email issues when running from a cron/bin file
+ - Added option to dissable the auto-approve engine for courses
+ - Added option to remove supervisor field for comapnies and placements
+ - Clean up any var dumps no loner used
+ - Tested placement system for new Ag students
+ - Tag: Restore trunk composer.json
+ - Tag: Updated changelog.md file for tag: 1.1.2
+ - Tag: Updated composer.json for tag release
+ - Updated Table to work with anon objects
+ - Updated From js tkSubmitForm function
+ - Fixed it,
+ - Tag: Updated changelog.md file for tag: 1.1.1
+ - Added Files To Comments
+ - Fixed Form file field javascript
+ - Updated goals reporter studentNumber filter
+ - Added new multiple file upload Field
+ - Fixed login system
+ - Added Multiple file upload field
+ - Added a placement agree checkbox with html notes to term
+ - Updated Student placement form with agree checkbox
+
+
+Ver 1.1.2 [2013-12-14]:
+----------------
+ - Tag: Updated composer.json for tag release
+ - Updated Table to work with anon objects
+ - Updated From js tkSubmitForm function
+ - Fixed it,
+ - Tag: Restore trunk composer.json
+ - Tag: Updated changelog.md file for tag: 1.1.1
+ - Added Files To Comments
+ - Fixed Form file field javascript
+ - Updated goals reporter studentNumber filter
+ - Added new multiple file upload Field
+ - Fixed login system
+ - Added Multiple file upload field
+ - Added a placement agree checkbox with html notes to term
+ - Updated Student placement form with agree checkbox
+ - Fixing Theme
+ - Updating Project for new theme
+ - Updating fonts
+ - Added filters to GOALS plugin
+ - Updated Import System
+ - Added new Multi Select javascript
+ - Fixec Table CSV Action to handle large data blocks
+
+
+Ver 1.1.1 [2013-12-14]:
+----------------
+ - Tag: Updated composer.json for tag release
+ - Added Files To Comments
+ - Fixed Form file field javascript
+ - Updated goals reporter studentNumber filter
+ - Added new multiple file upload Field
+ - Fixed login system
+ - Added Multiple file upload field
+ - Added a placement agree checkbox with html notes to term
+ - Updated Student placement form with agree checkbox
+ - Fixing Theme
+ - Updating Project for new theme
+ - Updating fonts
+ - Added filters to GOALS plugin
+ - Updated Import System
+ - Added new Multi Select javascript
+ - Fixec Table CSV Action to handle large data blocks
+
+
