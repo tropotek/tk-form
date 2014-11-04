@@ -146,7 +146,7 @@ jQuery(function($) {
         $xmlStr = <<<XML
 <?xml version="1.0"?>
 <div>
-<script src="/assets/jquery/plugins/bootstrap-multiselect.js"></script>
+<script src="js/bootstrap-multiselect.js"></script>
 
 <select var="element">
   <option value="" repeat="option" var="option"></option>
