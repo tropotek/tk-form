@@ -37,8 +37,6 @@ class FileMultiple extends File
         parent::show();
         $template = $this->getTemplate();
 
-        //$template->appendJsUrl(\Tk\Url::create('/assets/tek-js/util.js'));
-        
         $js = <<<JS
 
 
@@ -58,7 +56,7 @@ JS;
         $xmlStr = <<<XML
 <?xml version="1.0"?>
 <div>
-<script src="/assets/jquery/plugins/jquery.fileFix.js"></script>
+<script src="js/jquery.fileFix.js"></script>
 <script>
 jQuery(function($) {
   $('.tk-form .File input[type=file]').fileFix();

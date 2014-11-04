@@ -25,7 +25,7 @@ class Basic extends Adapter
     public function getImageUrl()
     {
         /* TODO: We need a solution that removes the image.php from the lib path to a public path */
-        return \Tk\Url::create($this->getConfig()->getLibUrl() . '/form/Form/Field/Captcha/Basic/image.php')->set('_disableLog')->set('id', $this->getInstanceId());
+        return \Tk\Url::create(dirname($this->getClassUrl()) . '/Basic/image.php')->set('_disableLog')->set('id', $this->getInstanceId());
     }
 
     /**

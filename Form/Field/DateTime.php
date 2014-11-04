@@ -39,7 +39,7 @@ class DateTime extends Text
         $xmlStr = <<<XML
 <?xml version="1.0"?>
 <div>
-<script src="/assets/jquery/plugins/jquery.timepicker.js"></script>
+<script src="js/jquery.timepicker.js"></script>
 <style>
 
 </style>
