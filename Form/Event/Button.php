@@ -52,11 +52,12 @@ abstract class Button extends \Form\Field\Iface implements Iface
      * @param string $name
      * @param string $icon
      */
-    public function __construct($name, $icon = 'fa fa-ok')
+    public function __construct($name, $icon = 'fa fa-check')
     {
         $this->setName($name);
         $this->setLabel(self::makeLabel($name));
         $this->icon = $icon;
+        $this->addCssClass('btn-primary');
     }
 
     /**
@@ -169,7 +170,7 @@ JS;
     {
         $xmlStr = <<<XML
 <?xml version="1.0"?>
-<button type="submit" class="btn btn-primary btn-sm" var="element"><i var="icon" choice="icon"></i> <span var="text">Submit</span></button>
+<button type="submit" class="btn btn-sm" var="element"><i var="icon" choice="icon"></i> <span var="text">Submit</span></button>
 XML;
         $template = \Mod\Dom\Loader::load($xmlStr, $this->getClassName());
         return $template;

@@ -29,6 +29,7 @@ class Link extends Button
     public function __construct($name, $icon = '')
     {
         parent::__construct($name, $icon);
+        $this->clearCssClassList();
     }
 
 
@@ -58,7 +59,6 @@ class Link extends Button
         }
 
         $t->insertText('text', $this->getLabel());
-        //$t->setAttr('element', 'href', $this->getRedirectUrl());
         $t->setAttr('element', 'title', $this->getLabel());
         $t->setAttr('element', 'id', $this->getId());
 
@@ -83,17 +83,6 @@ class Link extends Button
             $t->setChoice('icon');
             $t->addClass('icon', $this->icon);
         }
-
-
-//        $js = <<<JS
-//jQuery(function($) {
-//  // Disable form edits messages
-//  $('#{$this->getId()}').click(function(){
-//      $(window).unbind('beforeunload');
-//  });
-//});
-//JS;
-//        $t->appendJs($js);
 
     }
 
