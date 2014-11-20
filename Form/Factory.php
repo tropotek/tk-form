@@ -115,7 +115,7 @@ class Factory extends \Tk\Object
             $backUrl = $this->getUri();
         }
         if (!$createUrl) {
-            $createUrl = $this->getUri();
+            $createUrl = $backUrl;
         }
 
         if ($form->getObject()->id) {
