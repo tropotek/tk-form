@@ -89,16 +89,17 @@ class Factory extends \Tk\Object
      */
     public function createDefaultForm($formId, $object = null, $backUrl = null)
     {
-        $obj = new Form($formId, $object);
+        $form = new Form($formId, $object);
         if (!$backUrl) {
             $backUrl = $this->getUri();
         }
-        $obj->attach($this->createEventSave('update'), 'update')->setRedirectUrl($backUrl);
-        $obj->attach($this->createEventSave('save'), 'save')->setRedirectUrl($this->getUri());
-        $obj->attach($this->createEventLink('cancel'), 'cancel')->setRedirectUrl($backUrl);
-        $this->object = $obj;
+        $form->attach($this->createEventSave('update'), 'update')->setRedirectUrl($backUrl);
+        $form->attach($this->createEventSave('save'), 'save')->setRedirectUrl($this->getUri());
+        $form->attach($this->createEventCancel('cancel', $backUrl));
+        //$form->attach($this->createEventLink('cancel'), 'cancel')->setRedirectUrl($backUrl);
+        $this->object = $form;
         $this->notify('createDefaultForm');
-        return $obj;
+        return $form;
     }
 
     /**
@@ -114,7 +115,7 @@ class Factory extends \Tk\Object
             $backUrl = $this->getUri();
         }
         if (!$createUrl) {
-            $createUrl = $this->getUri();
+            $createUrl = $backUrl;
         }
 
         if ($form->getObject()->id) {
@@ -123,6 +124,8 @@ class Factory extends \Tk\Object
         } else {
             $form->attach($this->createEventSave('create', 'fa fa-refresh'))->setRedirectUrl($createUrl);
         }
+
+
         //$form->attach($this->createEventLink('cancel'))->setRedirectUrl($backUrl);
         $form->attach($this->createEventCancel('cancel', $backUrl));
         $this->object = $form;

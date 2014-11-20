@@ -214,7 +214,7 @@ class DualSelect extends Iface
   padding: 30px 0px 0px 0px;
 }
 </style>
-<script type="text/javascript">
+<script>
 jQuery(function($) {
     /**
      * De-Select all option from the sleect box's
@@ -227,14 +227,15 @@ jQuery(function($) {
     }
 
     $('.tk-DualSelect').each(function (i, dbox) {
-        var form = $(dbox).find('.selected select').get(0).form;
+        var form = $(dbox).parents('form');
 
         // Ensure all options are selected onSubmit so the values are sent in the query.
         $(form).submit(function (e) {
-            $(dbox).find('.selected select option').each(function(i, selected) {
-                $(selected).attr('selected', 'selected');
-            });
+            $(dbox).find('.selected select option').attr('selected', 'selected').prop('selected', true);
         });
+
+
+        
         $(dbox).find('.add').click( function (e) {
             $(dbox).find('.options select :selected').each(function(i, selected) {
                 $(selected).detach();
