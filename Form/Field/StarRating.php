@@ -15,11 +15,19 @@ namespace Form\Field;
 class StarRating extends Iface
 {
 
-    protected $min = -10;
+    protected $min = 0;
 
-    protected $max = 10;
+    protected $max = 5;
 
     protected $step = 1;
+
+    protected $showClear = false;
+
+    protected $showCaption = true;
+
+    protected $starCaptions = null;
+
+
 
 
     /**
@@ -36,7 +44,6 @@ class StarRating extends Iface
         $this->min = (int)$min;
         $this->max = (int)$max;
         $this->step = (int)$step;
-        $this->addCssClass('StarRating');
         $this->setName($name);
         $this->setLabel(self::makeLabel($name));
         $this->setType($type);
@@ -46,6 +53,21 @@ class StarRating extends Iface
     }
 
     /**
+     *
+     * @param $array
+     * @return $this
+     */
+    public function setStarCaptions($array)
+    {
+        if (is_array($array)) {
+            $this->starCaptions = $array;
+        }
+        return $this;
+    }
+
+
+
+    /**
      * show
      */
     public function show()
@@ -53,28 +75,21 @@ class StarRating extends Iface
         parent::show();
         $template = $this->getTemplate();
 
+        $starCaptions = '';
+        if (is_array($this->starCaptions) && count($this->starCaptions)) {
+            $starCaptions = ', starCaptions: ' . json_encode($this->starCaptions);
+        }
 
         // Star Rating scripts
         $template->appendCssUrl(\Tk\Url::create('/vendor/kartik-v/bootstrap-star-rating/css/star-rating.min.css'));
         $template->appendJsUrl(\Tk\Url::create('/vendor/kartik-v/bootstrap-star-rating/js/star-rating.min.js'));
         $js = <<<JS
 jQuery(function($) {
-  $('.StarRating input, input.ratingValue').rating({'min': {$this->min}, 'max': {$this->max}, 'step': {$this->step}, 'size': 'xs', 'showClear': false, 'showCaption': false});
-  $('.StarRating input').on('rating.change', function(event, value, caption) {
-    var total = 0;
-    var count = 0;
-    $('.StarRating input').each(function (i) {
-      count++;
-      total += parseFloat($(this).val());
-    });
-    $(this).parents('fieldset.Rate').find('.totalValue').text(parseFloat(total/count).toFixed(2));
-  });
+  $('.StarRating input').rating({'min': {$this->min}, 'max': {$this->max}, 'step': {$this->step}, 'size': 'xs', 'showClear': false, 'showCaption': true $starCaptions });
+
 });
 JS;
         $template->appendJs($js);
-
-
-
 
 //        $template->setAttr('element', 'type', 'range');
 //        $template->setAttr('element', 'min', $this->min);

@@ -553,11 +553,11 @@ class Factory extends \Tk\Object
      * @param int $max
      * @param int $step
      * @param Type\Iface $type
-     * @return Field\Range
+     * @return Field\StarRating
      *
      * @note New HTML5 Element
      */
-    public function createStarRating($name, $min = -10, $max = 10, $step = 1, $type = null)
+    public function createStarRating($name, $min = 0, $max = 5, $step = 1, $type = null)
     {
         $this->object = new Field\StarRating($name, $min, $max, $step, $type);
         $this->notify('createFieldStarRating');

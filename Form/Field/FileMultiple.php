@@ -156,16 +156,13 @@ class FileMultiple extends File implements \Iterator, \Countable
 CSS;
         $t->appendCss($css);
 
+        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/tk-jslib/Url.js'));
 
-        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/tek-js/Url.js'));
+        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/jquery.mousewheel.min.js'));
+        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/jquery.easing-1.3.pack.js'));
 
-        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/jquery/plugins/jquery.mousewheel.min.js'));
-        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/jquery/plugins/jquery.easing-1.3.pack.js'));
-
-        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/jquery/plugins/fancybox2/jquery.fancybox.pack.js'));
-        $t->appendCssUrl(\Tk\Url::create($this->getConfig()->getAssetsUrl().'/jquery/plugins/fancybox2/jquery.fancybox.css'));
-
-
+        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.pack.js'));
+        $t->appendCssUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.css'));
 
 
         $js = <<<JS
