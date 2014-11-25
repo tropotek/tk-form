@@ -140,15 +140,6 @@ class FileMultiple extends File implements \Iterator, \Countable
 .files li.up {
   color: #777777;
 }
-
-/* Fixes for IE < 8 */
-@media screen\9 {
-  .fileinput-button input {
-    filter: alpha(opacity=0);
-    font-size: 100%;
-    height: 100%;
-  }
-}
 .FileMultiple ul {
   list-style: none;
 }
@@ -341,7 +332,7 @@ JS;
 
         $js = <<<JS
 jQuery(function($) {
-    $('.fancybox').fancybox({
+    $('.fancybox[href!=zip|doc|docx|pdf|xls|xlsx]').fancybox({
         maxWidth	: 800,
 		maxHeight	: 600,
 		fitToView	: false,
