@@ -193,13 +193,6 @@ CSS;
     }
   });
 
-//  /**
-//   *
-//   * @param Event e
-//   * @public
-//   */
-//   $.fn.multifile.onChange = function(e) { }
-
   /**
    *
    * @param Event e
@@ -210,31 +203,42 @@ CSS;
     var _this = $.fn.multifile.o._this;
     var _div = $(_this.parents('div').get(0));
 
-    // Copy file node
-    var newNode = _this.clone();
-    _this.removeClass('error').removeAttr('title').val(''); // reset node
+    // Copy file node and reset ready for new file
+    var newNode = _this.clone(true);
 
-    // Init new file node for insertion
-    //newNode.unbind();
-    newNode.removeAttr('id', '');
-    newNode.attr('data-file', _this.val());
-    newNode.hide();
+    var val = _this.val();
+    var nval = basename(val).replace('.', '_');
+
+    _this.removeClass('error').removeAttr('title'); // reset node
+
+    // Append input to file list add new input to user selected
+    newNode.attr('id', _this.attr('id'));
+    _this.removeAttr('id');
+    _this.attr('data-file', val);
+    _this.remove();
+    _this.hide();
+
+    //newNode.removeAttr('id');
+    //newNode.attr('data-file', val);
+    //newNode.hide();
 
     // add item to list.
     if (!_div.find('div.files').length) {
       _div.append('<div class="files"><ul></ul></div>');
     }
+    $('li.' + nval).remove();
 
-    $('li.'+newNode.val().replace('.', '_')).remove();
-
-    var li = $('<li class="new '+newNode.val().replace('.', '_')+'"><a href="javascript:;" class="fa fa-trash-o delete"></a> '+newNode.val()+' ['+bytesToString(getFileSize(newNode.get(0)))+']</li>');
-    if (newNode.hasClass('error')) {
+    var li = $('<li class="new ' + nval + '"><a href="javascript:;" class="fa fa-trash-o delete"></a> ' +
+        basename(val) + ' [' + bytesToString(getFileSize(_this.get(0))) + ']</li>');
+    if (_this.hasClass('error')) {
       li.append(' <b>&lt;-- Error: File to large.</b>');
-      li.attr('title', newNode.attr('title'));
+      li.attr('title', _this.attr('title'));
       li.addClass('error');
     }
-    li.append(newNode);
+    $('.fileinput-button').append(newNode);
+    li.append(_this);
     _div.find('ul').prepend(li);
+    $.fn.multifile.o._this = newNode;
 
     $('.delete', li).click(function (e) {
       if (!confirm('Are you sure you want to remove this file?')) return;
@@ -265,7 +269,8 @@ CSS;
         view = '<a href="'+file.url+'" class="fancybox fa fa-eye view" target="_blank" title="View File"></a> ';
       }
 
-      var li = $('<li class="up '+file.name.replace('.', '_')+'"><a href="javascript:;" class="fa fa-trash-o delete"></a> '+view+' '+file.name+' ['+bytesToString(file.size)+']</li>');
+      var li = $('<li class="up ' + file.name.replace('.', '_') +
+        '"><a href="javascript:;" class="fa fa-trash-o delete"></a> ' + view + ' ' + file.name + ' [' + bytesToString(file.size) + ']</li>');
       _div.find('ul').prepend(li);
 
       $('.delete', li).click(function (e) {
@@ -332,7 +337,7 @@ JS;
 
         $js = <<<JS
 jQuery(function($) {
-    $('.fancybox[href!=zip|doc|docx|pdf|xls|xlsx]').fancybox({
+    $('.fancybox[href!="zip|doc|docx|pdf|xls|xlsx"]').fancybox({
         maxWidth	: 800,
 		maxHeight	: 600,
 		fitToView	: false,
