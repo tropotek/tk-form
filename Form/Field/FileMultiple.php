@@ -228,7 +228,7 @@ CSS;
     }
     $('li.' + nval).remove();
 
-    var li = $('<li class="new ' + nval + '"><a href="javascript:;" class="fa fa-trash-o delete"></a> ' +
+    var li = $('<li class="new ' + nval + '"><a href="javascript:;" class="fa fa-trash-o delete noblock"></a> ' +
         basename(val) + ' [' + bytesToString(getFileSize(_this.get(0))) + ']</li>');
     if (_this.hasClass('error')) {
       li.append(' <b>&lt;-- Error: File to large.</b>');
@@ -266,11 +266,11 @@ CSS;
     $.each(files, function (i, file) {
       var view = '';
       if (file.url) {
-        view = '<a href="'+file.url+'" class="fancybox fa fa-eye view" target="_blank" title="View File"></a> ';
+        view = '<a href="'+file.url+'" class="fancybox fa fa-eye view noblock" target="_blank" title="View File"></a> ';
       }
 
       var li = $('<li class="up ' + file.name.replace('.', '_') +
-        '"><a href="javascript:;" class="fa fa-trash-o delete"></a> ' + view + ' ' + file.name + ' [' + bytesToString(file.size) + ']</li>');
+        '"><a href="javascript:;" class="fa fa-trash-o delete noblock"></a> ' + view + ' ' + file.name + ' [' + bytesToString(file.size) + ']</li>');
       _div.find('ul').prepend(li);
 
       $('.delete', li).click(function (e) {
