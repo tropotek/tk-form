@@ -152,8 +152,8 @@ CSS;
         $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/jquery.mousewheel.min.js'));
         $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/jquery.easing-1.3.pack.js'));
 
-        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.pack.js'));
-        $t->appendCssUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.css'));
+//        $t->appendJsUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.pack.js'));
+//        $t->appendCssUrl(\Tk\Url::create($this->getConfig()->getSelectedThemeUrl().'/js/fancybox2/jquery.fancybox.css'));
 
 
         $js = <<<JS
@@ -266,7 +266,7 @@ CSS;
     $.each(files, function (i, file) {
       var view = '';
       if (file.url) {
-        view = '<a href="'+file.url+'" class="fancybox fa fa-eye view noblock" target="_blank" title="View File"></a> ';
+        view = '<a href="'+file.url+'" class="fa fa-eye view noblock" target="_blank" title="View File"></a> ';
       }
 
       var li = $('<li class="up ' + file.name.replace('.', '_') +
@@ -354,7 +354,7 @@ jQuery(function($) {
       });
 });
 JS;
-            $t->appendJs($js);
+            //$t->appendJs($js);
 
     }
 
