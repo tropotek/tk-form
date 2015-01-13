@@ -193,6 +193,12 @@ CSS;
     }
   });
 
+  var cleanName = function(name) {
+  console.log(name.replace(/[^a-z0-9_\/\\-]/gi, '_'));
+    return name.replace(/[^a-z0-9_\/\\-]/gi, '_');
+  }
+
+
   /**
    *
    * @param Event e
@@ -207,7 +213,8 @@ CSS;
     var newNode = _this.clone(true);
 
     var val = _this.val();
-    var nval = basename(val).replace('.', '_');
+    //var nval = basename(val).replace('.', '_');
+    var nval = cleanName(basename(val));
 
     _this.removeClass('error').removeAttr('title'); // reset node
 
@@ -269,7 +276,7 @@ CSS;
         view = '<a href="'+file.url+'" class="fa fa-eye view noblock" target="_blank" title="View File"></a> ';
       }
 
-      var li = $('<li class="up ' + file.name.replace('.', '_') +
+      var li = $('<li class="up ' + cleanName(file.name) +
         '"><a href="javascript:;" class="fa fa-trash-o delete noblock"></a> ' + view + ' ' + file.name + ' [' + bytesToString(file.size) + ']</li>');
       _div.find('ul').prepend(li);
 
