@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.5 [2015-01-14]:
+-------------------------------
+ - Fixed Goals report form errors
+
+
 Ver 1.2.4 [2014-12-09]:
 -------------------------------
  - Added GOALS view action to student view
