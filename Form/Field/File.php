@@ -57,20 +57,18 @@ class File extends Iface
      * @param int $i Use if using multiple files
      * @return array
      */
-    public function getFileInfo($i = null)
+    public function getFileInfo($i = 0)
     {
         if (!is_array($_FILES[$this->getName()]['name'])) {
             $this->fileInfo = $_FILES[$this->getName()];
         } else {
-            if ($i !== null) {
-                $this->fileInfo = array(
-                    'name' => $_FILES[$this->getName()]['name'][$i],
-                    'type' => $_FILES[$this->getName()]['type'][$i],
-                    'tmp_name' => $_FILES[$this->getName()]['tmp_name'][$i],
-                    'error' => $_FILES[$this->getName()]['error'][$i],
-                    'size' => $_FILES[$this->getName()]['size'][$i]
-                );
-            }
+            $this->fileInfo = array(
+                'name' => $_FILES[$this->getName()]['name'][$i],
+                'type' => $_FILES[$this->getName()]['type'][$i],
+                'tmp_name' => $_FILES[$this->getName()]['tmp_name'][$i],
+                'error' => $_FILES[$this->getName()]['error'][$i],
+                'size' => $_FILES[$this->getName()]['size'][$i]
+            );
         }
         return $this->fileInfo;
     }
@@ -85,6 +83,31 @@ class File extends Iface
     {
         $this->fileInfo = $fileInfo;
         return $this;
+    }
+
+    /**
+     * Returns a more native version of the $_FILES array
+     * If only one file is present it will still return an
+     *  array of only one element
+     *
+     * @return array
+     */
+    public function getFileInfoArray()
+    {
+        $fileInfoList = array();
+        if (!$this->hasFile()) {
+            return $fileInfoList;
+        }
+
+        if (!is_array($_FILES[$this->getName()]['name'])) {
+            $fileInfoList[] = array($this->getFileInfo());
+        } else {
+            $size = count($_FILES[$this->getName()]['name']);
+            for ($i = 0; $i < $size; $i ++) {
+                $fileInfoList[] = $this->getFileInfo($i);
+            }
+        }
+        return $fileInfoList;
     }
 
 
@@ -309,14 +332,20 @@ class File extends Iface
     }
 
     /**
-     * Use this to move the uploaded file to
-     * the required location
+     * Use this to move the uploaded file to the required location
+     * NOTE: the path folder will be created using mkdir() if path does not exist
      *
      * @param string $destination
+     * @param string $source (Optional)Use for multiple uploads, when manually moving file.
      * @return bool
      */
-    public function moveUploadedFile($destination)
+    public function moveUploadedFile($destination, $source = null)
     {
+        if (!is_dir(dirname($destination))) {
+            @mkdir(dirname($destination), 0777, true);
+        }
+        if ($source)
+            return move_uploaded_file($source, $destination);
         return move_uploaded_file($this->getTmpName(), $destination);
     }
 
@@ -335,6 +364,7 @@ class File extends Iface
             $this->notes = $notes;
         }
 
+        $t->appendJsUrl(\Tk\Url::create('/assets/tk-jslib/util.js'));
         // Global filesize check
         $js = <<<JS
 config.formMaxFileSize = {$this->getMaxFileSize()};
@@ -382,6 +412,12 @@ JS;
 
 
         parent::show();
+
+
+        if (array_key_exists('multiple', $this->getAttrList())) {
+            $t->setAttr('element', 'name', $this->name.'[]');
+        }
+
 
     }
 
