@@ -31,7 +31,7 @@ class CheckboxGroup extends Select
      */
     public function __construct($name, $options = null, $type = null)
     {
-        parent::__construct($name, $type);
+        parent::__construct($name, $options, $type);
         $this->setOptions($options);
         $this->clearCssClassList();
     }
@@ -97,7 +97,7 @@ class CheckboxGroup extends Select
     }
 
     /**
-     * Compare a value and see if it si selected.
+     * Compare a value and see if it is selected.
      *
      * @param string $val
      * @return bool

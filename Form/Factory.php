@@ -297,9 +297,9 @@ class Factory extends \Tk\Object
      * @param array $options
      * @return Field\CheckboxGroup
      */
-    public function createFieldCheckboxGroup($name, $options = null)
+    public function createFieldCheckboxGroup($name, $options = null, $type = null)
     {
-        $this->object = new Field\CheckboxGroup($name, $options);
+        $this->object = new Field\CheckboxGroup($name, $options, $type);
         $this->notify('createFieldCheckboxGroup');
         return $this->object;
     }
@@ -311,9 +311,9 @@ class Factory extends \Tk\Object
      * @param array $options
      * @return Field\CheckboxSelect
      */
-    public function createFieldCheckboxSelect($name, $options = null)
+    public function createFieldCheckboxSelect($name, $options = null, $type = null)
     {
-        $this->object = new Field\CheckboxSelect($name, $options);
+        $this->object = new Field\CheckboxSelect($name, $options, $type);
         $this->notify('createFieldCheckboxSelect');
         return $this->object;
     }
