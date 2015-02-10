@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.7 [2015-02-11]:
+-------------------------------
+ - Fixed placement upadate error in rules checkbox group
+
+
 Ver 1.2.6 [2015-02-10]:
 -------------------------------
  - Added carosel and fixed minor upload issues...
