@@ -32,7 +32,6 @@ class CheckboxGroup extends Select
     public function __construct($name, $options = null, $type = null)
     {
         parent::__construct($name, $options, $type);
-        $this->setOptions($options);
         $this->clearCssClassList();
     }
 
