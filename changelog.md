@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 1.2.6 [2015-02-10]:
+-------------------------------
+ - Added carosel and fixed minor upload issues...
+ - Added Multiple file upload to projects.
+
+
 Ver 1.2.5 [2015-01-14]:
 -------------------------------
  - Fixed Goals report form errors
