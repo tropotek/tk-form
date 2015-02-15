@@ -273,7 +273,7 @@ CSS;
     $.each(files, function (i, file) {
       var view = '';
       if (file.url) {
-        view = '<a href="'+file.url+'" class="fa fa-eye view noblock" target="_blank" title="View File"></a> ';
+        view = '<a href="'+file.url+'" class="fa fa-eye view fancybox noblock" target="_blank" title="'+file.name+'"></a> ';
       }
 
       var li = $('<li class="up ' + cleanName(file.name) +
@@ -322,7 +322,8 @@ JS;
             array_shift($flist);
             array_shift($flist);
             foreach($flist as $k => $v) {
-                $fileJs .= '{name:\''.$v.'\', size: '.filesize($this->getConfig()->getDataPath().$this->getPath().'/'.$v).', url: \''.$this->getConfig()->getDataUrl().$this->getPath().'/'.$v.'\'},';
+                vd($v);
+                $fileJs .= '{name:\''.addslashes($v).'\', size: '.filesize($this->getConfig()->getDataPath().$this->getPath().'/'.$v).', url: \''.$this->getConfig()->getDataUrl().$this->getPath().'/'.addslashes($v).'\'},';
             }
             if ($fileJs) {
                 $fileJs = substr($fileJs, 0, -1);
