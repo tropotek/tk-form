@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.8 [2015-02-16]:
+-------------------------------
+ - Fixed comments file upload issues with special Cars in the files names
+
+
 Ver 1.2.7 [2015-02-11]:
 -------------------------------
  - Fixed placement upadate error in rules checkbox group
