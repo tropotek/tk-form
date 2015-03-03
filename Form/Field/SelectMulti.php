@@ -89,6 +89,8 @@ class SelectMulti extends Select
         $t = $this->getTemplate();
         $t->setAttr('element', 'multiple', 'multiple');
         $t->setAttr('element', 'name', $this->name.'[]');
+        // JS is deprecatd, use the theme files for javascripting.
+        /*
         $opts = '';
         if ($this->filter) {
             $opts = ",enableFiltering: true,
@@ -109,7 +111,8 @@ jQuery(function($) {
   });
 });
 ";
-        $t->appendJs($js);
+        //$t->appendJs($js);
+        */
     }
 
 
@@ -146,7 +149,7 @@ jQuery(function($) {
         $xmlStr = <<<XML
 <?xml version="1.0"?>
 <div>
-<script src="js/bootstrap-multiselect.js"></script>
+<!-- script src="js/bootstrap-multiselect.js"></script -->
 
 <select var="element">
   <option value="" repeat="option" var="option"></option>
