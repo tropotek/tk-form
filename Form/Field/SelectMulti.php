@@ -89,30 +89,6 @@ class SelectMulti extends Select
         $t = $this->getTemplate();
         $t->setAttr('element', 'multiple', 'multiple');
         $t->setAttr('element', 'name', $this->name.'[]');
-        // JS is deprecatd, use the theme files for javascripting.
-        /*
-        $opts = '';
-        if ($this->filter) {
-            $opts = ",enableFiltering: true,
-    enableCaseInsensitiveFiltering: true,
-    filterPlaceholder: 'Search'";
-        }
-        $js = "
-jQuery(function($) {
-  $('#{$this->getId()}').multiselect({
-    buttonClass: 'form-control',
-    buttonWidth: 'auto',
-    includeSelectAllOption : true,
-    selectAllValue: '',
-    maxHeight: 500
-    //,dropRight : true
-    $opts
-
-  });
-});
-";
-        //$t->appendJs($js);
-        */
     }
 
 
@@ -149,8 +125,6 @@ jQuery(function($) {
         $xmlStr = <<<XML
 <?xml version="1.0"?>
 <div>
-<!-- script src="js/bootstrap-multiselect.js"></script -->
-
 <select var="element">
   <option value="" repeat="option" var="option"></option>
   <optgroup label="" repeat="optgroup" var="optgroup"><option value="" repeat="option" var="option"></option></optgroup>
