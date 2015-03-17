@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 1.2.9 [2015-03-18]:
+-------------------------------
+ - Fixed multi select issue from updated Form libs
+ - Try this then
+
+
 Ver 1.2.8 [2015-02-16]:
 -------------------------------
  - Fixed comments file upload issues with special Cars in the files names
