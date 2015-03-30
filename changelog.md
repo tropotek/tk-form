@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.10 [2015-03-31]:
+-------------------------------
+ - Fixed issues with Mail Template and Mail Events for Company Approved
+
+
 Ver 1.2.9 [2015-03-18]:
 -------------------------------
  - Fixed multi select issue from updated Form libs
