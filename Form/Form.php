@@ -633,7 +633,7 @@ class Form extends Element
      */
     public function getField($name)
     {
-        if (isset($this->fieldList[$name])) {
+        if (array_key_exists($name, $this->fieldList)) {
             return $this->fieldList[$name];
         }
     }
@@ -670,11 +670,10 @@ class Form extends Element
     public function getFieldValue($name)
     {
         $field = $this->getField($name);
-        if (!$field || !$field instanceof Field\Iface) {
-            tklog('Field not found: `' . $name . '`', \Tk\Log\Log::NOTICE);
-            return;
+        if ($field instanceof Field\Iface) {
+            return $field->getValue();
         }
-        return $field->getValue();
+        return null;
     }
 
     /**
