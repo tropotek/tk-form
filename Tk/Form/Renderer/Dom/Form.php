@@ -17,7 +17,7 @@ class Form extends \Tk\Form\Renderer\Iface
     /**
      * Create a new Renderer.
      *
-     * @param \Tk\Form\Form $form
+     * @param \Tk\Form $form
      * @return Form
      */
     static function create($form)

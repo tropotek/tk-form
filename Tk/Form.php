@@ -1,6 +1,7 @@
 <?php
-namespace Tk\Form;
+namespace Tk;
 
+use Tk\Form\Field;
 
 /**
  * The dynamic form processor
@@ -21,11 +22,10 @@ namespace Tk\Form;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Form extends Element
+class Form extends Form\Element
 {
 
     use \Tk\InstanceTrait;
-
 
     const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
     const ENCTYPE_MULTIPART         = 'multipart/form-data';
@@ -336,7 +336,7 @@ class Form extends Element
     {
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Element */
+        /* @var $field Form\Element */
         foreach ($this->fieldList as $field) {
             $newArr[$field->getName()] = $field;
             if ($field->getName() == $fieldName) {

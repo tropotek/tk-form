@@ -1,6 +1,8 @@
 <?php
 namespace Tk\Form;
 
+use Tk\Form;
+
 /**
  * Interface Element
  *

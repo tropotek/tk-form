@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Field;
 
-use Tk\Form\Form;
+use \Tk\Form;
 use Tk\Form\Type;
 
 /**

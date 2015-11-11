@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Renderer\Dom;
 
-use \Tk\Form\Form;
+use \Tk\Form;
 use \Tk\Form\Type;
 use \Tk\Form\Field;
 use \Tk\Form\Exception;

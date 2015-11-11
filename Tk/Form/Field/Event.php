@@ -47,12 +47,12 @@ class Event extends Iface
      *
      * @param callable $callback
      * @return $this
-     * @throws Exception
+     * @throws \Tk\Form\Exception
      */
     public function setCallback($callback)
     {
         if (!is_callable($callback)) {
-            throw new Exception('Only callable values can be events');
+            throw new \Tk\Form\Exception('Only callable values can be events');
         }
         $this->callback = $callback;
         return $this;
