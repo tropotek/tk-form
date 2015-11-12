@@ -101,7 +101,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
 
         if ($field instanceof \Tk\Form\Field\File) {
             // Check form enctype exists
-            $this->domForm->getNode()->setAttribute('enctype', \Tk\Form\Form::ENCTYPE_MULTIPART);
+            $this->domForm->getNode()->setAttribute('enctype', \Tk\Form::ENCTYPE_MULTIPART);
             return;
         }
 
