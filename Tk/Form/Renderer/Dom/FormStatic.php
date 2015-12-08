@@ -19,15 +19,13 @@ use \Tk\Form\Exception;
 class FormStatic extends \Tk\Form\Renderer\Iface
 {
 
-    const MSG_CLASS_ERROR     = 'error';
-    const MSG_CLASS_WARNING   = 'warning';
-    const MSG_CLASS_NOTICE    = 'notice';
-
     /**
      * @var \Dom\Form
      */
     protected $domForm = null;
-
+    
+    protected $formGroupErrorCss = 'has-error';
+    protected $formErrorTextCss = 'text-danger';
 
 
     /**
@@ -42,18 +40,40 @@ class FormStatic extends \Tk\Form\Renderer\Iface
         $this->setTemplate($template);
         $this->domForm = $template->getForm($this->form->getId());
     }
-
+    
     /**
      * Create a new Renderer.
      *
      * @param Form $form
      * @param \Dom\Template $template The template where the form resides
-     * @return Form
+     * @return FormStatic
      */
     static function create($form, $template)
     {
         return new static($form, $template);
     }
+    
+
+    /**
+     * @param string $css
+     * @return $this
+     */
+    public function setFormGroupErrorCss($css)
+    {
+        $this->formGroupErrorCss = $css;
+        return $this;
+    }
+
+    /**
+     * @param string $css
+     * @return $this
+     */
+    public function setErrorTextCss($css)
+    {
+        $this->formErrorTextCss = $css;
+        return $this;
+    }
+
 
     /**
      * Render
@@ -63,7 +83,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
     public function show()
     {
         if (!$this->domForm || !$this->domForm->getNode()) {
-            return;
+            return $this;
         }
 
         /* @var $field Field\Iface */
@@ -176,7 +196,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
             $this->getTemplate()->setChoice($choice);
         } else {
             $errNode = $this->domForm->getNode()->ownerDocument->createElement('div');
-            $errNode->setAttribute('class', 'alert alert-error');
+            $errNode->setAttribute('class', 'alert alert-danger ');
             if ($this->domForm->getNode()) {
                 $child = $this->getFirstChildElement($this->domForm->getNode());
                 $this->domForm->getNode()->insertBefore($errNode, $child);
@@ -212,7 +232,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
             $node = $el->getNode();
             // TODO: iterate up the tree to find the 'form-group' node
             if ($node->parentNode && strstr($node->parentNode->getAttribute('class'), 'form-group')) {
-                $node->parentNode->setAttribute('class', $node->parentNode->getAttribute('class') . ' has-error');
+                $node->parentNode->setAttribute('class', $node->parentNode->getAttribute('class') . ' ' . $this->formGroupErrorCss);
             }
             $var = $field->getName() . '-error';
             if ($this->template->keyExists('var', $var)) {
@@ -224,7 +244,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
                 }
             } else {
                 $errNode = $node->ownerDocument->createElement('div');
-                $errNode->setAttribute('class', 'text-danger');
+                $errNode->setAttribute('class', $this->formErrorTextCss);
                 $text = $node->ownerDocument->createElement('span');
                 $errNode->appendChild($text);
                 if ($node->parentNode) {
