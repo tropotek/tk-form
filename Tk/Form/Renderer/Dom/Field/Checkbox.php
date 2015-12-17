@@ -24,7 +24,7 @@ class Checkbox extends Iface
         }
         $ret = parent::showElement();
 
-        if ($this->getField()->isChecked()) {
+        if ($this->getField()->isSelected()) {
             $t->setAttr('element', 'checked', 'checked');
         }
         $t->setAttr('element', 'value', $this->getField()->getName());

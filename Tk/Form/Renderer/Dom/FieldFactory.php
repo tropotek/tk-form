@@ -46,6 +46,19 @@ class FieldFactory
      * @param string $name
      * @return \Tk\Form\Field\Checkbox
      */
+    public static function createCheckboxGroup($name, $optionIterator = null)
+    {
+        $field = new \Tk\Form\Field\SelectList($name, $optionIterator);
+        $field->setRenderer(FieldGroup::create(new Field\Checkbox($field)));
+        return $field;
+    }
+
+    /**
+     * Create A Field
+     *
+     * @param string $name
+     * @return \Tk\Form\Field\Checkbox
+     */
     public static function createDate($name)
     {
         $field = new \Tk\Form\Field\Input($name, new Type\DateTime());

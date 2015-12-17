@@ -16,7 +16,7 @@ use Tk\Form\Field\Option;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class ObjectArrayIterator extends ArrayIterator
+class ArrayObjectIterator extends ArrayIterator
 {
     /**
      * @var string
@@ -41,9 +41,9 @@ class ObjectArrayIterator extends ArrayIterator
 
     /**
      *
-     * @param array $list
-     * @param string $textParam
-     * @param string $valueParam
+     * @param array|\Tk\Db\ArrayObject $list
+     * @param string|callable $textParam
+     * @param string|callable $valueParam
      * @param string $disableParam
      * @param string $labelParam
      */
@@ -71,10 +71,14 @@ class ObjectArrayIterator extends ArrayIterator
         $value = '';
         $disabled = false;
 
-        if (property_exists($obj, $this->textParam)) {
+        if ( is_callable($this->textParam) ) {
+            call_user_func_array($this->textParam, array($obj));
+        } else if (property_exists($obj, $this->textParam)) {
             $text = $obj->{$this->textParam};
         }
-        if (property_exists($obj, $this->valueParam)) {
+        if ( is_callable($this->valueParam) ) {
+            call_user_func_array($this->valueParam, array($obj));
+        } else if (property_exists($obj, $this->valueParam)) {
             $value = $obj->{$this->valueParam};
         }
         if (property_exists($obj, $this->disableParam)) {

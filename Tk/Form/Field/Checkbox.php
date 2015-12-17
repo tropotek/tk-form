@@ -19,7 +19,7 @@ class Checkbox extends Iface
      *
      * @return bool
      */
-    public function isChecked()
+    public function isSelected($val = '')
     {
         $arr = $this->getType()->getTextValue();
         if (!empty($arr[$this->name]) && $arr[$this->name] == $this->name) {

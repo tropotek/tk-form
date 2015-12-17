@@ -479,15 +479,12 @@ class Form extends Form\Element
      * @param string $name A field name.
      * @param string $msg The error message.
      */
-    public function addFieldError($name, $msg)
+    public function addFieldError($name, $msg = '')
     {
         /* @var $field Field\Iface */
         $field = $this->getField($name);
         if ($field) {
             $field->addError($msg);
-            if (!$msg) {
-                $field->setErrors();
-            }
         } else {
             $this->addError($msg);
         }

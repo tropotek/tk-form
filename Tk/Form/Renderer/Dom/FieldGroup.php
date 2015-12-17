@@ -56,16 +56,18 @@ class FieldGroup extends \Dom\Renderer\Renderer
         $this->getFieldRenderer()->show();
 
         if ($this->getFieldRenderer()->getField()->hasErrors()) {
-            $t->setChoice('errorText');
+            $t->addClass('field-group', 'has-error');
+            
             $estr = '';
             foreach ($this->getFieldRenderer()->getField()->getErrors() as $error) {
-                $estr = $error . "<br/>\n";
+                if ($error)
+                    $estr = $error . "<br/>\n";
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);
                 $t->insertHtml('errorText', $estr);
+                $t->setChoice('errorText');
             }
-            $t->addClass('field-group', 'has-error');
         }
 
         if ($this->getFieldRenderer()->getField()->getLabel()) {

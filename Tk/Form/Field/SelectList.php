@@ -131,8 +131,11 @@ class SelectList extends Input
      * @param string $val
      * @return bool
      */
-    public function isSelected($val)
+    public function isSelected($val = '')
     {
+        if (!$val)
+            $val = [$this->getName()];
+        
         $values = $this->getType()->getTextValue();
         if (isset($values[$this->getName()]) && $values[$this->getName()] == $val) {
             return true;

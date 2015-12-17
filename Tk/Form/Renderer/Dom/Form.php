@@ -28,7 +28,7 @@ class Form extends \Tk\Form\Renderer\Iface
     /**
      * Render the field and return the template or html string
      *
-     * @return mixed
+     * @return Form
      */
     public function show()
     {
@@ -63,7 +63,8 @@ class Form extends \Tk\Form\Renderer\Iface
             }
             $estr = '';
             foreach ($this->getForm()->getErrors() as $error) {
-                $estr = $error . "<br/>\n";
+                if ($error)
+                    $estr = $error . "<br/>\n";
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);
