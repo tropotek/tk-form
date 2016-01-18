@@ -8,32 +8,22 @@ namespace Tk\Form\Field;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Input extends Iface
+class Html extends Input
 {
     
-    private $type = 'text';
-
-
-    /**
-     * Set the input type value
-     * 
-     * @param $type
-     * @return $this
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
+    protected $html = '';
 
     /**
-     * @return string
+     * __construct
+     *
+     * @param string $name
+     * @param string $html
      */
-    public function getType() 
+    public function __construct($name, $html = '')
     {
-        return $this->type;
+        parent::__construct($name);
+        $this->html = $html;
     }
-    
 
     /**
      * Get the element HTML
@@ -43,15 +33,19 @@ class Input extends Iface
     public function getHtml()
     {
         $t = $this->__makeTemplate();
-        
+        $this->removeCss('form-control');
+
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
 
         // Field name attribute
-        $t->setAttr('element', 'type', $this->getType());
-        $t->setAttr('element', 'name', $this->getName());
-
+        if ($this->html instanceof \Dom\Template) {
+            $t->insertTemplate('element', $this->html);
+        } else {
+            $t->insertHtml('element', $this->html);
+        }
+        
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {
             if ($val == '' || $val == null) {
@@ -63,18 +57,6 @@ class Input extends Iface
         // Element css class names
         foreach($this->getCssList() as $v) {
             $t->addClass('element', $v);
-        }
-
-        if ($this->isRequired()) {
-            $t->setAttr('element', 'required', 'required');
-        }
-
-        // set the field value
-        if ($t->getVarElement('element')->nodeName == 'input' ) {
-            $value = $this->getValue();
-            if ($value && !is_array($value)) {
-                $t->setAttr('element', 'value', $value);
-            }
         }
         
         return $t;
@@ -89,11 +71,10 @@ class Input extends Iface
      */
     public function __makeTemplate()
     {
-
         $xhtml = <<<XHTML
-<input type="text" var="element"/>
+<div var="element"></div>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }
-    
+
 }

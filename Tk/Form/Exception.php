@@ -2,7 +2,6 @@
 namespace Tk\Form;
 
 /**
- * Class Exception
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/

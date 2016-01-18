@@ -47,6 +47,21 @@ class Option
     }
 
     /**
+     * Create an Option object
+     * 
+     * @param $text
+     * @param string $value
+     * @param bool|false $disabled
+     * @param string $label
+     * @return Option
+     */
+    static function create($text, $value = '', $disabled = false, $label = '') 
+    {
+        $opt = new self($text, $value, $disabled, $label);
+        return $opt;
+    }
+
+    /**
      * @return string
      */
     public function getText()

@@ -7,7 +7,8 @@ use Tk\Form\Field\Option;
  * Use this iterator to create an options list from an array.
  *
  * <?php
- *   $iterator = new OptionArray(array('-- Select --' => '', 'Admin' => 'admin', 'Moderator' => 'moderator', 'User' => 'user'));
+ *   // supplied array('name1' => 'value1', 'name2' => 'value2', ...);
+ *   $iterator = new ArrayIterator(array('-- Select --' => '', 'Admin' => 'admin', 'Moderator' => 'moderator', 'User' => 'user'));
  * ?>
  *
  * @author Michael Mifsud <info@tropotek.com>
@@ -34,9 +35,26 @@ class ArrayIterator implements \Iterator, \Countable
      */
     public function __construct(array $list)
     {
+        if (key($list) == 0) {
+            $l = array();
+            foreach($list as $v) {
+                $l[$v] = $v;
+            }
+            $list = $l;
+        }
         $this->list = $list;
     }
 
+    /**
+     * 
+     * @param array $list
+     * @return ArrayIterator
+     */
+    static function create(array $list)
+    {
+        return new self($list);
+    }
+    
 
     /**
      * getKey

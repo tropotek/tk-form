@@ -1,9 +1,11 @@
 <?php
-namespace Tk\Form\Renderer\Dom;
+namespace Tk\Form\Renderer;
 
+use Tk\Form\Field;
+use Tk\Form\Event;
+use Tk\Form\Element;
 
 /**
- * Class FieldRenderer
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -13,38 +15,38 @@ class FieldGroup extends \Dom\Renderer\Renderer
 {
 
     /**
-     * @var Field\Iface
+     * @var Element
      */
-    protected $fieldRenderer = null;
+    protected $field = null;
 
 
     /**
      * __construct
      *
      *
-     * @param Field\Iface $fieldRenderer
+     * @param Field\Iface $field
      */
-    public function __construct($fieldRenderer)
+    public function __construct($field)
     {
-        $this->fieldRenderer = $fieldRenderer;
+        $this->field = $field;
     }
 
     /**
-     * @param $fieldRenderer
+     * @param $field
      * @return FieldGroup
      */
-    static function create($fieldRenderer)
+    static function create($field)
     {
-        return new static($fieldRenderer);
+        return new static($field);
     }
 
     /**
      * 
      * @return Field\Iface
      */
-    public function getFieldRenderer()
+    public function getField()
     {
-        return $this->fieldRenderer;
+        return $this->field;
     }
 
     /**
@@ -53,13 +55,17 @@ class FieldGroup extends \Dom\Renderer\Renderer
     public function show()
     {
         $t = $this->getTemplate();
-        $this->getFieldRenderer()->show();
-
-        if ($this->getFieldRenderer()->getField()->hasErrors()) {
+        $this->getField()->addCss('form-control');
+        
+        if ($this->getField() instanceof Field\Hidden) {
+            return $this->getField()->getHtml();
+        }
+        
+        if ($this->getField()->hasErrors()) {
             $t->addClass('field-group', 'has-error');
             
             $estr = '';
-            foreach ($this->getFieldRenderer()->getField()->getErrors() as $error) {
+            foreach ($this->getField()->getErrors() as $error) {
                 if ($error)
                     $estr = $error . "<br/>\n";
             }
@@ -70,22 +76,28 @@ class FieldGroup extends \Dom\Renderer\Renderer
             }
         }
 
-        if ($this->getFieldRenderer()->getField()->getLabel()) {
-            $label = $this->getFieldRenderer()->getField()->getLabel();
-            if ($this->getFieldRenderer()->getField()->isRequired()) $label .= ' <em>*</em>';
+        if ($this->getField()->getLabel()) {
+            $label = $this->getField()->getLabel();
+            if ($this->getField()->isRequired()) $label .= ' <em>*</em>';
             $t->insertHtml('label', $label);
-            $t->setAttr('label', 'for', $this->getFieldRenderer()->getField()->getAttr('id'));
+            $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
             $t->setChoice('label');
         }
-
-        if ($this->getFieldRenderer()->getField()->getNotes()) {
+        
+        if ($this->getField()->getNotes()) {
             $t->setChoice('notes');
-            $t->insertHtml('notes', $this->getFieldRenderer()->getField()->getNotes());
+            $t->insertHtml('notes', $this->getField()->getNotes());
         }
-
-        $t->replaceTemplate('element', $this->getFieldRenderer()->getTemplate());
-        $this->getFieldRenderer()->setTemplate($this->getTemplate());
-        return $this;
+        
+        $html = $this->getField()->getHtml();
+        if ($html instanceof \Dom\Template) {
+            $t->appendTemplate('element', $html);
+        } else {
+            $t->appendHtml('element', $html);
+        }
+        
+        
+        return $t;
     }
 
     /**
@@ -99,7 +111,7 @@ class FieldGroup extends \Dom\Renderer\Renderer
 <div class="form-group form-group-sm " var="field-group">
   <label class="control-label" var="label" choice="label"></label>
   <span class="help-block error-text" choice="errorText"><span class="glyphicon glyphicon-ban-circle"></span> <span var="errorText"></span></span>
-  <div var="element"></div>
+  <div var="element" class="controls"></div>
   <span class="help-block help-text" var="notes" choice="notes"></span>
 </div>
 XHTML;

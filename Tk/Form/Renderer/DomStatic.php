@@ -1,29 +1,26 @@
 <?php
-namespace Tk\Form\Renderer\Dom;
+namespace Tk\Form\Renderer;
 
 use \Tk\Form;
-use \Tk\Form\Type;
 use \Tk\Form\Field;
+use \Tk\Form\Element;
 use \Tk\Form\Exception;
 
 /**
- * The static form renderer.
- * It requires on the Dom_Form class
- *
- * This renderer requires that the form markup is already in place.
+ * Class DomStatic
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class FormStatic extends \Tk\Form\Renderer\Iface
+class DomStatic extends Iface
 {
-
+    
     /**
      * @var \Dom\Form
      */
     protected $domForm = null;
-    
+
     protected $formGroupErrorCss = 'has-error';
     protected $formErrorTextCss = 'text-danger';
 
@@ -40,19 +37,19 @@ class FormStatic extends \Tk\Form\Renderer\Iface
         $this->setTemplate($template);
         $this->domForm = $template->getForm($this->form->getId());
     }
-    
+
     /**
      * Create a new Renderer.
      *
      * @param Form $form
      * @param \Dom\Template $template The template where the form resides
-     * @return FormStatic
+     * @return DomStatic
      */
     static function create($form, $template)
     {
         return new static($form, $template);
     }
-    
+
 
     /**
      * @param string $css
@@ -88,6 +85,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
 
         /* @var $field Field\Iface */
         foreach ($this->getForm()->getFieldList() as $field) {
+            if (!$field instanceof Field\Iface) continue;
             $this->showField($field);
         }
 
@@ -102,12 +100,17 @@ class FormStatic extends \Tk\Form\Renderer\Iface
     /**
      * Render the form field values
      *
-     * @param Field\Iface $field
+     * @param Element $field
      * @return mixed
      * @throws \Tk\Exception
      */
-    protected function showField(Field\Iface $field)
+    protected function showField(Element $field)
     {
+        if (!$field instanceof Field\Iface) {
+            return;
+        }
+        
+        /** @var Field\Iface $field */
         $elName = $field->getName();
         if ($field->isArray()) {
             $elName .= '[]';
@@ -125,52 +128,46 @@ class FormStatic extends \Tk\Form\Renderer\Iface
             return;
         }
 
-        $values = $field->getType()->getTextValue();
-        foreach ($values as $name => $value) {
-            if (is_array($value)) {
-                $elList = $this->domForm->getFormElementList($name . '[]');
-            } else {
-                $elList = $this->domForm->getFormElementList($name);
-            }
-            /* @var $el \Dom\Form\Element */
-            foreach ($elList as $i => $el) {
-                if (!$el) continue;
-                $nodeType = $el->getType();
-                switch (get_class($el)) {
-                    case 'Dom\Form\Input' :
-                        if ($nodeType == 'file') {
-                            // Check form enctype exists
-                            $this->domForm->getNode()->setAttribute('enctype', \Tk\Form\Form::ENCTYPE_MULTIPART);
-                            break;
-                        }
-                        if ($nodeType == 'checkbox' || $nodeType == 'radio') {
-                            if (is_array($value) && $nodeType == 'checkbox') {
-                                foreach ($value as $v) {
-                                    $this->domForm->setCheckedByValue($name . '[]', $v);
-                                }
-                            } else {
-                                $this->domForm->setCheckedByValue($name, $value);
+        $value = $field->getValue();
+        $elName = $field->getName();
+        if (is_array($value) || $field->isArray()) {
+            $elName = $field->getName() . '[]';
+        }
+        $elList = $this->domForm->getFormElementList($elName);
+        
+        /* @var $el \Dom\Form\Element */
+        foreach ($elList as $i => $el) {
+            if (!$el) continue;
+            switch (get_class($el)) {
+                case 'Dom\Form\Input' :
+                    $nodeType = $el->getType();
+                    if ($nodeType == 'checkbox' || $nodeType == 'radio') {
+                        if (is_array($value) && $nodeType == 'checkbox') {
+                            foreach ($value as $v) {
+                                $this->domForm->setCheckedByValue($elName, $v);
                             }
                         } else {
-                            if (is_array($value)) {
-                                if (count($value)) {
-                                    $el->setValue($value[$i]);
-                                }
-                            } else {
-                                $el->setValue($value);
-                            }
+                            $this->domForm->setCheckedByValue($elName, $value);
                         }
-                        break;
-                    case 'Dom\Form\Textarea' :
-                        $el->setValue($value);
-                        break;
-                    case 'Dom\Form\Select' :
-                        $el->setValue($value);
-                        break;
-                }
+                    } else {
+                        if (is_array($value)) {
+                            if (count($value)) {
+                                $el->setValue($value[$i]);
+                            }
+                        } else {
+                            $el->setValue($value);
+                        }
+                    }
+                    break;
+                case 'Dom\Form\Textarea' :
+                    $el->setValue($value);
+                    break;
+                case 'Dom\Form\Select' :
+                    $el->setValue($value);
+                    break;
             }
         }
-
+        
         // Render Errors
         if ($field->hasErrors()) {
             $this->showError($field);
@@ -208,7 +205,7 @@ class FormStatic extends \Tk\Form\Renderer\Iface
     /**
      *
      *
-     * @param Field $field
+     * @param Field\Iface $field
      * @throws Exception
      */
     protected function showError($field)
@@ -269,5 +266,4 @@ class FormStatic extends \Tk\Form\Renderer\Iface
             }
         }
     }
-
 }

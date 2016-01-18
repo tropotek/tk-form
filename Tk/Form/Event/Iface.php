@@ -1,16 +1,16 @@
 <?php
-namespace Tk\Form\Field;
+namespace Tk\Form\Event;
 
-use Tk\Form\Type;
+use Tk\Form\Element;
+use Tk\Form\Exception;
 
 /**
- * Class Text
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Event extends Iface
+abstract class Iface extends Element
 {
     /**
      * @var callable
@@ -26,10 +26,10 @@ class Event extends Iface
      */
     public function __construct($name, $callback = null)
     {
+        $this->setName($name);
         if ($callback) {
             $this->setCallback($callback);
         }
-        parent::__construct($name, new Type\Null());
     }
 
     /**
@@ -47,12 +47,12 @@ class Event extends Iface
      *
      * @param callable $callback
      * @return $this
-     * @throws \Tk\Form\Exception
+     * @throws Exception
      */
     public function setCallback($callback)
     {
         if (!is_callable($callback)) {
-            throw new \Tk\Form\Exception('Only callable values can be events');
+            throw new Exception('Only callable values can be events');
         }
         $this->callback = $callback;
         return $this;

@@ -2,16 +2,14 @@
 namespace Tk\Form\Field;
 
 use \Tk\Form;
-use Tk\Form\Type;
 
 /**
- * Class Text
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class File extends Iface
+class File extends Input
 {
 
     /**
@@ -46,9 +44,32 @@ class File extends Iface
     public function __construct($name)
     {
         $this->maxBytes = self::string2Bytes(ini_get('upload_max_filesize'));
-        parent::__construct($name, new Type\Null());
+        parent::__construct($name);
+        $this->setType('file');
     }
 
+    /**
+     * Set the field value(s)
+     *
+     * @param array|string $values
+     * @return $this
+     */
+    public function setValue($values)
+    {
+        return $this;
+    }
+
+    /**
+     * Get the field value(s).
+     * 
+     * @return string|array
+     */
+    public function getValue()
+    {
+        return '';
+    }
+    
+    
     /**
      * Set the form for this element
      *
@@ -112,7 +133,7 @@ class File extends Iface
     public function hasFile()
     {
         if ($this->isArray()) {
-            if (isset($_FILES[$this->getName()]['name']) && is_array($_FILES[$this->getName()]['name'])) {
+            if (isset($_FILES[$this->getName()]['name'][0]) && $_FILES[$this->getName()]['name'][0] != '') {
                 return true;
             }
         } else {
@@ -143,6 +164,7 @@ class File extends Iface
     /**
      * validate the uploaded file
      *
+     * @param bool $required
      * @return bool
      */
     public function isValid($required = false)
@@ -151,10 +173,7 @@ class File extends Iface
             return;
         }
         $infoArray = $this->getFileInfo();
-        if (!$this->isArray()) {
-            $infoArray = array($infoArray);
-        }
-
+        
         foreach($infoArray as $info) {
             if ($info['size'] > $this->getMaxFileSize()) {
                 $this->addError($info['name'] . ': File to large');
@@ -168,7 +187,6 @@ class File extends Iface
             }
         }
     }
-
 
     /**
      * Use this to move the attached files to the directory in $dir
@@ -201,6 +219,7 @@ class File extends Iface
      * Get the uploaded filename, will return empty string if no file exists
      * The original name of the file on the client machine.
      *
+     * @param $filename
      * @return string
      */
     static public function getExt($filename)
@@ -218,8 +237,8 @@ class File extends Iface
     static public function getErrorString($errorId = null)
     {
         switch ($errorId) {
-//            case \UPLOAD_ERR_POSTMAX:
-//                return "The uploaded file exceeds post max file size of " . ini_get('post_max_size');
+            case \UPLOAD_ERR_POSTMAX:
+                return "The uploaded file exceeds post max file size of " . ini_get('post_max_size');
             case \UPLOAD_ERR_INI_SIZE :
                 return "File exceeds max file size of " . ini_get('upload_max_filesize');
             case \UPLOAD_ERR_FORM_SIZE :

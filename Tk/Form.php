@@ -1,7 +1,10 @@
 <?php
 namespace Tk;
 
+use Tk\Form\Element;
+use Tk\Form\Exception;
 use Tk\Form\Field;
+use Tk\Form\Event;
 
 /**
  * The dynamic form processor
@@ -25,8 +28,6 @@ use Tk\Form\Field;
 class Form extends Form\Element
 {
 
-    use \Tk\InstanceTrait;
-
     const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
     const ENCTYPE_MULTIPART         = 'multipart/form-data';
     const ENCTYPE_PLAIN             = 'text/plain';
@@ -41,12 +42,12 @@ class Form extends Form\Element
     protected $id = '';
 
     /**
-     * @var Field\Iface[]
+     * @var Element[]
      */
     protected $fieldList = array();
 
     /**
-     * @var Field\Event
+     * @var Event\Iface
      */
     protected $triggeredEvent = null;
 
@@ -102,6 +103,7 @@ class Form extends Form\Element
         if (!empty($this->params[$name])) {
             return $this->params[$name];
         }
+        return false;
     }
 
     /**
@@ -152,9 +154,9 @@ class Form extends Form\Element
     {
         if (!$this->isSubmitted()) return;
 
-        $this->loadFromString($this->getRequest());
+        $this->load($this->getRequest());
 
-        /** @var Field\Event $event */
+        /** @var Event\Iface $event */
         $event = $this->getTriggeredEvent();
         if ($event) {
             if ($event->getCallback() instanceof \Closure || is_callable($event->getCallback())) {
@@ -170,14 +172,14 @@ class Form extends Form\Element
      * This will only return a valid value <b>after</b> the
      *   execute() method has been called.
      *
-     * @return Field\Event
+     * @return Event\Iface
      */
     public function getTriggeredEvent()
     {
         if ($this->request && !$this->triggeredEvent) {
             /* @var $field Field\Iface */
             foreach($this->fieldList as $field) {
-                if ($field instanceof Field\Event) {
+                if ($field instanceof Event\Iface) {
                     if (isset($this->request[$field->getName()])) {
                         $this->triggeredEvent = $field;
                     }
@@ -193,13 +195,13 @@ class Form extends Form\Element
      *
      * @param string $name
      * @param callable $callback
-     * @return Field\Event
+     * @return Event\Iface
      * @throws Exception
      */
     public function setEventCallback($name, $callback)
     {
         $field = $this->getField($name);
-        if (!$field || !$field instanceof Field\Event) {
+        if (!$field || !$field instanceof Event\Iface) {
             throw new Exception('Event Field not found: `' . $name . '`');
         }
         $field->setCallback($callback);
@@ -220,80 +222,10 @@ class Form extends Form\Element
     }
 
     /**
-     * Loads the form with the array.
-     * This array must be in basic type form, for example
-     * like the $_REQUEST, $_GET or $_POST array from a form.
-     * EG:
-     *   $array['field1'] = 'value1';
-     *
-     * @param array|\ArrayAccess $array
-     * @return $this
-     */
-    public function loadFromString($array)
-    {
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $field) {
-            $field->getType()->loadFromText($array);
-        }
-        return $this;
-    }
-
-    /**
-     * Loads the form fields from the object using the fields complex type.
-     *
-     * This can be an array or object that contains the field's
-     * values as their complex type, IE: \Tk\Date for a Date field
-     * and so on...
-     *
-     * @param object $object The object being mapped.
-     * @return $this
-     */
-    public function loadFromObject($object)
-    {
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $field) {
-            $field->getType()->loadFromType((array)$object);
-        }
-        return $this;
-    }
-
-
-    /**
-     * This will return an array of the field's
-     * values as complex types,
-     *
-     * @return array
-     */
-    public function getValues()
-    {
-        $array = array();
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $name => $field) {
-            $array[$name] = $field->getValue();
-        }
-        return $array;
-    }
-
-    /**
-     * Return an array of the fields raw string values
-     *
-     * @return array
-     */
-    public function getStringValues()
-    {
-        $array = array();
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $name => $field) {
-            $array = array_merge($array, $field->getType()->getTextValue());
-        }
-        return $array;
-    }
-
-    /**
      * Add an field to this form
      *
-     * @param Field\Iface $field
-     * @return Field\Iface
+     * @param Element $field
+     * @return Element
      */
     public function addField($field)
     {
@@ -306,14 +238,14 @@ class Form extends Form\Element
      * Add a field element before another element
      *
      * @param string $fieldName
-     * @param Field\Iface $newField
-     * @return Field\Iface
+     * @param Element $newField
+     * @return Element
      */
     public function addFieldBefore($fieldName, $newField)
     {
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Field\Iface */
+        /* @var $field Element */
         foreach ($this->fieldList as $field) {
             if ($field->getName() == $fieldName) {
                 $field->setForm($this);
@@ -329,14 +261,14 @@ class Form extends Form\Element
      * Add an element after another element
      *
      * @param string $fieldName
-     * @param Field\Iface $newField
-     * @return Field\Iface
+     * @param Element $newField
+     * @return Element
      */
     public function addFieldAfter($fieldName, $newField)
     {
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Form\Element */
+        /* @var $field Element */
         foreach ($this->fieldList as $field) {
             $newArr[$field->getName()] = $field;
             if ($field->getName() == $fieldName) {
@@ -367,7 +299,7 @@ class Form extends Form\Element
      * Return a field object or null if not found
      *
      * @param string $name
-     * @return Field\Iface
+     * @return Element
      */
     public function getField($name)
     {
@@ -459,7 +391,7 @@ class Form extends Form\Element
     public function getAllErrors()
     {
         $e = $this->errors;
-        /* @var $field Field\Iface */
+        /* @var $field Element */
         foreach($this->getFieldList() as $field) {
             if ($field->hasErrors()) {
                 $e[$field->getName()] = array_merge($e, $field->getErrors());
@@ -481,7 +413,7 @@ class Form extends Form\Element
      */
     public function addFieldError($name, $msg = '')
     {
-        /* @var $field Field\Iface */
+        /* @var $field Element */
         $field = $this->getField($name);
         if ($field) {
             $field->addError($msg);
@@ -509,5 +441,51 @@ class Form extends Form\Element
             }
         }
     }
+    
+    /**
+     * Loads the fields with values from an array.
+     * EG:
+     *   $array['field1'] = 'value1';
+     *
+     * @param array|\ArrayAccess $array
+     * @return $this
+     * @throws Exception
+     */
+    public function load($array)
+    {
+        if (!is_array($array)) {
+            throw new Exception('Convert any loadable data to an array first.');
+        }
+        
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $field) {
+            if (!$field instanceof Field\Iface) continue;
+            $field->setValue($array);
+        }
+        return $this;
+    }
 
+    /**
+     * This will return an array of the field's values,
+     *
+     * @return array
+     */
+    public function getValues()
+    {
+        $array = array();
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $name => $field) {
+            if (!$field instanceof Field\Iface) continue;
+            $array[$name] = $field->getValue();
+        }
+        return $array;
+    }
+
+    /**
+     * Not used in the form
+     *
+     * @return string|\Dom\Template
+     */
+    public function getHtml() {}
+    
 }

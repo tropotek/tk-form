@@ -8,33 +8,9 @@ namespace Tk\Form\Field;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Input extends Iface
+class Textarea extends Iface
 {
     
-    private $type = 'text';
-
-
-    /**
-     * Set the input type value
-     * 
-     * @param $type
-     * @return $this
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType() 
-    {
-        return $this->type;
-    }
-    
-
     /**
      * Get the element HTML
      *
@@ -42,14 +18,17 @@ class Input extends Iface
      */
     public function getHtml()
     {
-        $t = $this->__makeTemplate();
+        $xhtml = <<<XHTML
+<textarea var="element"></textarea>
+XHTML;
+        $t = \Dom\Loader::load($xhtml);
+
         
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
 
         // Field name attribute
-        $t->setAttr('element', 'type', $this->getType());
         $t->setAttr('element', 'name', $this->getName());
 
         // All other attributes
@@ -70,30 +49,16 @@ class Input extends Iface
         }
 
         // set the field value
-        if ($t->getVarElement('element')->nodeName == 'input' ) {
+        if ($t->getVarElement('element')->nodeName == 'textarea') {
             $value = $this->getValue();
             if ($value && !is_array($value)) {
-                $t->setAttr('element', 'value', $value);
+                $t->insertText('element', $value);
             }
         }
         
+        
         return $t;
     }
-
-
-
-    /**
-     * makeTemplate
-     *
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
-
-        $xhtml = <<<XHTML
-<input type="text" var="element"/>
-XHTML;
-        return \Dom\Loader::load($xhtml);
-    }
+    
     
 }

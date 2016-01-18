@@ -1,24 +1,25 @@
 <?php
-namespace Tk\Form\Renderer\Dom;
+namespace Tk\Form\Renderer;
 
 use Tk\Form\Field;
-use Tk\Form\Type;
+use Tk\Form\Event;
+use Tk\Form;
 
 /**
- * A Dom Renderer for the form object
+ * Class Dom
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Form extends \Tk\Form\Renderer\Iface
+class Dom extends \Tk\Form\Renderer\Iface
 {
 
     /**
      * Create a new Renderer.
      *
-     * @param \Tk\Form $form
-     * @return Form
+     * @param Form $form
+     * @return Dom
      */
     static function create($form)
     {
@@ -28,7 +29,7 @@ class Form extends \Tk\Form\Renderer\Iface
     /**
      * Render the field and return the template or html string
      *
-     * @return Form
+     * @return $this
      */
     public function show()
     {
@@ -84,23 +85,33 @@ class Form extends \Tk\Form\Renderer\Iface
     /**
      * Render Fields
      *
-     * @param Field\Iface $field
+     * @param Form\Element $field
      * @return mixed
      */
-    protected function showField(Field\Iface $field)
+    protected function showField(Form\Element $field)
     {
         $t = $this->getTemplate();
-
-        if (!$field->getRenderer() instanceof \Dom\Renderer\Iface) {
-            return;
-        }
-
-        $field->getRenderer()->show();
-
-        if ($field instanceof Field\Event) {
-            $t->appendTemplate('events', $field->getRenderer()->getTemplate());
+        $html = $field->getHtml();
+        
+        if ($field instanceof Event\Iface) {
+            /** @var Event\Iface $field */
+            if ($html instanceof \Dom\Template) {
+                $t->appendTemplate('events', $html);
+            } else {
+                $t->appendHtml('events', $html);
+            }
         } else {
-            $t->appendTemplate('fields', $field->getRenderer()->getTemplate());
+            /** @var Field\Iface $field */
+            // TODO: Check this is how we want to do this, I would like to see the ability to override the FieldGroup object
+            $fg = new FieldGroup($field);
+            $html = $fg->show();
+            
+            
+            if ($html instanceof \Dom\Template) {
+                $t->appendTemplate('fields', $html);
+            } else {
+                $t->appendHtml('fields', $html);
+            }
         }
     }
 

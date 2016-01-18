@@ -1,32 +1,78 @@
 <?php
 namespace Tk\Form\Field;
 
-use Tk\Form\Type;
-
 /**
- * Class Text
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Checkbox extends Iface
+class Checkbox extends Input
 {
-
-
+    
     /**
-     * Is the value checked
+     * __construct
      *
-     * @return bool
+     * @param string $name
      */
-    public function isSelected($val = '')
+    public function __construct($name)
     {
-        $arr = $this->getType()->getTextValue();
-        if (!empty($arr[$this->name]) && $arr[$this->name] == $this->name) {
-            return true;
-        }
-        return false;
+        parent::__construct($name);
+        $this->setType('checkbox');
     }
 
 
+    /**
+     * Set the field value(s)
+     *
+     * @param array|string $values
+     * @return $this
+     */
+    public function setValue($values)
+    {
+        if (!is_array($values)) {
+            $values = array($this->getName() => $values);
+        }
+        if (!isset($values[$this->getName()])) {
+            $this->values[$this->getName()] = false;
+        } else {
+            $this->values[$this->getName()] = $values[$this->getName()];
+        }
+        return $this;
+    }
+    
+    /**
+     * Get the element HTML
+     *
+     * @return string|\Dom\Template
+     */
+    public function getHtml()
+    {
+        $this->removeCss('form-control');
+        $t = parent::getHtml();
+        
+        if ($this->getValue()) {
+            $t->setAttr('element', 'checked', 'checked');
+        }
+        $t->setAttr('element', 'value', $this->getName());
+        return $t;
+    }
+    
+    /**
+     * makeTemplate
+     *
+     * @return \Dom\Template
+     */
+    public function __makeTemplate()
+    {
+        $xhtml = <<<XHTML
+<div class="checkbox">
+  <label>
+    <input type="checkbox" var="element"/> <span var="label"></span>
+  </label>
+</div>
+XHTML;
+        return \Dom\Loader::load($xhtml);
+    }
+    
 }

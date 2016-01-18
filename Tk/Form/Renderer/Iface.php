@@ -5,7 +5,6 @@ use \Tk\Form;
 use \Tk\Form\Field;
 
 /**
- * Class Iface
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -43,10 +42,10 @@ abstract class Iface extends \Dom\Renderer\Renderer
     /**
      * Render the form field values
      *
-     * @param Field\Iface $field
+     * @param Form\Element $field
      * @return mixed
      */
-    abstract protected function showField(Field\Iface $field);
+    abstract protected function showField(Form\Element $field);
 
 
 
