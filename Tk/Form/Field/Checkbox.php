@@ -34,7 +34,7 @@ class Checkbox extends Input
             $values = array($this->getName() => $values);
         }
         if (!isset($values[$this->getName()])) {
-            $this->values[$this->getName()] = false;
+            $this->values[$this->getName()] = '';
         } else {
             $this->values[$this->getName()] = $values[$this->getName()];
         }

@@ -145,7 +145,8 @@ class DomStatic extends Iface
                                 $this->domForm->setCheckedByValue($elName, $v);
                             }
                         } else {
-                            $this->domForm->setCheckedByValue($elName, $value);
+                            if ($value)
+                                $this->domForm->setCheckedByValue($elName, $value);
                         }
                     } else {
                         if (is_array($value)) {
