@@ -85,10 +85,10 @@ class Dom extends \Tk\Form\Renderer\Iface
     /**
      * Render Fields
      *
-     * @param Form\Element $field
+     * @param Field\Iface $field
      * @return mixed
      */
-    protected function showField(Form\Element $field)
+    protected function showField(Field\Iface $field)
     {
         $t = $this->getTemplate();
         $html = $field->getHtml();
@@ -101,7 +101,6 @@ class Dom extends \Tk\Form\Renderer\Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-            /** @var Field\Iface $field */
             // TODO: Check this is how we want to do this, I would like to see the ability to override the FieldGroup object
             $fg = new FieldGroup($field);
             $html = $fg->show();

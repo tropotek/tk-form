@@ -48,6 +48,23 @@ class File extends Input
         $this->setType('file');
     }
 
+
+
+    /**
+     * Get the element HTML
+     *
+     * @return string|\Dom\Template
+     */
+    public function getHtml()
+    {
+        $this->removeCss('form-control');
+        $t = parent::getHtml();
+        
+        return $t;
+    }
+    
+    
+    
     /**
      * Set the field value(s)
      *

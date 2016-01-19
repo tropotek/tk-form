@@ -83,7 +83,6 @@ class DomStatic extends Iface
             return $this;
         }
 
-        /* @var $field Field\Iface */
         foreach ($this->getForm()->getFieldList() as $field) {
             if (!$field instanceof Field\Iface) continue;
             $this->showField($field);
@@ -100,17 +99,16 @@ class DomStatic extends Iface
     /**
      * Render the form field values
      *
-     * @param Element $field
+     * @param Field\Iface $field
      * @return mixed
      * @throws \Tk\Exception
      */
-    protected function showField(Element $field)
+    protected function showField(Field\Iface $field)
     {
         if (!$field instanceof Field\Iface) {
             return;
         }
         
-        /** @var Field\Iface $field */
         $elName = $field->getName();
         if ($field->isArray()) {
             $elName .= '[]';

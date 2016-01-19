@@ -1,8 +1,8 @@
 <?php
 namespace Tk\Form\Event;
 
-use Tk\Form\Element;
 use Tk\Form\Exception;
+use Tk\Form\Field;
 
 /**
  *
@@ -10,7 +10,7 @@ use Tk\Form\Exception;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Iface extends Element
+abstract class Iface extends Field\Iface
 {
     /**
      * @var callable
@@ -26,7 +26,7 @@ abstract class Iface extends Element
      */
     public function __construct($name, $callback = null)
     {
-        $this->setName($name);
+        parent::__construct($name);
         if ($callback) {
             $this->setCallback($callback);
         }
@@ -58,4 +58,45 @@ abstract class Iface extends Element
         return $this;
     }
 
+    
+    
+    // Force sain values for events below.
+
+
+    /**
+     * Get the field value(s).
+     *
+     * @return string|array
+     */
+    public function getValue()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * isRequired
+     *
+     * @return boolean
+     */
+    public function isRequired()
+    {
+        return false;
+    }
+
+
+    /**
+     * Does this fields data come as an array.
+     * If the name ends in [] then it will be flagged as an arrayField.
+     *
+     * EG: name=`name[]`
+     *
+     * @return boolean
+     */
+    public function isArray()
+    {
+        return false;
+    }
+    
+    
+    
 }

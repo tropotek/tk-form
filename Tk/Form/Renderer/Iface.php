@@ -42,10 +42,10 @@ abstract class Iface extends \Dom\Renderer\Renderer
     /**
      * Render the form field values
      *
-     * @param Form\Element $field
+     * @param Field\Iface $field
      * @return mixed
      */
-    abstract protected function showField(Form\Element $field);
+    abstract protected function showField(Field\Iface $field);
 
 
 

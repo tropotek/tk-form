@@ -42,7 +42,7 @@ class Form extends Form\Element
     protected $id = '';
 
     /**
-     * @var Element[]
+     * @var Field\Iface[]
      */
     protected $fieldList = array();
 
@@ -224,8 +224,8 @@ class Form extends Form\Element
     /**
      * Add an field to this form
      *
-     * @param Element $field
-     * @return Element
+     * @param Field\Iface $field
+     * @return Field\Iface
      */
     public function addField($field)
     {
@@ -238,14 +238,14 @@ class Form extends Form\Element
      * Add a field element before another element
      *
      * @param string $fieldName
-     * @param Element $newField
-     * @return Element
+     * @param Field\Iface $newField
+     * @return Field\Iface
      */
     public function addFieldBefore($fieldName, $newField)
     {
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Element */
+        /* @var $field Field\Iface */
         foreach ($this->fieldList as $field) {
             if ($field->getName() == $fieldName) {
                 $field->setForm($this);
@@ -261,14 +261,14 @@ class Form extends Form\Element
      * Add an element after another element
      *
      * @param string $fieldName
-     * @param Element $newField
-     * @return Element
+     * @param Field\Iface $newField
+     * @return Field\Iface
      */
     public function addFieldAfter($fieldName, $newField)
     {
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Element */
+        /* @var $field Field\Iface */
         foreach ($this->fieldList as $field) {
             $newArr[$field->getName()] = $field;
             if ($field->getName() == $fieldName) {
@@ -299,7 +299,7 @@ class Form extends Form\Element
      * Return a field object or null if not found
      *
      * @param string $name
-     * @return Element
+     * @return Field\Iface|null
      */
     public function getField($name)
     {
@@ -335,7 +335,7 @@ class Form extends Form\Element
      * Returns a form field value. Returns NULL if no field exists
      *
      * @param string $name The element type name.
-     * @return Field\Iface
+     * @return string|array
      */
     public function getFieldValue($name)
     {
@@ -391,7 +391,7 @@ class Form extends Form\Element
     public function getAllErrors()
     {
         $e = $this->errors;
-        /* @var $field Element */
+        /* @var $field Field\Iface */
         foreach($this->getFieldList() as $field) {
             if ($field->hasErrors()) {
                 $e[$field->getName()] = array_merge($e, $field->getErrors());
@@ -413,7 +413,7 @@ class Form extends Form\Element
      */
     public function addFieldError($name, $msg = '')
     {
-        /* @var $field Element */
+        /* @var $field Field\Iface */
         $field = $this->getField($name);
         if ($field) {
             $field->addError($msg);
