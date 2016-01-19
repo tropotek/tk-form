@@ -26,6 +26,11 @@ abstract class Element
     /**
      * @var array
      */
+    protected $params = null;
+
+    /**
+     * @var array
+     */
     protected $errors = array();
 
     /**
@@ -127,6 +132,50 @@ abstract class Element
         }
 
         return $this;
+    }
+
+
+    /**
+     * Get a parameter from the array
+     *
+     * @param $name
+     * @return bool
+     */
+    public function getParam($name)
+    {
+        if (!empty($this->params[$name])) {
+            return $this->params[$name];
+        }
+        return false;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function addParam($name, $value)
+    {
+        $this->params[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Get the param array
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param array $params
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
     }
 
     /**

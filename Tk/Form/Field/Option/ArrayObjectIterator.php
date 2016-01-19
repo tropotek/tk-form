@@ -58,19 +58,6 @@ class ArrayObjectIterator extends ArrayIterator
     }
 
     /**
-     * @param array $list
-     * @param string $textParam
-     * @param string $valueParam
-     * @param string $disableParam
-     * @param string $labelParam
-     * @return ArrayObjectIterator
-     */
-    static function create($list = array(), $textParam = 'name', $valueParam = 'id', $disableParam = '', $labelParam = '')
-    {
-        return new self($list, $textParam, $valueParam, $disableParam, $labelParam);
-    }
-
-    /**
      * Return the current element
      *
      * @link http://php.net/manual/en/iterator.current.php

@@ -52,11 +52,6 @@ class Form extends Form\Element
     protected $triggeredEvent = null;
 
     /**
-     * @var array
-     */
-    protected $params = null;
-
-    /**
      * @var array|\ArrayAccess
      */
     protected $request = null;
@@ -69,12 +64,11 @@ class Form extends Form\Element
      * @param array $params An array containing parameters that you may need for extending the form
      * @param array|\ArrayAccess $request
      */
-    public function __construct($formId, $params = array(), $request = null)
+    public function __construct($formId, $request = null)
     {
         $this->id = $formId;;
         $this->setInstanceId($formId);
         $this->name = $formId;
-        $this->params = $params;
         if (!$request) {
             $request = $_REQUEST;
         }
@@ -90,49 +84,6 @@ class Form extends Form\Element
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get a parameter from the array
-     *
-     * @param $name
-     * @return bool
-     */
-    public function getParam($name)
-    {
-        if (!empty($this->params[$name])) {
-            return $this->params[$name];
-        }
-        return false;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     */
-    public function addParam($name, $value)
-    {
-        $this->params[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * Get the param array
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array $params
-     */
-    public function setParams($params)
-    {
-        $this->params = $params;
     }
 
     /**

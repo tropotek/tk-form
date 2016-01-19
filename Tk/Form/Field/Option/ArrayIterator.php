@@ -35,7 +35,7 @@ class ArrayIterator implements \Iterator, \Countable
      */
     public function __construct(array $list)
     {
-        if (key($list) == 0) {
+        if (key($list) == 0 && !is_object(current($list))) {
             $l = array();
             foreach($list as $v) {
                 $l[$v] = $v;
@@ -43,16 +43,6 @@ class ArrayIterator implements \Iterator, \Countable
             $list = $l;
         }
         $this->list = $list;
-    }
-
-    /**
-     * 
-     * @param array $list
-     * @return ArrayIterator
-     */
-    static function create(array $list)
-    {
-        return new self($list);
     }
     
 
