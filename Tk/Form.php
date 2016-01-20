@@ -133,6 +133,7 @@ class Form extends Form\Element
                 if ($field instanceof Event\Iface) {
                     if (isset($this->request[$field->getName()])) {
                         $this->triggeredEvent = $field;
+                        break;
                     }
                 }
             }
