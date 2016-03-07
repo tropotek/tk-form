@@ -1,5 +1,21 @@
 #CHANGELOG#
 
+Ver 2.0.0 [2016-03-08]:
+-------------------------------
+ - Adde Lti Authentication, still need finishing....
+ - Fixed minor form event issue
+ - LDAP and authentication tidy up
+ - Updated form calls to new form
+ - Added new form files
+ - Finished basic user system.
+ - Updated form, relized it needs to be refactored, see readme
+ - More test user fixes
+ - Tiding up
+ - Seperating symfony from tk-framework adding to App
+ - Fixing DomTemplate documentation
+ - Added new V2 files to the form lib master branch
+
+
 Ver 1.2.10 [2015-03-31]:
 -------------------------------
  - Fixed issues with Mail Template and Mail Events for Company Approved
