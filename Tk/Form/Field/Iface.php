@@ -23,11 +23,24 @@ abstract class Iface extends \Tk\Form\Element
      * @var bool
      */
     protected $required = false;
-
+    
     /**
+     * This will be true if the element is an array IE: name="title[]"
+     * the "[]" will be removed from the name
      * @var bool
      */
     protected $arrayField = false;
+        
+    /**
+     * @var string
+     */
+    protected $fieldset = '';
+
+    /**
+     * @var string
+     */
+    protected $tabGroup = '';
+    
     
 
     /**
@@ -40,6 +53,46 @@ abstract class Iface extends \Tk\Form\Element
     {
         $this->setName($name);
     }
+     
+
+    /**
+     * @return string
+     */
+    public function getFieldset()
+    {
+        return $this->fieldset;
+    }
+
+    /**
+     * @param string $fieldset
+     * @return $this
+     */
+    public function setFieldset($fieldset)
+    {
+        $this->fieldset = $fieldset;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTabGroup()
+    {
+        return $this->tabGroup;
+    }
+
+    /**
+     * @param string $tabGroup
+     * @return $this
+     */
+    public function setTabGroup($tabGroup)
+    {
+        $this->tabGroup = $tabGroup;
+        return $this;
+    }
+
+    
+    
 
     /**
      * Set the field value(s)
@@ -117,6 +170,8 @@ abstract class Iface extends \Tk\Form\Element
 
     /**
      * Set to true if this element is an array set
+     * 
+     * EG: name=`name[]`
      * 
      * @param $b
      * @return $this
