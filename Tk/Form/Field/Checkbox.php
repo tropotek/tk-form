@@ -30,7 +30,6 @@ class Checkbox extends Input
      */
     public function setValue($values)
     {
-        vd($values);
         if (!is_array($values)) {
             $values = array($this->getName() => $values);
         }
@@ -52,7 +51,6 @@ class Checkbox extends Input
         $this->removeCss('form-control');
         $t = parent::getHtml();
         
-        vd($this->getValue());
         if ($this->getValue()) {
             $t->setAttr('element', 'checked', 'checked');
         }
