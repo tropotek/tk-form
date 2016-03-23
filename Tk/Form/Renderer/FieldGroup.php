@@ -78,8 +78,8 @@ class FieldGroup extends \Dom\Renderer\Renderer
 
         if ($this->getField()->getLabel()) {
             $label = $this->getField()->getLabel();
-            if ($this->getField()->isRequired()) $label .= ' <em>*</em>';
-            $t->insertHtml('label', $label);
+            if ($this->getField()->isRequired()) $t->addClass('label', 'required');
+            $t->insertHtml('label', $label.':');
             $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
             $t->setChoice('label');
         }
@@ -109,8 +109,8 @@ class FieldGroup extends \Dom\Renderer\Renderer
     {
         $xhtml = <<<XHTML
 <div class="form-group form-group-sm " var="field-group">
-  <label class="control-label" var="label" choice="label"></label>
   <span class="help-block error-text" choice="errorText"><span class="glyphicon glyphicon-ban-circle"></span> <span var="errorText"></span></span>
+  <label class="control-label" var="label" choice="label"></label>
   <div var="element" class="controls"></div>
   <span class="help-block help-text" var="notes" choice="notes"></span>
 </div>

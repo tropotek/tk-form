@@ -3,7 +3,6 @@ namespace Tk\Form\Renderer;
 
 use \Tk\Form;
 use \Tk\Form\Field;
-use \Tk\Form\Element;
 use \Tk\Form\Exception;
 
 /**
@@ -44,6 +43,7 @@ class DomStatic extends Iface
      * @param Form $form
      * @param \Dom\Template $template The template where the form resides
      * @return DomStatic
+     * @deprecated I think this will be renamed or removed in the release version
      */
     static function create($form, $template)
     {
@@ -101,7 +101,7 @@ class DomStatic extends Iface
      *
      * @param Field\Iface $field
      * @return mixed
-     * @throws \Tk\Exception
+     * @throws Exception
      */
     protected function showField(Field\Iface $field)
     {

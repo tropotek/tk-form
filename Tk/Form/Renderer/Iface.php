@@ -3,6 +3,7 @@ namespace Tk\Form\Renderer;
 
 use \Tk\Form;
 use \Tk\Form\Field;
+use Dom\Template;
 
 /**
  *
@@ -38,14 +39,6 @@ abstract class Iface extends \Dom\Renderer\Renderer
     {
         return $this->form;
     }
-
-    /**
-     * Render the form field values
-     *
-     * @param Field\Iface $field
-     * @return mixed
-     */
-    abstract protected function showField(Field\Iface $field);
 
 
 

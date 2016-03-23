@@ -96,7 +96,22 @@ abstract class Iface extends Field\Iface
     {
         return false;
     }
-    
-    
+
+
+    /**
+     * @return string
+     */
+    public function getFieldset()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getTabGroup()
+    {
+        return '';
+    }
     
 }
