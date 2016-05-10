@@ -61,19 +61,19 @@ class Form extends Form\Element
      * Create a form processor
      *
      * @param string $formId
-     * @param array $params An array containing parameters that you may need for extending the form
      * @param array|\ArrayAccess $request
      */
     public function __construct($formId, $request = null)
     {
         $this->id = $formId;;
-        $this->setInstanceId($formId);
+        $this->setForm($this);
         $this->name = $formId;
         if (!$request) {
             $request = $_REQUEST;
         }
         $this->request = $request;
         $this->setAttr('method', self::METHOD_POST);
+        $this->setAttr('action', \Tk\Url::create());
     }
 
     /**

@@ -9,10 +9,8 @@ use Tk\Form;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Element
+abstract class Element implements \Tk\InstanceKey
 {
-    use \Tk\Traits\InstanceKey;
-    use \Tk\Traits\Parameter;
 
     /**
      * @var string
@@ -28,6 +26,11 @@ abstract class Element
      * @var array
      */
     protected $errors = array();
+    
+    /**
+     * @var array
+     */
+    protected $params = null;
 
     /**
      * @var array
@@ -80,7 +83,6 @@ abstract class Element
         return $label;
     }
 
-
     /**
      * Get the unique name for this field
      *
@@ -98,15 +100,6 @@ abstract class Element
     /**
      * Set the name for this element
      *
-     * When using the element with an array name (EG: 'name[]')
-     * The '[]' are removed from the name but the isArray value is set to true.
-     *
-     * NOTE: only single dimensional numbered arrays are supported,
-     *  Multidimensional or named arrays are not.
-     *  Invalid field name examples are:
-     *   o 'name[key]'
-     *   o 'name[][]'
-     *   o 'name[key][]'
      *
      * @param $name
      * @return $this
@@ -114,23 +107,58 @@ abstract class Element
      */
     public function setName($name)
     {
-        $n = $name;
-        if (substr($n, -2) == '[]') {
-            $this->arrayField = true;
-            $n = substr($n, 0, -2);
-        }
-        if (strstr($n, '[') !== false) {
-            throw new Exception('Invalid field name: ' . $n);
-        }
-        $this->name = $n;
-
+        $this->name = $name;
         if (!$this->getLabel()) {
             $this->setLabel(self::makeLabel($this->getName()));
         }
         if (!$this->getAttr('id')) {
             $this->setAttr('id', $this->makeId());
         }
+        return $this;
+    }
+    
+    /**
+     * Get a parameter from the array
+     *
+     * @param $name
+     * @return bool
+     */
+    public function getParam($name)
+    {
+        if (!empty($this->params[$name])) {
+            return $this->params[$name];
+        }
+        return false;
+    }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function addParam($name, $value)
+    {
+        $this->params[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Get the param array
+     *
+     * @return array
+     */
+    public function getParamList()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     */
+    public function setParamList($params)
+    {
+        $this->params = $params;
         return $this;
     }
 
@@ -371,4 +399,21 @@ abstract class Element
         return $this->cssList;
     }
 
+    /**
+     * Create request keys with prepended string
+     *
+     * returns: `{instanceId}_{$key}`
+     * 
+     * The form->id is used as the instance key and must exist otherwise the key is returned unmodified.
+     *
+     * @param $key
+     * @return string
+     */
+    public function makeInstanceKey($key)
+    {
+        if ($this->getForm()) {
+            return $this->getForm()->getId() . '_' . $key;
+        }
+        return $key;
+    }
 }

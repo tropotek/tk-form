@@ -56,6 +56,36 @@ abstract class Iface extends \Tk\Form\Element
      
 
     /**
+     * Set the name for this element
+     *
+     * When using the element with an array name (EG: 'name[]')
+     * The '[]' are removed from the name but the isArray value is set to true.
+     *
+     * NOTE: only single dimensional numbered arrays are supported,
+     *  Multidimensional or named arrays are not.
+     *  Invalid field name examples are:
+     *   o 'name[key]'
+     *   o 'name[][]'
+     *   o 'name[key][]'
+     *
+     * @param $name
+     * @return $this
+     * @throws Exception
+     */
+    public function setName($name)
+    {
+        $n = $name;
+        if (substr($n, -2) == '[]') {
+            $this->arrayField = true;
+            $n = substr($n, 0, -2);
+        }
+        if (strstr($n, '[') !== false) {
+            throw new Exception('Invalid field name: ' . $n);
+        }
+        return parent::setName($n);
+    }
+
+    /**
      * @return string
      */
     public function getFieldset()
