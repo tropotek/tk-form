@@ -30,7 +30,7 @@ abstract class Element implements \Tk\InstanceKey
     /**
      * @var array
      */
-    protected $params = null;
+    protected $paramList = null;
 
     /**
      * @var array
@@ -125,8 +125,8 @@ abstract class Element implements \Tk\InstanceKey
      */
     public function getParam($name)
     {
-        if (!empty($this->params[$name])) {
-            return $this->params[$name];
+        if (!empty($this->paramList[$name])) {
+            return $this->paramList[$name];
         }
         return false;
     }
@@ -136,9 +136,9 @@ abstract class Element implements \Tk\InstanceKey
      * @param mixed $value
      * @return $this
      */
-    public function addParam($name, $value)
+    public function setParam($name, $value)
     {
-        $this->params[$name] = $value;
+        $this->paramList[$name] = $value;
         return $this;
     }
 
@@ -149,7 +149,7 @@ abstract class Element implements \Tk\InstanceKey
      */
     public function getParamList()
     {
-        return $this->params;
+        return $this->paramList;
     }
 
     /**
@@ -158,7 +158,7 @@ abstract class Element implements \Tk\InstanceKey
      */
     public function setParamList($params)
     {
-        $this->params = $params;
+        $this->paramList = $params;
         return $this;
     }
 
