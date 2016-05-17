@@ -73,7 +73,7 @@ class Form extends Form\Element
         }
         $this->request = $request;
         $this->setAttr('method', self::METHOD_POST);
-        $this->setAttr('action', \Tk\Url::create());
+        $this->setAttr('action', \Tk\Uri::create());
     }
 
     /**

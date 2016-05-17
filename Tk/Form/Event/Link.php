@@ -10,7 +10,7 @@ namespace Tk\Form\Event;
 class Link extends Button
 {
     /**
-     * @var string|\Tk\Url
+     * @var string|\Tk\Uri
      */
     protected $url = null;
 
@@ -19,7 +19,7 @@ class Link extends Button
      * __construct
      *
      * @param string $name
-     * @param string|\Tk\Url $url
+     * @param string|\Tk\Uri $url
      * @param callable $callback
      */
     public function __construct($name, $url = null, $callback = null, $icon = '')
@@ -32,7 +32,7 @@ class Link extends Button
         parent::__construct($name, $callback, $icon);
         
         if (!$url) {
-            $url = \Tk\Url::create();
+            $url = \Tk\Uri::create();
         }
         if ($callback) { // required to execute the callback
             $url->set($name, $name);
