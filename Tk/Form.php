@@ -1,7 +1,7 @@
 <?php
 namespace Tk;
 
-use Tk\Form\Element;
+
 use Tk\Form\Exception;
 use Tk\Form\Field;
 use Tk\Form\Event;
