@@ -41,7 +41,7 @@ class ArrayObjectIterator extends ArrayIterator
 
     /**
      *
-     * @param array|\Tk\Db\ArrayObject $list
+     * @param array $list
      * @param string|callable $textParam
      * @param string|callable $valueParam
      * @param string $disableParam
