@@ -214,10 +214,8 @@ class Dom extends \Tk\Form\Renderer\Iface
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
-        //$t = $this->getTemplate();
-        $html = $field->getHtml();
-        
         if ($field instanceof Event\Iface) {
+            $html = $field->getHtml();
             /** @var Event\Iface $field */
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate('events', $html);

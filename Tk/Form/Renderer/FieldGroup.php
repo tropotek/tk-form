@@ -95,6 +95,9 @@ class FieldGroup extends \Dom\Renderer\Renderer
         } else {
             $t->appendHtml('element', $html);
         }
+
+        $t->addClass('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
+        $t->addClass('field-group',  'tk-'.strtolower( $this->getField()->getName() ));
         
         
         return $t;

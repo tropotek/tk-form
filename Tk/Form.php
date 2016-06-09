@@ -61,7 +61,7 @@ class Form extends Form\Element
      * Create a form processor
      *
      * @param string $formId
-     * @param array|\ArrayAccess $request
+     * @param array $request
      */
     public function __construct($formId, $request = null)
     {
@@ -92,7 +92,7 @@ class Form extends Form\Element
     }
 
     /**
-     * @return array|\ArrayAccess
+     * @return array
      */
     public function &getRequest()
     {
@@ -404,12 +404,20 @@ class Form extends Form\Element
      * EG:
      *   $array['field1'] = 'value1';
      *
-     * @param array|\ArrayAccess $array
+     * @param array $array
      * @return $this
      * @throws Exception
      */
     public function load($array)
     {
+        // TODO: Not sure if this is the best method here but it works.
+        if ($array instanceof \ArrayAccess) {
+            $a = [];
+            foreach($array as $k => $v) {
+                $a[$k] = $v;
+            }
+            $array = $a;
+        }
         if (!is_array($array)) {
             throw new Exception('Convert any loadable data to an array first.');
         }

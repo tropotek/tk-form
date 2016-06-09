@@ -293,8 +293,9 @@ abstract class Element implements \Tk\InstanceKey
      * @param $value
      * @return $this
      */
-    public function setAttr($attrName, $value)
+    public function setAttr($attrName, $value = '')
     {
+        if (!$value) $value = $attrName;
         $this->attrList[$attrName] = $value;
         return $this;
     }

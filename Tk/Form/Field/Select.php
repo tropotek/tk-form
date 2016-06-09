@@ -20,11 +20,14 @@ class Select extends Iface
     
     /**
      * @param string $name
-     * @param Option\ArrayIterator $optionIterator
+     * @param Option\ArrayIterator|array $optionIterator
      */
-    public function __construct($name, Option\ArrayIterator $optionIterator = null)
+    public function __construct($name, $optionIterator = null)
     {
         parent::__construct($name);
+        if (is_array($optionIterator)) {
+            $optionIterator = new Option\ArrayIterator($optionIterator);
+        }
         if ($optionIterator) {
             $this->appendOptionIterator($optionIterator);
         }
