@@ -37,8 +37,8 @@ class ArrayIterator implements \Iterator, \Countable
     {
         if (key($list) == 0 && !is_object(current($list))) {
             $l = array();
-            foreach($list as $v) {
-                $l[$v] = $v;
+            foreach($list as $k => $v) {
+                $l[$k] = $v;
             }
             $list = $l;
         }
