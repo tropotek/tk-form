@@ -11,7 +11,7 @@ use Tk\Form\Element;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class FieldGroup extends \Dom\Renderer\Renderer
+class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
 
     /**
