@@ -78,7 +78,9 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 
         if ($this->getField()->getLabel()) {
             $label = $this->getField()->getLabel();
-            if ($this->getField()->isRequired()) $t->addClass('label', 'required');
+            if ($this->getField()->isRequired()) {
+                $t->addClass('field-group', 'required');
+            }
             $t->insertHtml('label', $label.':');
             $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
             $t->setChoice('label');

@@ -1,10 +1,10 @@
 <?php
 namespace Tk;
 
-
 use Tk\Form\Exception;
 use Tk\Form\Field;
 use Tk\Form\Event;
+
 
 /**
  * The dynamic form processor
@@ -109,9 +109,7 @@ class Form extends Form\Element
     public function execute()
     {
         if (!$this->isSubmitted()) return;
-
         $this->load($this->getRequest());
-
         /** @var Event\Iface $event */
         $event = $this->getTriggeredEvent();
         if ($event) {
@@ -404,30 +402,50 @@ class Form extends Form\Element
      * EG:
      *   $array['field1'] = 'value1';
      *
-     * @param array $array
+     * @param array|\ArrayAccess $array
      * @return $this
      * @throws Exception
      */
     public function load($array)
     {
-        // TODO: Not sure if this is the best method here but it works.
-        if ($array instanceof \ArrayAccess) {
-            $a = [];
-            foreach($array as $k => $v) {
-                $a[$k] = $v;
-            }
-            $array = $a;
-        }
+        $array = $this->cleanLoadArray($array);
         if (!is_array($array)) {
             throw new Exception('Convert any loadable data to an array first.');
         }
-        
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
-            if (!$field instanceof Field\Iface) continue;
+            if ($field instanceof Event\Iface) continue;
             $field->setValue($array);
         }
         return $this;
+    }
+
+    /**
+     * Clean the load() array
+     *  o create a new raw array for any \ArrayAccess objects
+     *  o add array keys that request modifies (ie replace '_' with '.') with field names
+     *    this will not modify keys that a field does not exist for.
+     * 
+     * @param array|\ArrayAccess $array
+     * @return array
+     */
+    protected function cleanLoadArray($array)
+    {
+        // get values from \ArrayAccess objects
+        if ($array instanceof \ArrayAccess) {
+            $a = [];
+            foreach($array as $k => $v) $a[$k] = $v;
+            $array = $a;
+        }
+        // Fix keys for conversions of '.' to '_'
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $field) {
+            $cleanName = str_replace('.', '_', $field->getName());
+            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
+                $array[$field->getName()] = $array[$cleanName];
+            }
+        }
+        return $array;
     }
 
     /**
@@ -440,7 +458,7 @@ class Form extends Form\Element
         $array = array();
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $name => $field) {
-            if (!$field instanceof Field\Iface) continue;
+            if ($field instanceof Event\Iface) continue;
             $array[$name] = $field->getValue();
         }
         return $array;
@@ -452,5 +470,6 @@ class Form extends Form\Element
      * @return string|\Dom\Template
      */
     public function getHtml() {}
+    
     
 }
