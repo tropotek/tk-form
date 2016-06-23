@@ -227,8 +227,15 @@ class DomStatic extends Iface
             }
             $node = $el->getNode();
             // TODO: iterate up the tree to find the 'form-group' node
-            if ($node->parentNode && strstr($node->parentNode->getAttribute('class'), 'form-group')) {
-                $node->parentNode->setAttribute('class', $node->parentNode->getAttribute('class') . ' ' . $this->formGroupErrorCss);
+            $parent = $node->parentNode;
+            while (strstr($parent->getAttribute('class'), 'form-group') === false && $parent->nodeName != 'form') {
+                $parent = $parent->parentNode;
+            }
+//            if ($node->parentNode && strstr($node->parentNode->getAttribute('class'), 'form-group')) {
+//                $node->parentNode->setAttribute('class', $node->parentNode->getAttribute('class') . ' ' . $this->formGroupErrorCss);
+//            }
+            if ($parent && strstr($parent->getAttribute('class'), 'form-group') !== false) {
+                $parent->setAttribute('class', $parent->getAttribute('class') . ' ' . $this->formGroupErrorCss);
             }
             $var = $field->getName() . '-error';
             if ($this->template->keyExists('var', $var)) {
@@ -243,8 +250,12 @@ class DomStatic extends Iface
                 $errNode->setAttribute('class', $this->formErrorTextCss);
                 $text = $node->ownerDocument->createElement('span');
                 $errNode->appendChild($text);
-                if ($node->parentNode) {
-                    $node->parentNode->insertBefore($errNode, $node);
+//                if ($node->parentNode) {
+//                    $node->parentNode->insertBefore($errNode, $node);
+//                    \Dom\Template::insertHtmlDom($text, $msg);
+//                }
+                if ($parent) {
+                    $parent->insertBefore($errNode, $parent->firstChild);
                     \Dom\Template::insertHtmlDom($text, $msg);
                 }
             }
