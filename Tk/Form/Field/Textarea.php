@@ -18,11 +18,7 @@ class Textarea extends Iface
      */
     public function getHtml()
     {
-        $xhtml = <<<XHTML
-<textarea var="element"></textarea>
-XHTML;
-        $t = \Dom\Loader::load($xhtml);
-
+        $t = $this->getTemplate();
         
         if (!$t->keyExists('var', 'element')) {
             return '';
@@ -58,6 +54,20 @@ XHTML;
         
         
         return $t;
+    }
+    
+    /**
+     * makeTemplate
+     *
+     * @return \Dom\Template
+     */
+    public function __makeTemplate()
+    {
+
+        $xhtml = <<<XHTML
+<textarea var="element"></textarea>
+XHTML;
+        return \Dom\Loader::load($xhtml);
     }
     
     

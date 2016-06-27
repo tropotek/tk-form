@@ -80,7 +80,7 @@ class CheckboxGroup extends Select
      */
     public function getHtml()
     {
-        $t = $this->__makeTemplate();
+        $t = $this->getTemplate();
         
         $this->removeCss('form-control');
         

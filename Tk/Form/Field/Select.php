@@ -131,7 +131,9 @@ class Select extends Iface
      */
     public function getHtml()
     {
-        $t = $this->__makeTemplate();
+        $t = $this->getTemplate();
+        
+        
         if (!$t->keyExists('var', 'element')) {
             return '';
         }

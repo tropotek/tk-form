@@ -93,9 +93,11 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         
         $html = $this->getField()->getHtml();
         if ($html instanceof \Dom\Template) {
-            $t->appendTemplate('element', $html);
+            //$t->appendTemplate('element', $html);
+            $t->replaceTemplate('element', $html);
         } else {
-            $t->appendHtml('element', $html);
+            //$t->appendHtml('element', $html);
+            $t->replaceHtml('element', $html);
         }
 
         $t->addClass('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));

@@ -64,7 +64,7 @@ class RadioGroup extends Select
      */
     public function getHtml()
     {
-        $t = $this->__makeTemplate();
+        $t = $this->getTemplate();
         $c = false;
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {

@@ -11,6 +11,9 @@ namespace Tk\Form\Field;
 class Input extends Iface
 {
     
+    /**
+     * @var string
+     */
     private $type = 'text';
 
 
@@ -34,7 +37,6 @@ class Input extends Iface
         return $this->type;
     }
     
-
     /**
      * Get the element HTML
      *
@@ -42,7 +44,7 @@ class Input extends Iface
      */
     public function getHtml()
     {
-        $t = $this->__makeTemplate();
+        $t = $this->getTemplate();
         
         if (!$t->keyExists('var', 'element')) {
             return '';
@@ -80,8 +82,6 @@ class Input extends Iface
         return $t;
     }
 
-
-
     /**
      * makeTemplate
      *
@@ -95,5 +95,7 @@ class Input extends Iface
 XHTML;
         return \Dom\Loader::load($xhtml);
     }
+    
+    
     
 }

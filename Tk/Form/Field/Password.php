@@ -24,16 +24,5 @@ class Password extends Input
         $this->setAttr('autocomplete', 'off');
     }
 
-    /**
-     * Get the element HTML
-     *
-     * @return string|\Dom\Template
-     */
-    public function getHtml()
-    {
-        $t = parent::getHtml();
-        
-        return $t;
-    }
 
 }

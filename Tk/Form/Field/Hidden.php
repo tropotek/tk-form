@@ -25,16 +25,4 @@ class Hidden extends Input
         $this->setType('hidden');
     }
 
-    /**
-     * Get the element HTML
-     *
-     * @return string|\Dom\Template
-     */
-    public function getHtml()
-    {
-        $t = parent::getHtml();
-        
-        return $t;
-    }
-
 }
