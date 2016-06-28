@@ -165,6 +165,11 @@ class DomStatic extends Iface
                     $el->setValue($value);
                     break;
             }
+            if (count($field->getAttrList())) {
+                foreach($field->getAttrList() as $k => $v) {
+                    $el->setAttribute($k, $v);
+                }
+            }
         }
         
         // Render Errors
