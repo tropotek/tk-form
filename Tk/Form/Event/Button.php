@@ -48,6 +48,7 @@ class Button extends Iface
      */
     public function setType($type)
     {
+        vdd($type);
         $this->type = $type;
         return $this;
     }
