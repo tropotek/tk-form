@@ -76,11 +76,6 @@ class Form extends Form\Element
         $this->setAttr('action', \Tk\Uri::create());
     }
     
-    
-    
-    
-    
-
     /**
      * Get the unique id for this element
      *
