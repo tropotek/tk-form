@@ -1,5 +1,26 @@
 #CHANGELOG#
 
+Ver 2.0.2 [2016-07-10]:
+-------------------------------
+ - Fixed page access permissions
+ - Fixed Responsivenes of template
+ - Added new admin pages
+ - Added crumbs menu
+ - Added Nav editing
+ - Finished page Editor
+ - Added tinymce to edit page...
+ - Added page url selector jquery plugin and updated setting page
+ - Added basic view and edit controllers for wiki pages
+ - Finished user login, register
+ - Started Wiki pages and routing
+ - Updated RendererInterface and seperated teh show() to DisplayInterface
+ - Finished up the user system a bit
+ - Fixed calles to new DB objects
+ - Finished routing, added new template to site
+ - Started to implement PSR7 interfaces, this will break most things using the URL
+ - Merge branch 'master' of git://github.com/tropotek/tk-form
+
+
 Ver 2.0.1 [2016-03-23]:
 -------------------------------
  - Finally added tabs and fieldsets to Form renderer
