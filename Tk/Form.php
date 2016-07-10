@@ -1,7 +1,6 @@
 <?php
 namespace Tk;
 
-use Tk\Form\Exception;
 use Tk\Form\Field;
 use Tk\Form\Event;
 
@@ -146,13 +145,13 @@ class Form extends Form\Element
      * @param string $name
      * @param callable $callback
      * @return Event\Iface
-     * @throws Exception
+     * @throws Form\Exception
      */
     public function setEventCallback($name, $callback)
     {
         $field = $this->getField($name);
         if (!$field || !$field instanceof Event\Iface) {
-            throw new Exception('Event Field not found: `' . $name . '`');
+            throw new Form\Exception('Event Field not found: `' . $name . '`');
         }
         $field->setCallback($callback);
         return $field;
