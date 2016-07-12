@@ -67,7 +67,7 @@ class Dom extends Iface
             $estr = '';
             foreach ($this->getForm()->getErrors() as $error) {
                 if ($error)
-                    $estr = $error . "<br/>\n";
+                    $estr .= $error . "<br/>\n";
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);
@@ -286,7 +286,12 @@ jQuery(function($) {
 
 
 <form class="tk-form" var="form" role="form">
-  <div class="tk-form-errors" choice="errors" var="errors"></div>
+  <div class="alert alert-danger" choice="errors">
+    <button data-dismiss="alert" class="close noblock">×</button>
+    <h4><i class="icon-ok-sign"></i> <strong>Form Error</strong></h4>
+    <span var="errors"></span>
+  </div>
+ 
 
   <div class="tk-form-fields" var="fields">
   
