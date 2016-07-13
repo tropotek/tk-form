@@ -427,7 +427,7 @@ class Form extends Form\Element
     {
         // get values from \ArrayAccess objects
         if ($array instanceof \ArrayAccess) {
-            $a = [];
+            $a = array();
             foreach($array as $k => $v) $a[$k] = $v;
             $array = $a;
         }

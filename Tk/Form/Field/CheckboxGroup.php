@@ -36,7 +36,7 @@ class CheckboxGroup extends Select
             $values = array($this->getName() => $values);
         }
         if (!isset($values[$this->getName()])) {
-            $this->values[$this->getName()] = [];
+            $this->values[$this->getName()] = array();
         } else {
             $this->values[$this->getName()] = $values[$this->getName()];
         }
