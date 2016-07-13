@@ -7,7 +7,7 @@ namespace Tk\Form\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Link extends Button
+class LinkButton extends Link
 {
     /**
      * @var string|\Tk\Uri
@@ -24,11 +24,12 @@ class Link extends Button
      */
     public function __construct($name, $url, $icon = '')
     {
-        parent::__construct($name);
-        
-        if (!$url) {
-            $url = \Tk\Uri::create();
+        if (!$icon) {
+            if ($name == 'cancel') {
+                $icon = 'glyphicon glyphicon-remove';
+            }
         }
+        parent::__construct($name, null, $icon);
         $this->url = $url;
     }
 
@@ -48,7 +49,7 @@ class Link extends Button
     public function getHtml()
     {
         $xhtml = <<<XHTML
-<a class="" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
 XHTML;
         $t = \Dom\Loader::load($xhtml);
         
