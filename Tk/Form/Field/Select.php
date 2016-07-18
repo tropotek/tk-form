@@ -79,10 +79,31 @@ class Select extends Iface
     {
         return $this->options;
     }
+
+
+    /**
+     * @param $name
+     * @param $value
+     * @return Select
+     */
+    public function prependOption($name, $value)
+    {
+        return $this->prepend(new Option($name, $value));
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return Select
+     */
+    public function appendOption($name, $value)
+    {
+        return $this->append(new Option($name, $value));
+    }
     
     /**
      * @param Option $option
-     * @return $this
+     * @return Select
      */
     public function append(Option $option)
     {
