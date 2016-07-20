@@ -60,7 +60,24 @@ abstract class Element implements \Tk\InstanceKey
      * @return string|\Dom\Template
      */
     abstract public function getHtml();
-    
+
+
+    /**
+     * Set the name for this element
+     *
+     *
+     * @param $name
+     * @return $this
+     * @throws Exception
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        if (!$this->getLabel()) {
+            $this->setLabel(self::makeLabel($this->getName()));
+        }
+        return $this;
+    }
     
     /**
      * Create a label from a name string
@@ -95,26 +112,6 @@ abstract class Element implements \Tk\InstanceKey
             $prepend = $this->getForm()->getId() . '_';
         }
         return $prepend . $this->getName();
-    }
-
-    /**
-     * Set the name for this element
-     *
-     *
-     * @param $name
-     * @return $this
-     * @throws Exception
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        if (!$this->getLabel()) {
-            $this->setLabel(self::makeLabel($this->getName()));
-        }
-        if (!$this->getAttr('id')) {
-            $this->setAttr('id', $this->makeId());
-        }
-        return $this;
     }
     
     /**

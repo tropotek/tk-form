@@ -36,6 +36,16 @@ class Input extends Iface
     {
         return $this->type;
     }
+
+    /**
+     * Get the field value(s).
+     *
+     * @return string|array
+     */
+    public function getValue()
+    {
+        return trim(parent::getValue());
+    }
     
     /**
      * Get the element HTML
@@ -49,6 +59,7 @@ class Input extends Iface
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
+
 
         // Field name attribute
         $t->setAttr('element', 'type', $this->getType());

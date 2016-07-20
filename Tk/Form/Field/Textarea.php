@@ -51,8 +51,7 @@ class Textarea extends Iface
                 $t->insertText('element', $value);
             }
         }
-        
-        
+
         return $t;
     }
     
