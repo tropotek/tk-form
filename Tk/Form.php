@@ -58,14 +58,14 @@ class Form extends Form\Element
     /**
      * @var array
      */
-    protected $loadArray = array();
+    protected $loadArray = null;
 
 
     /**
      * Create a form processor
      *
      * @param string $formId
-     * @param array $request
+     * @param array $request An array of request GET|POST values
      */
     public function __construct($formId, $request = null)
     {
@@ -111,7 +111,7 @@ class Form extends Form\Element
 
         if (!$this->isSubmitted()) return null;
 
-        $this->load($this->getRequest());
+        $this->executeLoad($this->getRequest());
 
         /** @var Event\Iface $event */
         $event = $this->getTriggeredEvent();
@@ -129,12 +129,14 @@ class Form extends Form\Element
      * EG:
      *   $array['field1'] = 'value1';
      *
-     * @param array|\ArrayAccess $array
+     * @param array $array
      * @return $this
      * @throws Exception
      */
     protected function executeLoad($array)
     {
+        if ($array === null) return $this;
+        $array = $this->cleanLoadArray($array);
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
@@ -148,18 +150,43 @@ class Form extends Form\Element
      * EG:
      *   $array['field1'] = 'value1';
      *
-     * @param array|\ArrayAccess $array
+     * @param array $array
      * @return $this
      * @throws Exception
      */
-    public function load($array)
+    public function load(array $array)
     {
-        $array = $this->cleanLoadArray($array);
-        if (!is_array($array)) {
-            throw new Exception('Convert any loadable data to an array first.');
-        }
+        if ($this->loadArray === null) $this->loadArray = array();
         $this->loadArray = array_merge($this->loadArray, $array);
         return $this;
+    }
+    
+    /**
+     * Clean the load() array
+     *  o create a new raw array for any \ArrayAccess objects
+     *  o add array keys that request modifies (ie replace '_' with '.') with field names
+     *    this will not modify keys that a field does not exist for.
+     * 
+     * @param array|\ArrayAccess $array
+     * @return array
+     */
+    protected function cleanLoadArray($array)
+    {
+        // get values from \ArrayAccess objects
+        if ($array instanceof \ArrayAccess) {
+            $a = array();
+            foreach($array as $k => $v) $a[$k] = $v;
+            $array = $a;
+        }
+        // Fix keys for conversions of '.' to '_'
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $field) {
+            $cleanName = str_replace('.', '_', $field->getName());
+            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
+                $array[$field->getName()] = $array[$cleanName];
+            }
+        }
+        return $array;
     }
 
 
@@ -438,33 +465,6 @@ class Form extends Form\Element
                 $field->addError($errorList);
             }
         }
-    }
-    /**
-     * Clean the load() array
-     *  o create a new raw array for any \ArrayAccess objects
-     *  o add array keys that request modifies (ie replace '_' with '.') with field names
-     *    this will not modify keys that a field does not exist for.
-     * 
-     * @param array|\ArrayAccess $array
-     * @return array
-     */
-    protected function cleanLoadArray($array)
-    {
-        // get values from \ArrayAccess objects
-        if ($array instanceof \ArrayAccess) {
-            $a = array();
-            foreach($array as $k => $v) $a[$k] = $v;
-            $array = $a;
-        }
-        // Fix keys for conversions of '.' to '_'
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $field) {
-            $cleanName = str_replace('.', '_', $field->getName());
-            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
-                $array[$field->getName()] = $array[$cleanName];
-            }
-        }
-        return $array;
     }
 
     /**
