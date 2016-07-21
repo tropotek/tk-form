@@ -55,6 +55,11 @@ class Form extends Form\Element
      */
     protected $request = null;
 
+    /**
+     * @var array
+     */
+    protected $loadArray = array();
+
 
     /**
      * Create a form processor
@@ -102,8 +107,12 @@ class Form extends Form\Element
      */
     public function execute()
     {
-        if (!$this->isSubmitted()) return;
+        $this->executeLoad($this->loadArray);
+
+        if (!$this->isSubmitted()) return null;
+
         $this->load($this->getRequest());
+
         /** @var Event\Iface $event */
         $event = $this->getTriggeredEvent();
         if ($event) {
@@ -113,6 +122,46 @@ class Form extends Form\Element
             }
         }
     }
+
+
+    /**
+     * Loads the fields with values from an array.
+     * EG:
+     *   $array['field1'] = 'value1';
+     *
+     * @param array|\ArrayAccess $array
+     * @return $this
+     * @throws Exception
+     */
+    protected function executeLoad($array)
+    {
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $field) {
+            if ($field instanceof Event\Iface) continue;
+            $field->setValue($array);
+        }
+        return $this;
+    }
+
+    /**
+     * Loads the fields with values from an array.
+     * EG:
+     *   $array['field1'] = 'value1';
+     *
+     * @param array|\ArrayAccess $array
+     * @return $this
+     * @throws Exception
+     */
+    public function load($array)
+    {
+        $array = $this->cleanLoadArray($array);
+        if (!is_array($array)) {
+            throw new Exception('Convert any loadable data to an array first.');
+        }
+        $this->loadArray = array_merge($this->loadArray, $array);
+        return $this;
+    }
+
 
     /**
      * Get the field event to execute
@@ -390,30 +439,6 @@ class Form extends Form\Element
             }
         }
     }
-    
-    /**
-     * Loads the fields with values from an array.
-     * EG:
-     *   $array['field1'] = 'value1';
-     *
-     * @param array|\ArrayAccess $array
-     * @return $this
-     * @throws Exception
-     */
-    public function load($array)
-    {
-        $array = $this->cleanLoadArray($array);
-        if (!is_array($array)) {
-            throw new Exception('Convert any loadable data to an array first.');
-        }
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) continue;
-            $field->setValue($array);
-        }
-        return $this;
-    }
-
     /**
      * Clean the load() array
      *  o create a new raw array for any \ArrayAccess objects
@@ -445,14 +470,16 @@ class Form extends Form\Element
     /**
      * This will return an array of the field's values,
      *
+     * @param null|string $regex
      * @return array
      */
-    public function getValues()
+    public function getValues($regex = null)
     {
         $array = array();
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $name => $field) {
             if ($field instanceof Event\Iface) continue;
+            if ($regex && !preg_match($regex, $name)) continue;
             $array[$name] = $field->getValue();
         }
         return $array;

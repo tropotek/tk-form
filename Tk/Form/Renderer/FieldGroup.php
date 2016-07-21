@@ -60,7 +60,17 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         if ($this->getField() instanceof Field\Hidden) {
             return $this->getField()->getHtml();
         }
-        
+        // Render the element as getHtml() triggered setting of the id attribute...
+        $html = $this->getField()->getHtml();
+        if ($html instanceof \Dom\Template) {
+            //$t->appendTemplate('element', $html);
+            $t->replaceTemplate('element', $html);
+        } else {
+            //$t->appendHtml('element', $html);
+            $t->replaceHtml('element', $html);
+        }
+
+
         if ($this->getField()->hasErrors()) {
             $t->addClass('field-group', 'has-error');
             
@@ -89,15 +99,6 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         if ($this->getField()->getNotes()) {
             $t->setChoice('notes');
             $t->insertHtml('notes', $this->getField()->getNotes());
-        }
-        
-        $html = $this->getField()->getHtml();
-        if ($html instanceof \Dom\Template) {
-            //$t->appendTemplate('element', $html);
-            $t->replaceTemplate('element', $html);
-        } else {
-            //$t->appendHtml('element', $html);
-            $t->replaceHtml('element', $html);
         }
 
         $t->addClass('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
