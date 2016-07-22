@@ -44,7 +44,15 @@ class ArrayIterator implements \Iterator, \Countable
         }
         $this->list = $list;
     }
-    
+
+    /**
+     * @param $list
+     * @return ArrayIterator
+     */
+    static function create($list)
+    {
+        return new self($list);
+    }
 
     /**
      * getKey

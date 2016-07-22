@@ -36,6 +36,15 @@ class ArrayArrayIterator extends ArrayIterator
     }
 
     /**
+     * @param $list
+     * @return ArrayIterator
+     */
+    static function create($list)
+    {
+        return new self($list);
+    }
+
+    /**
      * Return the current element
      *
      * @link http://php.net/manual/en/iterator.current.php
