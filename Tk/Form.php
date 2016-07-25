@@ -110,7 +110,6 @@ class Form extends Form\Element
         $this->executeLoad($this->loadArray);
 
         if (!$this->isSubmitted()) return null;
-
         $this->executeLoad($this->getRequest());
 
         /** @var Event\Iface $event */
