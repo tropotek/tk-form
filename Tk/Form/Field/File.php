@@ -64,6 +64,7 @@ class File extends Input
 
         // Setup file with data ignore empty files
         $this->uploadedFile = $request->getUploadedFile($name);
+
         $this->setNotes('Max Upload Size: ' . \Tk\File::bytes2String($this->getMaxFileSize(), 0));
 
     }
@@ -148,7 +149,7 @@ class File extends Input
      */
     public function hasFile()
     {
-        return ($this->uploadedFile->getError() == \UPLOAD_ERR_OK);
+        return ($this->uploadedFile && $this->uploadedFile->getError() == \UPLOAD_ERR_OK);
     }
 
     /**
