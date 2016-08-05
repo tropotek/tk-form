@@ -65,6 +65,7 @@ class CheckboxGroup extends Select
     public function isSelected($val = '')
     {
         $value = $this->getValue();
+
         if (is_array($value) ) {
             if (in_array($val, $value)) {
                 return true;
