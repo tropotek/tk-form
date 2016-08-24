@@ -30,7 +30,6 @@ class RadioGroup extends Select
      */
     public function setValue($values)
     {
-        vd($values);
         if (!is_array($values)) {
             $values = array($this->getName() => $values);
         }
@@ -77,7 +76,7 @@ class RadioGroup extends Select
             $tOpt->insertText('text', $option->getText());
 
             $tOpt->setAttr('element', 'value', $option->getValue());
-            $tOpt->setAttr('element', 'name', $this->getName());
+            $tOpt->setAttr('element', 'name', $this->getFieldName());
             
             // allow only one radio to be selected.
             if ($this->getValue() == $option->getValue() && !$c) {
@@ -94,7 +93,7 @@ class RadioGroup extends Select
             }
 
             // Element css class names
-            foreach($this->getCssList() as $v) {
+            foreach($this->getCssClassList() as $v) {
                 $t->addClass('element', $v);
             }
             

@@ -40,7 +40,7 @@ abstract class Element implements \Tk\InstanceKey
     /**
      * @var array
      */
-    protected $cssList = array();
+    protected $cssClassList = array();
 
     /**
      * @var string
@@ -78,6 +78,17 @@ abstract class Element implements \Tk\InstanceKey
         }
         return $this;
     }
+
+    /**
+     * Get the unique name for this element
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
     
     /**
      * Create a label from a name string
@@ -158,17 +169,6 @@ abstract class Element implements \Tk\InstanceKey
         $this->paramList = $params;
         return $this;
     }
-
-    /**
-     * Get the unique name for this element
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
     /**
      * Get the label of this field
      *
@@ -355,9 +355,9 @@ abstract class Element implements \Tk\InstanceKey
      * @param string $className
      * @return $this
      */
-    public function addCss($className)
+    public function addCssClass($className)
     {
-        $this->cssList[$className] = $className;
+        $this->cssClassList[$className] = $className;
         return $this;
     }
 
@@ -367,9 +367,9 @@ abstract class Element implements \Tk\InstanceKey
      * @param string $className
      * @return $this
      */
-    public function removeCss($className)
+    public function removeCssClass($className)
     {
-        unset($this->cssList[$className]);
+        unset($this->cssClassList[$className]);
         return $this;
     }
 
@@ -381,9 +381,9 @@ abstract class Element implements \Tk\InstanceKey
      * @param array $array
      * @return $this
      */
-    public function setCssList($array = array())
+    public function setCssClassList($array = array())
     {
-        $this->cssList = $array;
+        $this->cssClassList = $array;
         return $this;
     }
 
@@ -392,9 +392,9 @@ abstract class Element implements \Tk\InstanceKey
      *
      * @return array
      */
-    public function getCssList()
+    public function getCssClassList()
     {
-        return $this->cssList;
+        return $this->cssClassList;
     }
 
     /**

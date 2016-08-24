@@ -55,7 +55,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     public function show()
     {
         $t = $this->getTemplate();
-        $this->getField()->addCss('form-control');
+        $this->getField()->addCssClass('form-control');
         
         if ($this->getField() instanceof Field\Hidden) {
             return $this->getField()->getHtml();

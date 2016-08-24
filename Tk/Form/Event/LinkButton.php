@@ -72,7 +72,7 @@ XHTML;
         }
 
         // Element css class names
-        foreach($this->getCssList() as $v) {
+        foreach($this->getCssClassList() as $v) {
             $t->addClass('element', $v);
         }
 

@@ -25,7 +25,7 @@ class Textarea extends Iface
         }
 
         // Field name attribute
-        $t->setAttr('element', 'name', $this->getName());
+        $t->setAttr('element', 'name', $this->getFieldName());
 
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {
@@ -36,7 +36,7 @@ class Textarea extends Iface
         }
 
         // Element css class names
-        foreach($this->getCssList() as $v) {
+        foreach($this->getCssClassList() as $v) {
             $t->addClass('element', $v);
         }
 

@@ -67,7 +67,7 @@ class Checkbox extends Input
      */
     public function getHtml()
     {
-        $this->removeCss('form-control');
+        $this->removeCssClass('form-control');
         $t = parent::getHtml();
         
         if ($this->getValue()) {

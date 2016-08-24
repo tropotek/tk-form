@@ -80,7 +80,6 @@ class Select extends Iface
         return $this->options;
     }
 
-
     /**
      * @param $name
      * @param $value
@@ -131,8 +130,8 @@ class Select extends Iface
     {
         if (!$val)
             $val = [$this->getName()];
-        
         $value = $this->getValue();
+
         if (is_array($value) ) {
             if (in_array($val, $value)) {
                 return true;
@@ -159,8 +158,12 @@ class Select extends Iface
             return '';
         }
 
+        if ($this->isArray()) {
+            $t->setAttr('element', 'multiple', 'multiple');
+        }
+
         // Field name attribute
-        $t->setAttr('element', 'name', $this->getName());
+        $t->setAttr('element', 'name', $this->getFieldName());
 
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {
@@ -171,7 +174,7 @@ class Select extends Iface
         }
 
         // Element css class names
-        foreach($this->getCssList() as $v) {
+        foreach($this->getCssClassList() as $v) {
             $t->addClass('element', $v);
         }
 
@@ -181,6 +184,7 @@ class Select extends Iface
         
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
+            /** @var \Dom\Repeat $tOpt */
             $tOpt = $t->getRepeat('option');
 
             if ($option->isDisabled()) {
@@ -198,10 +202,6 @@ class Select extends Iface
             }
             $tOpt->insertText('option', $option->getText());
             $tOpt->appendRepeat();
-        }
-
-        if ($this->isArray()) {
-            $t->setAttr('element', 'multiple', 'multiple');
         }
         
         return $t;

@@ -33,7 +33,7 @@ class Html extends Input
     public function getHtml()
     {
         $t = $this->getTemplate();
-        $this->removeCss('form-control');
+        $this->removeCssClass('form-control');
 
         if (!$t->keyExists('var', 'element')) {
             return '';
@@ -55,7 +55,7 @@ class Html extends Input
         }
 
         // Element css class names
-        foreach($this->getCssList() as $v) {
+        foreach($this->getCssClassList() as $v) {
             $t->addClass('element', $v);
         }
         

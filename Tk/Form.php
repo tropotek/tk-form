@@ -219,16 +219,17 @@ class Form extends Form\Element
      * Set the callback to an event element,
      * The element must be of the type \Tk\Form\Field\Event
      *
-     * @param string $name
+     * @param string $fieldName
      * @param callable $callback
      * @return Event\Iface
      * @throws Form\Exception
      */
-    public function setEventCallback($name, $callback)
+    public function setEventCallback($fieldName, $callback)
     {
-        $field = $this->getField($name);
+        $fieldName = str_replace('[]', '', $fieldName);
+        $field = $this->getField($fieldName);
         if (!$field || !$field instanceof Event\Iface) {
-            throw new Form\Exception('Event Field not found: `' . $name . '`');
+            throw new Form\Exception('Event Field not found: `' . $fieldName . '`');
         }
         $field->setCallback($callback);
         return $field;
@@ -269,6 +270,7 @@ class Form extends Form\Element
      */
     public function addFieldBefore($fieldName, $newField)
     {
+        $fieldName = str_replace('[]', '', $fieldName);
         $newArr = array();
         $newField->setForm($this);
         /* @var $field Field\Iface */
@@ -292,6 +294,7 @@ class Form extends Form\Element
      */
     public function addFieldAfter($fieldName, $newField)
     {
+        $fieldName = str_replace('[]', '', $fieldName);
         $newArr = array();
         $newField->setForm($this);
         /* @var $field Field\Iface */
@@ -314,6 +317,7 @@ class Form extends Form\Element
      */
     public function removeField($fieldName)
     {
+        $fieldName = str_replace('[]', '', $fieldName);
         if (isset($this->fieldList[$fieldName])) {
             unset($this->fieldList[$fieldName]);
             return true;
@@ -324,13 +328,14 @@ class Form extends Form\Element
     /**
      * Return a field object or null if not found
      *
-     * @param string $name
+     * @param string $fieldName
      * @return Field\Iface|null
      */
-    public function getField($name)
+    public function getField($fieldName)
     {
-        if (array_key_exists($name, $this->fieldList)) {
-            return $this->fieldList[$name];
+        $fieldName = str_replace('[]', '', $fieldName);
+        if (array_key_exists($fieldName, $this->fieldList)) {
+            return $this->fieldList[$fieldName];
         }
         return null;
     }
@@ -360,12 +365,13 @@ class Form extends Form\Element
     /**
      * Returns a form field value. Returns NULL if no field exists
      *
-     * @param string $name The element type name.
+     * @param string $fieldName The element type name.
      * @return string|array
      */
-    public function getFieldValue($name)
+    public function getFieldValue($fieldName)
     {
-        $field = $this->getField($name);
+        $fieldName = str_replace('[]', '', $fieldName);
+        $field = $this->getField($fieldName);
         if ($field instanceof Field\Iface) {
             return $field->getValue();
         }
@@ -375,16 +381,17 @@ class Form extends Form\Element
     /**
      * Sets the value of an element type.
      *
-     * @param string $name The field name.
+     * @param string $fieldName The field name.
      * @param mixed $value The field value.
      * @return Field\Iface
      * @throws Exception
      */
-    public function setFieldValue($name, $value)
+    public function setFieldValue($fieldName, $value)
     {
-        $field = $this->getField($name);
+        $fieldName = str_replace('[]', '', $fieldName);
+        $field = $this->getField($fieldName);
         if (!$field || !$field instanceof Field\Iface) {
-            throw new Exception('Type not found: `' . $name . '`');
+            throw new Exception('Type not found: `' . $fieldName . '`');
         }
         $field->setValue($value);
         return $field;
@@ -434,13 +441,14 @@ class Form extends Form\Element
      *
      * If $msg is null the field's error list is cleared
      *
-     * @param string $name A field name.
+     * @param string $fieldName A field name.
      * @param string $msg The error message.
      */
-    public function addFieldError($name, $msg = '')
+    public function addFieldError($fieldName, $msg = '')
     {
+        $fieldName = str_replace('[]', '', $fieldName);
         /* @var $field Field\Iface */
-        $field = $this->getField($name);
+        $field = $this->getField($fieldName);
         if ($field) {
             $field->addError($msg);
         } else {
@@ -458,8 +466,9 @@ class Form extends Form\Element
      */
     public function addFieldErrors($errors)
     {
-        foreach ($errors as $name => $errorList) {
-            $field = $this->getField($name);
+        foreach ($errors as $fieldName => $errorList) {
+            $fieldName = str_replace('[]', '', $fieldName);
+            $field = $this->getField($fieldName);
             if (!$field) {
                 $this->addError($errorList);
             } else {

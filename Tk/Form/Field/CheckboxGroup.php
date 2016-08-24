@@ -83,7 +83,7 @@ class CheckboxGroup extends Select
     {
         $t = $this->getTemplate();
         
-        $this->removeCss('form-control');
+        $this->removeCssClass('form-control');
         
         
         /** @var \Tk\Form\Field\Option $option */
@@ -97,7 +97,7 @@ class CheckboxGroup extends Select
             $tOpt->insertText('text', $option->getText());
 
             $tOpt->setAttr('element', 'value', $option->getValue());
-            $tOpt->setAttr('element', 'name', $this->getName().'[]');
+            $tOpt->setAttr('element', 'name', $this->getFieldName());
             
             if ($this->isSelected($option->getValue())) {
                 $tOpt->setAttr('element', 'checked', 'checked');
@@ -112,7 +112,7 @@ class CheckboxGroup extends Select
             }
 
             // Element css class names
-            foreach($this->getCssList() as $v) {
+            foreach($this->getCssClassList() as $v) {
                 $tOpt->addClass('element', $v);
             }
             

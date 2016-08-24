@@ -92,6 +92,21 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     }
 
     /**
+     * Get the unique name for this element
+     *
+     * @return string
+     */
+    public function getFieldName()
+    {
+        $n = $this->getName();
+        if ($this->isArray()) {
+            $n .= '[]';
+        }
+        return $n;
+    }
+
+
+    /**
      * @return string
      */
     public function getFieldset()
@@ -127,7 +142,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
-
     /**
      * Set the field value(s)
      *
@@ -136,11 +150,15 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      */
     public function setValue($values)
     {
+        // If an array and the submitted value is not in a proper value array format
+        if ($this->isArray() && !isset($values[$this->getName()])) {
+            $values = array($this->getName() => $values);
+        }
         if (!is_array($values)) {
             $values = array($this->getName() => $values);
         }
         if (!isset($values[$this->getName()])) return $this;
-   
+
         $this->values[$this->getName()] = $values[$this->getName()];
 
         return $this;
@@ -216,11 +234,8 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
-
-
     /* \Dom\Renderer\RendererInterface */
-    
-    
+
     /**
      * Set a new template for this renderer.
      *
