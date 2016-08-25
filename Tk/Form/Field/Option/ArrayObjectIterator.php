@@ -49,6 +49,9 @@ class ArrayObjectIterator extends ArrayIterator
      */
     public function __construct($list = array(), $textParam = 'name', $valueParam = 'id', $disableParam = '', $labelParam = '')
     {
+        if ($list instanceof \Tk\Db\Map\ArrayObject) {
+            $list = $list->toArray();
+        }
         parent::__construct($list);
 
         $this->textParam = $textParam;
@@ -100,5 +103,7 @@ class ArrayObjectIterator extends ArrayIterator
         // Create the option object from the object supplied
         return new Option($text, $value, $disabled);
     }
+
+
 
 }

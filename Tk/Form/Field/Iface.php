@@ -148,20 +148,35 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param array|string $values
      * @return $this
      */
-    public function setValue($values)
+    public function setValue(&$values)
     {
         // If an array and the submitted value is not in a proper value array format
-        if ($this->isArray() && !isset($values[$this->getName()])) {
+        //if ($this->isArray() && !isset($values[$this->getName()])) {
+        if ($this->isArray() && !$this->isAssoc($values)) {
             $values = array($this->getName() => $values);
         }
         if (!is_array($values)) {
             $values = array($this->getName() => $values);
         }
-        if (!isset($values[$this->getName()])) return $this;
 
-        $this->values[$this->getName()] = $values[$this->getName()];
+        // TODO:
+        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
+        if (isset($values[$this->getName()])) {
+            $this->values[$this->getName()] = $values[$this->getName()];
+        }
 
         return $this;
+    }
+
+    /**
+     * test if the array is sequential or associative
+     *
+     * @param $arr
+     * @return bool
+     */
+    protected function isAssoc($arr)
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**

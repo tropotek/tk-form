@@ -75,7 +75,7 @@ class File extends Input
      * @param array|string $values
      * @return $this
      */
-    public function setValue($values)
+    public function setValue(&$values)
     {
         $this->previousValue = $this->getValue();
         parent::setValue($values);

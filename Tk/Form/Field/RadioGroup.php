@@ -23,24 +23,6 @@ class RadioGroup extends Select
     }
 
     /**
-     * Set the field value(s)
-     *
-     * @param array|string $values
-     * @return $this
-     */
-    public function setValue($values)
-    {
-        if (!is_array($values)) {
-            $values = array($this->getName() => $values);
-        }
-        if (!isset($values[$this->getName()])) return $this;
-   
-        $this->values[$this->getName()] = $values[$this->getName()];
-
-        return $this;
-    }
-
-    /**
      * Compare a value and see if it is selected.
      *
      * @param string $val

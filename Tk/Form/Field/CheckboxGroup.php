@@ -30,30 +30,14 @@ class CheckboxGroup extends Select
      * @param array|string $values
      * @return $this
      */
-    public function setValue($values)
+    public function setValue(&$values)
     {
-        if (!$this->is_assoc($values)) {    // Then this is the actual values
-            $values = array($this->getName() => $values);
-        }
+        parent::setValue($values);
+
         if (!isset($values[$this->getName()])) {
             $this->values[$this->getName()] = array();
-        } else {
-            $this->values[$this->getName()] = $values[$this->getName()];
         }
         return $this;
-    }
-
-    /**
-     * Check if this values array is associative
-     * We then assume this values array is from the request
-     * not a call from a controller...
-     * 
-     * @param $array
-     * @return bool
-     */
-    protected function is_assoc($array) 
-    {
-        return array_values($array) !== $array;
     }
     
     /**

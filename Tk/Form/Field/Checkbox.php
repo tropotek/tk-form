@@ -28,34 +28,13 @@ class Checkbox extends Input
      * @param array|string $values
      * @return $this
      */
-    public function setValue($values)
+    public function setValue(&$values)
     {
-        // TODO: We have a major real-time update value issue here.
-        // 1. when we set the form values from the request, !isset($values[$name])
-        //    means that the checkbox is to be unset
-        // 2. when we set the form values form an array with a select data set of
-        //    field values then the checkbox is unset but we intended that it be ignored
-        //
-        // Solutions:
-        //
-        // 1. We could add all values to an internal array so multiple calls to $form->load();
-        //    are not executed individually but only once the $form->execute method is called
-        //    are the actual field values set but using all data in the temp array??????
-        //    So multiple calls to load() will override previous values but this should
-        //    deliver a consistent result
-        //
-        //
-        //
-//vd($values);
+        parent::setValue($values);
 
-
-        if (!is_array($values)) {
-            $values = array($this->getName() => $values);
-        }
+        // We will uncheck the checkbox if there is no value in the array
         if (!isset($values[$this->getName()])) {
             $this->values[$this->getName()] = '';
-        } else {
-            $this->values[$this->getName()] = $values[$this->getName()];
         }
         return $this;
     }
