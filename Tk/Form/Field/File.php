@@ -172,7 +172,8 @@ class File extends Input
                 if (is_file($this->dataPath . $this->previousValue)) {
                     @unlink($this->dataPath . $this->previousValue);
                 }
-                $this->setValue('');
+                $v = '';
+                $this->setValue($v);
             }
             if (!$this->hasFile())
                 return false;
@@ -222,7 +223,7 @@ class File extends Input
             $this->addError(strip_tags($this->uploadedFile->getFilename()) . ': File to large');
         }
         // Return false if we have errors
-        return !empty($this->errors);
+        return !count($this->errors);
     }
 
     /**
@@ -259,9 +260,9 @@ class File extends Input
 
         $xhtml = <<<XHTML
 <div>
-  <input type="text" var="element"/>
+  <input type="text" class="" var="element"/>
   <div choice="delete" var="delWrapper">
-    <input type="checkbox" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>
+    <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>
   </div>
 </div>
 XHTML;
