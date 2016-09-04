@@ -1,5 +1,28 @@
 #CHANGELOG#
 
+Ver 2.0.4 [2016-09-05]:
+-------------------------------
+ - Updated Plugin system
+ - Fixed Select with no value in array
+ - Added Multi Selct to select field and added javascript plugin for dual select.
+ - Added new tk mail lib
+ - Implemented lib into project
+ - Fixed Form load issue for checkboxes and radios
+ - Updated Wiki to use DataMaps
+ - Fixed recover and register template pages
+ - Fixed table filter form issues
+ - Fixed form and checkbox issue
+ - Checkbox broken still fixing it!
+ - Updated Form File field and javascript plugin
+ - Updated Edit Institution page
+ - Updating the user/roles system
+ - Changed boolean to integer in postgress sql files.
+ - Changed all = [] to = array()
+ - Change php version check to gt php5.0.0
+ - Fixed form errors
+ - Fixed session issues
+
+
 Ver 2.0.3 [2016-07-11]:
 -------------------------------
 
