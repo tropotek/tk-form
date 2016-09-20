@@ -110,7 +110,7 @@ class DomStatic extends Iface
         }
         
         $elName = $field->getName();
-        if ($field->isArray()) {
+        if ($field->isArrayField()) {
             $elName .= '[]';
         }
 
@@ -128,7 +128,7 @@ class DomStatic extends Iface
 
         $value = $field->getValue();
         $elName = $field->getName();
-        if (is_array($value) || $field->isArray()) {
+        if (is_array($value) || $field->isArrayField()) {
             $elName = $field->getName() . '[]';
         }
         $elList = $this->domForm->getFormElementList($elName);
@@ -224,7 +224,7 @@ class DomStatic extends Iface
 
         if ($msg != null) {
             $el = $this->domForm->getFormElement($field->getName());
-            if ($field->isArray()) {
+            if ($field->isArrayField()) {
                 $el = $this->domForm->getFormElement($field->getName().'[]');
             }
             if ($el == null) {

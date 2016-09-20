@@ -92,7 +92,7 @@ abstract class Iface extends Field\Iface
      *
      * @return boolean
      */
-    public function isArray()
+    public function isArrayField()
     {
         return false;
     }

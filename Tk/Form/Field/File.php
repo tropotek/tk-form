@@ -69,16 +69,10 @@ class File extends Input
 
     }
 
-    /**
-     * Set the field value(s)
-     *
-     * @param array|string $values
-     * @return $this
-     */
-    public function setValue(&$values)
+    public function load($values)
     {
         $this->previousValue = $this->getValue();
-        parent::setValue($values);
+        parent::load($values);
         // set the delete file flag
         if (is_array($values)) {
             $did = $this->getDeleteName();
@@ -88,6 +82,26 @@ class File extends Input
         }
         return $this;
     }
+
+    /**
+     * Set the field value(s)
+     *
+     * @param array|string $values
+     * @return $this
+     */
+//    public function setValue($values)
+//    {
+//        $this->previousValue = $this->getValue();
+//        parent::setValue($values);
+//        // set the delete file flag
+//        if (is_array($values)) {
+//            $did = $this->getDeleteName();
+//            if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
+//                $this->delFile = true;
+//            }
+//        }
+//        return $this;
+//    }
 
     /**
      * if this field has a "{fieldName}-del" value then the file is marked for delete
@@ -257,7 +271,6 @@ class File extends Input
      */
     public function __makeTemplate()
     {
-
         $xhtml = <<<XHTML
 <div>
   <input type="text" class="" var="element"/>

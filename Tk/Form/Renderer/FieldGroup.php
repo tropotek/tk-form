@@ -35,10 +35,10 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
      * @param $field
      * @return FieldGroup
      */
-    static function create($field)
-    {
-        return new static($field);
-    }
+//    static function create($field)
+//    {
+//        return new static($field);
+//    }
 
     /**
      * 

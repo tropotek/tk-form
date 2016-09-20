@@ -15,9 +15,19 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
 
     /**
      * An array of all field and sub-field string for this field
-     * @var array
+     * @var array|null
+     * @deprecated
      */
-    protected $values = array();
+    //protected $values = array();
+    protected $values = null;
+
+
+
+
+    /**
+     * @var mixed|null
+     */
+    protected $value = null;
     
     /**
      * @var bool
@@ -99,12 +109,161 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     public function getFieldName()
     {
         $n = $this->getName();
-        if ($this->isArray()) {
+        if ($this->isArrayField()) {
             $n .= '[]';
         }
         return $n;
     }
 
+
+    /**
+     * Assumes the field value resides within an array
+     * EG:
+     *   array(
+     *    'fieldName1' => 'value1',
+     *    'fieldName2' => 'value2',
+     *    'fieldName3[]' => array('value3.1', 'value3.2', 'value3.3', 'value3.4'),  // same as below
+     *    'fieldName3' => array('value3.1', 'value3.2', 'value3.3', 'value3.4')     // same
+     * );
+     *
+     * @param array|\ArrayObject $values
+     * @return $this
+     */
+    public function load($values)
+    {
+        // If an array is passed in, and a value is modified
+        //  The value is not modified on its instance only its copy here. (Thus the need for a reference)
+        // The other issue is that we cannot do calls like setValue('test');
+
+        // 1. One solution is to use a collection object for the values array
+        //    or create our own array object for forms.
+        // 2. Another solution could be to create a new method, setValuesArray(&$values)
+        //    in conjunction with the setValue($value)
+
+        // TODO I have removed the reference from the $value, find out what caused us to use it in the first place....???
+
+        // If an array and the submitted value is not in a proper value array format
+        //if ($this->isArray() && !isset($values[$this->getName()])) {
+//        if ($this->isArrayField() && !$this->isAssoc($values)) {
+//            $values = array($this->getName() => $values);
+//        }
+//        if (!is_array($values)) {
+//            $values = array($this->getName() => $values);
+//        }
+        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
+        if (isset($values[$this->getName()])) {
+            $this->setValue($values[$this->getName()]);
+            $this->values[$this->getName()] = $values[$this->getName()];
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Set the field value.
+     * Set the exact value the field requires to function.
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+//        // TODO:
+//        // If an array is passed in, and a value is modified
+//        //  The value is not modified on its instance only its copy here. (Thus the need for a reference)
+//        // The other issue is that we cannot do calls like setValue('test');
+//
+//        // 1. One solution is to use a collection object for the values array
+//        //    or create our own array object for forms.
+//        // 2. Another solution could be to create a new method, setValuesArray(&$values)
+//        //    in conjunction with the setValue($value)
+//
+//        // TODO I have removed the reference from the $value, find out what caused us to use it in the first place....???
+//
+//        // If an array and the submitted value is not in a proper value array format
+//        //if ($this->isArray() && !isset($values[$this->getName()])) {
+//        if ($this->isArray() && !$this->isAssoc($values)) {
+//            $values = array($this->getName() => $values);
+//        }
+//        if (!is_array($values)) {
+//            $values = array($this->getName() => $values);
+//        }
+//
+//        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
+//        if (isset($values[$this->getName()])) {
+//            $this->values[$this->getName()] = $values[$this->getName()];
+//        }
+
+        return $this;
+    }
+
+    /**
+     * Get the field value(s).
+     *
+     * @return string|array
+     */
+    public function getValue()
+    {
+        return $this->value;
+//        if (isset($this->values[$this->getName()])) {
+//            return $this->values[$this->getName()];
+//        }
+//        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getValueArray()
+    {
+        return $this->values;
+    }
+
+    /**
+     * Does this fields data come as an array.
+     * If the name ends in [] then it will be flagged as an arrayField.
+     *
+     * EG: name=`name[]`
+     *
+     * @return boolean
+     */
+    public function isArrayField()
+    {
+        return $this->arrayField;
+    }
+
+    /**
+     * Set to true if this element is an array set
+     *
+     * EG: name=`name[]`
+     *
+     * @param $b
+     * @return $this
+     */
+    public function setArrayField($b)
+    {
+        $this->arrayField = $b;
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * test if the array is sequential or associative
+     *
+     * @param $arr
+     * @return bool
+     */
+    protected function isAssoc($arr)
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
 
     /**
      * @return string
@@ -143,64 +302,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     }
 
     /**
-     * Set the field value(s)
-     *
-     * @param array|string $values
-     * @return $this
-     */
-    public function setValue(&$values)
-    {
-        // If an array and the submitted value is not in a proper value array format
-        //if ($this->isArray() && !isset($values[$this->getName()])) {
-        if ($this->isArray() && !$this->isAssoc($values)) {
-            $values = array($this->getName() => $values);
-        }
-        if (!is_array($values)) {
-            $values = array($this->getName() => $values);
-        }
-
-        // TODO:
-        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
-        if (isset($values[$this->getName()])) {
-            $this->values[$this->getName()] = $values[$this->getName()];
-        }
-
-        return $this;
-    }
-
-    /**
-     * test if the array is sequential or associative
-     *
-     * @param $arr
-     * @return bool
-     */
-    protected function isAssoc($arr)
-    {
-        return array_keys($arr) !== range(0, count($arr) - 1);
-    }
-
-    /**
-     * Get the field value(s).
-     * 
-     * @return string|array
-     */
-    public function getValue()
-    {
-        if (isset($this->values[$this->getName()])) {
-            return $this->values[$this->getName()];
-        }
-        return '';
-    }
-
-    /**
-     * @return array
-     */
-    public function getValueArray() 
-    {
-        return $this->values;
-    }
-
-    /**
      * isRequired
      *
      * @return boolean
@@ -222,32 +323,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
-    /**
-     * Does this fields data come as an array.
-     * If the name ends in [] then it will be flagged as an arrayField.
-     *
-     * EG: name=`name[]`
-     *
-     * @return boolean
-     */
-    public function isArray()
-    {
-        return $this->arrayField;
-    }
-
-    /**
-     * Set to true if this element is an array set
-     * 
-     * EG: name=`name[]`
-     * 
-     * @param $b
-     * @return $this
-     */
-    public function setArrayField($b)
-    {
-        $this->arrayField = $b;
-        return $this;
-    }
 
     /* \Dom\Renderer\RendererInterface */
 

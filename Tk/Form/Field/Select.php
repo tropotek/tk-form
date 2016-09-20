@@ -120,21 +120,33 @@ class Select extends Iface
         return $this;
     }
 
+
+    public function load($values)
+    {
+        parent::load($values);
+        if (!isset($values[$this->getName()])) {
+            $this->setValue('');
+            if ($this->isArrayField())
+                $this->setValue(array());
+        }
+        return $this;
+    }
+
     /**
      * Set the field value(s)
      *
      * @param array|string $values
      * @return $this
      */
-    public function setValue(&$values)
-    {
-        parent::setValue($values);
-
-        if (!isset($values[$this->getName()])) {
-            $this->values[$this->getName()] = array();
-        }
-        return $this;
-    }
+//    public function setValue($values)
+//    {
+//        vd($values);
+//        parent::setValue($values);
+//        if (!isset($values[$this->getName()]) && $this->values === null) {
+//            $this->values[$this->getName()] = array();
+//        }
+//        return $this;
+//    }
     
     /**
      * Compare a value and see if it is selected.
@@ -145,7 +157,7 @@ class Select extends Iface
     public function isSelected($val = '')
     {
         if (!$val)
-            $val = [$this->getName()];
+            $val = $this->getName();
         $value = $this->getValue();
 
         if (is_array($value) ) {
@@ -174,7 +186,7 @@ class Select extends Iface
             return '';
         }
 
-        if ($this->isArray()) {
+        if ($this->isArrayField()) {
             $t->setAttr('element', 'multiple', 'multiple');
         }
 

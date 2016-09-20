@@ -122,7 +122,6 @@ class Form extends Form\Element
         }
     }
 
-
     /**
      * Loads the fields with values from an array.
      * EG:
@@ -131,17 +130,18 @@ class Form extends Form\Element
      * @param array $array
      * @param bool $ignoreHidden If this is true then if the field does not exist in the array the setValue() is not executed (Good for checkboxes and radios)
      * @return $this
-     * @todo: Keep an eye on the $ignoreHidden and see if it does not influence any other functional requirements
      */
     protected function executeLoad($array, $ignoreHidden = false)
     {
         if ($array === null) return $this;
         $array = $this->cleanLoadArray($array);
+
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
             if ($ignoreHidden && !array_key_exists($field->getName(), $array)) continue;
-            $field->setValue($array);
+            $field->load($array);
+            //$field->setValue($array);
         }
         return $this;
     }
@@ -155,7 +155,7 @@ class Form extends Form\Element
      * @return $this
      * @throws Exception
      */
-    public function load(array $array)
+    public function load($array)
     {
         if ($this->loadArray === null) $this->loadArray = array();
         $this->loadArray = array_merge($this->loadArray, $array);

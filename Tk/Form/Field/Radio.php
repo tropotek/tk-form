@@ -7,7 +7,7 @@ namespace Tk\Form\Field;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class RadioGroup extends Select
+class Radio extends Select
 {
     
     /**
@@ -31,7 +31,6 @@ class RadioGroup extends Select
     public function isSelected($val = '')
     {
         $value = $this->getValue();
-        //vd($value, $val);
         if ($value && $value == $val) {
             return true;
         }

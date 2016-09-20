@@ -15,6 +15,11 @@ use Tk\Form;
  */
 class Dom extends Iface
 {
+    /**
+     * @var string
+     */
+    protected $fieldGroupClass = '\Tk\Form\Renderer\FieldGroup';
+
 
     /**
      * Create a new Renderer.
@@ -167,6 +172,16 @@ class Dom extends Iface
         }
     }
 
+    /**
+     * @param string $fieldGroupClass
+     * @return $this
+     */
+    public function setFieldGroupClass($fieldGroupClass)
+    {
+        $this->fieldGroupClass = $fieldGroupClass;
+        return $this;
+    }
+
 
     /**
      * cleanName
@@ -224,7 +239,8 @@ class Dom extends Iface
             }
         } else {
             // TODO: Check this is how we want to do this, I would like the ability to override the FieldGroup object
-            $fg = new FieldGroup($field);
+            //$fg = new FieldGroup($field);
+            $fg = new $this->fieldGroupClass($field);
             $html = $fg->show();
             
             if ($html instanceof \Dom\Template) {
