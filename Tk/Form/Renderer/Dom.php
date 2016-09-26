@@ -71,8 +71,9 @@ class Dom extends Iface
             }
             $estr = '';
             foreach ($this->getForm()->getErrors() as $error) {
-                if ($error)
-                    $estr .= $error . "<br/>\n";
+                if ($error) {
+                    $estr .= '<div class="field-error">' . $error . "</div>\n";
+                }
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);

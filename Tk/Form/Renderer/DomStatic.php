@@ -216,10 +216,10 @@ class DomStatic extends Iface
     {
         $msg = '';
         foreach ($field->getErrors() as $m) {
-            $msg .= htmlentities($m) . ' <br />';
+            $msg .= '<div class="field-error">' . htmlentities($m) . '</div>';
         }
         if ($msg) {
-            $msg = substr($msg, 0, -6);
+            $msg = substr($msg, 0    );
         }
 
         if ($msg != null) {
@@ -236,9 +236,6 @@ class DomStatic extends Iface
             while (strstr($parent->getAttribute('class'), 'form-group') === false && $parent->nodeName != 'form') {
                 $parent = $parent->parentNode;
             }
-//            if ($node->parentNode && strstr($node->parentNode->getAttribute('class'), 'form-group')) {
-//                $node->parentNode->setAttribute('class', $node->parentNode->getAttribute('class') . ' ' . $this->formGroupErrorCss);
-//            }
             if ($parent && strstr($parent->getAttribute('class'), 'form-group') !== false) {
                 $parent->setAttribute('class', $parent->getAttribute('class') . ' ' . $this->formGroupErrorCss);
             }
@@ -247,21 +244,15 @@ class DomStatic extends Iface
                 $this->template->setChoice($var);
                 if ($this->template->keyExists('var', $var)) {
                     if (!$this->template->getText($var)) {
-                        $this->template->insertHTML($var, $msg);
+                        $this->template->insertHtml($var, $msg);
                     }
                 }
             } else {
                 $errNode = $node->ownerDocument->createElement('div');
                 $errNode->setAttribute('class', $this->formErrorTextCss);
-                $text = $node->ownerDocument->createElement('span');
-                $errNode->appendChild($text);
-//                if ($node->parentNode) {
-//                    $node->parentNode->insertBefore($errNode, $node);
-//                    \Dom\Template::insertHtmlDom($text, $msg);
-//                }
                 if ($parent) {
                     $parent->insertBefore($errNode, $parent->firstChild);
-                    \Dom\Template::insertHtmlDom($text, $msg);
+                    \Dom\Template::appendHtmlDom($errNode, $msg);
                 }
             }
         }
