@@ -32,15 +32,6 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * @param $field
-     * @return FieldGroup
-     */
-//    static function create($field)
-//    {
-//        return new static($field);
-//    }
-
-    /**
      * 
      * @return Field\Iface
      */
@@ -63,10 +54,8 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         // Render the element as getHtml() triggered setting of the id attribute...
         $html = $this->getField()->getHtml();
         if ($html instanceof \Dom\Template) {
-            //$t->appendTemplate('element', $html);
             $t->replaceTemplate('element', $html);
         } else {
-            //$t->appendHtml('element', $html);
             $t->replaceHtml('element', $html);
         }
 

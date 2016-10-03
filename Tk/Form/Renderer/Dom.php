@@ -72,20 +72,15 @@ class Dom extends Iface
             $estr = '';
             foreach ($this->getForm()->getErrors() as $error) {
                 if ($error) {
-                    $estr .= '<div class="field-error">' . $error . "</div>\n";
+                    $estr .= '<div class="field-error">' . htmlentities($error) . "</div>\n";
                 }
             }
             if ($estr) {
-                $estr = substr($estr, 0, -6);
-                $t->appendHtml('errors', '<p>'.$estr.'</p>');
+                $t->appendHtml('errors', $estr);
                 $t->setChoice('errors');
             }
         }
 
-        /* @var $field Field\Iface */
-//        foreach ($this->getForm()->getFieldList() as $field) {
-//            $this->showField($field, $t);
-//        }
         $this->showFields($t);
 
         return $this;
@@ -240,7 +235,6 @@ class Dom extends Iface
             }
         } else {
             // TODO: Check this is how we want to do this, I would like the ability to override the FieldGroup object
-            //$fg = new FieldGroup($field);
             $fg = new $this->fieldGroupClass($field);
             $html = $fg->show();
             

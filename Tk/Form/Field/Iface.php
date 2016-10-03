@@ -14,17 +14,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
 {
 
     /**
-     * An array of all field and sub-field string for this field
-     * @var array|null
-     * @deprecated
-     */
-    //protected $values = array();
-    protected $values = null;
-
-
-
-
-    /**
      * @var mixed|null
      */
     protected $value = null;
@@ -131,29 +120,9 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      */
     public function load($values)
     {
-        // If an array is passed in, and a value is modified
-        //  The value is not modified on its instance only its copy here. (Thus the need for a reference)
-        // The other issue is that we cannot do calls like setValue('test');
-
-        // 1. One solution is to use a collection object for the values array
-        //    or create our own array object for forms.
-        // 2. Another solution could be to create a new method, setValuesArray(&$values)
-        //    in conjunction with the setValue($value)
-
-        // TODO I have removed the reference from the $value, find out what caused us to use it in the first place....???
-
-        // If an array and the submitted value is not in a proper value array format
-        //if ($this->isArray() && !isset($values[$this->getName()])) {
-//        if ($this->isArrayField() && !$this->isAssoc($values)) {
-//            $values = array($this->getName() => $values);
-//        }
-//        if (!is_array($values)) {
-//            $values = array($this->getName() => $values);
-//        }
         // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
         if (isset($values[$this->getName()])) {
             $this->setValue($values[$this->getName()]);
-            $this->values[$this->getName()] = $values[$this->getName()];
         }
 
 
@@ -170,33 +139,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     public function setValue($value)
     {
         $this->value = $value;
-
-//        // TODO:
-//        // If an array is passed in, and a value is modified
-//        //  The value is not modified on its instance only its copy here. (Thus the need for a reference)
-//        // The other issue is that we cannot do calls like setValue('test');
-//
-//        // 1. One solution is to use a collection object for the values array
-//        //    or create our own array object for forms.
-//        // 2. Another solution could be to create a new method, setValuesArray(&$values)
-//        //    in conjunction with the setValue($value)
-//
-//        // TODO I have removed the reference from the $value, find out what caused us to use it in the first place....???
-//
-//        // If an array and the submitted value is not in a proper value array format
-//        //if ($this->isArray() && !isset($values[$this->getName()])) {
-//        if ($this->isArray() && !$this->isAssoc($values)) {
-//            $values = array($this->getName() => $values);
-//        }
-//        if (!is_array($values)) {
-//            $values = array($this->getName() => $values);
-//        }
-//
-//        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
-//        if (isset($values[$this->getName()])) {
-//            $this->values[$this->getName()] = $values[$this->getName()];
-//        }
-
         return $this;
     }
 
@@ -208,10 +150,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     public function getValue()
     {
         return $this->value;
-//        if (isset($this->values[$this->getName()])) {
-//            return $this->values[$this->getName()];
-//        }
-//        return '';
     }
 
     /**
@@ -248,8 +186,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         $this->arrayField = $b;
         return $this;
     }
-
-
 
 
 

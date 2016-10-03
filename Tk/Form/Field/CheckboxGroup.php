@@ -22,22 +22,6 @@ class CheckboxGroup extends Select
             $this->appendOptionIterator($optionIterator);
         }
     }
-
-
-    /**
-     * Set the field value(s)
-     *
-     * @param array|string $values
-     * @return $this
-     */
-//    public function setValue(&$values)
-//    {
-//        parent::setValue($values);
-//        if (!isset($values[$this->getName()])) {
-//            $this->values[$this->getName()] = array();
-//        }
-//        return $this;
-//    }
     
     /**
      * Compare a value and see if it is selected.

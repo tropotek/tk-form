@@ -26,29 +26,13 @@ class Checkbox extends Input
     public function load($values)
     {
         parent::load($values);
-        if (!isset($values[$this->getName()]) && $this->value === null) {
+        if (!isset($values[$this->getName()])) {
             $this->setValue('');
             if ($this->isArrayField())
                 $this->setValue(array());
         }
         return $this;
     }
-
-    /**
-     * Set the field value(s)
-     *
-     * @param array|string $values
-     * @return $this
-     */
-//    public function setValue($values)
-//    {
-//        parent::setValue($values);
-//        // We will uncheck the checkbox if there is no value in the array
-//        if (!isset($values[$this->getName()]) && $this->values === null) {
-//            $this->values[$this->getName()] = '';
-//        }
-//        return $this;
-//    }
     
     /**
      * Get the element HTML
