@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.5 [2016-10-04]:
+-------------------------------
+ - Fixed LTI login and course creation
+ - Finished all user areas
+
+
 Ver 2.0.4 [2016-09-05]:
 -------------------------------
  - Updated Plugin system
