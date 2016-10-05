@@ -234,7 +234,6 @@ class File extends Input
             $t->addClass('delWrapper', $did.'-wrap');
             $t->setChoice('delete');
         }
-        vd($t->toString(false));
         return $t;
     }
 
