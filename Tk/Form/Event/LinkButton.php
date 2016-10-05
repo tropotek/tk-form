@@ -48,10 +48,7 @@ class LinkButton extends Link
      */
     public function getHtml()
     {
-        $xhtml = <<<XHTML
-<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
-XHTML;
-        $t = \Dom\Loader::load($xhtml);
+        $t = $this->getTemplate();
         
         if ($t->isParsed()) return '';
 
@@ -85,5 +82,18 @@ XHTML;
         $t->setAttr('element', 'href', $this->getUrl());
         
         return $t;
+    }
+
+    /**
+     * makeTemplate
+     *
+     * @return \Dom\Template
+     */
+    public function __makeTemplate()
+    {
+        $xhtml = <<<HTML
+<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+HTML;
+        return \Dom\Loader::load($xhtml);
     }
 }

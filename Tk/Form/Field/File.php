@@ -73,11 +73,15 @@ class File extends Input
     {
         $this->previousValue = $this->getValue();
         parent::load($values);
-        // set the delete file flag
-        if (is_array($values)) {
+
+        if (is_array($values) && $this->getForm()->isSubmitted()) {
             $did = $this->getDeleteName();
             if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
                 $this->delFile = true;
+                if (is_file($this->dataPath . $this->previousValue)) {
+                    @unlink($this->dataPath . $this->previousValue);
+                }
+                $this->setValue('');
             }
         }
         return $this;
@@ -153,41 +157,31 @@ class File extends Input
      *
      *
      * @see \Tk\UploadedFile::moveTo
-     * @param string $path
+     * @param string $filepath The full destination path with filename
      * @return bool|string
      * @internal param string $targetPath
      */
-    public function moveTo($path)
+    public function moveTo($filepath)
     {
         try {
-            $path = str_replace($this->dataPath, '', $path);
+            if (!$this->hasFile()) return true;
 
-            if ($this->hasDelete()) {     // Delete previous file if flagged
-                if (is_file($this->dataPath . $this->previousValue)) {
-                    @unlink($this->dataPath . $this->previousValue);
-                }
-                $v = '';
-                $this->setValue($v);
-            }
-            if (!$this->hasFile())
-                return false;
+            $filepath = str_replace($this->dataPath, '', $filepath);
+            if (!$this->hasFile()) return false;
 
-            $targetPath = $this->dataPath . $path;
+            $targetPath = $this->dataPath . $filepath;
             if (!is_dir(dirname($targetPath))) {
                 if (!@mkdir(dirname($targetPath), 0777, true)) {
                     throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
                 }
-            } else {
-
             }
 
             $this->uploadedFile->moveTo($targetPath);
-            
-            if ($this->previousValue != $path && is_file($this->dataPath . $this->previousValue)) {
+            if ($this->previousValue != $filepath && is_file($this->dataPath . $this->previousValue)) {
                 @unlink($this->dataPath . $this->previousValue);
             }
 
-            $this->setValue($path);
+            $this->setValue($filepath);
         } catch (\Exception $e) {
             // TODO: Test this on an error to see the result
             $this->addError($e->getMessage());
@@ -227,7 +221,7 @@ class File extends Input
      */
     public function getHtml()
     {
-        $this->removeCssClass('form-control');
+        //$this->removeCssClass('form-control');
         $t = parent::getHtml();
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
 
@@ -240,7 +234,7 @@ class File extends Input
             $t->addClass('delWrapper', $did.'-wrap');
             $t->setChoice('delete');
         }
-
+        vd($t->toString(false));
         return $t;
     }
 
@@ -251,14 +245,14 @@ class File extends Input
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div>
-  <input type="text" class="" var="element"/>
+  <input type="text" class="form-control fileinput" var="element"/>
   <div choice="delete" var="delWrapper">
     <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>
   </div>
 </div>
-XHTML;
+HTML;
         return \Dom\Loader::load($xhtml);
     }
 }

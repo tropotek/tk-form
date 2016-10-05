@@ -50,7 +50,7 @@ abstract class Element implements \Tk\InstanceKey
     /**
      * @var string
      */
-    protected $notes = '';
+    protected $notes = null;
 
 
 

@@ -64,7 +64,7 @@ class Textarea extends Iface
     {
 
         $xhtml = <<<XHTML
-<textarea var="element"></textarea>
+<textarea var="element" class="form-control" rows="3"></textarea>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }

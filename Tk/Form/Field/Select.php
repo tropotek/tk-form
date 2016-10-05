@@ -229,7 +229,7 @@ class Select extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<select var="element">
+<select var="element" class="form-control">
   <option repeat="option" var="option"></option>
 </select>
 XHTML;

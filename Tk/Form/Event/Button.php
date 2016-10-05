@@ -86,10 +86,7 @@ class Button extends Iface
      */
     public function getHtml()
     {
-        $xhtml = <<<XHTML
-<button type="submit" class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Submit</span></button>
-XHTML;
-        $t = \Dom\Loader::load($xhtml);
+        $t = $this->getTemplate();
         
         if ($t->isParsed()) return '';
 
@@ -121,5 +118,18 @@ XHTML;
         }
         
         return $t;
+    }
+
+    /**
+     * makeTemplate
+     *
+     * @return \Dom\Template
+     */
+    public function __makeTemplate()
+    {
+        $xhtml = <<<HTML
+<button type="submit" class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Submit</span></button>
+HTML;
+        return \Dom\Loader::load($xhtml);
     }
 }

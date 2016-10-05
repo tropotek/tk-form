@@ -11,7 +11,7 @@ namespace Tk\Form\Field;
 class Html extends Input
 {
     
-    protected $html = '';
+    protected $html = null;
 
     /**
      * __construct
@@ -19,7 +19,7 @@ class Html extends Input
      * @param string $name
      * @param string $html
      */
-    public function __construct($name, $html = '')
+    public function __construct($name, $html = null)
     {
         parent::__construct($name);
         $this->html = $html;
@@ -33,13 +33,17 @@ class Html extends Input
     public function getHtml()
     {
         $t = $this->getTemplate();
-        $this->removeCssClass('form-control');
+        //$this->removeCssClass('form-control');
 
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
 
         // Field name attribute
+        if ($this->html === null) {
+            $this->html = $this->getValue();
+        }
+
         if ($this->html instanceof \Dom\Template) {
             $t->insertTemplate('element', $this->html);
         } else {

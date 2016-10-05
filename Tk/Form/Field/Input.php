@@ -102,7 +102,7 @@ class Input extends Iface
     {
 
         $xhtml = <<<XHTML
-<input type="text" var="element"/>
+<input type="text" var="element" class="form-control" />
 XHTML;
         return \Dom\Loader::load($xhtml);
     }

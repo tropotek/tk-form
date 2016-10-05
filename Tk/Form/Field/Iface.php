@@ -115,6 +115,8 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      *    'fieldName3' => array('value3.1', 'value3.2', 'value3.3', 'value3.4')     // same
      * );
      *
+     * This objects load() method is called by the form's execute() method
+     *
      * @param array|\ArrayObject $values
      * @return $this
      */

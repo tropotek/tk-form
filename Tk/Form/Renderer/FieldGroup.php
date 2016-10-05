@@ -46,7 +46,8 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     public function show()
     {
         $t = $this->getTemplate();
-        $this->getField()->addCssClass('form-control');
+
+        //$this->getField()->addCssClass('form-control');
         
         if ($this->getField() instanceof Field\Hidden) {
             return $this->getField()->getHtml();
@@ -85,7 +86,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $t->setChoice('label');
         }
         
-        if ($this->getField()->getNotes()) {
+        if ($this->getField()->getNotes() !== null) {
             $t->setChoice('notes');
             $t->insertHtml('notes', $this->getField()->getNotes());
         }
@@ -109,7 +110,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
   <span class="help-block error-text" choice="errorText"><span class="glyphicon glyphicon-ban-circle"></span> <span var="errorText"></span></span>
   <label class="control-label" var="label" choice="label"></label>
   <div var="element" class="controls"></div>
-  <span class="help-block help-text" var="notes" choice="notes"></span>
+  <span class="help-block help-text" var="notes" choice="notes">&nbsp;</span>
 </div>
 XHTML;
 
