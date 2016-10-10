@@ -19,29 +19,8 @@ class Textarea extends Iface
     public function getHtml()
     {
         $t = $this->getTemplate();
-        
         if (!$t->keyExists('var', 'element')) {
-            return '';
-        }
-
-        // Field name attribute
-        $t->setAttr('element', 'name', $this->getFieldName());
-
-        // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
-
-        // Element css class names
-        foreach($this->getCssClassList() as $v) {
-            $t->addClass('element', $v);
-        }
-
-        if ($this->isRequired()) {
-            $t->setAttr('element', 'required', 'required');
+            return $t;
         }
 
         // set the field value
@@ -52,6 +31,7 @@ class Textarea extends Iface
             }
         }
 
+        $this->decorateElement($t);
         return $t;
     }
     
@@ -63,9 +43,9 @@ class Textarea extends Iface
     public function __makeTemplate()
     {
 
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <textarea var="element" class="form-control" rows="3"></textarea>
-XHTML;
+HTML;
         return \Dom\Loader::load($xhtml);
     }
     

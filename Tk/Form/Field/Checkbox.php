@@ -41,13 +41,14 @@ class Checkbox extends Input
      */
     public function getHtml()
     {
-        $this->removeCssClass('form-control');
         $t = parent::getHtml();
         
         if ($this->getValue()) {
             $t->setAttr('element', 'checked', 'checked');
         }
+
         $t->setAttr('element', 'value', $this->getName());
+
         return $t;
     }
     
@@ -58,13 +59,13 @@ class Checkbox extends Input
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div class="checkbox">
   <label>
     <input type="checkbox" var="element"/> <span var="label"></span>
   </label>
 </div>
-XHTML;
+HTML;
         return \Dom\Loader::load($xhtml);
     }
     

@@ -55,41 +55,22 @@ class Input extends Iface
     public function getHtml()
     {
         $t = $this->getTemplate();
-        
         if (!$t->keyExists('var', 'element')) {
-            return '';
+            return $t;
         }
 
-
-        // Field name attribute
+        // Set the input type attribute
         $t->setAttr('element', 'type', $this->getType());
-        $t->setAttr('element', 'name', $this->getFieldName());
 
-        // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
-
-        // Element css class names
-        foreach($this->getCssClassList() as $v) {
-            $t->addClass('element', $v);
-        }
-
-        if ($this->isRequired()) {
-            $t->setAttr('element', 'required', 'required');
-        }
-
-        // set the field value
+        // Set the field value
         if ($t->getVarElement('element')->nodeName == 'input' ) {
             $value = $this->getValue();
             if ($value && !is_array($value)) {
                 $t->setAttr('element', 'value', $value);
             }
         }
-        
+
+        $this->decorateElement($t);
         return $t;
     }
 
@@ -101,9 +82,9 @@ class Input extends Iface
     public function __makeTemplate()
     {
 
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <input type="text" var="element" class="form-control" />
-XHTML;
+HTML;
         return \Dom\Loader::load($xhtml);
     }
     

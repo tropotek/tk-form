@@ -164,36 +164,15 @@ class Select extends Iface
     public function getHtml()
     {
         $t = $this->getTemplate();
-        
-        
         if (!$t->keyExists('var', 'element')) {
-            return '';
+            return $t;
         }
 
         if ($this->isArrayField()) {
             $t->setAttr('element', 'multiple', 'multiple');
         }
 
-        // Field name attribute
-        $t->setAttr('element', 'name', $this->getFieldName());
 
-        // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
-
-        // Element css class names
-        foreach($this->getCssClassList() as $v) {
-            $t->addClass('element', $v);
-        }
-
-        if ($this->isRequired()) {
-            $t->setAttr('element', 'required', 'required');
-        }
-        
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             /** @var \Dom\Repeat $tOpt */
@@ -215,7 +194,8 @@ class Select extends Iface
             $tOpt->insertText('option', $option->getText());
             $tOpt->appendRepeat();
         }
-        
+
+        $this->decorateElement($t);
         return $t;
     }
     
@@ -228,11 +208,11 @@ class Select extends Iface
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <select var="element" class="form-control">
   <option repeat="option" var="option"></option>
 </select>
-XHTML;
+HTML;
         
         return \Dom\Loader::load($xhtml);
     }

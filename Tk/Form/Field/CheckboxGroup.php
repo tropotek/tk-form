@@ -49,9 +49,9 @@ class CheckboxGroup extends Select
     public function getHtml()
     {
         $t = $this->getTemplate();
-        
-        $this->removeCssClass('form-control');
-        
+        if (!$t->keyExists('var', 'element')) {
+            return $t;
+        }
         
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
@@ -85,6 +85,8 @@ class CheckboxGroup extends Select
             
             $tOpt->appendRepeat();
         }
+
+        $this->decorateElement($t);
         return $t;
     }
 
@@ -97,16 +99,16 @@ class CheckboxGroup extends Select
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div var="group">
-<div class="checkbox" repeat="option" var="option">
-  <label var="label">
-    <input type="checkbox" var="element" />
-    <span var="text"></span>
-  </label>
+  <div class="checkbox" repeat="option" var="option">
+    <label var="label">
+      <input type="checkbox" var="element" />
+      <span var="text"></span>
+    </label>
+  </div>
 </div>
-</div>
-XHTML;
+HTML;
 
         return \Dom\Loader::load($xhtml);
     }

@@ -22,7 +22,17 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @var bool
      */
     protected $required = false;
-    
+
+    /**
+     * @var bool
+     */
+    protected $disabled = false;
+
+    /**
+     * @var bool
+     */
+    protected $readonly = false;
+
     /**
      * This will be true if the element is an array IE: name="title[]"
      * the "[]" will be removed from the name
@@ -156,10 +166,11 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
 
     /**
      * @return array
+     * @deprecated Use get Value
      */
     public function getValueArray()
     {
-        return $this->values;
+        return $this->value;
     }
 
     /**
@@ -189,7 +200,64 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isDisabled()
+    {
+        return $this->disabled;
+    }
 
+    /**
+     * @param boolean $disabled
+     * @return $this
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isReadonly()
+    {
+        return $this->readonly;
+    }
+
+    /**
+     * @param boolean $readonly
+     * @return $this
+     */
+    public function setReadonly($readonly)
+    {
+        $this->readonly = $readonly;
+        return $this;
+    }
+
+
+    /**
+     * Add a CSS Class name to the node
+     *
+     * @param string $className
+     * @return $this
+     */
+    public function addCssClass($className)
+    {
+        return parent::addCssClass($className);
+    }
+
+    /**
+     * Remove a CSS Class name from the node
+     *
+     * @param string $className
+     * @return $this
+     */
+    public function removeCssClass($className)
+    {
+        return parent::removeCssClass($className);
+    }
 
 
     /**
@@ -259,6 +327,48 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     {
         $this->required = $required;
         return $this;
+    }
+
+    /**
+     * Decorate an element template
+     *
+     * @param \Dom\Template $t
+     * @return \Dom\Template|string
+     */
+    public function decorateElement(\Dom\Template $t)
+    {
+        if (!$t->keyExists('var', 'element')) {
+            return $t;
+        }
+
+        // Field name attribute
+        $t->setAttr('element', 'name', $this->getFieldName());
+
+        if ($this->isRequired()) {
+            $t->setAttr('element', 'required', 'required');
+        }
+
+        if ($this->isReadonly()) {
+            $t->setAttr('element', 'readonly', 'readonly');
+        }
+
+        if ($this->isDisabled()) {
+            $t->setAttr('element', 'disabled', 'disabled');
+            //$this->addCssClass('disabled');     // Not sure about this one, probably best to leave this to javascript
+        }
+
+        // Add attributes
+        foreach($this->getAttrList() as $key => $val) {
+            if ($val === '' || $val === null) $val = $key;
+            $t->setAttr('element', $key, $val);
+        }
+
+        // Add element css class labels
+        foreach($this->getCssClassList() as $v) {
+            $t->addClass('element', $v);
+        }
+
+        return $t;
     }
 
 

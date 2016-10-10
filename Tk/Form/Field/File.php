@@ -221,7 +221,6 @@ class File extends Input
      */
     public function getHtml()
     {
-        //$this->removeCssClass('form-control');
         $t = parent::getHtml();
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
 

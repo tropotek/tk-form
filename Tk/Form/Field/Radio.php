@@ -45,6 +45,10 @@ class Radio extends Select
     public function getHtml()
     {
         $t = $this->getTemplate();
+        if (!$t->keyExists('var', 'element')) {
+            return $t;
+        }
+
         $c = false;
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
@@ -80,6 +84,8 @@ class Radio extends Select
             
             $tOpt->appendRepeat();
         }
+
+        $this->decorateElement($t);
         return $t;
     }
 
@@ -90,7 +96,7 @@ class Radio extends Select
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div>
 <div class="checkbox" repeat="option" var="option">
   <label var="label">
@@ -99,7 +105,7 @@ class Radio extends Select
   </label>
 </div>
 </div>
-XHTML;
+HTML;
 
         return \Dom\Loader::load($xhtml);
     }

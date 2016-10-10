@@ -54,6 +54,7 @@ abstract class Element implements \Tk\InstanceKey
 
 
 
+
     /**
      * Get the element HTML
      *
@@ -298,20 +299,6 @@ abstract class Element implements \Tk\InstanceKey
     }
 
     /**
-     * Get an attribute from this node
-     * NOTE: You can only retrieve attributes that have been set via setAttr()
-     *
-     * @param string $attrName
-     * @return string|null
-     */
-    public function getAttr($attrName)
-    {
-        if (isset($this->attrList[$attrName])) {
-            return $this->attrList[$attrName];
-        }
-    }
-
-    /**
      * Remove an attribute from the element node
      *
      * @param $attrName
@@ -323,6 +310,20 @@ abstract class Element implements \Tk\InstanceKey
             unset($this->attrList[$attrName]);
         }
         return $this;
+    }
+
+    /**
+     * Get an attribute from this node
+     * NOTE: You can only retrieve attributes that have been set via setAttr()
+     *
+     * @param string $attrName
+     * @return string|null
+     */
+    public function getAttr($attrName)
+    {
+        if (isset($this->attrList[$attrName])) {
+            return $this->attrList[$attrName];
+        }
     }
 
     /**

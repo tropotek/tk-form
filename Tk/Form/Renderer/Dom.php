@@ -253,7 +253,7 @@ class Dom extends Iface
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div class="">
 <script type="text/javascript"> //<![CDATA[
 // This is the Bootstrap Tab script
@@ -324,7 +324,7 @@ jQuery(function($) {
 </form>
 
 </div>
-XHTML;
+HTML;
 
         return \Dom\Loader::load($xhtml);
     }

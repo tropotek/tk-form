@@ -22,7 +22,23 @@ class Html extends Input
     public function __construct($name, $html = null)
     {
         parent::__construct($name);
-        $this->html = $html;
+        //$this->html = $html;
+        $this->setValue($html);
+    }
+
+    /**
+     * @param mixed|string $html
+     * @return $this
+     */
+    public function setValue($html)
+    {
+        if ($html) {        // TODO: Check if this should be the expected behaviour
+            if ($html instanceof \Dom\Template) {
+                $html = $html->toString();
+            }
+            parent::setValue($html);
+        }
+        return $this;
     }
 
     /**
@@ -33,36 +49,13 @@ class Html extends Input
     public function getHtml()
     {
         $t = $this->getTemplate();
-        //$this->removeCssClass('form-control');
-
         if (!$t->keyExists('var', 'element')) {
-            return '';
+            return $t;
         }
 
-        // Field name attribute
-        if ($this->html === null) {
-            $this->html = $this->getValue();
-        }
+        $t->insertHtml('element', $this->getValue());
 
-        if ($this->html instanceof \Dom\Template) {
-            $t->insertTemplate('element', $this->html);
-        } else {
-            $t->insertHtml('element', $this->html);
-        }
-        
-        // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
-
-        // Element css class names
-        foreach($this->getCssClassList() as $v) {
-            $t->addClass('element', $v);
-        }
-        
+        $this->decorateElement($t);
         return $t;
     }
 
@@ -75,9 +68,9 @@ class Html extends Input
      */
     public function __makeTemplate()
     {
-        $xhtml = <<<XHTML
+        $xhtml = <<<HTML
 <div var="element"></div>
-XHTML;
+HTML;
         return \Dom\Loader::load($xhtml);
     }
 
