@@ -65,7 +65,7 @@ class Input extends Iface
         // Set the field value
         if ($t->getVarElement('element')->nodeName == 'input' ) {
             $value = $this->getValue();
-            if ($value && !is_array($value)) {
+            if ($value !== null && !is_array($value)) {
                 $t->setAttr('element', 'value', $value);
             }
         }

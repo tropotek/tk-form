@@ -136,8 +136,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         if (isset($values[$this->getName()])) {
             $this->setValue($values[$this->getName()]);
         }
-
-
         return $this;
     }
 

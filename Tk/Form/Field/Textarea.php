@@ -26,7 +26,7 @@ class Textarea extends Iface
         // set the field value
         if ($t->getVarElement('element')->nodeName == 'textarea') {
             $value = $this->getValue();
-            if ($value && !is_array($value)) {
+            if ($value !== null && !is_array($value)) {
                 $t->insertText('element', $value);
             }
         }

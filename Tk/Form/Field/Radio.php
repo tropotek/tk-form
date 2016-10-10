@@ -31,7 +31,7 @@ class Radio extends Select
     public function isSelected($val = '')
     {
         $value = $this->getValue();
-        if ($value && $value == $val) {
+        if ($value !== null && $value == $val) {
             return true;
         }
         return false;
