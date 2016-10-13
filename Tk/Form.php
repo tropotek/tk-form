@@ -158,7 +158,9 @@ class Form extends Form\Element
     public function load($array)
     {
         if ($this->loadArray === null) $this->loadArray = array();
-        $this->loadArray = array_merge($this->loadArray, $array);
+        if (is_array($array)) {
+            $this->loadArray = array_merge($this->loadArray, $array);
+        }
         return $this;
     }
     
@@ -179,6 +181,7 @@ class Form extends Form\Element
             foreach($array as $k => $v) $a[$k] = $v;
             $array = $a;
         }
+        // TODO: This could be removed, Check this out to be sure....????
         // Fix keys for conversions of '.' to '_'
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {

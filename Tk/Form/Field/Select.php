@@ -85,7 +85,7 @@ class Select extends Iface
      * @param $value
      * @return Select
      */
-    public function prependOption($name, $value)
+    public function prependOption($name, $value = '')
     {
         return $this->prepend(new Option($name, $value));
     }
@@ -95,7 +95,7 @@ class Select extends Iface
      * @param $value
      * @return Select
      */
-    public function appendOption($name, $value)
+    public function appendOption($name, $value = '')
     {
         return $this->append(new Option($name, $value));
     }
