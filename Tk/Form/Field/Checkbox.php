@@ -42,7 +42,8 @@ class Checkbox extends Input
     public function getHtml()
     {
         $t = parent::getHtml();
-        if ($this->getValue() !== null) {
+        //if ($this->getValue() !== null) {
+        if ($this->getValue() !== null && $this->getValue() == $this->getName()) {
             $t->setAttr('element', 'checked', 'checked');
         }
         $t->setAttr('element', 'value', $this->getName());
