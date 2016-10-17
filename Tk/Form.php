@@ -139,7 +139,7 @@ class Form extends Form\Element
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
-            if ($ignoreHidden && !array_key_exists($field->getName(), $array)) continue;
+            if ($ignoreHidden && !array_key_exists($field->getName(), $array) && !$field instanceof Field\File) continue;
             $field->load($array);
             //$field->setValue($array);
         }

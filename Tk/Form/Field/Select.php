@@ -82,22 +82,28 @@ class Select extends Iface
 
     /**
      * @param $name
-     * @param $value
+     * @param string $value
+     * @param string $cssClass
      * @return Select
      */
-    public function prependOption($name, $value = '')
+    public function prependOption($name, $value = '', $cssClass = '')
     {
-        return $this->prepend(new Option($name, $value));
+        $opt = new Option($name, $value);
+        if ($cssClass) $opt->addCssClass($cssClass);
+        return $this->prepend($opt);
     }
 
     /**
      * @param $name
-     * @param $value
+     * @param string $value
+     * @param string $cssClass
      * @return Select
      */
-    public function appendOption($name, $value = '')
+    public function appendOption($name, $value = '', $cssClass = '')
     {
-        return $this->append(new Option($name, $value));
+        $opt = new Option($name, $value);
+        if ($cssClass) $opt->addCssClass($cssClass);
+        return $this->append($opt);
     }
     
     /**
@@ -192,6 +198,20 @@ class Select extends Iface
                 $tOpt->setAttr('option', 'selected', 'selected');
             }
             $tOpt->insertText('option', $option->getText());
+
+
+
+            // Add attributes
+            foreach($option->getAttrList() as $key => $val) {
+                if ($val === '' || $val === null) $val = $key;
+                $tOpt->setAttr('option', $key, $val);
+            }
+
+            // Add css class
+            foreach($option->getCssClassList() as $v) {
+                $tOpt->addClass('option', $v);
+            }
+
             $tOpt->appendRepeat();
         }
 

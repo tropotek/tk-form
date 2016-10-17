@@ -16,6 +16,11 @@ class Button extends Iface
     protected $icon = '';
 
     /**
+     * @var bool
+     */
+    protected $iconRight = false;
+
+    /**
      * @var string
      */
     private $type = 'submit';
@@ -27,17 +32,17 @@ class Button extends Iface
      * @param string $name
      * @param callable $callback
      */
-    public function __construct($name, $callback = null, $icon = '')
+    //public function __construct($name, $callback = null, $icon = '')
+    public function __construct($name, $callback = null)
     {
         parent::__construct($name, $callback);
-        if (!$icon) {
-            if ($name == 'save') {
-                $icon = 'glyphicon glyphicon-refresh';
-            } else if ($name == 'update') {
-                $icon = 'glyphicon glyphicon-arrow-left';
-            }
+
+        // Not sure this belongs in the constructor as its more of a convenience than a necessity
+        if ($name == 'save') {
+            $this->setIcon('glyphicon glyphicon-refresh');
+        } else if ($name == 'update') {
+            $this->setIcon('glyphicon glyphicon-arrow-left');
         }
-        $this->setIcon($icon);
     }
 
     /**
@@ -80,6 +85,26 @@ class Button extends Iface
     }
 
     /**
+     * @return boolean
+     */
+    public function isIconRight()
+    {
+        return $this->iconRight;
+    }
+
+    /**
+     * @param boolean $iconRight
+     * @return $this
+     */
+    public function setIconRight($iconRight = true)
+    {
+        $this->iconRight = $iconRight;
+        return $this;
+    }
+
+
+
+    /**
      * Get the element HTML
      *
      * @return string|\Dom\Template
@@ -113,8 +138,13 @@ class Button extends Iface
 
         $t->insertText('text', $this->getLabel());
         if ($this->getIcon()) {
-            $t->setChoice('icon');
-            $t->addClass('icon', $this->getIcon());
+            if ($this->isIconRight()) {
+                $t->setChoice('iconR');
+                $t->addClass('iconR', $this->getIcon());
+            } else {
+                $t->setChoice('iconL');
+                $t->addClass('iconL', $this->getIcon());
+            }
         }
         
         return $t;
@@ -128,7 +158,7 @@ class Button extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<button type="submit" class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Submit</span></button>
+<button type="submit" class="btn btn-sm btn-default" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></button>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
