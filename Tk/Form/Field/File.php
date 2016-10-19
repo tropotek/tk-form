@@ -56,7 +56,7 @@ class File extends Input
      */
     public function __construct($name, $request, $dataPath = '')
     {
-        $this->maxBytes = \Tk\File::string2Bytes(ini_get('upload_max_filesize'));
+        $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')), \Tk\File::string2Bytes(ini_get('post_max_size')) );
         $this->request = $request;
         $this->dataPath = $dataPath;
         parent::__construct($name);
@@ -65,7 +65,7 @@ class File extends Input
         // Setup file with data ignore empty files
         $this->uploadedFile = $request->getUploadedFile($name);
 
-        $this->setNotes('Max Upload Size: ' . \Tk\File::bytes2String($this->getMaxFileSize(), 0));
+        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>');
 
     }
 
