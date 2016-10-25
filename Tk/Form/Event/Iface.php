@@ -26,10 +26,10 @@ abstract class Iface extends Field\Iface
      */
     public function __construct($name, $callback = null)
     {
-        parent::__construct($name);
         if ($callback) {
             $this->setCallback($callback);
         }
+        parent::__construct($name);
     }
 
     /**
@@ -52,7 +52,14 @@ abstract class Iface extends Field\Iface
     public function setCallback($callback)
     {
         if (!is_callable($callback)) {
-            throw new Exception('Only callable values can be events');
+            if (is_array($callback) && !empty($callback[1])) {
+                $class = get_class($callback[0]);
+                $method = $callback[1];
+                throw new Exception('Form event callback ' . $class.'::'.$method.'() cannot be found');
+            } else if (is_string($callback)) {
+                throw new Exception('Form event callback ' . $callback . ' cannot be found');
+            }
+            throw new Exception('Only callable values can be events. Check the method or function exists.');
         }
         $this->callback = $callback;
         return $this;

@@ -32,7 +32,6 @@ class Button extends Iface
      * @param string $name
      * @param callable $callback
      */
-    //public function __construct($name, $callback = null, $icon = '')
     public function __construct($name, $callback = null)
     {
         parent::__construct($name, $callback);
