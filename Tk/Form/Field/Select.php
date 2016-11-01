@@ -146,16 +146,14 @@ class Select extends Iface
      */
     public function isSelected($val = '')
     {
-        if (!$val)
-            $val = $this->getName();
         $value = $this->getValue();
-
         if (is_array($value) ) {
             if (in_array($val, $value)) {
                 return true;
             }
         } else {
-            if ($value && $value == $val) {
+            //if ($val !== null && $value == $val) {
+            if ($value !== null && $value == $val) {
                 return true;
             }
         }

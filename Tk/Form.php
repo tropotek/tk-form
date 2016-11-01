@@ -141,7 +141,6 @@ class Form extends Form\Element
             if ($field instanceof Event\Iface) continue;
             if ($ignoreHidden && !array_key_exists($field->getName(), $array) && !$field instanceof Field\File) continue;
             $field->load($array);
-            //$field->setValue($array);
         }
         return $this;
     }
