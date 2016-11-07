@@ -27,9 +27,9 @@ class File extends Input
     protected $request = null;
 
     /**
-     * @var \Tk\UploadedFile
+     * @var \Tk\UploadedFile[]
      */
-    protected $uploadedFile = null;
+    protected $uploadedFiles = null;
 
     /**
      * @var bool
@@ -63,7 +63,12 @@ class File extends Input
         $this->setType('file');
 
         // Setup file with data ignore empty files
-        $this->uploadedFile = $request->getUploadedFile($name);
+        $this->uploadedFiles = $request->getUploadedFile($this->getName());
+        if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
+
+        if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
+            $this->uploadedFiles = array();
+        }
 
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>');
 
@@ -74,6 +79,7 @@ class File extends Input
         $this->previousValue = $this->getValue();
         parent::load($values);
 
+        // TODO: Not sure this stuff belongs here??
         if (is_array($values) && $this->getForm()->isSubmitted()) {
             $did = $this->getDeleteName();
             if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
@@ -130,14 +136,26 @@ class File extends Input
     }
 
     /**
+     * Get a single uploaded file, default is to return the first file in the list.
+     *
+     * @param int $i For multiple files
+     * @return null|\Tk\UploadedFile
+     */
+    public function getUploadedFile($i = 0)
+    {
+        if (isset($this->uploadedFiles[$i]))
+            return $this->uploadedFiles[$i];
+    }
+
+    /**
      * get a single uploaded file, if it is an array the first file with data
      * in the list will be returned.
      *
-     * @return \Tk\UploadedFile
+     * @return \Tk\UploadedFile[]
      */
-    public function getUploadedFile()
+    public function getUploadedFiles()
     {
-        return $this->uploadedFile;
+        return $this->uploadedFiles;
     }
 
     /**
@@ -147,48 +165,72 @@ class File extends Input
      */
     public function hasFile()
     {
-        return ($this->uploadedFile && $this->uploadedFile->getError() == \UPLOAD_ERR_OK);
+        return (count($this->getUploadedFiles()) > 0);
     }
 
     /**
      * Use this to move the attached files to the directory in $dir
+     *
+     * If this is a single file then the $filepath is the full path (including filename)
+     * of the destination location.
+     *
+     * If this is a multiple file field (isFieldArray() == true) then the $filepath
+     * is the directory of the destination location.
+     *
+     * If you need more control get the updaloadedFiles() and do it manually
      *
      * If the directory does not exist it will try to create it for you.
      *
      *
      * @see \Tk\UploadedFile::moveTo
      * @param string $filepath The full destination path with filename
-     * @return bool|string
      * @internal param string $targetPath
      */
     public function moveTo($filepath)
     {
         try {
-            if (!$this->hasFile()) return true;
-
+            if (!$this->hasFile()) return;
             $filepath = str_replace($this->dataPath, '', $filepath);
-            if (!$this->hasFile()) return false;
-
             $targetPath = $this->dataPath . $filepath;
-            if (!is_dir(dirname($targetPath))) {
-                if (!@mkdir(dirname($targetPath), 0777, true)) {
-                    throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
+
+            $value = '';
+            if (!$this->isArrayField()) {   // single file
+                if (!is_dir(dirname($targetPath))) {
+                    if (!@mkdir(dirname($targetPath), 0777, true)) {
+                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
+                    }
                 }
+                $this->getUploadedFile()->moveTo($targetPath);
+                // TODO: Still not sure this belongs here???
+                if ($this->previousValue != $filepath && is_file($this->dataPath . $this->previousValue)) {
+                    @unlink($this->dataPath . $this->previousValue);
+                }
+                $value = $filepath;
+            } else {     // multiple files
+                if (!is_dir($targetPath)) {
+                    if (!@mkdir($targetPath, 0777, true)) {
+                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
+                    }
+                }
+                // TODO: THIS HAS NOT BEEN TESTED
+
+                $value = array();
+                /** @var \Tk\UploadedFile $uploadedFile */
+                foreach ($this->getUploadedFiles() as $uploadedFile) {
+                    $filepath =  basename(strip_tags($targetPath.'/'.$uploadedFile->getFilename()));
+                    vd($filepath, $this->previousValue);
+                    $uploadedFile->moveTo($filepath);
+                    $value[] = $filepath;
+                }
+
             }
 
-            $this->uploadedFile->moveTo($targetPath);
-            if ($this->previousValue != $filepath && is_file($this->dataPath . $this->previousValue)) {
-                @unlink($this->dataPath . $this->previousValue);
-            }
-
-            $this->setValue($filepath);
+            $this->setValue($value);
         } catch (\Exception $e) {
             // TODO: Test this on an error to see the result
             $this->addError($e->getMessage());
             $this->setValue($this->previousValue);
-            return false;
         }
-        return true;
     }
 
     /**
@@ -201,14 +243,20 @@ class File extends Input
         if (!$this->hasFile()) {
             return true;
         }
-        if ($this->uploadedFile->getError() == \UPLOAD_ERR_NO_FILE && $this->isRequired()) {
-            $this->addError('Please select a file to upload');
+        // TODO: add ability to check file types from extension?
+
+
+        if (!count($this->getUploadedFiles()) && $this->isRequired()) {
+            $this->addError(strip_tags('Please select a file to upload'));
         }
-        if ($this->uploadedFile->getError() != \UPLOAD_ERR_OK) {
-            $this->addError($this->uploadedFile->getErrorMessage());
-        }
-        if ($this->uploadedFile->getSize() > $this->getMaxFileSize()) {
-            $this->addError(strip_tags($this->uploadedFile->getFilename()) . ': File to large');
+        /** @var \Tk\UploadedFile $uploadedFile */
+        foreach ($this->getUploadedFiles() as $uploadedFile) {
+            if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
+                $this->addError(strip_tags($uploadedFile->getFilename()) .': '. $uploadedFile->getErrorMessage());
+            }
+            if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
+                $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
+            }
         }
         // Return false if we have errors
         return !count($this->errors);
@@ -223,6 +271,10 @@ class File extends Input
     {
         $t = parent::getHtml();
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
+
+        if ($this->isArrayField()) {
+            $t->setAttr('element', 'multiple', 'true');
+        }
 
         if ($this->getValue()) {
             $did = $this->getDeleteName();
