@@ -48,10 +48,7 @@ class CheckboxGroup extends Select
     public function getHtml()
     {
         $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
-        }
-        
+
         /** @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = $t->getRepeat('option');
