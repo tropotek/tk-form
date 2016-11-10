@@ -1,5 +1,22 @@
 #CHANGELOG#
 
+Ver 2.0.6 [2016-11-11]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Updated Wiki for new lib updates
+ - Updated status ribbons
+ - Added attachments to contact form
+ - Started new comment rating sections
+ - Finalising View Project page
+ - Updated the edit project and files page
+ - Started adding upload field with progess bar.
+ - Fixed checkbox issue
+ - Finished the Project Listing
+ - Fixed intitution edit, cron job script
+ - Fixed sites LTI issues
+
+
 Ver 2.0.5 [2016-10-04]:
 -------------------------------
  - Fixed LTI login and course creation
