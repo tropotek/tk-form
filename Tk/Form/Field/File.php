@@ -62,15 +62,15 @@ class File extends Input
         parent::__construct($name);
         $this->setType('file');
 
-        // Setup file with data ignore empty files
-        $this->uploadedFiles = $request->getUploadedFile($this->getName());
-        if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
+        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>');
 
+        // Setup file with data ignore empty files
+        $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
+
+        if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
         if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
             $this->uploadedFiles = array();
         }
-
-        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>');
 
     }
 
@@ -81,8 +81,9 @@ class File extends Input
 
         // TODO: Not sure this stuff belongs here??
         if (is_array($values) && $this->getForm()->isSubmitted()) {
-            $did = $this->getDeleteName();
-            if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
+            $did = str_replace('.', '_', $this->getDeleteName());
+            //if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
+            if ($this->previousValue && isset($values[$did])) {
                 $this->delFile = true;
                 if (is_file($this->dataPath . $this->previousValue)) {
                     @unlink($this->dataPath . $this->previousValue);
@@ -90,6 +91,19 @@ class File extends Input
                 $this->setValue('');
             }
         }
+        return $this;
+    }
+
+    /**
+     * Set the form for this element
+     *
+     * @param Form $form
+     * @return $this
+     */
+    public function setForm(Form $form)
+    {
+        parent::setForm($form);
+        $form->setAttr('enctype', Form::ENCTYPE_MULTIPART);
         return $this;
     }
 
@@ -110,19 +124,6 @@ class File extends Input
     public function getDeleteName()
     {
         return $this->makeId().'-del';
-    }
-
-    /**
-     * Set the form for this element
-     *
-     * @param Form $form
-     * @return $this
-     */
-    public function setForm(Form $form)
-    {
-        parent::setForm($form);
-        $form->setAttr('enctype', Form::ENCTYPE_MULTIPART);
-        return $this;
     }
 
     /**
@@ -212,13 +213,11 @@ class File extends Input
                         throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
                     }
                 }
-                // TODO: THIS HAS NOT BEEN TESTED
 
                 $value = array();
                 /** @var \Tk\UploadedFile $uploadedFile */
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
                     $filepath =  basename(strip_tags($targetPath.'/'.$uploadedFile->getFilename()));
-                    vd($filepath, $this->previousValue);
                     $uploadedFile->moveTo($filepath);
                     $value[] = $filepath;
                 }

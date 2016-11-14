@@ -72,6 +72,10 @@
 
     // -- private methods
 
+    function es(str) {
+      return str.replace(/(:|\.|\[|\]|,|=)/g, "\\$1");
+    }
+
     /**
      * init the input element`
      */
@@ -79,9 +83,9 @@
       var parent = $element.parent();
 
       // Tk2 File field only
-      var delCb = parent.find('#'+$element.attr('id')+plugin.settings.delClassAppend);
+      var delCb = parent.find('#'+es($element.attr('id'))+plugin.settings.delClassAppend);
       if (delCb.length) {
-        parent.find('.'+$element.attr('id')+plugin.settings.delClassAppend+'-wrap').hide();
+        parent.find('.'+es($element.attr('id'))+plugin.settings.delClassAppend+'-wrap').hide();
       }
 
       // Check bootstral element sizes
@@ -178,8 +182,6 @@
             }
           };
           reader.readAsDataURL(file);
-
-
 
         }
       });
