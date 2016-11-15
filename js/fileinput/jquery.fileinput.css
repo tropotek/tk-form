@@ -22,12 +22,15 @@
 }
 .tk-fileinput .image-preview-thumb {
   max-width: 250px;
-  height: auto;
+  height: 30px;
 }
 .tk-fileinput .image-preview-thumb img {
-  max-height: 14px;
-  max-width: 100px;
+  vertical-align: middle;
+  max-height: 16px;
   display: inline;
+}
+.tk-fileinput .thumb-img {
+  max-width: 100%;
 }
 .tk-fileinput .popover-content {
   overflow: hidden;
