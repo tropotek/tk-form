@@ -62,7 +62,7 @@
             '<span class="glyphicon glyphicon-trash"></span>' +
           '</button>' +
           '<button type="button" class="btn btn-default image-preview-thumb" title="" style="display: none;">' +
-            '<img class="thumb-img" src="#" alt="" style=""/>' +
+            '<img class="thumb-img" src="javascript:;" alt="" style=""/>' +
           '</button>' +
         '</span>' +
         '<input type="text" class="form-control image-preview-filename" disabled="disabled"> <!-- dont give a name === doesnt send on POST/GET -->' +
