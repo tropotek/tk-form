@@ -1,14 +1,12 @@
-
-.image-preview-input {
+.tk-fileinput .image-preview-input {
   position: relative;
   overflow: hidden;
-  margin: 0px;
+  margin: 0;
   color: #333;
   background-color: #fff;
   border-color: #ccc;
 }
-
-.image-preview-input input[type=file] {
+.tk-fileinput .image-preview-input input[type=file] {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,12 +17,22 @@
   opacity: 0;
   filter: alpha(opacity=0);
 }
-
-.image-preview-input-title {
-  margin-left:2px;
+.tk-fileinput .image-preview-input-title {
+  margin-left: 2px;
 }
-
-.popover-content {
+.tk-fileinput .image-preview-thumb {
+  max-width: 250px;
+  height: auto;
+}
+.tk-fileinput .image-preview-thumb img {
+  max-height: 14px;
+  max-width: 100px;
+  display: inline;
+}
+.tk-fileinput .popover-content {
   overflow: hidden;
 }
-
+.tk-fileinput .btn {
+  box-shadow: none;
+  text-shadow: none;
+}

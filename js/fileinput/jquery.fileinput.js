@@ -49,7 +49,7 @@
     };
 
     var template = $(
-      '<div class="input-group image-preview">' +
+      '<div class="input-group image-preview tk-fileinput">' +
         '<span class="input-group-btn">' +
           '<!-- image-preview-input -->' +
           '<div class="btn btn-default image-preview-input" title="Select an image">' +
@@ -62,7 +62,7 @@
             '<span class="glyphicon glyphicon-trash"></span>' +
           '</button>' +
           '<button type="button" class="btn btn-default image-preview-thumb" title="" style="display: none;">' +
-            '<img class="thumb-img" src="#" alt="" style="max-height: 16px;max-width: 100px;display: inline;"/>' +
+            '<img class="thumb-img" src="#" alt="" style=""/>' +
           '</button>' +
         '</span>' +
         '<input type="text" class="form-control image-preview-filename" disabled="disabled"> <!-- dont give a name === doesnt send on POST/GET -->' +
@@ -98,7 +98,6 @@
         template.find('.image-preview-clear').addClass('btn-lg');
         template.find('.image-preview-thumb').addClass('btn-lg');
       }
-
 
 
       $element.detach();
@@ -182,7 +181,6 @@
             }
           };
           reader.readAsDataURL(file);
-
         }
       });
 
@@ -232,7 +230,7 @@
      */
     var copyImageHtml = function (img) {
       var cpy = $(img).clone();
-      cpy.attr('style', '').css({maxWidth: 250, height: 'auto'});
+      //cpy.attr('style', '').css({maxWidth: 250, height: 'auto'});
       return cpy[0].outerHTML;
     };
 
