@@ -50,7 +50,7 @@ class Radio extends Select
         }
 
         $c = false;
-        /** @var \Tk\Form\Field\Option $option */
+        /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = $t->getRepeat('option');
 

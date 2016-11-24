@@ -177,9 +177,9 @@ class Select extends Iface
         }
 
 
-        /** @var \Tk\Form\Field\Option $option */
+        /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
-            /** @var \Dom\Repeat $tOpt */
+            /* @var \Dom\Repeat $tOpt */
             $tOpt = $t->getRepeat('option');
 
             if ($option->isDisabled()) {

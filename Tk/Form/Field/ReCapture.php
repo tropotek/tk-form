@@ -138,7 +138,7 @@ class ReCapture extends Iface
      */
     public function getHtml()
     {
-        /** @var \Dom\Template $t */
+        /* @var \Dom\Template $t */
         $t = $this->getTemplate();
         if (!$t->keyExists('var', 'element')) {
             return $t;

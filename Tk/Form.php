@@ -112,7 +112,7 @@ class Form extends Form\Element
         if (!$this->isSubmitted()) return null;
         $this->executeLoad($this->getRequest());
 
-        /** @var Event\Iface $event */
+        /* @var Event\Iface $event */
         $event = $this->getTriggeredEvent();
         if ($event) {
             if ($event->getCallback() instanceof \Closure || is_callable($event->getCallback())) {

@@ -227,7 +227,7 @@ class Dom extends Iface
     {
         if ($field instanceof Event\Iface) {
             $html = $field->getHtml();
-            /** @var Event\Iface $field */
+            /* @var Event\Iface $field */
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate('events', $html);
             } else {

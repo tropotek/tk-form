@@ -215,7 +215,7 @@ class File extends Input
                 }
 
                 $value = array();
-                /** @var \Tk\UploadedFile $uploadedFile */
+                /* @var \Tk\UploadedFile $uploadedFile */
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
                     $filepath =  basename(strip_tags($targetPath.'/'.$uploadedFile->getFilename()));
                     $uploadedFile->moveTo($filepath);
@@ -248,7 +248,7 @@ class File extends Input
         if (!count($this->getUploadedFiles()) && $this->isRequired()) {
             $this->addError(strip_tags('Please select a file to upload'));
         }
-        /** @var \Tk\UploadedFile $uploadedFile */
+        /* @var \Tk\UploadedFile $uploadedFile */
         foreach ($this->getUploadedFiles() as $uploadedFile) {
             if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
                 $this->addError(strip_tags($uploadedFile->getFilename()) .': '. $uploadedFile->getErrorMessage());
