@@ -297,7 +297,7 @@ jQuery(function($) {
 
 
 <form class="tk-form" var="form" role="form">
-  <div class="alert alert-danger" choice="errors">
+  <div class="alert alert-danger clear" choice="errors">
     <button data-dismiss="alert" class="close noblock">×</button>
     <h4><i class="icon-ok-sign"></i> <strong>Form Error</strong></h4>
     <span var="errors"></span>

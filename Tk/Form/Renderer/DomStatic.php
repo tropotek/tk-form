@@ -197,7 +197,7 @@ class DomStatic extends Iface
             $this->getTemplate()->setChoice($choice);
         } else {
             $errNode = $this->domForm->getNode()->ownerDocument->createElement('div');
-            $errNode->setAttribute('class', 'alert alert-danger ');
+            $errNode->setAttribute('class', 'alert alert-danger clear');
             if ($this->domForm->getNode()) {
                 $child = $this->getFirstChildElement($this->domForm->getNode());
                 $this->domForm->getNode()->insertBefore($errNode, $child);
