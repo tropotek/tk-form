@@ -58,7 +58,7 @@ class Dom extends Iface
 
         // Element css class names
         foreach($this->getForm()->getCssClassList() as $v) {
-            $t->addClass('form', $v);
+            $t->addCss('form', $v);
         }
 
         // render form errors
@@ -113,7 +113,7 @@ class Dom extends Iface
                         }
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
-                        $setRow->addClass('fieldset', $field->getFieldset());
+                        $setRow->addCss('fieldset', $field->getFieldset());
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }
@@ -149,7 +149,7 @@ class Dom extends Iface
                         }
                         $setRow = $tabBox->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
-                        $setRow->addClass('fieldset', $field->getFieldset());
+                        $setRow->addCss('fieldset', $field->getFieldset());
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }

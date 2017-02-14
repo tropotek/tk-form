@@ -207,7 +207,7 @@ class Select extends Iface
 
             // Add css class
             foreach($option->getCssClassList() as $v) {
-                $tOpt->addClass('option', $v);
+                $tOpt->addCss('option', $v);
             }
 
             $tOpt->appendRepeat();

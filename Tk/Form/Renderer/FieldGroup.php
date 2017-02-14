@@ -62,7 +62,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 
 
         if ($this->getField()->hasErrors()) {
-            $t->addClass('field-group', 'has-error');
+            $t->addCss('field-group', 'has-error');
             
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
@@ -79,7 +79,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         if ($this->getField()->getLabel()) {
             $label = $this->getField()->getLabel();
             if ($this->getField()->isRequired()) {
-                $t->addClass('field-group', 'required');
+                $t->addCss('field-group', 'required');
             }
             $t->insertHtml('label', $label.':');
             $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
@@ -91,8 +91,8 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $t->insertHtml('notes', $this->getField()->getNotes());
         }
 
-        $t->addClass('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
-        $t->addClass('field-group',  'tk-'.strtolower( $this->getField()->getName() ));
+        $t->addCss('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
+        $t->addCss('field-group',  'tk-'.strtolower( $this->getField()->getName() ));
         
         
         return $t;

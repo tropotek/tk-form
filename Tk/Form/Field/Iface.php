@@ -363,7 +363,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
 
         // Add element css class labels
         foreach($this->getCssClassList() as $v) {
-            $t->addClass('element', $v);
+            $t->addCss('element', $v);
         }
 
         return $t;

@@ -281,7 +281,7 @@ class File extends Input
             $t->setAttr('label', 'for', $did);
             $t->setAttr('delete', 'name', $did);
             $t->setAttr('delete', 'value', $did);
-            $t->addClass('delWrapper', $did.'-wrap');
+            $t->addCss('delWrapper', $did.'-wrap');
             $t->setChoice('delete');
         }
         return $t;
