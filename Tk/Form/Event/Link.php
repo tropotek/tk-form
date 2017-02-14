@@ -22,7 +22,7 @@ class Link extends Button
      * @param string|\Tk\Uri $url
      * @param string $icon
      */
-    public function __construct($name, $url, $icon = '')
+    public function __construct($name, $url, $icon = 'fa fa-times')
     {
         parent::__construct($name);
         
@@ -30,6 +30,7 @@ class Link extends Button
             $url = \Tk\Uri::create();
         }
         $this->url = $url;
+        $this->setIcon($icon);
     }
 
     /**
@@ -91,7 +92,7 @@ class Link extends Button
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<a class="btn btn-sm" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
