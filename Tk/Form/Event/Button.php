@@ -131,7 +131,7 @@ class Button extends Iface
         }
 
         // Element css class names
-        foreach($this->getCssClassList() as $v) {
+        foreach($this->getCssList() as $v) {
             $t->addClass('element', $v);
         }
 

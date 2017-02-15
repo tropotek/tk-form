@@ -89,7 +89,7 @@ class Select extends Iface
     public function prependOption($name, $value = '', $cssClass = '')
     {
         $opt = new Option($name, $value);
-        if ($cssClass) $opt->addCssClass($cssClass);
+        if ($cssClass) $opt->addCss($cssClass);
         return $this->prepend($opt);
     }
 
@@ -102,7 +102,7 @@ class Select extends Iface
     public function appendOption($name, $value = '', $cssClass = '')
     {
         $opt = new Option($name, $value);
-        if ($cssClass) $opt->addCssClass($cssClass);
+        if ($cssClass) $opt->addCss($cssClass);
         return $this->append($opt);
     }
     
@@ -206,7 +206,7 @@ class Select extends Iface
             }
 
             // Add css class
-            foreach($option->getCssClassList() as $v) {
+            foreach($option->getCssList() as $v) {
                 $tOpt->addCss('option', $v);
             }
 

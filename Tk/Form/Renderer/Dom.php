@@ -57,7 +57,7 @@ class Dom extends Iface
         }
 
         // Element css class names
-        foreach($this->getForm()->getCssClassList() as $v) {
+        foreach($this->getForm()->getCssList() as $v) {
             $t->addCss('form', $v);
         }
 
@@ -66,7 +66,7 @@ class Dom extends Iface
             /* @var $field Field\Iface */
             foreach ($this->getForm()->getFieldList() as $field) {
                 if ($field->hasErrors()) {
-                    $field->addCssClass('errors');
+                    $field->addCss('errors');
                 }
             }
             $estr = '';

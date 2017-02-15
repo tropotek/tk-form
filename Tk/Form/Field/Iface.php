@@ -241,9 +241,9 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param string $className
      * @return $this
      */
-    public function addCssClass($className)
+    public function addCss($className)
     {
-        return parent::addCssClass($className);
+        return parent::addCss($className);
     }
 
     /**
@@ -252,9 +252,9 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param string $className
      * @return $this
      */
-    public function removeCssClass($className)
+    public function removeCss($className)
     {
-        return parent::removeCssClass($className);
+        return parent::removeCss($className);
     }
 
 
@@ -362,7 +362,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         }
 
         // Add element css class labels
-        foreach($this->getCssClassList() as $v) {
+        foreach($this->getCssList() as $v) {
             $t->addCss('element', $v);
         }
 

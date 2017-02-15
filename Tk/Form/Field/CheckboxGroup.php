@@ -75,7 +75,7 @@ class CheckboxGroup extends Select
             }
 
             // Element css class names
-            foreach($this->getCssClassList() as $v) {
+            foreach($this->getCssList() as $v) {
                 $tOpt->addClass('element', $v);
             }
             
