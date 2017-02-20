@@ -238,23 +238,25 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     /**
      * Add a CSS Class name to the node
      *
-     * @param string $className
+     * @param string $class
+     * @param bool $fixName
      * @return $this
      */
-    public function addCss($className)
+    public function addCss($class, $fixName = true)
     {
-        return parent::addCss($className);
+        return parent::addCss($class, $fixName);
     }
 
     /**
      * Remove a CSS Class name from the node
      *
-     * @param string $className
+     * @param string $class
+     * @param bool $fixName
      * @return $this
      */
-    public function removeCss($className)
+    public function removeCss($class, $fixName = true)
     {
-        return parent::removeCss($className);
+        return parent::removeCss($class, $fixName);
     }
 
 

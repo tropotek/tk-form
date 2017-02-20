@@ -92,8 +92,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         }
 
         $t->addCss('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
-        $t->addCss('field-group',  'tk-'.strtolower( $this->getField()->getName() ));
-        
+        $t->addCss('field-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
         
         return $t;
     }
