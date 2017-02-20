@@ -117,7 +117,7 @@ abstract class Element implements \Tk\InstanceKey
     }
 
     /**
-     * Get the unique name for this field
+     * Get the unique ID for this field
      *
      * @param string $prepend
      * @return string
@@ -125,9 +125,22 @@ abstract class Element implements \Tk\InstanceKey
     protected function makeId($prepend = 'fid_')
     {
         if ($this->getForm() && $prepend == 'fid_') {
-            $prepend = $this->getForm()->getId() . '_';
+            $prepend .= $this->getForm()->getId() . '_';
+        }
+        if (!$this->form) {
+            vd('Warning: Form not set when requesting ID');
         }
         return $prepend . $this->getName();
+    }
+
+    /**
+     * return the isd attribute value
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->makeId();
     }
     
     /**
@@ -227,6 +240,10 @@ abstract class Element implements \Tk\InstanceKey
     public function setForm(Form $form)
     {
         $this->form = $form;
+        // Not sure if this is the correct spot for this, but it need to be called by all fields after the form is set.
+        if (!$this->getAttr('id')) {
+            $this->setAttr('id', $this->getId());
+        }
         return $this;
     }
 
@@ -305,125 +322,6 @@ abstract class Element implements \Tk\InstanceKey
         }
         return $key;
     }
-
-
-
-//
-//
-//    /**
-//     * Add an attribute to the element node
-//     *
-//     * @param $attrName
-//     * @param $value
-//     * @return $this
-//     */
-//    public function setAttr($attrName, $value = '')
-//    {
-//        if (!$value) $value = $attrName;
-//        $this->attrList[$attrName] = $value;
-//        return $this;
-//    }
-//
-//    /**
-//     * Remove an attribute from the element node
-//     *
-//     * @param $attrName
-//     * @return $this
-//     */
-//    public function removeAttr($attrName)
-//    {
-//        if (isset($this->attrList[$attrName])) {
-//            unset($this->attrList[$attrName]);
-//        }
-//        return $this;
-//    }
-//
-//    /**
-//     * Get an attribute from this node
-//     * NOTE: You can only retrieve attributes that have been set via setAttr()
-//     *
-//     * @param string $attrName
-//     * @return string|null
-//     */
-//    public function getAttr($attrName)
-//    {
-//        if (isset($this->attrList[$attrName])) {
-//            return $this->attrList[$attrName];
-//        }
-//    }
-//
-//    /**
-//     * Get the attribute list
-//     *
-//     * @return array
-//     */
-//    public function getAttrList()
-//    {
-//        return $this->attrList;
-//    }
-//
-//    /**
-//     * Set the attributes list array
-//     *
-//     * If no parameter given the list is cleared
-//     *
-//     * @param array $array
-//     * @return $this
-//     */
-//    public function setAttrList($array = array())
-//    {
-//        $this->attrList = $array;
-//        return $this;
-//    }
-//
-//    /**
-//     * Add a CSS Class name to the node
-//     *
-//     * @param string $className
-//     * @return $this
-//     */
-//    public function addCss($className)
-//    {
-//        $this->cssList[$className] = $className;
-//        return $this;
-//    }
-//
-//    /**
-//     * Remove a CSS Class name from the node
-//     *
-//     * @param string $className
-//     * @return $this
-//     */
-//    public function removeCss($className)
-//    {
-//        unset($this->cssList[$className]);
-//        return $this;
-//    }
-//
-//    /**
-//     * Set the CSS class list array
-//     *
-//     * If no parameter given the list is cleared
-//     *
-//     * @param array $array
-//     * @return $this
-//     */
-//    public function setCssList($array = array())
-//    {
-//        $this->cssList = $array;
-//        return $this;
-//    }
-//
-//    /**
-//     * Get the CSS class style list for this element
-//     *
-//     * @return array
-//     */
-//    public function getCssList()
-//    {
-//        return $this->cssList;
-//    }
-
 
 
 }

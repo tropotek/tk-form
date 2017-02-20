@@ -52,7 +52,6 @@ class Button extends Iface
      */
     public function setType($type)
     {
-        vdd($type);
         $this->type = $type;
         return $this;
     }
@@ -120,7 +119,8 @@ class Button extends Iface
 
         // Field name attribute
         $t->setAttr('element', 'type', $this->getType());
-        $t->setAttr('element', 'name', $this->getName());
+        //$t->setAttr('element', 'name', $this->getName());
+        $t->setAttr('element', 'name', $this->getEventName());
 
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {

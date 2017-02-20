@@ -58,7 +58,8 @@ class Link extends Button
 
         // Field name attribute
         //$t->setAttr('element', 'type', $this->getType());
-        $t->setAttr('element', 'name', $this->getName());
+        //$t->setAttr('element', 'name', $this->getName());
+        $t->setAttr('element', 'name', $this->getEventName());
 
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {

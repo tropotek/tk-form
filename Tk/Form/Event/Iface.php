@@ -69,6 +69,16 @@ abstract class Iface extends Field\Iface
     
     // Force sain values for events below.
 
+    /**
+     * 'fid-'.$form->getId().{$this->name}
+     *
+     * @return string
+     */
+    public function getEventName()
+    {
+        return $this->makeInstanceKey($this->getName());
+    }
+
 
     /**
      * Get the field value(s).

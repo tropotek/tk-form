@@ -391,10 +391,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      */
     public function getTemplate()
     {
-        // Not sure if this is the correct spot for this, but it need to be called by all fields after the form is set.
-        if (!$this->getAttr('id')) {
-            $this->setAttr('id', $this->makeId());
-        }
 
         $magic = '__makeTemplate';
         if (!$this->hasTemplate() && method_exists($this, $magic)) {

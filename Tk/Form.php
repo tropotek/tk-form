@@ -207,7 +207,7 @@ class Form extends Form\Element
             /* @var $field Field\Iface */
             foreach($this->fieldList as $field) {
                 if ($field instanceof Event\Iface) {
-                    if (isset($this->request[$field->getName()])) {
+                    if (isset($this->request[$field->getEventName()])) {
                         $this->triggeredEvent = $field;
                         break;
                     }
