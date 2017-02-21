@@ -132,6 +132,7 @@ class DomStatic extends Iface
             $elName = $field->getName() . '[]';
         }
         $elList = $this->domForm->getFormElementList($elName);
+
         
         /* @var $el \Dom\Form\Element */
         foreach ($elList as $i => $el) {
@@ -165,6 +166,11 @@ class DomStatic extends Iface
                     $el->setValue($value);
                     break;
             }
+
+            if ($field instanceof \Tk\Form\Event\Iface) {
+                $field->setAttr('name', $field->getEventName());
+            }
+            $field->setAttr('id', $field->getId());
             if (count($field->getAttrList())) {
                 foreach($field->getAttrList() as $k => $v) {
                     $el->setAttribute($k, $v);
