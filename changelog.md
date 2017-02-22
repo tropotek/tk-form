@@ -1,5 +1,14 @@
 #CHANGELOG#
 
+Ver 2.0.9 [2017-02-22]:
+-------------------------------
+ - Finished tiding up user areas
+ - Added new change password system
+ - Fixed recover password system
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+
+
 Ver 2.0.8 [2016-12-30]:
 -------------------------------
  - Minor Code Updates
