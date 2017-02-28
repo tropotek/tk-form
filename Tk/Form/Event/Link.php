@@ -22,14 +22,10 @@ class Link extends Button
      * @param string|\Tk\Uri $url
      * @param string $icon
      */
-    public function __construct($name, $url, $icon = 'fa fa-times')
+    public function __construct($name, $url = null, $icon = 'fa fa-times')
     {
         parent::__construct($name);
-        
-        if (!$url) {
-            $url = \Tk\Uri::create();
-        }
-        $this->url = $url;
+        $this->url = \Tk\Uri::create($url);
         $this->setIcon($icon);
     }
 
