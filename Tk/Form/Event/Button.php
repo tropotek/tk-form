@@ -121,6 +121,7 @@ class Button extends Iface
         $t->setAttr('element', 'type', $this->getType());
         //$t->setAttr('element', 'name', $this->getName());
         $t->setAttr('element', 'name', $this->getEventName());
+        $t->setAttr('element', 'value', $this->getEventName());
 
         // All other attributes
         foreach($this->getAttrList() as $key => $val) {
