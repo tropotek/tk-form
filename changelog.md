@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.10 [2017-03-02]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Finished moveing LDAP to a plugin, wahoo!
+
+
 Ver 2.0.9 [2017-02-22]:
 -------------------------------
  - Finished tiding up user areas
