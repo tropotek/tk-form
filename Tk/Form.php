@@ -482,7 +482,7 @@ class Form extends Form\Element
     /**
      * This will return an array of the field's values,
      *
-     * @param null|string $regex
+     * @param null|array|string $regex A regular expression or array of fields to get
      * @return array
      */
     public function getValues($regex = null)
@@ -491,7 +491,15 @@ class Form extends Form\Element
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $name => $field) {
             if ($field instanceof Event\Iface) continue;
-            if ($regex && !preg_match($regex, $name)) continue;
+
+            if ($regex) {
+                if (is_string($regex) && !preg_match($regex, $name)) {
+                    continue;
+                } else if (is_array($regex) && !in_array($name, $regex)) {
+                    continue;
+                }
+            }
+
             $array[$name] = $field->getValue();
         }
         return $array;

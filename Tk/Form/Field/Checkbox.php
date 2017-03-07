@@ -36,6 +36,17 @@ class Checkbox extends Input
         }
         return $this;
     }
+
+    public function setValue($value)
+    {
+        if ($value === true) {
+            $value = $this->getName();
+        } elseif ($value === false) {
+            $value = '';
+        }
+        $this->value = $value;
+        return $this;
+    }
     
     /**
      * Get the element HTML
@@ -46,7 +57,7 @@ class Checkbox extends Input
     {
         $t = parent::getHtml();
         //if ($this->getValue() !== null) {
-        if ($this->getValue() !== null && $this->getValue() == $this->getName()) {
+        if ($this->getValue() !== null && ($this->getValue() == $this->getName() || $this->getValue() === true)) {
             $t->setAttr('element', 'checked', 'checked');
         }
         $t->setAttr('element', 'value', $this->getName());
