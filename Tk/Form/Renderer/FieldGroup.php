@@ -76,7 +76,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             }
         }
 
-        if ($this->getField()->getLabel()) {
+        if ($this->getField()->hasShowLabel() && $this->getField()->getLabel()) {
             $label = $this->getField()->getLabel();
             if ($this->getField()->isRequired()) {
                 $t->addCss('field-group', 'required');

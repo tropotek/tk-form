@@ -51,6 +51,12 @@ abstract class Element implements \Tk\InstanceKey
      */
     protected $label = '';
 
+
+    /**
+     * @var boolean
+     */
+    protected $showLabel = true;
+
     /**
      * @var string
      */
@@ -206,6 +212,24 @@ abstract class Element implements \Tk\InstanceKey
     public function setLabel($str)
     {
         $this->label = $str;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasShowLabel()
+    {
+        return $this->showLabel;
+    }
+
+    /**
+     * @param bool $showLabel
+     * @return $this
+     */
+    public function setShowLabel($showLabel)
+    {
+        $this->showLabel = $showLabel;
         return $this;
     }
 
