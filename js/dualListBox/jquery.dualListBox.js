@@ -43,7 +43,7 @@
         uri:        $(this).data('source'),
         value:      $(this).data('value'),
         text:       $(this).data('text'),
-        title:      $(this).data('title'),
+        title:      $(this).data('title'),    // Be sure that multiple fields do not have the same data-title value or it will not work
         json:       $(this).data('json'),
         timeout:    $(this).data('timeout'),
         horizontal: $(this).data('horizontal'),
@@ -59,7 +59,7 @@
         if (item === undefined || item === null) { throw 'DualListBox: ' + i + ' is undefined.'; }
       });
 
-      options['parent'] = 'dual-list-box-' + options.title;
+      options['parent'] = 'dual-list-box-' + options.title.replace(/ /g , "-");
       options['parentElement'] = '#' + options.parent;
 
       selected = $.extend([{}], selected);
@@ -195,9 +195,10 @@
   /** Creates a new dual list box with the right buttons and filter. */
   function createDualListBox(options) {
     $(options.element).parent().attr('id', options.parent);
+    var prependElement = $(options.parentElement);
 
-    $(options.parentElement).prepend(
-      '<div class="row">' +
+
+    var rowEl = $('<div class="row">' +
       (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
       '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
       '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
@@ -211,6 +212,29 @@
       (options.horizontal == false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
       '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
       '   </div></div>');
+    if (prependElement.find('label.control-label')) {
+      //$(prependElement.find('label.control-label')).after(rowEl);
+      prependElement.find('label.control-label').remove();
+    }
+    $(options.parentElement).prepend(rowEl);
+
+
+
+    // $(options.parentElement).prepend(
+    //   '<div class="row">' +
+    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+    //   '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
+    //   '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+    //   (options.horizontal == false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
+    //   '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+    //   '   </div>' +
+    //   (options.horizontal == false ? createVerticalButtons(options.moveAllBtn) : '') +
+    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+    //   '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
+    //   '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+    //   (options.horizontal == false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
+    //   '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+    //   '   </div></div>');
 
     $(options.parentElement + ' .selected').prop('name', $(options.element).prop('name'));
     $(options.parentElement + ' .unselected-title').text('Available ' + options.title);
