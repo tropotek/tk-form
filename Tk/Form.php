@@ -51,7 +51,7 @@ class Form extends Form\Element
     protected $triggeredEvent = null;
 
     /**
-     * @var array|\ArrayAccess
+     * @var \Tk\Request|array|\ArrayAccess
      */
     protected $request = null;
 
@@ -72,12 +72,26 @@ class Form extends Form\Element
         $this->id = $formId;;
         $this->setForm($this);
         $this->name = $formId;
-        if (!$request) {
-            $request = $_REQUEST;
+        if (!$this->request) {
+            $this->request = &$_REQUEST;
         }
-        $this->request = $request;
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', \Tk\Uri::create());
+    }
+
+    /**
+     * @param $formId
+     * @param null $request
+     * @return static
+     */
+    public static function create($formId, $request = null)
+    {
+        $obj = new static($formId);
+        if (!$request)
+            $request = \Tk\Config::getInstance()->getRequest();
+
+        $obj->setRequest($request);
+        return $obj;
     }
     
     /**
@@ -88,6 +102,16 @@ class Form extends Form\Element
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param \Tk\Request|array|\ArrayAccess $request
+     * @return $this
+     */
+    public function setRequest(&$request)
+    {
+        $this->request = &$request;
+        return $this;
     }
 
     /**
