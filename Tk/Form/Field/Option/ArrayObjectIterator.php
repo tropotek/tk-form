@@ -88,12 +88,12 @@ class ArrayObjectIterator extends ArrayIterator
         $disabled = false;
 
         if ( is_callable($this->textParam) ) {
-            call_user_func_array($this->textParam, array($obj));
+            $text = call_user_func_array($this->textParam, array($obj));
         } else if (property_exists($obj, $this->textParam)) {
             $text = $obj->{$this->textParam};
         }
         if ( is_callable($this->valueParam) ) {
-            call_user_func_array($this->valueParam, array($obj));
+            $text = call_user_func_array($this->valueParam, array($obj));
         } else if (property_exists($obj, $this->valueParam)) {
             $value = $obj->{$this->valueParam};
         }

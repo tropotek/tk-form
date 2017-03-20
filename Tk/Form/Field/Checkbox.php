@@ -62,6 +62,9 @@ class Checkbox extends Input
             $t->setAttr('element', 'checked', 'checked');
         }
         $t->setAttr('element', 'value', $this->getName());
+        $t->setAttr('hidden', 'name', $this->getName());
+        $t->setAttr('hidden', 'value', '');
+
         $t->insertText('label', $this->getLabel());
         return $t;
     }
@@ -76,6 +79,7 @@ class Checkbox extends Input
         $xhtml = <<<HTML
 <div class="checkbox">
   <label>
+    <input type="hidden" var="hidden" value=""/>
     <input type="checkbox" var="element"/> <span var="label" class="cb-label"></span>
   </label>
 </div>
