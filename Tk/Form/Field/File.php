@@ -62,8 +62,6 @@ class File extends Input
         parent::__construct($name);
         $this->setType('file');
 
-        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>');
-
         // Setup file with data ignore empty files
         $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
 
@@ -134,6 +132,16 @@ class File extends Input
     public function getMaxFileSize()
     {
         return $this->maxBytes;
+    }
+
+    /**
+     * @param $bytes
+     * @return $this
+     */
+    public function setMaxFileSize($bytes)
+    {
+        $this->maxBytes = (int)$bytes;
+        return $this;
     }
 
     /**
@@ -268,7 +276,10 @@ class File extends Input
      */
     public function getHtml()
     {
+
+        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
         $t = parent::getHtml();
+
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
 
         if ($this->isArrayField()) {
