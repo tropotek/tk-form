@@ -157,6 +157,7 @@ class ArrayIterator implements \Iterator, \Countable
         $l = array();
         foreach ($this as $k => $v) {
             $l[$k] = $v;
+            //$l[$v->getValue()] = $v->getText();
         }
         return $l;
     }
