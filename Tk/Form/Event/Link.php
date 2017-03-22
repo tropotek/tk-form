@@ -89,7 +89,7 @@ class Link extends Button
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+<a class="btn btn-sm btn-default btn-once" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
