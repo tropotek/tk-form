@@ -323,7 +323,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param boolean $required
      * @return $this
      */
-    public function setRequired($required)
+    public function setRequired($required = true)
     {
         $this->required = $required;
         return $this;
@@ -377,7 +377,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     /**
      * Set a new template for this renderer.
      *
-     * @param mixed $template
+     * @param \Dom\Template|string $template
      */
     public function setTemplate($template)
     {
@@ -389,7 +389,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * This method will try to call the magic method __makeTemplate
      * to create a template if non exits.
      *
-     * @return mixed
+     * @return \Dom\Template|string
      */
     public function getTemplate()
     {

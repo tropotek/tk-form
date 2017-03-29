@@ -131,7 +131,7 @@ class Form extends Form\Element
      */
     public function execute()
     {
-        $this->executeLoad($this->loadArray, true);
+        $this->executeLoad($this->loadArray);
 
         if (!$this->isSubmitted()) return null;
         $this->executeLoad($this->getRequest());
@@ -152,10 +152,9 @@ class Form extends Form\Element
      *   $array['field1'] = 'value1';
      *
      * @param array $array
-     * @param bool $ignoreHidden If this is true then if the field does not exist in the array the setValue() is not executed (Good for checkboxes and radios)
      * @return $this
      */
-    protected function executeLoad($array, $ignoreHidden = false)
+    protected function executeLoad($array)
     {
         if ($array === null) return $this;
         $array = $this->cleanLoadArray($array);
@@ -163,7 +162,6 @@ class Form extends Form\Element
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
-            if ($ignoreHidden && !array_key_exists($field->getName(), $array) && !$field instanceof Field\File) continue;
             $field->load($array);
         }
         return $this;
