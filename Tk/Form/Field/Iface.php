@@ -139,16 +139,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     }
 
     /**
-     * Execute is called after the load methods and only on form submission
-     *
-     * @param array|\Tk\Request $request
-     */
-    public function execute($request)
-    {
-
-    }
-
-    /**
      * Set the field value.
      * Set the exact value the field requires to function.
      *

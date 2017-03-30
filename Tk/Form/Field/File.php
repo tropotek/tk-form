@@ -38,24 +38,47 @@ class File extends Input
 
 
     /**
+     * The path to save the file relative to the dataPath.
+     * @var string
+     */
+    protected $destPath = '';
+
+    /**
+     * The full data path to save the file (EG: \Tk\Config::getInstance()->getDataPath()
+     * @var string
+     */
+    protected $dataPath = '';
+
+
+    /**
      * __construct
      *
      * @param string $name
+     * @param string|null $destPath If not set then the file will not be moved and the object will not be set
+     * @param string|null $dataPath If not set then the \Tk\Config::getDataPath() will be used
      */
-    public function __construct($name)
+    public function __construct($name, $destPath = null, $dataPath = null)
     {
         parent::__construct($name);
         $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')), \Tk\File::string2Bytes(ini_get('post_max_size')) );
         $this->setType('file');
-
-
+        if (!$dataPath) {
+            $dataPath = \Tk\Config::getInstance()->getDataPath();
+        }
+        $this->dataPath = $dataPath;
+        if ($destPath) {
+            $destPath = str_replace($dataPath, '', $destPath);
+        }
+        $this->destPath = $destPath;
     }
 
     public function load($values)
     {
         $request = \Tk\Request::create();
 
-        vd($values, $this->getValue());     // TODO: we will have to load the value initially?????
+        //vd($values, $this->getValue());     // TODO: we will have to load the value initially?????
+
+        // EG Object Path: `/institution/logo/1/logo2.png`
 
         if ($this->getForm()->isSubmitted()) {
             vd('File::load($values)');
@@ -64,27 +87,61 @@ class File extends Input
             if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
                 $this->uploadedFiles = array();
             }
-            if ($this->hasFile()) {
+            if ($this->hasFile() && $this->isValid()) {
                 $this->previousValue = $this->getValue();
                 $values = array();
                 /** @var \Tk\UploadedFile $uploadedFile */
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
-                    $values[] = $uploadedFile->getFilename();
+                    $values[] = $this->destPath . '/' . $uploadedFile->getFilename();
                 }
                 $this->setValue($values);
+
+
+                // delete any existing files if new files are valid and path writable
+
+                // move new files if valid
+
             }
+            // Check if the delete file checkbox is checked.
+
 
 
         } else {
+            // load object value if not submitted
             parent::load($values);
         }
 
 
-
-        vd($this->getValue());
-        //
-
         return $this;
+    }
+
+    /**
+     * A basic file validation method.
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        if (!$this->hasFile()) {
+            return true;
+        }
+
+        // TODO add ability to check file types from extension?
+
+        if (!count($this->getUploadedFiles()) && $this->isRequired()) {
+            $this->addError(strip_tags('Please select a file to upload'));
+        }
+        /* @var \Tk\UploadedFile $uploadedFile */
+        foreach ($this->getUploadedFiles() as $uploadedFile) {
+            if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
+                $this->addError(strip_tags($uploadedFile->getFilename()) .': '. $uploadedFile->getErrorMessage());
+            }
+            if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
+                $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
+            }
+        }
+        // Return false if we have errors
+        return !count($this->errors);
     }
 
     /**
@@ -252,7 +309,6 @@ class File extends Input
      *
      * @see \Tk\UploadedFile::moveTo
      * @param string $filepath The full destination path with filename
-     * @internal param string $targetPath
      */
     public function moveTo($filepath)
     {
@@ -275,6 +331,8 @@ class File extends Input
                 }
                 $value = $filepath;
             } else {     // multiple files
+
+                // TODO: Verify that this is working.
                 if (!is_dir($targetPath)) {
                     if (!@mkdir($targetPath, 0777, true)) {
                         throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
@@ -297,34 +355,6 @@ class File extends Input
             $this->addError($e->getMessage());
             $this->setValue($this->previousValue);
         }
-    }
-
-    /**
-     * A basic file validation method.
-     *
-     * @return bool
-     */
-    public function isValid()
-    {
-        if (!$this->hasFile()) {
-            return true;
-        }
-        // TODO: add ability to check file types from extension?
-
-        if (!count($this->getUploadedFiles()) && $this->isRequired()) {
-            $this->addError(strip_tags('Please select a file to upload'));
-        }
-        /* @var \Tk\UploadedFile $uploadedFile */
-        foreach ($this->getUploadedFiles() as $uploadedFile) {
-            if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
-                $this->addError(strip_tags($uploadedFile->getFilename()) .': '. $uploadedFile->getErrorMessage());
-            }
-            if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
-                $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
-            }
-        }
-        // Return false if we have errors
-        return !count($this->errors);
     }
 
     /**

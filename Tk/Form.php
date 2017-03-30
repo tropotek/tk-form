@@ -121,32 +121,12 @@ class Form extends Form\Element
         $cleanRequest = $this->cleanLoadArray($request);
         $this->loadFields($cleanRequest);
 
-        // execute field only on submission
-        $this->executeFields($request);
-
         if ($event) {
             if ($event->getCallback() instanceof \Closure || is_callable($event->getCallback())) {
                 $ret = call_user_func_array($event->getCallback(), array($this));
                 return $ret;
             }
         }
-    }
-
-    /**
-     * Calls the fields execute method where one can perform functions
-     * within the field itself
-     *
-     * @param array|\Tk\Request $request
-     * @return $this
-     */
-    protected function executeFields($request)
-    {
-        /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) continue;
-            $field->execute($request);
-        }
-        return $this;
     }
 
     /**
