@@ -114,7 +114,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $n;
     }
 
-
     /**
      * Assumes the field value resides within an array
      * EG:
@@ -137,6 +136,16 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
             $this->setValue($values[$this->getName()]);
         }
         return $this;
+    }
+
+    /**
+     * Execute is called after the load methods and only on form submission
+     *
+     * @param array|\Tk\Request $request
+     */
+    public function execute($request)
+    {
+
     }
 
     /**
@@ -166,10 +175,10 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @return array
      * @deprecated Use get Value
      */
-    public function getValueArray()
-    {
-        return $this->value;
-    }
+//    public function getValueArray()
+//    {
+//        return $this->value;
+//    }
 
     /**
      * Does this fields data come as an array.

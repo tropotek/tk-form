@@ -51,11 +51,6 @@ class Form extends Form\Element
     protected $triggeredEvent = null;
 
     /**
-     * @var \Tk\Request|array|\ArrayAccess
-     */
-    protected $request = null;
-
-    /**
      * @var array
      */
     protected $loadArray = null;
@@ -67,30 +62,22 @@ class Form extends Form\Element
      * @param string $formId
      * @param array $request An array of request GET|POST values
      */
-    public function __construct($formId, $request = null)
+    public function __construct($formId)
     {
         $this->id = $formId;;
         $this->setForm($this);
         $this->name = $formId;
-        if (!$this->request) {
-            $this->request = &$_REQUEST;
-        }
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', \Tk\Uri::create());
     }
 
     /**
      * @param $formId
-     * @param null $request
      * @return static
      */
-    public static function create($formId, $request = null)
+    public static function create($formId)
     {
         $obj = new static($formId);
-        if (!$request)
-            $request = \Tk\Config::getInstance()->getRequest();
-
-        $obj->setRequest($request);
         return $obj;
     }
     
@@ -105,39 +92,38 @@ class Form extends Form\Element
     }
 
     /**
-     * @param \Tk\Request|array|\ArrayAccess $request
-     * @return $this
-     */
-    public function setRequest(&$request)
-    {
-        $this->request = &$request;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function &getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
      * Execute the object
      *
      * If an button is found and its event is executed the result is returned
      *
+     * @param $request
      * @return mixed
      */
-    public function execute()
+    public function execute($request = null)
     {
-        $this->executeLoad($this->loadArray);
+        // get the request object if non supplied.
+        if (!$request) {
+            $request = \Tk\Request::create();
+            //$request = \Tk\Config::getInstance()->getRequest();
+            // TODO: we may not need this and this can be here fine without a warning....
+            \Tk\Config::getInstance()->getLog()->warning('\Tk\Form::execute($request) - Request value missing using default \Tk\Request::create() object.');
+        }
 
+        // Load default field values
+        $this->loadFields($this->loadArray);
+
+        // get the triggered event, this also setup the fporm ready to fire an event if present.
+        /* @var Event\Iface|null $event */
+        $event = $this->getTriggeredEvent($request);
         if (!$this->isSubmitted()) return null;
-        $this->executeLoad($this->getRequest());
 
-        /* @var Event\Iface $event */
-        $event = $this->getTriggeredEvent();
+        // Load request field values
+        $cleanRequest = $this->cleanLoadArray($request);
+        $this->loadFields($cleanRequest);
+
+        // execute field only on submission
+        $this->executeFields($request);
+
         if ($event) {
             if ($event->getCallback() instanceof \Closure || is_callable($event->getCallback())) {
                 $ret = call_user_func_array($event->getCallback(), array($this));
@@ -147,24 +133,64 @@ class Form extends Form\Element
     }
 
     /**
+     * Calls the fields execute method where one can perform functions
+     * within the field itself
+     *
+     * @param array|\Tk\Request $request
+     * @return $this
+     */
+    protected function executeFields($request)
+    {
+        /* @var $field Field\Iface */
+        foreach ($this->getFieldList() as $field) {
+            if ($field instanceof Event\Iface) continue;
+            $field->execute($request);
+        }
+        return $this;
+    }
+
+    /**
      * Loads the fields with values from an array.
      * EG:
      *   $array['field1'] = 'value1';
      *
-     * @param array $array
+     * @param array|\ArrayObject $array
      * @return $this
      */
-    protected function executeLoad($array)
+    protected function loadFields($array)
     {
         if ($array === null) return $this;
-        $array = $this->cleanLoadArray($array);
-
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
             $field->load($array);
         }
         return $this;
+    }
+
+    /**
+     * Get the field event to execute
+     *
+     * This will only return a valid value <b>after</b> the
+     *   execute() method has been called.
+     *
+     * @param array $array
+     * @return Event\Iface
+     */
+    public function getTriggeredEvent($array = null)
+    {
+        if ($array && !$this->triggeredEvent) {
+            /* @var $field Field\Iface */
+            foreach($this->fieldList as $field) {
+                if ($field instanceof Event\Iface) {
+                    if (isset($array[$field->getEventName()])) {
+                        $this->triggeredEvent = $field;
+                        break;
+                    }
+                }
+            }
+        }
+        return $this->triggeredEvent;
     }
 
     /**
@@ -187,8 +213,8 @@ class Form extends Form\Element
     
     /**
      * Clean the load() array
-     *  o create a new raw array for any \ArrayAccess objects
-     *  o add array keys that request modifies (ie replace '_' with '.') with field names
+     *  o create a new raw array for any \ArrayAccess objects like the request object
+     *  o add array keys that the request modifies (request replaces '.' with '_') with field names
      *    this will not modify keys that a field does not exist for.
      * 
      * @param array|\ArrayAccess $array
@@ -196,14 +222,14 @@ class Form extends Form\Element
      */
     protected function cleanLoadArray($array)
     {
-        // get values from \ArrayAccess objects
+        // get values from \ArrayAccess objects (IE: Request object)
         if ($array instanceof \ArrayAccess) {
             $a = array();
             foreach($array as $k => $v) $a[$k] = $v;
             $array = $a;
         }
-        // TODO: This could be removed, Check this out to be sure....????
-        // Fix keys for conversions of '.' to '_'
+
+        // Fix keys for conversions of '_' to '.' for fields that have been modified
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             $cleanName = str_replace('.', '_', $field->getName());
@@ -211,33 +237,10 @@ class Form extends Form\Element
                 $array[$field->getName()] = $array[$cleanName];
             }
         }
+
         return $array;
     }
 
-
-    /**
-     * Get the field event to execute
-     *
-     * This will only return a valid value <b>after</b> the
-     *   execute() method has been called.
-     *
-     * @return Event\Iface
-     */
-    public function getTriggeredEvent()
-    {
-        if ($this->request && !$this->triggeredEvent) {
-            /* @var $field Field\Iface */
-            foreach($this->fieldList as $field) {
-                if ($field instanceof Event\Iface) {
-                    if (isset($this->request[$field->getEventName()])) {
-                        $this->triggeredEvent = $field;
-                        break;
-                    }
-                }
-            }
-        }
-        return $this->triggeredEvent;
-    }
 
     /**
      * Set the callback to an event element,
@@ -521,8 +524,15 @@ class Form extends Form\Element
                     continue;
                 }
             }
-
-            $array[$name] = $field->getValue();
+            $value = $field->getValue();
+            if (!$field->isArrayField() && is_array($value)) {
+                // Keep an eye on this for any unwanted issues, related to the data map and multiple value property maps
+                foreach ($value as $k => $v) {  // pull values out if the element is not an array
+                    $array[$k] = $v;
+                }
+            } else {
+                $array[$name] = $value;
+            }
         }
         return $array;
     }

@@ -22,14 +22,9 @@ class File extends Input
     protected $maxBytes = 0;
 
     /**
-     * @var \Tk\Request
-     */
-    protected $request = null;
-
-    /**
      * @var \Tk\UploadedFile[]
      */
-    protected $uploadedFiles = null;
+    protected $uploadedFiles = array();
 
     /**
      * @var bool
@@ -41,55 +36,99 @@ class File extends Input
      */
     protected $previousValue = '';
 
-    /**
-     * @var string
-     */
-    protected $dataPath = '';
-
 
     /**
      * __construct
      *
      * @param string $name
-     * @param \Tk\Request $request
-     * @param string $dataPath
      */
-    public function __construct($name, $request, $dataPath = '')
+    public function __construct($name)
     {
-        $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')), \Tk\File::string2Bytes(ini_get('post_max_size')) );
-        $this->request = $request;
-        $this->dataPath = $dataPath;
         parent::__construct($name);
+        $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')), \Tk\File::string2Bytes(ini_get('post_max_size')) );
         $this->setType('file');
 
-        // Setup file with data ignore empty files
-        $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
-
-        if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
-        if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
-            $this->uploadedFiles = array();
-        }
 
     }
 
     public function load($values)
     {
-        $this->previousValue = $this->getValue();
-        parent::load($values);
+        $request = \Tk\Request::create();
 
-        // TODO: Not sure this stuff belongs here??
-        if (is_array($values) && $this->getForm()->isSubmitted()) {
-            $did = str_replace('.', '_', $this->getDeleteName());
-            //if ($this->previousValue && isset($values[$did]) && $values[$did] == $did) {
-            if ($this->previousValue && isset($values[$did])) {
-                $this->delFile = true;
-                if (is_file($this->dataPath . $this->previousValue)) {
-                    @unlink($this->dataPath . $this->previousValue);
-                }
-                $this->setValue('');
+        vd($values, $this->getValue());     // TODO: we will have to load the value initially?????
+
+        if ($this->getForm()->isSubmitted()) {
+            vd('File::load($values)');
+            $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
+            if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
+            if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
+                $this->uploadedFiles = array();
             }
+            if ($this->hasFile()) {
+                $this->previousValue = $this->getValue();
+                $values = array();
+                /** @var \Tk\UploadedFile $uploadedFile */
+                foreach ($this->getUploadedFiles() as $uploadedFile) {
+                    $values[] = $uploadedFile->getFilename();
+                }
+                $this->setValue($values);
+            }
+
+
+        } else {
+            parent::load($values);
+        }
+
+
+
+        vd($this->getValue());
+        //
+
+        return $this;
+    }
+
+    /**
+     * Set the field value.
+     * Set the exact value the field requires to function.
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        if ($this->isArrayField()) {
+            $this->value = json_encode($value);
+        } else {
+            if (is_array($value)) $value = current($value);
+            $this->value = $value;
         }
         return $this;
+    }
+
+    /**
+     * Get the field value(s).
+     *
+     * @return string|array
+     */
+    public function getValue()
+    {
+        if ($this->isArrayField()) {
+            return json_decode($this->value);
+        }
+        return $this->value;
+    }
+
+    /**
+     * Execute is called after the load methods and only on form submission
+     *
+     * @param array|\Tk\Request $request
+     */
+    public function execute($request)
+    {
+        //vd('File::execute($request)');
+
+        //vd($this->getUploadedFiles());
+
     }
 
     /**
@@ -119,9 +158,9 @@ class File extends Input
     /**
      * @return string
      */
-    public function getDeleteName()
+    public function getDeleteEventName()
     {
-        return $this->makeId().'-del';
+        return str_replace('.', '_', $this->makeId()) . '-del';
     }
 
     /**
@@ -175,6 +214,26 @@ class File extends Input
     public function hasFile()
     {
         return (count($this->getUploadedFiles()) > 0);
+    }
+
+
+    public function deleteFile($fileValue)
+    {
+        if (!is_array($fileValue)) $fileValue = array($fileValue);
+
+        foreach ($fileValue as $filePath) {
+
+//            if ($this->previousValue && isset($values[$this->getDeleteEventName()])) {
+//                $this->delFile = true;
+//                if (is_file($this->dataPath . $this->previousValue)) {
+//                    @unlink($this->dataPath . $this->previousValue);
+//                }
+//            }
+        }
+//                $this->setValue('');
+
+
+
     }
 
     /**
@@ -252,7 +311,6 @@ class File extends Input
         }
         // TODO: add ability to check file types from extension?
 
-
         if (!count($this->getUploadedFiles()) && $this->isRequired()) {
             $this->addError(strip_tags('Please select a file to upload'));
         }
@@ -276,18 +334,18 @@ class File extends Input
      */
     public function getHtml()
     {
-
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
         $t = parent::getHtml();
 
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
+        //$t->setAttr('element', 'value', '');
 
         if ($this->isArrayField()) {
             $t->setAttr('element', 'multiple', 'true');
         }
 
         if ($this->getValue()) {
-            $did = $this->getDeleteName();
+            $did = $this->getDeleteEventName();
             $t->setAttr('delete', 'id', $did);
             $t->setAttr('label', 'for', $did);
             $t->setAttr('delete', 'name', $did);
