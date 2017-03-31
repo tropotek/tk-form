@@ -162,15 +162,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     }
 
     /**
-     * @return array
-     * @deprecated Use get Value
-     */
-//    public function getValueArray()
-//    {
-//        return $this->value;
-//    }
-
-    /**
      * Does this fields data come as an array.
      * If the name ends in [] then it will be flagged as an arrayField.
      *
@@ -343,9 +334,9 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         // Field name attribute
         $t->setAttr('element', 'name', $this->getFieldName());
 
-        if ($this->isRequired()) {
-            $t->setAttr('element', 'required', 'required');
-        }
+//        if ($this->isRequired()) {
+//            $t->setAttr('element', 'required', 'required');
+//        }
 
         if ($this->isReadonly()) {
             $t->setAttr('element', 'readonly', 'readonly');
