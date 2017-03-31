@@ -55,29 +55,42 @@ class Form extends Form\Element
      */
     protected $loadArray = null;
 
+    /**
+     * if true the required HTML5 attribute will be rendered
+     * @var bool
+     */
+    private $enableRequiredAttr = false;
+
 
     /**
      * Create a form processor
      *
      * @param string $formId
-     * @param array $request An array of request GET|POST values
+     * @param string $method
+     * @param string|\Tk\Uri|null $action
      */
-    public function __construct($formId)
+    public function __construct($formId, $method = self::METHOD_POST, $action = null)
     {
         $this->id = $formId;;
         $this->setForm($this);
         $this->name = $formId;
-        $this->setAttr('method', self::METHOD_POST);
-        $this->setAttr('action', \Tk\Uri::create());
+        $this->setAttr('method', $method);
+        if (!$action)  $action = \Tk\Uri::create();
+        $this->setAttr('action', \Tk\Uri::create($action));
     }
 
     /**
      * @param $formId
+     * @param string $method
+     * @param string|\Tk\Uri|null $action
      * @return static
      */
-    public static function create($formId)
+    public static function create($formId, $method = self::METHOD_POST, $action = null)
     {
-        $obj = new static($formId);
+        $obj = new static($formId, $method, $action);
+        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
+            $obj->setEnableRequiredAttr(true);
+        }
         return $obj;
     }
     
@@ -106,7 +119,7 @@ class Form extends Form\Element
             $request = \Tk\Request::create();
             //$request = \Tk\Config::getInstance()->getRequest();
             // TODO: we may not need this and this can be here fine without a warning....
-            \Tk\Config::getInstance()->getLog()->warning('\Tk\Form::execute($request) - Request value missing using default \Tk\Request::create() object.');
+            //\Tk\Config::getInstance()->getLog()->warning('\Tk\Form::execute($request) - Request value missing using default \Tk\Request::create() object.');
         }
 
         // Load default field values
@@ -517,6 +530,24 @@ class Form extends Form\Element
         return $array;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEnableRequiredAttr()
+    {
+        return $this->enableRequiredAttr;
+    }
+
+    /**
+     * @param bool $enableRequiredAttr
+     */
+    public function setEnableRequiredAttr($enableRequiredAttr)
+    {
+        $this->enableRequiredAttr = $enableRequiredAttr;
+    }
+
+    
+    
     /**
      * Not used in the form
      *
