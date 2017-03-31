@@ -65,28 +65,50 @@ class File extends Input
         if (!$dataPath) {
             $dataPath = \Tk\Config::getInstance()->getDataPath();
         }
-        $this->dataPath = $dataPath;
+        $this->dataPath = rtrim($dataPath, '/');
         if ($destPath) {
             $destPath = str_replace($dataPath, '', $destPath);
         }
-        $this->destPath = $destPath;
+        $this->destPath = rtrim($destPath, '/');
     }
 
+    /**
+     * Set the form for this element
+     *
+     * @param Form $form
+     * @return $this
+     */
+    public function setForm(Form $form)
+    {
+        parent::setForm($form);
+        $form->setAttr('enctype', Form::ENCTYPE_MULTIPART);
+        
+        // load any uploaded files if available
+        $request = \Tk\Request::create();
+        $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
+        if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
+        if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
+            $this->uploadedFiles = array();
+        }
+        
+        return $this;
+    }
+
+    /**
+     * This method does the following:
+     * 
+     *  o Loads the field value with the relative file path: `$destPath . '/' . $uploadedFile->getFilename()`
+     *  o Uploads the file to the path defind by: `$dataPath . $destPath . '/' . $uploadedFile->getFilename()`
+     * 
+     * Override this with your own if you need different functionality.
+     * 
+     * @param array|\ArrayObject $values
+     * @return $this
+     */
     public function load($values)
     {
-        $request = \Tk\Request::create();
-
-        //vd($values, $this->getValue());     // TODO: we will have to load the value initially?????
-
-        // EG Object Path: `/institution/logo/1/logo2.png`
-
         if ($this->getForm()->isSubmitted()) {
-            vd('File::load($values)');
-            $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
-            if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
-            if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
-                $this->uploadedFiles = array();
-            }
+            
             if ($this->hasFile() && $this->isValid()) {
                 $this->previousValue = $this->getValue();
                 $values = array();
@@ -94,17 +116,22 @@ class File extends Input
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
                     $values[] = $this->destPath . '/' . $uploadedFile->getFilename();
                 }
-                $this->setValue($values);
-
-
                 // delete any existing files if new files are valid and path writable
-
+                $this->deleteFile($this->previousValue);
+                
                 // move new files if valid
-
+                $this->moveFile();
+                // Update values on success
+                if (!$this->getForm()->hasErrors()) {
+                    $this->setValue($values);
+                }
             }
+            
             // Check if the delete file checkbox is checked.
-
-
+            if (isset($values[$this->getDeleteEventName()])) {
+                $this->deleteFile($this->getValue());
+                $this->setValue('');
+            }
 
         } else {
             // load object value if not submitted
@@ -116,17 +143,79 @@ class File extends Input
     }
 
     /**
+     * @param string|array $relFilePath
+     * @return int Return the number of files deleted
+     */
+    public function deleteFile($relFilePath)
+    {
+        if (!$relFilePath) return 0;
+        if (!is_array($relFilePath)) $relFilePath = array($relFilePath);
+        $cnt = 0;
+        foreach ($relFilePath as $filePath) {
+            $fullPath = $this->dataPath . rtrim($filePath, '/');
+            if (is_file($fullPath)) {
+                @unlink($fullPath);
+            }
+            $cnt++;
+        }
+        return $cnt;
+    }
+
+    /**
+     * Use this to move the attached files to the directory in $dir
+     *
+     * If this is a single file then the $filepath is the full path (including filename)
+     * of the destination location.
+     *
+     * If this is a multiple file field (isFieldArray() == true) then the $filepath
+     * is the directory of the destination location.
+     *
+     * If you need more control get the updaloadedFiles() and do it manually
+     *
+     * If the directory does not exist it will try to create it for you.
+     *
+     *
+     * @see \Tk\UploadedFile::moveTo
+     * @param \Tk\UploadedFile[] $uploadedFiles
+     * @return int The number of files moved
+     */
+    public function moveFile($uploadedFiles = null)
+    {
+        if (!$uploadedFiles) {
+            $uploadedFiles = $this->getUploadedFiles();
+        }
+        $cnt = 0;
+        try {
+            foreach ($uploadedFiles as $uploadedFile) {
+                $relFilePath = $this->destPath . '/' . $uploadedFile->getFilename();
+                $fullPath = $this->dataPath . $relFilePath;
+                if (!is_dir(dirname($fullPath))) {
+                    if (!@mkdir(dirname($fullPath), 0777, true)) {
+                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
+                    }
+                }
+                $uploadedFile->moveTo($fullPath);
+                $cnt++;
+            }
+        } catch (\Exception $e) {
+            // TODO: Test this on an error to see the result
+            $this->addError($e->getMessage());
+        }
+
+        return $cnt;
+    }
+
+    /**
      * A basic file validation method.
      *
      * @return bool
+     * @todo add ability to check file types from extension?
      */
     public function isValid()
     {
         if (!$this->hasFile()) {
             return true;
         }
-
-        // TODO add ability to check file types from extension?
 
         if (!count($this->getUploadedFiles()) && $this->isRequired()) {
             $this->addError(strip_tags('Please select a file to upload'));
@@ -173,32 +262,6 @@ class File extends Input
             return json_decode($this->value);
         }
         return $this->value;
-    }
-
-    /**
-     * Execute is called after the load methods and only on form submission
-     *
-     * @param array|\Tk\Request $request
-     */
-    public function execute($request)
-    {
-        //vd('File::execute($request)');
-
-        //vd($this->getUploadedFiles());
-
-    }
-
-    /**
-     * Set the form for this element
-     *
-     * @param Form $form
-     * @return $this
-     */
-    public function setForm(Form $form)
-    {
-        parent::setForm($form);
-        $form->setAttr('enctype', Form::ENCTYPE_MULTIPART);
-        return $this;
     }
 
     /**
@@ -272,90 +335,8 @@ class File extends Input
     {
         return (count($this->getUploadedFiles()) > 0);
     }
-
-
-    public function deleteFile($fileValue)
-    {
-        if (!is_array($fileValue)) $fileValue = array($fileValue);
-
-        foreach ($fileValue as $filePath) {
-
-//            if ($this->previousValue && isset($values[$this->getDeleteEventName()])) {
-//                $this->delFile = true;
-//                if (is_file($this->dataPath . $this->previousValue)) {
-//                    @unlink($this->dataPath . $this->previousValue);
-//                }
-//            }
-        }
-//                $this->setValue('');
-
-
-
-    }
-
-    /**
-     * Use this to move the attached files to the directory in $dir
-     *
-     * If this is a single file then the $filepath is the full path (including filename)
-     * of the destination location.
-     *
-     * If this is a multiple file field (isFieldArray() == true) then the $filepath
-     * is the directory of the destination location.
-     *
-     * If you need more control get the updaloadedFiles() and do it manually
-     *
-     * If the directory does not exist it will try to create it for you.
-     *
-     *
-     * @see \Tk\UploadedFile::moveTo
-     * @param string $filepath The full destination path with filename
-     */
-    public function moveTo($filepath)
-    {
-        try {
-            if (!$this->hasFile()) return;
-            $filepath = str_replace($this->dataPath, '', $filepath);
-            $targetPath = $this->dataPath . $filepath;
-
-            $value = '';
-            if (!$this->isArrayField()) {   // single file
-                if (!is_dir(dirname($targetPath))) {
-                    if (!@mkdir(dirname($targetPath), 0777, true)) {
-                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
-                    }
-                }
-                $this->getUploadedFile()->moveTo($targetPath);
-                // TODO: Still not sure this belongs here???
-                if ($this->previousValue != $filepath && is_file($this->dataPath . $this->previousValue)) {
-                    @unlink($this->dataPath . $this->previousValue);
-                }
-                $value = $filepath;
-            } else {     // multiple files
-
-                // TODO: Verify that this is working.
-                if (!is_dir($targetPath)) {
-                    if (!@mkdir($targetPath, 0777, true)) {
-                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
-                    }
-                }
-
-                $value = array();
-                /* @var \Tk\UploadedFile $uploadedFile */
-                foreach ($this->getUploadedFiles() as $uploadedFile) {
-                    $filepath =  basename(strip_tags($targetPath.'/'.$uploadedFile->getFilename()));
-                    $uploadedFile->moveTo($filepath);
-                    $value[] = $filepath;
-                }
-
-            }
-
-            $this->setValue($value);
-        } catch (\Exception $e) {
-            // TODO: Test this on an error to see the result
-            $this->addError($e->getMessage());
-            $this->setValue($this->previousValue);
-        }
-    }
+    
+    
 
     /**
      * Get the element HTML
@@ -366,10 +347,8 @@ class File extends Input
     {
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
         $t = parent::getHtml();
-
+        
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
-        //$t->setAttr('element', 'value', '');
-
         if ($this->isArrayField()) {
             $t->setAttr('element', 'multiple', 'true');
         }
@@ -395,7 +374,7 @@ class File extends Input
     {
         $xhtml = <<<HTML
 <div>
-  <input type="text" class="form-control fileinput" var="element"/>
+  <input type="text" class="form-control" var="element"/>
   <div choice="delete" var="delWrapper">
     <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>
   </div>
