@@ -354,7 +354,7 @@ class File extends Input
         }
 
         if ($this->getValue()) {
-            $did = $this->getDeleteEventName();
+            $did = $this->makeId() . '-del';
             $t->setAttr('delete', 'id', $did);
             $t->setAttr('label', 'for', $did);
             $t->setAttr('delete', 'name', $did);

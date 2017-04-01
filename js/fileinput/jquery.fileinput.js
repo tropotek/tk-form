@@ -84,6 +84,7 @@
 
       // Tk2 File field only
       var delCb = parent.find('#'+es($element.attr('id'))+plugin.settings.delClassAppend);
+      
       if (delCb.length) {
         parent.find('.'+es($element.attr('id'))+plugin.settings.delClassAppend+'-wrap').hide();
       }
@@ -147,7 +148,6 @@
         prev.find('.image-preview-clear').hide();
         prev.find('.image-preview-input input:file').val('');
         //prev.find('.image-preview-input-title').text(' Browse');
-
         prev.find('.image-preview-thumb').hide();
         prev.find('.image-preview-thumb').attr('data-content', 'No Image');
         delCb.prop('checked', true);
