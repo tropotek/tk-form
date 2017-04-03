@@ -107,40 +107,76 @@ class File extends Input
      */
     public function load($values)
     {
-        if ($this->getForm()->isSubmitted()) {
-            
-            if ($this->hasFile() && $this->isValid()) {
+        // Do any functions to update the field value, do not modify the file at this stage
+        if ($this->getForm()->isSubmitted() && $this->isValid()) {
+            if ($this->hasFile()) {
                 $this->previousValue = $this->getValue();
-                $values = array();
+                $newVal = array();
                 /** @var \Tk\UploadedFile $uploadedFile */
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
-                    $values[] = $this->destPath . '/' . $uploadedFile->getFilename();
+                    $newVal[] = $this->destPath . '/' . $uploadedFile->getFilename();
                 }
-                // delete any existing files if new files are valid and path writable
-                $this->deleteFile($this->previousValue);
-                
-                // move new files if valid
-                $this->moveFile();
-                // Update values on success
-                if (!$this->getForm()->hasErrors()) {
-                    $this->setValue($values);
-                }
+                $this->setValue($newVal);
             }
-            
-            // Check if the delete file checkbox is checked.
             if (isset($values[$this->getDeleteEventName()])) {
-                $this->deleteFile($this->getValue());
                 $this->setValue('');
             }
-
         } else {
             // load object value if not submitted
             parent::load($values);
         }
 
-
         return $this;
     }
+
+    /**
+     * Update the physical file state.
+     * This should be called after the form data has been filly validated
+     *
+     * <code>
+     *  ...
+     *
+     *  // onSubmit callback
+     *  $form->addFieldErrors($this->company->validate());
+     *  if ($form->hasErrors()) {
+     *    return;
+     *  }
+     *
+     *  $form->getField('logo')->updateFile();      // <<--- Here!!!
+     *
+     *  // resize the image if needed
+     *  if ($form->getField('logo')->hasFile()) {
+     *    $fullPath = $this->getConfig()->getDataPath() . $this->company->logo;
+     *    \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+     *  }
+     *
+     *  $this->company->save();
+     *
+     *  ...
+     * </code>
+     * @return int Return the number of files modified
+     */
+    public function updateFile()
+    {
+        $cnt = 0;
+
+        if ($this->getForm()->hasErrors()) return $cnt;
+
+        if ($this->hasFile()) {
+            // delete any existing files if new files are valid and path writable
+            $this->deleteFile($this->previousValue);
+            // move new files if valid
+            $cnt = $this->moveFile($this->dataPath . $this->destPath);
+        } else {
+            // Check if the delete file checkbox is checked.
+            if (\Tk\Request::create()->has($this->getDeleteEventName())) {
+                $this->deleteFile($this->getValue());
+            }
+        }
+
+        return $cnt;
+    }
+
 
     /**
      * @param string|array $relFilePath
@@ -176,24 +212,27 @@ class File extends Input
      *
      *
      * @see \Tk\UploadedFile::moveTo
-     * @param \Tk\UploadedFile[] $uploadedFiles
+     * @param string $destPath If not set then `$destPath = $this->dataPath . $this->destPath` is used
      * @return int The number of files moved
+     * @throws \Tk\Form\Exception
      */
-    public function moveFile($uploadedFiles = null)
+    public function moveFile($destPath = '')
     {
-        if (!$uploadedFiles) {
-            $uploadedFiles = $this->getUploadedFiles();
+        $uploadedFiles = $this->getUploadedFiles();
+
+        if (!$destPath) {
+            throw new \Tk\Form\Exception('Please set a writable destination path.');
         }
+        if (!is_dir($destPath)) {
+            if (!@mkdir($destPath, 0777, true)) {
+                throw new \Tk\Form\Exception('File Permission Error: Cannot write to destination path.');
+            }
+        }
+
         $cnt = 0;
         try {
             foreach ($uploadedFiles as $uploadedFile) {
-                $relFilePath = $this->destPath . '/' . $uploadedFile->getFilename();
-                $fullPath = $this->dataPath . $relFilePath;
-                if (!is_dir(dirname($fullPath))) {
-                    if (!@mkdir(dirname($fullPath), 0777, true)) {
-                        throw new \Tk\Exception('Internal Permission Error: Cannot move files to destination directory.');
-                    }
-                }
+                $fullPath = $destPath . '/' . $uploadedFile->getFilename();
                 $uploadedFile->moveTo($fullPath);
                 $cnt++;
             }
@@ -353,15 +392,19 @@ class File extends Input
             $t->setAttr('element', 'multiple', 'true');
         }
 
-        if ($this->getValue()) {
+        if ($this->getValue() || \Tk\Request::create()->has($this->getDeleteEventName())) {
             $did = $this->makeId() . '-del';
             $t->setAttr('delete', 'id', $did);
             $t->setAttr('label', 'for', $did);
             $t->setAttr('delete', 'name', $did);
             $t->setAttr('delete', 'value', $did);
             $t->addCss('delWrapper', $did.'-wrap');
+            if (\Tk\Request::create()->has($this->getDeleteEventName())) {
+                $t->setAttr('delete', 'checked', 'checked');
+            }
             $t->setChoice('delete');
         }
+
         return $t;
     }
 
