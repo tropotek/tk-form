@@ -12,7 +12,12 @@ namespace Tk\Form\Field;
  */
 class Checkbox extends Input
 {
-    
+    /**
+     * @var string
+     */
+    private $checkboxLabel = '';
+
+
     /**
      * __construct
      *
@@ -21,7 +26,8 @@ class Checkbox extends Input
     public function __construct($name)
     {
         parent::__construct($name);
-        $this->setShowLabel(false);
+        $this->checkboxLabel = $this->getLabel();
+        $this->setLabel('');
         $this->setType('checkbox');
     }
 
@@ -65,7 +71,7 @@ class Checkbox extends Input
         $t->setAttr('hidden', 'name', $this->getName());
         $t->setAttr('hidden', 'value', '');
 
-        $t->insertText('label', $this->getLabel());
+        $t->insertText('label', $this->checkboxLabel);
         return $t;
     }
     

@@ -49,7 +49,7 @@ abstract class Element implements \Tk\InstanceKey
     /**
      * @var string
      */
-    protected $label = '';
+    protected $label = null;
 
 
     /**

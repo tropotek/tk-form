@@ -62,7 +62,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 
 
         if ($this->getField()->hasErrors()) {
-            $t->addCss('field-group', 'has-error');
+            $t->addCss('field-group', 'has-error has-feedback');
             
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
@@ -76,12 +76,13 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             }
         }
 
-        if ($this->getField()->hasShowLabel() && $this->getField()->getLabel()) {
+        if ($this->getField()->hasShowLabel() && $this->getField()->getLabel() !== null) {
             $label = $this->getField()->getLabel();
+            if ($label) $label .= ':';
             if ($this->getField()->isRequired()) {
                 $t->addCss('field-group', 'required');
             }
-            $t->insertHtml('label', $label.':');
+            $t->insertHtml('label', $label);
             $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
             $t->setChoice('label');
         }
@@ -105,8 +106,8 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="form-group form-group-sm " var="field-group">
-  <span class="help-block error-text" choice="errorText"><span class="glyphicon glyphicon-ban-circle"></span> <span var="errorText"></span></span>
+<div class="form-group form-group-sm" var="field-group">
+  <span class="help-block" choice="errorText"><span class="glyphicon glyphicon-ban-circle"></span> <span var="errorText"></span></span>
   <label class="control-label" var="label" choice="label"></label>
   <div var="element" class="controls"></div>
   <span class="help-block help-text" var="notes" choice="notes">&nbsp;</span>

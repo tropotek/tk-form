@@ -234,7 +234,7 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-            // TODO: Check this is how we want to do this, I would like the ability to override the FieldGroup object
+
             $fg = new $this->fieldGroupClass($field);
             $html = $fg->show();
             
