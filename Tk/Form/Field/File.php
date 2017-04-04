@@ -142,7 +142,7 @@ class File extends Input
      *    return;
      *  }
      *
-     *  $form->getField('logo')->updateFile();      // <<--- Here!!!
+     *  $form->getField('logo')->saveFile();      // <<--- Here!!!
      *
      *  // resize the image if needed
      *  if ($form->getField('logo')->hasFile()) {
@@ -156,7 +156,7 @@ class File extends Input
      * </code>
      * @return int Return the number of files modified
      */
-    public function updateFile()
+    public function saveFile()
     {
         $cnt = 0;
 
