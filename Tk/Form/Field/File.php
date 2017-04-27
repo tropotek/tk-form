@@ -29,13 +29,12 @@ class File extends Input
     /**
      * @var bool
      */
-    protected $delFile= false;
+    protected $delFile = false;
 
     /**
      * @var string
      */
     protected $previousValue = '';
-
 
     /**
      * The path to save the file relative to the dataPath.
@@ -98,7 +97,7 @@ class File extends Input
      * This method does the following:
      * 
      *  o Loads the field value with the relative file path: `$destPath . '/' . $uploadedFile->getFilename()`
-     *  o Uploads the file to the path defind by: `$dataPath . $destPath . '/' . $uploadedFile->getFilename()`
+     *  o Uploads the file to the path defined by: `$dataPath . $destPath . '/' . $uploadedFile->getFilename()`
      * 
      * Override this with your own if you need different functionality.
      * 
