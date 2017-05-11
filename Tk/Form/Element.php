@@ -124,23 +124,33 @@ abstract class Element implements \Tk\InstanceKey
 
     /**
      * Get the unique ID for this field
+     * Generally this is: "$prepend + form.id + element.name"
+     *
+     * If no form is set then the returned value is: "$prepend + element.name"
      *
      * @param string $prepend
      * @return string
      */
-    protected function makeId($prepend = 'fid_')
+    protected function makeId($prepend = '')
     {
-        if ($this->getForm() && $prepend == 'fid_') {
+        if ($this->getForm() && $this->getForm() !== $this) {
             $prepend .= $this->getForm()->getId() . '_';
-        }
-        if (!$this->form) {
-            vd('Warning: Form not set when requesting ID');
         }
         return $prepend . $this->getName();
     }
+//    protected function makeId($prepend = 'fid_')
+//    {
+//        if ($this->getForm() && $prepend == 'fid_') {
+//            $prepend .= $this->getForm()->getId() . '_';
+//        }
+//        if (!$this->form) {
+//            vd('Warning: Form not set when requesting ID');
+//        }
+//        return $prepend . $this->getName();
+//    }
 
     /**
-     * return the isd attribute value
+     * return the is attribute value
      *
      * @return string
      */

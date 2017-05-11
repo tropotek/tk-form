@@ -293,10 +293,9 @@ class Form extends Form\Element
         $fieldName = str_replace('[]', '', $fieldName);
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Field\Iface */
+        /** @var Field\Iface $field */
         foreach ($this->fieldList as $field) {
             if ($field->getName() == $fieldName) {
-                $field->setForm($this);
                 $newArr[$newField->getName()] = $newField;
             }
             $newArr[$field->getName()] = $field;
@@ -317,11 +316,10 @@ class Form extends Form\Element
         $fieldName = str_replace('[]', '', $fieldName);
         $newArr = array();
         $newField->setForm($this);
-        /* @var $field Field\Iface */
+        /** @var Field\Iface $field */
         foreach ($this->fieldList as $field) {
             $newArr[$field->getName()] = $field;
             if ($field->getName() == $fieldName) {
-                $field->setForm($this);
                 $newArr[$newField->getName()] = $newField;
             }
         }
