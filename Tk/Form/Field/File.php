@@ -223,7 +223,7 @@ class File extends Input
             throw new \Tk\Form\Exception('Please set a writable destination path.');
         }
         if (!is_dir($destPath)) {
-            if (!@mkdir($destPath, 0777, true)) {
+            if (!@mkdir($destPath, \Tk\Config::getInstance()->getDirMask(), true)) {
                 throw new \Tk\Form\Exception('File Permission Error: Cannot write to destination path.');
             }
         }
