@@ -56,8 +56,9 @@ class ReCapture extends Iface
      */
     protected function doValidate($extraParams = array()) 
     {
-        $request = $this->getForm()->getRequest();
-        $remoteIp = \Tk\Request::create()->getIp();
+        
+        $request = \Tk\Request::create();
+        $remoteIp = $request->getIp();
         $rResponse = isset($request['g-recaptcha-response']) ? $request['g-recaptcha-response'] : '';
         if (!$this->privateKey) {
             $this->addError('To use reCAPTCHA you must get an API key from <a href="https://www.google.com/recaptcha/intro/index.html">https://www.google.com/recaptcha/intro/index.html</a>');
