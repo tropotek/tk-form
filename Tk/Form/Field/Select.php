@@ -130,11 +130,12 @@ class Select extends Iface
     public function load($values)
     {
         parent::load($values);
-        if (!isset($values[$this->getName()])) {
-            $this->setValue('');
-            if ($this->isArrayField())
-                $this->setValue(array());
-        }
+        // ????? WHY as it des not work now ?????
+//        if (!isset($values[$this->getName()])) {
+//            $this->setValue('');
+//            if ($this->isArrayField())
+//                $this->setValue(array());
+//        }
         return $this;
     }
 
