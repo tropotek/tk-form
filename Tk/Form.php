@@ -498,7 +498,7 @@ class Form extends Form\Element
     /**
      * This will return an array of the field's values,
      *
-     * @param null|array|string $regex A regular expression or array of fields to get
+     * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
      */
     public function getValues($regex = null)

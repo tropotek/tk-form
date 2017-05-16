@@ -69,7 +69,7 @@ class Html extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div var="element"></div>
+<div var="element" class="form-control-static"></div>
 HTML;
         return \Dom\Loader::load($xhtml);
     }

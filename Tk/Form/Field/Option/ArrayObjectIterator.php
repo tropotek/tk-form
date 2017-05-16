@@ -62,8 +62,8 @@ class ArrayObjectIterator extends ArrayIterator
 
     /**
      * @param array $list
-     * @param string $textParam
-     * @param string $valueParam
+     * @param string|callable $textParam
+     * @param string|callable $valueParam
      * @param string $disableParam
      * @param string $labelParam
      * @return ArrayObjectIterator
