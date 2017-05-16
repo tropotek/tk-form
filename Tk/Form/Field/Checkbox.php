@@ -1,5 +1,6 @@
 <?php
 namespace Tk\Form\Field;
+use Tk\Dom\AttributesTrait;
 
 /**
  *
@@ -12,6 +13,7 @@ namespace Tk\Form\Field;
  */
 class Checkbox extends Input
 {
+
     /**
      * @var string
      */
@@ -30,7 +32,6 @@ class Checkbox extends Input
         $this->setLabel('');
         $this->setType('checkbox');
     }
-
 
 
     public function load($values)

@@ -325,38 +325,38 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param \Dom\Template $t
      * @return \Dom\Template|string
      */
-    public function decorateElement(\Dom\Template $t)
+    public function decorateElement(\Dom\Template $t, $var = 'element')
     {
-        if (!$t->keyExists('var', 'element')) {
+        if (!$t->keyExists('var', $var)) {
             return $t;
         }
 
         // Field name attribute
-        $t->setAttr('element', 'name', $this->getFieldName());
+        $t->setAttr($var, 'name', $this->getFieldName());
 
         if ($this->isRequired()) {
             if ($this->getForm() && $this->getForm()->isEnableRequiredAttr())
-            $t->setAttr('element', 'required', 'required');
+            $t->setAttr($var, 'required', 'required');
         }
 
         if ($this->isReadonly()) {
-            $t->setAttr('element', 'readonly', 'readonly');
+            $t->setAttr($var, 'readonly', 'readonly');
         }
 
         if ($this->isDisabled()) {
-            $t->setAttr('element', 'disabled', 'disabled');
+            $t->setAttr($var, 'disabled', 'disabled');
             //$this->addCssClass('disabled');     // Not sure about this one, probably best to leave this to javascript
         }
 
         // Add attributes
         foreach($this->getAttrList() as $key => $val) {
             if ($val === '' || $val === null) $val = $key;
-            $t->setAttr('element', $key, $val);
+            $t->setAttr($var, $key, $val);
         }
 
         // Add element css class labels
         foreach($this->getCssList() as $v) {
-            $t->addCss('element', $v);
+            $t->addCss($var, $v);
         }
 
         return $t;
