@@ -18,7 +18,7 @@ class Dom extends Iface
     /**
      * @var string
      */
-    protected $fieldGroupClass = '\Tk\Form\Renderer\FieldGroup';
+    protected $fieldGroupClass = \Tk\Form\Renderer\FieldGroup::class;
 
 
     /**
