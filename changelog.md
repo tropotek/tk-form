@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 2.0.15 [2017-05-26]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Merge branch 'master' of https://github.com/tropotek/tk-form
+ - Fixed crumbs, company table, Ui Tables, added logo2mapMarker converter
+
+
 Ver 2.0.14 [2017-04-27]:
 -------------------------------
  - Minor Code Updates
