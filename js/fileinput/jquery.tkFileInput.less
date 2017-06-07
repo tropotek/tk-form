@@ -1,13 +1,7 @@
-/**
- * @deprecated
- */
 
+.tkFileInput {
 
-
-
-.tk-fileinput {
-
-  .image-preview-input {
+  .tfi-btn-input {
     position: relative;
     overflow: hidden;
     margin: 0;
@@ -28,30 +22,31 @@
     }
   }
 
-  .image-preview-input-title {
-    margin-left:2px;
-  }
-
-  .image-preview-thumb {
-    max-width: 250px;
-    height: 30px;
+  .tfi-btn-thumb {
+    max-width: 350px;
     img {
       vertical-align: middle;
-      max-height: 16px;
-      display: inline;
+      max-height: 15px;
+      display: inline-block;
     }
   }
 
-  .thumb-img {
-    max-width: 100%;
-  }
-
-  .popover-content {
-    overflow: hidden;
-  }
   .btn {
     box-shadow: none;
     text-shadow: none;
+  }
+
+
+  // tkImageInput styles
+
+  .image-preview-input-title {
+    margin-left:2px;
+  }
+  img {
+    max-width: 100%;
+  }
+  .popover-content {
+    overflow: hidden;
   }
 
 }

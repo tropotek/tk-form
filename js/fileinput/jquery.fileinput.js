@@ -20,15 +20,16 @@
  *   });
  * </code>
  *
- *
+ * @deprecated
  */
 (function($) {
-
   var fileinput = function(element, options) {
 
     // Default options
     var defaults = {
       dataUrl: '',
+      enableThumb: true,
+      enableClear: true,
       delClassAppend: '-del',    // For Tk File Field only
       onFoo: function() {}
     };
@@ -91,19 +92,16 @@
 
       // Check bootstral element sizes
       if ($element.parents('.form-group-sm').length || $element.hasClass('input-sm')) {
-        template.find('.image-preview-input').addClass('btn-sm');
-        template.find('.image-preview-clear').addClass('btn-sm');
-        template.find('.image-preview-thumb').addClass('btn-sm');
+        template.find('.image-preview-input, .image-preview-clear, .image-preview-thumb').addClass('btn-sm');
       } else if ($element.parents('.form-group-lg').length || $element.hasClass('input-lg')) {
-        template.find('.image-preview-input').addClass('btn-lg');
-        template.find('.image-preview-clear').addClass('btn-lg');
-        template.find('.image-preview-thumb').addClass('btn-lg');
+        template.find('.image-preview-input, .image-preview-clear, .image-preview-thumb').addClass('btn-lg');
       }
 
 
       $element.detach();
       parent.prepend(template);
       template.find('.image-preview-input').append($element);
+
 
       var img = template.find('.image-preview-thumb img');
       template.find('.image-preview-thumb').popover({
@@ -270,7 +268,7 @@
   // add the plugin to the jQuery.fn object
   $.fn.fileinput = function(options) {
     return this.each(function() {
-      if (undefined == $(this).data('fileinput')) {
+      if (undefined === $(this).data('fileinput')) {
         var plugin = new fileinput(this, options);
         $(this).data('fileinput', plugin);
       }
