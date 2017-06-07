@@ -103,7 +103,6 @@
     var $element = $(element);
     var $parent = $element.parent();    // Get the containing div
 
-
     /**
      * constructor
      *
@@ -113,11 +112,7 @@
 
       $element.tkFileInput(plugin.settings);
 
-
-
     };  /// End plugin.init()
-
-
 
     /**
      *
