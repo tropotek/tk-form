@@ -406,6 +406,40 @@
 
         // ...
 
+        // remove any duplicate filename rows
+
+        // create new row
+        for(var i = 0; i< this.files.length; i++) {
+          var file = this.files[i];
+          var row = $(plugin.settings.rowTpl);
+          row.data('file', file);
+          row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
+            function (e) {
+              $(this).blur();
+              return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
+            });
+          row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
+          row.addClass('tfi-new');
+          row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled').text(basename(file.name));
+          row.find('.tfi-file-size').text(formatBytes(file.size));
+
+          // TODO: add the input here with the file selected (clone it) for form submit to work
+          console.log(this);
+          console.log(this.files);
+
+          var cloned = $(this).clone(this).removeAttr('id').removeAttr('class').hide();
+          row.find('.tfi-btn-delete').append(cloned);
+
+          this.value = '';
+          console.log(cloned[0]);
+          console.log(cloned[0].files);
+
+
+          plugin.settings.table.append(row);
+        }
+
+        console.log(plugin.settings.table.find('[type=file]'));
+
       },
       onFileLoad: function(plugin, file) {
         if (typeof this.file === 'undefined') return;
@@ -416,7 +450,13 @@
         // console.log(basename(uri.url) + ': ' + formatBytes(bytes));
       },
       onDelete: function(plugin) {
-        console.log(this);
+        console.log($(this).data());
+
+        // use ajax to delete file if it is an existing
+
+        // remove row from table
+        $(this).remove();
+
         return false;
       }
     };
@@ -432,11 +472,11 @@
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
 
+      var table = plugin.settings.table = $(plugin.settings.tableTpl);
+
       $element.tkFileInput(plugin.settings);
 
-      var table = $(plugin.settings.tableTpl);
       $element.closest('.input-group').parent().append(table);
-
 
       // Setup initial field value files
       // It is expected that the files will be a json string array of urls in the input value
@@ -451,10 +491,11 @@
               if (xhr.status !== 200) return;
               this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
+              row.data('filename',this.url);
               row.find('.tfi-btn-delete').attr('href', setQueryParameter(document.location.href, 'del', basepath(this.url))).on('click',
               function (e) {
                 $(this).blur();
-                return plugin.settings.onDelete.apply(this, [plugin]);
+                return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
               });
               row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(this.url));
               row.find('.tfi-filename').attr('href', this.url).text(basename(this.url));
@@ -478,7 +519,7 @@
           return 'fa-file-archive-o';
         case 'h': case 'c': case 'php': case 'js': case 'css': case 'less': case 'txt': case 'xml': case 'xslt': case 'json':
           return 'fa-file-code-o';
-        case 'ods': case 'sdc': case 'sxc': case 'xls': case 'xlsm': case 'xlsx':
+        case 'ods': case 'sdc': case 'sxc': case 'xls': case 'xlsm': case 'xlsx': case 'csv':
           return 'fa-file-excel-o';
         case 'bmp': case 'emf': case 'gif': case 'ico': case 'icon': case 'jpeg': case 'jpg': case 'pcx': case 'pic': case 'png': case 'psd': case 'raw': case 'tga': case 'tif': case 'tiff': case 'swf': case 'drw': case 'svg': case 'svgz': case 'ai':
           return 'fa-file-image-o';
@@ -509,7 +550,7 @@
         return uri + paramString;
       else
         return uri.substring(0, hashIndex) + paramString + uri.substring(hashIndex);
-    }
+    };
 
     /**
      * @param path
