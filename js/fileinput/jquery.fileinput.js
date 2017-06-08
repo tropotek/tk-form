@@ -23,6 +23,11 @@
  * @deprecated
  */
 (function($) {
+  /**
+   * @param element
+   * @param options
+   * @deprecated
+   */
   var fileinput = function(element, options) {
 
     // Default options

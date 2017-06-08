@@ -20,6 +20,10 @@
       opacity: 0;
       filter: alpha(opacity=0);
     }
+    .tfi-label {
+      display: inline-block;
+      margin-left: 10px;
+    }
   }
 
   .tfi-btn-thumb {
@@ -38,16 +42,28 @@
 
 
   // tkImageInput styles
-
-  .image-preview-input-title {
-    margin-left:2px;
-  }
   img {
     max-width: 100%;
   }
   .popover-content {
     overflow: hidden;
   }
+  .popover {
+    max-width: 500px !important;
+  }
 
 }
 
+
+// tkMultiInput styles
+
+.tfi-table {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.tfi-table td {
+  white-space: nowrap;
+  &.tfi-file-size {
+    font-style: italic;
+  }
+}
