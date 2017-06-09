@@ -120,7 +120,7 @@
               if (file.size > maxSize) {
                 var msg = 'Error: <b>`'+name+'`</b> <i>['+formatBytes(file.size)+']</i> file size exceeds allowed maximum of <b>' + formatBytes($element.attr('data-maxsize'))+'</b>';
                 plugin.settings.onError.apply(element, [plugin, msg]);
-                continue; // TODO: test this is the best option, I think it is.
+                continue;
               }
             }
             plugin.settings.onFileLoad.apply(element, [plugin,  file]);
@@ -382,20 +382,25 @@
     var defaults = {
       dataUrl: '',
       enableDelete: false,
-
+      multipleSelect: false,
+      serverConfirm: 'Are you sure you want to delete this file from the server?',
+      localConfirm: '',
+      cloneid: 0,
+      
       tableTpl : 
         '<table class="table table-striped tfi-table"></table>',
       
       rowTpl:'<tr class="tfi-row">'+
         '<td class="text-right"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a></td>'+
-        '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="ui-lightbox tfi-filename">someFileName.tgz</a></td>'+
+        '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>'+
         '<td class="tfi-file-size"><span>673Kb</span></td>'+
       '</tr>',
 
       // Defaults for the tkForm file field
       onInit: function(plugin) {
         $(this).closest('.form-group').find('.tk-file-delete').hide();
-        $element.removeAttr('multiple');
+        if (!plugin.settings.multipleSelect)
+          $element.removeAttr('multiple');
         plugin.settings.template.find('.tfi-input-filename').remove();
         plugin.settings.template.find('.tfi-btn-input i').after('<span class="tfi-label">Select Files</span>');
       },
@@ -404,65 +409,60 @@
         var filename = plugin.settings.template.find('.tfi-input-filename');
         filename.val('');
 
-        // ...
-
-        // remove any duplicate filename rows
-
-        // create new row
-        for(var i = 0; i< this.files.length; i++) {
-          var file = this.files[i];
+        // Clone input field
+        var clone = $(this).clone(this);
+        plugin.settings.cloneid = plugin.settings.cloneid+1;
+        clone.removeAttr('id').removeAttr('class').addClass('tfi-clone').removeAttr('value').hide();
+        if (!clone.attr('name').endsWith('[]')) clone.setAttr('name', clone.attr('name')+'[]');
+        clone.attr('data-clone-id', plugin.settings.cloneid);
+        $(this).closest('.form-group').append(clone);
+        
+        
+        // create new rows
+        var files = this.files;
+        for(var i = 0; i < files.length; i++) {
+          var file = files[i];
           var row = $(plugin.settings.rowTpl);
-          row.data('file', file);
+          row.attr('data-clone-id', plugin.settings.cloneid).data('file', file);
           row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
             function (e) {
               $(this).blur();
-              return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
+              if (!plugin.settings.localConfirm || confirm(plugin.settings.localConfirm)) {
+                return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
+              }
+              return false;
             });
           row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
           row.addClass('tfi-new');
           row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled').text(basename(file.name));
           row.find('.tfi-file-size').text(formatBytes(file.size));
-
-          // TODO: add the input here with the file selected (clone it) for form submit to work
-          console.log(this);
-          console.log(this.files);
-
-          var cloned = $(this).clone(this).removeAttr('id').removeAttr('class').hide();
-          row.find('.tfi-btn-delete').append(cloned);
-
-          this.value = '';
-          console.log(cloned[0]);
-          console.log(cloned[0].files);
-
-
+          
           plugin.settings.table.append(row);
         }
-
-        console.log(plugin.settings.table.find('[type=file]'));
-
       },
-      onFileLoad: function(plugin, file) {
-        if (typeof this.file === 'undefined') return;
-
-      },
-      onUrlLoad: function(plugin, uri) {
-        // var bytes = uri.xhr.getResponseHeader('Content-Length');
-        // console.log(basename(uri.url) + ': ' + formatBytes(bytes));
-      },
+      onFileLoad: function(plugin, file) { },
+      onUrlLoad: function(plugin, uri) { },
       onDelete: function(plugin) {
-        console.log($(this).data());
-
-        // use ajax to delete file if it is an existing
-
         // remove row from table
-        $(this).remove();
-
+        $(this).addClass('active').find('a, button, input, .btn').attr('disabled', 'disabled').addClass('disabled').on('click', function () {return false;});
+        if ($(this).hasClass('tfi-new')) {
+          $(this).closest('.form-group').find('[data-clone-id=' + $(this).attr('data-clone-id') + ']').remove();
+        } else {
+          $.ajax({
+            url : $(this).find('.tfi-btn-delete').attr('href'),
+            method: 'GET',
+            context: this
+          }).done(function(data) {
+            $(this).remove();
+          });
+        }
         return false;
       }
+      
     };
 
     var plugin = this;
-    plugin.settings = {};
+    plugin.settings = { };
     var $element = $(element);
     var $parent = $element.parent();    // Get the containing div
 
@@ -478,9 +478,12 @@
 
       $element.closest('.input-group').parent().append(table);
 
-      // Setup initial field value files
       // It is expected that the files will be a json string array of urls in the input value
-      var list = JSON.parse($element.attr('value'));
+      var list = [];
+      if ($element.attr('value'))
+        list = JSON.parse($element.attr('value'));
+      
+      // Setup initial field value files
       if (list !== undefined && Array.isArray(list)) {
         for(var i = 0; i< list.length; i++) {
           var filename = plugin.settings.dataUrl + list[i];
@@ -491,14 +494,20 @@
               if (xhr.status !== 200) return;
               this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
-              row.data('filename',this.url);
+              row.data('filename', this.url);
               row.find('.tfi-btn-delete').attr('href', setQueryParameter(document.location.href, 'del', basepath(this.url))).on('click',
               function (e) {
                 $(this).blur();
-                return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
+                if (!plugin.settings.serverConfirm || confirm(plugin.settings.serverConfirm)) {
+                  return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
+                }
+                return false;
               });
               row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(this.url));
-              row.find('.tfi-filename').attr('href', this.url).text(basename(this.url));
+              row.find('.tfi-filename').addClass('ui-lightbox').attr('href', this.url).text(basename(this.url));
+              if ($.fn.magnificPopup && isImage(this.url)) {
+                row.find('.tfi-filename').magnificPopup({type: 'image'})
+              }
               row.find('.tfi-file-size').text(formatBytes(xhr.getResponseHeader('Content-Length')));
               table.append(row);
 
@@ -508,9 +517,7 @@
         }
       }
 
-
     };  /// End plugin.init()
-
 
     var getIcon = function (url) {
       var ext = getExtension(url);
@@ -537,7 +544,13 @@
       return 'fa-file-o';
     };
 
-
+    /**
+     * 
+     * @param uri
+     * @param key
+     * @param value
+     * @returns {string}
+     */
     var setQueryParameter = function(uri, key, value) {
       var re = new RegExp("([?&])("+ key + "=)[^&#]*", "g");
       if (uri.match(re))
@@ -560,6 +573,9 @@
       return path.replace(/\\/g,'/').replace( /.*\//, '' );
     };
 
+    /**
+     * @param path
+     */
     var basepath = function(path) {
       return path.replace(plugin.settings.dataUrl,'');
     };
@@ -573,6 +589,21 @@
         return file.substring(pos + 1);
       }
       return '';
+    };
+    
+    /**
+     * @param filename
+     */
+    var isImage = function(filename) {
+      var ext = getExtension(basename(filename)).toLowerCase();
+      switch (ext) {
+        case 'jpg':
+        case 'jpeg':
+        case 'gif':
+        case 'png':
+          return true;
+      }
+      return false;
     };
 
     /**
