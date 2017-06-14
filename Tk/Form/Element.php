@@ -111,7 +111,7 @@ abstract class Element implements \Tk\InstanceKey
     static function makeLabel($name)
     {
         $label = $name;
-        $label = preg_replace_callback('/_([a-zA-Z_])/', function ($match) {    // Handle underscores
+        $label = preg_replace_callback('/[_\.]([a-zA-Z_])/', function ($match) {    // Handle underscores
             return strtoupper($match[1]);
         }, $label);
         $label = ucfirst(preg_replace('/[A-Z_]/', ' $0', $label));
