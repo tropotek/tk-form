@@ -1,6 +1,5 @@
 <?php
 namespace Tk\Form\Field;
-use Tk\Dom\AttributesTrait;
 
 /**
  *
@@ -28,11 +27,40 @@ class Checkbox extends Input
     public function __construct($name)
     {
         parent::__construct($name);
-        $this->checkboxLabel = $this->getLabel();
-        $this->setLabel('');
+        //$this->checkboxLabel = $this->getLabel();
+        //$this->setLabel('');
         $this->setType('checkbox');
     }
 
+    /**
+     * Set the label of this field
+     *
+     * @param $str
+     * @return $this
+     */
+    public function setLabel($str)
+    {
+        return parent::setLabel($str);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckboxLabel()
+    {
+        return $this->checkboxLabel;
+    }
+
+    /**
+     * @param string $checkboxLabel
+     * @return $this
+     */
+    public function setCheckboxLabel($checkboxLabel)
+    {
+        $this->setLabel('');
+        $this->checkboxLabel = $checkboxLabel;
+        return $this;
+    }
 
     public function load($values)
     {
@@ -71,8 +99,10 @@ class Checkbox extends Input
         $t->setAttr('element', 'value', $this->getName());
         $t->setAttr('hidden', 'name', $this->getName());
         $t->setAttr('hidden', 'value', '');
-
-        $t->insertText('label', $this->checkboxLabel);
+        if ($this->getCheckboxLabel()) {
+            $t->insertText('label', $this->getCheckboxLabel());
+            $t->addCss('checkbox', 'is-cbl');
+        }
         return $t;
     }
     
@@ -84,7 +114,7 @@ class Checkbox extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="checkbox">
+<div class="checkbox" var="checkbox">
   <label>
     <input type="hidden" var="hidden" value=""/>
     <input type="checkbox" var="element"/> <span var="label" class="cb-label"></span>

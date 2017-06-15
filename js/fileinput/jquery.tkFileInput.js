@@ -219,6 +219,13 @@
         $(this).closest('.form-group').find('.tk-file-delete').hide();
         var thumb = $(plugin.settings.thumbTpl);
         plugin.settings.template.find('.input-group-btn').append(thumb);
+
+        if ($(this).parents('.form-group-sm').length || $(this).hasClass('input-sm')) {
+          thumb.removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
+        } else if ($(this).parents('.form-group-lg').length || $(this).hasClass('input-lg')) {
+          thumb.removeClass('btn-sm').removeClass('btn-xs').addClass('btn-lg');
+        }
+
         var img = thumb.find('img');
         if ($.fn.popover !== undefined) {
           thumb.popover({
@@ -289,6 +296,7 @@
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
       $element.tkFileInput(plugin.settings);
+
     };  /// End plugin.init()
 
     /**
