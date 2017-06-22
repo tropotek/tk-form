@@ -479,12 +479,15 @@
      */
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
-
+      
       var table = plugin.settings.table = $(plugin.settings.tableTpl);
-
       $element.tkFileInput(plugin.settings);
-
       $element.closest('.input-group').parent().append(table);
+
+      $element.closest('form').on('submit', function () {
+        element.disabled = true;    // Stops duplicate file uploads 
+      });
+      
 
       // It is expected that the files will be a json string array of urls in the input value
       var list = [];
