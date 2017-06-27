@@ -279,15 +279,13 @@ jQuery(function($) {
                 $(tbox).addClass('active');
                 li.addClass('active');
             }
-            // TODO: Find first error tab and open that by default after page loading
             ul.append(li);
         });
         $(tabContainer).prepend(ul);
-        $(tabContainer).find('li.has-error a').css('color', '#a94442').css('font-weight', 'bold').tab('show');
-        //$(tabContainer).tab('show');
-        //$(tabContainer).tab('select', $(tabContainer).find('li.has-error a').attr('href'));
-        //console.log($(tabContainer).find('li.has-error a').attr('href'));
+        $(tabContainer).find('li.has-error a').css('color', '#a94442').css('font-weight', 'bold');
         
+        //$(tabContainer).find('li.has-error a').tab('show'); // shows last error tab
+        $(tabContainer).find('li.has-error a').first().tab('show');   // shows first error tab
     });
     
     // Deselect tab

@@ -36,7 +36,7 @@ class Checkbox extends Input
      * Set the label of this field
      *
      * @param $str
-     * @return $this
+     * @return Checkbox|Input
      */
     public function setLabel($str)
     {

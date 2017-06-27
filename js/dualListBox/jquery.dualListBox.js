@@ -151,14 +151,9 @@
 
     $(options.parentElement).closest('form').submit(function() {
       selected.find('option').prop('selected', true);
-      var countSelected = $(options.parentElement + ' .selected-count').text();
-      if (countSelected == 0) {
-        $('<option>', {
-          value: '',
-          text: ''
-        }).appendTo(selected);
-
-        console.log(selected);
+      var countSelected = parseInt($(options.parentElement + ' .selected-count').text());
+      if (countSelected === 0) {
+        $('<option></option>').appendTo(selected);
       }
     });
 
