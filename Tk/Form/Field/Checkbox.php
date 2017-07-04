@@ -27,8 +27,6 @@ class Checkbox extends Input
     public function __construct($name)
     {
         parent::__construct($name);
-        //$this->checkboxLabel = $this->getLabel();
-        //$this->setLabel('');
         $this->setType('checkbox');
     }
 

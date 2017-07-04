@@ -507,7 +507,6 @@ class Form extends Form\Element
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $name => $field) {
             if ($field instanceof Event\Iface) continue;
-
             if ($regex) {
                 if (is_string($regex) && !preg_match($regex, $name)) {
                     continue;

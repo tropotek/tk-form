@@ -129,7 +129,7 @@ class Select extends Iface
 
     public function load($values)
     {
-        if (!isset($values[$this->getName()])) {
+        if ($this->getForm()->isSubmitted() && !isset($values[$this->getName()])) {
             $this->setValue('');
         }
         parent::load($values);
@@ -174,7 +174,6 @@ class Select extends Iface
             $t->setAttr('element', 'multiple', 'multiple');
         }
 
-
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             /* @var \Dom\Repeat $tOpt */
@@ -186,7 +185,7 @@ class Select extends Iface
             if ($option->getLabel()) {
                 $tOpt->setAttr('option', 'label', $option->getLabel());
             }
-            
+
             // TODO: render optgroup
 
             $tOpt->setAttr('option', 'value', $option->getValue());
@@ -194,8 +193,6 @@ class Select extends Iface
                 $tOpt->setAttr('option', 'selected', 'selected');
             }
             $tOpt->insertText('option', $option->getText());
-
-
 
             // Add attributes
             foreach($option->getAttrList() as $key => $val) {
