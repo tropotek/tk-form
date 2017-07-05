@@ -56,6 +56,14 @@ class Form extends Form\Element
     protected $loadArray = null;
 
     /**
+     * This will be set to true after the first call to load()
+     * Allowing us to know when the fields have finished being added
+     * to the form, good time to call init and trigger an event?
+     * @var bool
+     */
+    protected $loading = false;
+
+    /**
      * if true the required HTML5 attribute will be rendered
      * @var bool
      */
@@ -103,6 +111,12 @@ class Form extends Form\Element
     {
         return $this->id;
     }
+
+    /**
+     * Useful for extended form objects
+     * To be called after all fields are added and
+     */
+    public function init() { }
 
     /**
      * Execute the object
@@ -153,6 +167,7 @@ class Form extends Form\Element
     protected function loadFields($array)
     {
         if ($array === null) return $this;
+
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
@@ -197,6 +212,10 @@ class Form extends Form\Element
      */
     public function load($array)
     {
+        if (!$this->loading) {
+            $this->init();
+            $this->loading = true;
+        }
         if ($this->loadArray === null) $this->loadArray = array();
         if (is_array($array)) {
             $this->loadArray = array_merge($this->loadArray, $array);

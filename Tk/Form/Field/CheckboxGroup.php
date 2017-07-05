@@ -14,13 +14,10 @@ class CheckboxGroup extends Select
      * @param string $name
      * @param Option\ArrayIterator $optionIterator
      */
-    public function __construct($name, Option\ArrayIterator $optionIterator = null)
+    public function __construct($name, $optionIterator = null)
     {
-        parent::__construct($name);
+        parent::__construct($name, $optionIterator);
         $this->setArrayField(true);
-        if ($optionIterator) {
-            $this->appendOptionIterator($optionIterator);
-        }
     }
     
     /**
