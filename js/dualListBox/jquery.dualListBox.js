@@ -28,6 +28,7 @@
         value:      'id',               // Value that is assigned to the value field in the option.
         text:       'name',             // Text that is assigned to the option field.
         title:      'Example',          // Title of the dual list box.
+        sort:       false,              // Sort the Unselected list
         json:       false,               // Whether to retrieve the data through JSON.
         timeout:    500,                // Timeout for when a filter search is started.
         horizontal: false,              // Whether to layout the dual list box as horizontal or vertical.
@@ -143,7 +144,10 @@
         default: break;
       }
 
-      unselected.filterByText($(options.parentElement + ' .filter-unselected'), options.timeout, options.parentElement).scrollTop(0).sortOptions();
+      var us = unselected.filterByText($(options.parentElement + ' .filter-unselected'), options.timeout, options.parentElement).scrollTop(0);
+      if (options.sort) {
+        us.sortOptions();
+      }
       selected.filterByText($(options.parentElement + ' .filter-selected'), options.timeout, options.parentElement).scrollTop(0).sortOptions();
 
       handleMovement(options);
@@ -164,7 +168,10 @@
     });
 
     selected.filterByText($(options.parentElement + ' .filter-selected'), options.timeout, options.parentElement).scrollTop(0).sortOptions();
-    unselected.filterByText($(options.parentElement + ' .filter-unselected'), options.timeout, options.parentElement).scrollTop(0).sortOptions();
+    var us = unselected.filterByText($(options.parentElement + ' .filter-unselected'), options.timeout, options.parentElement).scrollTop(0);
+      if (options.sort) {
+        us.sortOptions();
+      }
   }
 
   /** Constructs the jQuery plugin after the elements have been retrieved. */
