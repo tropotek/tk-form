@@ -57,7 +57,10 @@
       cInput.attr('autocomplete', 'off');
       cInput.attr('name', $element.attr('name'));
       cInput.attr('id', $element.attr('id'));
-      cInput.val($element.val());
+
+      if ($element.val() !== '') {
+        cInput.val($element.val());
+      }
       $element.attr('name', $element.attr('name')+'-org');
       $element.attr('id', $element.attr('id')+'-org');
 
@@ -68,6 +71,7 @@
       
       var optionsList =  $element.find('option');
       for(var i = 0; i < optionsList.length; i++) {
+        if (optionsList.get(i).value === '') continue;
         var el = $('<li><a href="javascript:;"></a></li>');
         el.find('a').text(optionsList.get(i).value);
         cList.append(el);
