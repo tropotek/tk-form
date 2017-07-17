@@ -9,7 +9,6 @@
  */
 
 /**
- *
  * <code>
  *   $(document).ready(function() {
  *     // attach the plugin to an element
@@ -20,7 +19,6 @@
  *
  *     // get the value of a property
  *     $('select#element').data('tkCombobox').settings.foo;
- *   
  *   });
  * </code>
  */
