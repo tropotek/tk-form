@@ -34,20 +34,18 @@
     var plugin = this;
     var $element = $(element);
     plugin.settings = {};
-    var combobox = null
+    var combobox = null;
 
     // constructor method
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
 
-      // TODO: code goes here
-      //console.log(element);
-
+      
       combobox = $(
         '<div class="input-group tkCombobox">' +
           '<input type="text" class="form-control" />' +
           '<div class="input-group-btn">' +
-            '<button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>' +
+            '<button type="button" class="btn btn-default"><span class="caret"></span></button>' +
             '<ul class="dropdown-menu">' +
             '</ul>' +
           '</div>' +
@@ -67,25 +65,25 @@
 
       $element.before(combobox);
       $element.hide();
-
-      var optionsList =  $element.find('option');
-      for(var i = 0; i < optionsList.length; i++) {
-        cList.append('<li><a href="javascript:;">'+optionsList.get(i).value+'</a></li>');
-      }
-
-      cList.find('li').on('click', function (e) {
-        console.log($(this).html());
-        cInput.val($(this).html());
-        
-      });
       cList.hide();
 
+      
+      var optionsList =  $element.find('option');
+      for(var i = 0; i < optionsList.length; i++) {
+        var el = $('<li><a href="javascript:;"></a></li>');
+        el.find('a').text(optionsList.get(i).value);
+        cList.append(el);
+      }
+      cList.find('li a').on('mousedown', function (e) {
+        cInput.val($(this).text());
+      });
+      
+      // Show/Hide
       cInput.on('focus', function (e) {
         cList.show();
       }).on('blur', function (e) {
         cList.hide();
       });
-
       cButton.on('click', function (e) {
         if (cList.is(':visible')) {
           cList.hide();
@@ -93,15 +91,28 @@
           cList.show();
         }
       });
+      
+      // See how this performs, close list if click outside.
+      $(document).on('mouseup', function (e) {
+        if (!combobox.is(e.target) && combobox.has(e.target).length == 0) {
+          cList.hide();
+        }
+      });
 
+      
     };  // END init()
 
+    
+    
+    
     // private methods
     //var foo_private_method = function() { };
 
     // public methods
     //plugin.foo_public_method = function() { };
 
+    
+    
     // call the "constructor" method
     plugin.init();
   };
