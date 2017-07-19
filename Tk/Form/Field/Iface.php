@@ -61,7 +61,6 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * __construct
      *
      * @param string $name
-     * @throws Exception
      */
     public function __construct($name)
     {
