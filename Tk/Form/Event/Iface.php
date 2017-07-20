@@ -13,9 +13,14 @@ use Tk\Form\Field;
 abstract class Iface extends Field\Iface
 {
     /**
-     * @var callable
+     * @var callable[]
      */
-    protected $callback = null;
+    protected $callbackList = array();
+
+    /**
+     * @var null|\Tk\Uri
+     */
+    protected $redirect = null;
 
 
     /**
@@ -23,33 +28,65 @@ abstract class Iface extends Field\Iface
      *
      * @param string $name
      * @param callable $callback
+     * @param \Tk\Uri $redirect
      */
-    public function __construct($name, $callback = null)
+    public function __construct($name, $callback = null, $redirect = null)
     {
-        if ($callback) {
-            $this->setCallback($callback);
-        }
         parent::__construct($name);
+        $this->addCallback($callback);
+        $this->setRedirect($redirect);
     }
 
     /**
-     * getEvent
-     *
-     * @return callable
+     * Execute this events callback methods/functions
      */
-    public function getCallback()
+    public function execute()
     {
-        return $this->callback;
+        foreach ($this->callbackList as $i => $callback) {
+            call_user_func_array($callback, array($this->getForm(), $this));
+        }
+        if ($this->getRedirect()) {
+            $this->getRedirect()->redirect();
+        }
     }
 
     /**
-     * setEvent
+     * Add a callback to the start of the event queue
      *
      * @param callable $callback
      * @return $this
      * @throws Exception
      */
-    public function setCallback($callback)
+    public function prependCallback($callback)
+    {
+        if (!$callback) return $this;
+        $this->validateCallback($callback);
+        array_unshift($this->callbackList,  $callback);
+        return $this;
+    }
+
+    /**
+     * Add a callback to the end of the event queue
+     *
+     * @param callable $callback
+     * @return $this
+     * @throws Exception
+     */
+    public function addCallback($callback)
+    {
+        if (!$callback) return $this;
+        $this->validateCallback($callback);
+        $this->callbackList[] = $callback;
+        return $this;
+    }
+
+    /**
+     * Validate a callback parameter
+     *
+     * @param $callback
+     * @throws Exception
+     */
+    protected function validateCallback($callback)
     {
         if (!is_callable($callback)) {
             if (is_array($callback) && !empty($callback[1])) {
@@ -61,13 +98,33 @@ abstract class Iface extends Field\Iface
             }
             throw new Exception('Only callable values can be events. Check the method or function exists.');
         }
-        $this->callback = $callback;
-        return $this;
     }
 
-    
-    
-    // Force sain values for events below.
+    /**
+     * getEvent
+     *
+     * @return callable[]\array
+     */
+    public function getCallbackList()
+    {
+        return $this->callbackList;
+    }
+
+    /**
+     * @return null|\Tk\Uri
+     */
+    public function getRedirect()
+    {
+        return $this->redirect;
+    }
+
+    /**
+     * @param null|\Tk\Uri $redirect
+     */
+    public function setRedirect($redirect)
+    {
+        $this->redirect = $redirect;
+    }
 
     /**
      * 'fid-'.$form->getId().{$this->name}
@@ -78,7 +135,6 @@ abstract class Iface extends Field\Iface
     {
         return $this->makeInstanceKey($this->getName());
     }
-
 
     /**
      * Get the field value(s).
@@ -100,7 +156,6 @@ abstract class Iface extends Field\Iface
         return false;
     }
 
-
     /**
      * Does this fields data come as an array.
      * If the name ends in [] then it will be flagged as an arrayField.
@@ -113,7 +168,6 @@ abstract class Iface extends Field\Iface
     {
         return false;
     }
-
 
     /**
      * @return string

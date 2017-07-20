@@ -3,6 +3,7 @@ namespace Tk;
 
 use Tk\Form\Field;
 use Tk\Form\Event;
+use Tk\Form\FormEvents;
 
 
 /**
@@ -69,6 +70,12 @@ class Form extends Form\Element
      */
     private $enableRequiredAttr = false;
 
+    /**
+     * @var null|\Tk\Event\Dispatcher
+     */
+    protected $dispatcher = null;
+
+
 
     /**
      * Create a form processor
@@ -113,10 +120,33 @@ class Form extends Form\Element
     }
 
     /**
+     * @return null|\Tk\Event\Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param null|\Tk\Event\Dispatcher $dispatcher
+     */
+    public function setDispatcher($dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
      * Useful for extended form objects
      * To be called after all fields are added and
      */
-    public function init() { }
+    public function init()
+    {
+        if ($this->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this);
+            $e->set('form', $this);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_INIT, $e);
+        }
+    }
 
     /**
      * Execute the object
@@ -124,35 +154,37 @@ class Form extends Form\Element
      * If an button is found and its event is executed the result is returned
      *
      * @param $request
-     * @return mixed
      */
     public function execute($request = null)
     {
-        // get the request object if non supplied.
         if (!$request) {
             $request = \Tk\Request::create();
-            //$request = \Tk\Config::getInstance()->getRequest();
-            // TODO: we may not need this and this can be here fine without a warning....
-            //\Tk\Config::getInstance()->getLog()->warning('\Tk\Form::execute($request) - Request value missing using default \Tk\Request::create() object.');
         }
-
         // Load default field values
         $this->loadFields($this->loadArray);
+        if ($this->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this);
+            $e->set('form', $this);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
+        }
 
         // get the triggered event, this also setup the fporm ready to fire an event if present.
         /* @var Event\Iface|null $event */
         $event = $this->getTriggeredEvent($request);
-        if (!$this->isSubmitted()) return null;
+        if (!$this->isSubmitted()) return;
 
         // Load request field values
         $cleanRequest = $this->cleanLoadArray($request);
         $this->loadFields($cleanRequest);
 
+        if ($this->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this);
+            $e->set('form', $this);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_SUBMIT, $e);
+        }
+
         if ($event) {
-            if ($event->getCallback() instanceof \Closure || is_callable($event->getCallback())) {
-                $ret = call_user_func_array($event->getCallback(), array($this));
-                return $ret;
-            }
+            $event->execute();
         }
     }
 
@@ -174,31 +206,6 @@ class Form extends Form\Element
             $field->load($array);
         }
         return $this;
-    }
-
-    /**
-     * Get the field event to execute
-     *
-     * This will only return a valid value <b>after</b> the
-     *   execute() method has been called.
-     *
-     * @param array $array
-     * @return Event\Iface
-     */
-    public function getTriggeredEvent($array = null)
-    {
-        if ($array && !$this->triggeredEvent) {
-            /* @var $field Field\Iface */
-            foreach($this->fieldList as $field) {
-                if ($field instanceof Event\Iface) {
-                    if (isset($array[$field->getEventName()])) {
-                        $this->triggeredEvent = $field;
-                        break;
-                    }
-                }
-            }
-        }
-        return $this->triggeredEvent;
     }
 
     /**
@@ -253,9 +260,34 @@ class Form extends Form\Element
         return $array;
     }
 
+    /**
+     * Get the field event to execute
+     *
+     * This will only return a valid value <b>after</b> the
+     *   execute() method has been called.
+     *
+     * @param array $array
+     * @return Event\Iface
+     */
+    public function getTriggeredEvent($array = null)
+    {
+        if ($array && !$this->triggeredEvent) {
+            /* @var $field Field\Iface */
+            foreach($this->fieldList as $field) {
+                if ($field instanceof Event\Iface) {
+                    if (isset($array[$field->getEventName()])) {
+                        $this->triggeredEvent = $field;
+                        break;
+                    }
+                }
+            }
+        }
+        return $this->triggeredEvent;
+    }
+
 
     /**
-     * Set the callback to an event element,
+     * Add a callback to an event element,
      * The element must be of the type \Tk\Form\Field\Event
      *
      * @param string $fieldName
@@ -263,14 +295,14 @@ class Form extends Form\Element
      * @return Event\Iface
      * @throws Form\Exception
      */
-    public function setEventCallback($fieldName, $callback)
+    public function addEventCallback($fieldName, $callback)
     {
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
         if (!$field || !$field instanceof Event\Iface) {
             throw new Form\Exception('Event Field not found: `' . $fieldName . '`');
         }
-        $field->setCallback($callback);
+        $field->addCallback($callback);
         return $field;
     }
 
@@ -567,7 +599,7 @@ class Form extends Form\Element
     /**
      * Not used in the form
      *
-     * @return string|\Dom\Template
+     * @return void|string|\Dom\Template
      */
     public function getHtml() {}
     

@@ -100,8 +100,6 @@ class Button extends Iface
         return $this;
     }
 
-
-
     /**
      * Get the element HTML
      *
@@ -133,17 +131,17 @@ class Button extends Iface
 
         // Element css class names
         foreach($this->getCssList() as $v) {
-            $t->addClass('element', $v);
+            $t->addCss('element', $v);
         }
 
         $t->insertText('text', $this->getLabel());
         if ($this->getIcon()) {
             if ($this->isIconRight()) {
                 $t->setChoice('iconR');
-                $t->addClass('iconR', $this->getIcon());
+                $t->addCss('iconR', $this->getIcon());
             } else {
                 $t->setChoice('iconL');
-                $t->addClass('iconL', $this->getIcon());
+                $t->addCss('iconL', $this->getIcon());
             }
         }
         

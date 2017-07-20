@@ -19,6 +19,11 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      */
     protected $form = null;
 
+    /**
+     * @var null|\Tk\Event\Dispatcher
+     */
+    protected $dispatcher = null;
+
 
     /**
      * construct
@@ -40,6 +45,21 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         return $this->form;
     }
 
+    /**
+     * @return null|\Tk\Event\Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param null|\Tk\Event\Dispatcher $dispatcher
+     */
+    public function setDispatcher($dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
 
 }
