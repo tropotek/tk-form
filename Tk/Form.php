@@ -168,7 +168,7 @@ class Form extends Form\Element
             $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
         }
 
-        // get the triggered event, this also setup the fporm ready to fire an event if present.
+        // get the triggered event, this also setup the form ready to fire an event if present.
         /* @var Event\Iface|null $event */
         $event = $this->getTriggeredEvent($request);
         if (!$this->isSubmitted()) return;
@@ -593,8 +593,6 @@ class Form extends Form\Element
     {
         $this->enableRequiredAttr = $enableRequiredAttr;
     }
-
-    
     
     /**
      * Not used in the form
