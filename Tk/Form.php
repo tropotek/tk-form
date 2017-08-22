@@ -86,9 +86,9 @@ class Form extends Form\Element
      */
     public function __construct($formId, $method = self::METHOD_POST, $action = null)
     {
-        $this->id = $formId;;
+        $this->id = $formId;
+        //$this->name = $formId;
         $this->setForm($this);
-        $this->name = $formId;
         $this->setAttr('method', $method);
         if (!$action)  $action = \Tk\Uri::create();
         $this->setAttr('action', \Tk\Uri::create($action));
@@ -217,7 +217,7 @@ class Form extends Form\Element
      * @return $this
      * @throws Exception
      */
-    public function load($array)
+    public function load($array = array())
     {
         if (!$this->loading) {
             $this->init();
