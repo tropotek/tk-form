@@ -42,7 +42,7 @@ class CheckboxGroup extends Select
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $t = $this->getTemplate();
 

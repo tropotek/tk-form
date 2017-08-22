@@ -50,10 +50,10 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         //$this->getField()->addCssClass('form-control');
         
         if ($this->getField() instanceof Field\Hidden) {
-            return $this->getField()->getHtml();
+            return $this->getField()->show();
         }
         // Render the element as getHtml() triggered setting of the id attribute...
-        $html = $this->getField()->getHtml();
+        $html = $this->getField()->show();
         if ($html instanceof \Dom\Template) {
             $t->replaceTemplate('element', $html);
         } else {

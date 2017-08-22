@@ -42,7 +42,7 @@ class Radio extends Select
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $t = $this->getTemplate();
         if (!$t->keyExists('var', 'element')) {

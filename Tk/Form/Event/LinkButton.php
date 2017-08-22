@@ -46,7 +46,7 @@ class LinkButton extends Link
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $t = $this->getTemplate();
         

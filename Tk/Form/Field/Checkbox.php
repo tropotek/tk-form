@@ -87,9 +87,9 @@ class Checkbox extends Input
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
-        $t = parent::getHtml();
+        $t = parent::show();
         //if ($this->getValue() !== null) {
         if ($this->getValue() !== null && ($this->getValue() == $this->getName() || $this->getValue() === true)) {
             $t->setAttr('element', 'checked', 'checked');

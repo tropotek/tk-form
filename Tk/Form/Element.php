@@ -70,7 +70,7 @@ abstract class Element implements \Tk\InstanceKey
      *
      * @return string|\Dom\Template
      */
-    abstract public function getHtml();
+    abstract public function show();
 
 
     /**

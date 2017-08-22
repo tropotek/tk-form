@@ -42,7 +42,7 @@ class Link extends Button
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $t = $this->getTemplate();
         

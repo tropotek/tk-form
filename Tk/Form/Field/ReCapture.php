@@ -137,7 +137,7 @@ class ReCapture extends Iface
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         /* @var \Dom\Template $t */
         $t = $this->getTemplate();

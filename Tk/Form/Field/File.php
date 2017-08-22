@@ -381,10 +381,10 @@ class File extends Input
      *
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
-        $t = parent::getHtml();
+        $t = parent::show();
         
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
         if ($this->isArrayField()) {

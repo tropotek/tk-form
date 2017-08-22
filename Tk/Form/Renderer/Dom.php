@@ -226,7 +226,7 @@ class Dom extends Iface
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
         if ($field instanceof Event\Iface) {
-            $html = $field->getHtml();
+            $html = $field->show();
             /* @var Event\Iface $field */
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate('events', $html);
