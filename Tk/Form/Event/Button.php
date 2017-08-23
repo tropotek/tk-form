@@ -23,7 +23,7 @@ class Button extends Iface
     /**
      * @var string
      */
-    private $type = 'submit';
+    private $type = 'button';
 
 
     /**
@@ -38,8 +38,10 @@ class Button extends Iface
 
         // Not sure this belongs in the constructor as its more of a convenience than a necessity
         if ($name == 'save') {
+            $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-refresh');
         } else if ($name == 'update') {
+            $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-arrow-left');
         }
     }
