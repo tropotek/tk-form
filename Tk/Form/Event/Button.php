@@ -137,6 +137,7 @@ class Button extends Iface
         }
 
         $t->insertText('text', $this->getLabel());
+
         if ($this->getIcon()) {
             if ($this->isIconRight()) {
                 $t->setChoice('iconR');
@@ -158,7 +159,7 @@ class Button extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<button type="submit" class="btn btn-sm btn-default btn-once" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></button>
+<button type="button" class="btn btn-sm btn-default btn-once" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></button>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
