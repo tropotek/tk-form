@@ -333,8 +333,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         // Field name attribute
         $t->setAttr($var, 'name', $this->getFieldName());
 
-        if ($this->isRequired()) {
-            if ($this->getForm() && $this->getForm()->isEnableRequiredAttr())
+        if ($this->isRequired() && ($this->getForm() && $this->getForm()->isEnableRequiredAttr())) {
             $t->setAttr($var, 'required', 'required');
         }
 

@@ -589,7 +589,7 @@ class Form extends Form\Element
     /**
      * @param bool $enableRequiredAttr
      */
-    public function setEnableRequiredAttr($enableRequiredAttr)
+    public function setEnableRequiredAttr($enableRequiredAttr = true)
     {
         $this->enableRequiredAttr = $enableRequiredAttr;
     }
