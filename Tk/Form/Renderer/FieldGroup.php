@@ -91,8 +91,9 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $t->setChoice('notes');
             $t->insertHtml('notes', $this->getField()->getNotes());
         }
-
-        $t->addCss('field-group',  'tk-'.strtolower( (new \ReflectionClass($this->getField()))->getShortName() ));
+        
+        $reflect = new \ReflectionClass($this->getField());
+        $t->addCss('field-group',  'tk-'.strtolower( $reflect->getShortName() ));
         $t->addCss('field-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
         
         return $t;

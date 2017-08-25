@@ -18,7 +18,7 @@ class Dom extends Iface
     /**
      * @var string
      */
-    protected $fieldGroupClass = \Tk\Form\Renderer\FieldGroup::class;
+    protected $fieldGroupClass = '\Tk\Form\Renderer\FieldGroup';
 
 
     /**
@@ -235,9 +235,15 @@ class Dom extends Iface
             }
         } else {
 
-            $fg = new $this->fieldGroupClass($field);
-            $html = $fg->show();
             
+            if ($field instanceof Field\Hidden) {
+                $html = $field->show();
+                //$var = 'form';
+                vd($var);
+            } else {
+                $fg = new $this->fieldGroupClass($field);
+                $html = $fg->show();
+            }
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate($var, $html);
             } else {
