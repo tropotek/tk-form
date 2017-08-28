@@ -19,12 +19,11 @@ class Submit extends Button
      */
     public function __construct($name, $callback = null)
     {
+        $this->setType('submit');
         parent::__construct($name, $callback);
         if ($name == 'save') {
-            $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-refresh');
         } else if ($name == 'update') {
-            $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-arrow-left');
         }
     }
