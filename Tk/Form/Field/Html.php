@@ -24,6 +24,7 @@ class Html extends Input
         parent::__construct($name);
         //$this->html = $html;
         $this->setValue($html);
+        $this->addCss('form-control-static');
     }
 
     /**
@@ -69,7 +70,7 @@ class Html extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div var="element" class="form-control-static"></div>
+<div var="element" class=""></div>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
