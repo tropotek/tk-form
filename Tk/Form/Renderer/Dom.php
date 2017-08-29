@@ -238,9 +238,8 @@ class Dom extends Iface
             
             if ($field instanceof Field\Hidden) {
                 $html = $field->show();
-                //$var = 'form';
-                vd($var);
             } else {
+                /** @var FieldGroup $fg */
                 $fg = new $this->fieldGroupClass($field);
                 $html = $fg->show();
             }
