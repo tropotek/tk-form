@@ -17,11 +17,16 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @var mixed|null
      */
     protected $value = null;
-    
+
     /**
      * @var bool
      */
     protected $required = false;
+
+    /**
+     * @var string
+     */
+    protected $pattern = '';
 
     /**
      * @var bool
@@ -187,49 +192,13 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isDisabled()
-    {
-        return $this->disabled;
-    }
-
-    /**
-     * @param boolean $disabled
-     * @return $this
-     */
-    public function setDisabled($disabled)
-    {
-        $this->disabled = $disabled;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isReadonly()
-    {
-        return $this->readonly;
-    }
-
-    /**
-     * @param boolean $readonly
-     * @return $this
-     */
-    public function setReadonly($readonly)
-    {
-        $this->readonly = $readonly;
-        return $this;
-    }
-
 
     /**
      * Add a CSS Class name to the node
      *
      * @param string $class
      * @param bool $fixName
-     * @return $this
+     * @return Form\Element|Iface
      */
     public function addCss($class, $fixName = true)
     {
@@ -241,7 +210,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      *
      * @param string $class
      * @param bool $fixName
-     * @return $this
+     * @return Form\Element|Iface
      */
     public function removeCss($class, $fixName = true)
     {
@@ -296,6 +265,51 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         return $this;
     }
 
+
+
+
+    /**
+     * @return boolean
+     */
+    public function isDisabled()
+    {
+        return $this->hasAttr('disabled');
+    }
+
+    /**
+     * @param boolean $disabled
+     * @return $this
+     */
+    public function setDisabled($disabled)
+    {
+        if ($disabled)
+            $this->setAttr('disabled');
+        else
+            $this->removeAttr('disabled');
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isReadonly()
+    {
+        return $this->hasAttr('readonly');
+    }
+
+    /**
+     * @param boolean $readonly
+     * @return $this
+     */
+    public function setReadonly($readonly = true)
+    {
+        if ($readonly)
+            $this->setAttr('readonly');
+        else
+            $this->removeAttr('readonly');
+        return $this;
+    }
+
     /**
      * isRequired
      *
@@ -303,7 +317,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      */
     public function isRequired()
     {
-        return $this->required;
+        return $this->hasAttr('required');
     }
 
     /**
@@ -314,7 +328,31 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      */
     public function setRequired($required = true)
     {
-        $this->required = $required;
+        if ($required) {
+            if (!$this->getForm() || $this->getForm()->isEnableRequiredAttr()) {
+                $this->setAttr('required');
+            }
+        } else {
+            $this->removeAttr('required');
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPattern()
+    {
+        return $this->getAttr('pattern');
+    }
+
+    /**
+     * @param string $pattern
+     * @return $this
+     */
+    public function setPattern($pattern)
+    {
+        $this->setAttr('pattern', $pattern);
         return $this;
     }
 
@@ -333,18 +371,18 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
         // Field name attribute
         $t->setAttr($var, 'name', $this->getFieldName());
 
-        if ($this->isRequired() && ($this->getForm() && $this->getForm()->isEnableRequiredAttr())) {
-            $t->setAttr($var, 'required', 'required');
+        if ($this->isRequired() && !$this->getForm() && $this->getForm()->isEnableRequiredAttr()) {
+            $this->setRequired(false);
+            //$t->setAttr($var, 'required', 'required');
         }
 
-        if ($this->isReadonly()) {
-            $t->setAttr($var, 'readonly', 'readonly');
-        }
-
-        if ($this->isDisabled()) {
-            $t->setAttr($var, 'disabled', 'disabled');
-            //$this->addCssClass('disabled');     // Not sure about this one, probably best to leave this to javascript
-        }
+//        if ($this->isReadonly()) {
+//            $t->setAttr($var, 'readonly', 'readonly');
+//        }
+//
+//        if ($this->isDisabled()) {
+//            $t->setAttr($var, 'disabled', 'disabled');
+//        }
 
         // Add attributes
         foreach($this->getAttrList() as $key => $val) {
