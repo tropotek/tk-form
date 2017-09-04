@@ -29,7 +29,7 @@
         text:       'name',             // Text that is assigned to the option field.
         title:      'Example',          // Title of the dual list box.
         sort:       false,              // Sort the Unselected list
-        json:       false,               // Whether to retrieve the data through JSON.
+        json:       false,              // Whether to retrieve the data through JSON.
         timeout:    500,                // Timeout for when a filter search is started.
         horizontal: false,              // Whether to layout the dual list box as horizontal or vertical.
         textLength: 45,                 // Maximum text length that is displayed in the select.
@@ -322,14 +322,14 @@
       $(parentElement + ' .stl').prop('disabled', false);
     });
 
-    if ($(parentElement + ' .unselected').has('option').length == 0) {
+    if ($(parentElement + ' .unselected').has('option').length === 0) {
       $(parentElement + ' .atr').prop('disabled', true);
       $(parentElement + ' .str').prop('disabled', true);
     } else {
       $(parentElement + ' .atr').prop('disabled', false);
     }
 
-    if ($(parentElement + ' .selected').has('option').length == 0) {
+    if ($(parentElement + ' .selected').has('option').length === 0) {
       $(parentElement + ' .atl').prop('disabled', true);
       $(parentElement + ' .stl').prop('disabled', true);
     } else {
