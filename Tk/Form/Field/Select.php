@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form\Field;
 
+use function PHPSTORM_META\type;
 use Tk\Form\Exception;
 
 /**
@@ -150,8 +151,7 @@ class Select extends Iface
                 return true;
             }
         } else {
-            //if ($val !== null && $value == $val) {
-            if ($value !== null && $value == $val) {
+            if ($val !== null && $value == $val) {
                 return true;
             }
         }

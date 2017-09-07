@@ -73,7 +73,7 @@ class CheckboxGroup extends Select
 
             // Element css class names
             foreach($this->getCssList() as $v) {
-                $tOpt->addClass('element', $v);
+                $tOpt->addCss('element', $v);
             }
             
             $tOpt->appendRepeat();
