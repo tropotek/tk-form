@@ -13,12 +13,12 @@ class Button extends Iface
     /**
      * @var string
      */
-    protected $icon = '';
+    protected $iconLeft = '';
 
     /**
-     * @var bool
+     * @var string
      */
-    protected $iconRight = false;
+    protected $iconRight = '';
 
     /**
      * @var string
@@ -65,13 +65,14 @@ class Button extends Iface
     {
         return $this->type;
     }
+
     
     /**
      * @return string
      */
     public function getIcon()
     {
-        return $this->icon;
+        return $this->iconLeft;
     }
 
     /**
@@ -80,27 +81,37 @@ class Button extends Iface
      */
     public function setIcon($icon)
     {
-        $this->icon = $icon;
+        $this->iconLeft = $icon;
         return $this;
     }
+
 
     /**
      * @return boolean
      */
     public function isIconRight()
     {
-        return $this->iconRight;
+        return ($this->iconRight != '');
     }
 
     /**
-     * @param boolean $iconRight
+     * @param string $icon
      * @return $this
      */
-    public function setIconRight($iconRight = true)
+    public function setIconRight($icon)
     {
-        $this->iconRight = $iconRight;
+        $this->iconRight = $icon;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getIconRight()
+    {
+        return $this->iconRight;
+    }
+
 
     /**
      * Get the element HTML
@@ -138,15 +149,16 @@ class Button extends Iface
 
         $t->insertText('text', $this->getLabel());
 
-        if ($this->getIcon()) {
-            if ($this->isIconRight()) {
-                $t->setChoice('iconR');
-                $t->addCss('iconR', $this->getIcon());
-            } else {
-                $t->setChoice('iconL');
-                $t->addCss('iconL', $this->getIcon());
-            }
+
+        if ($this->getIconRight()) {
+            $t->setChoice('iconR');
+            $t->addCss('iconR', $this->getIconRight());
         }
+        if ($this->getIcon()) {
+            $t->setChoice('iconL');
+            $t->addCss('iconL', $this->getIcon());
+        }
+
         
         return $t;
     }
