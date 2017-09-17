@@ -149,14 +149,14 @@ class Button extends Iface
 
         $t->insertText('text', $this->getLabel());
 
+        if ($this->getIcon()) {
+            $t->setChoice('iconL');
+            $t->addCss('iconL', $this->getIcon());
+        }
 
         if ($this->getIconRight()) {
             $t->setChoice('iconR');
             $t->addCss('iconR', $this->getIconRight());
-        }
-        if ($this->getIcon()) {
-            $t->setChoice('iconL');
-            $t->addCss('iconL', $this->getIcon());
         }
 
         
