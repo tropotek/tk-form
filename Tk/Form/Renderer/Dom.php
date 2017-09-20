@@ -306,7 +306,7 @@ jQuery(function($) {
     <span var="errors"></span>
   </div>
  
-  <div class="tk-form-fields" var="fields">
+  <div class="tk-form-fields clearfix" var="fields">
     <div class="formTabs" var="tabs" choice="tabs">
       <div class="tab-content">
         <div var="tabBox" repeat="tabBox" class="tab-pane">
@@ -323,7 +323,7 @@ jQuery(function($) {
     
   <!-- div class="tk-form-fields" var="fields"></div -->
 
-  <div class="tk-form-events" var="events"></div>
+  <div class="tk-form-events clearfix" var="events"></div>
 </form>
 
 </div>
