@@ -129,9 +129,10 @@ class Button extends Iface
         }
 
         // Field name attribute
-        $t->setAttr('element', 'type', $this->getType());
-        //$t->setAttr('element', 'name', $this->getName());
-        $t->setAttr('element', 'name', $this->getEventName());
+        if($t->getVarElement('element')->nodeName == 'button') {
+            $t->setAttr('element', 'type', $this->getType());
+            $t->setAttr('element', 'name', $this->getEventName());
+        }
         $t->setAttr('element', 'value', $this->getEventName());
 
         // All other attributes

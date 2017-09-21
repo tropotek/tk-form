@@ -44,37 +44,7 @@ class Link extends Button
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        
-        if ($t->isParsed()) return '';
-
-        if (!$t->keyExists('var', 'element')) {
-            return '';
-        }
-
-        // Field name attribute
-        //$t->setAttr('element', 'type', $this->getType());
-        //$t->setAttr('element', 'name', $this->getName());
-        $t->setAttr('element', 'name', $this->getEventName());
-
-        // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
-
-        // Element css class names
-        foreach($this->getCssList() as $v) {
-            $t->addClass('element', $v);
-        }
-
-        $t->insertText('text', $this->getLabel());
-        if ($this->getIcon()) {
-            $t->setChoice('icon');
-            $t->addClass('icon', $this->getIcon());
-        }
+        $t = parent::show();
         
         $t->setAttr('element', 'href', $this->getUrl());
         
@@ -89,7 +59,7 @@ class Link extends Button
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<a class="btn btn-sm btn-default btn-once" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+<a class="btn btn-sm btn-default btn-once" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></a>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
