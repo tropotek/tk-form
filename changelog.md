@@ -1,5 +1,19 @@
 #CHANGELOG#
 
+Ver 2.0.17 [2017-09-27]:
+-------------------------------
+ - Added student create and confirm placement pages
+ - Minor Code Updates
+ - Adding Company update request and supervisor add
+ - 252s-dev.vet.unimelb.edu.au
+ - Finished Dynamic Form Fields
+ - Added Company Categories
+ - Updated Migration script
+ - Final implementation of dynamic field system
+ - Setup required fields on profile for company and supervisor objects.
+ - Added file objects to reports
+
+
 Ver 2.0.16 [2017-06-15]:
 -------------------------------
  - Minor Code Updates
