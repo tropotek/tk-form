@@ -112,7 +112,7 @@ class Checkbox extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="checkbox form-control-static" var="checkbox">
+<div class="checkbox" var="checkbox">
   <label>
     <input type="hidden" var="hidden" value=""/>
     <input type="checkbox" var="element"/> <span var="label" class="cb-label"></span>

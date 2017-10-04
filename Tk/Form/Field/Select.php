@@ -35,6 +35,33 @@ class Select extends Iface
     }
 
     /**
+     * take a single dimensinoal array and convert it to a list for the select
+     *
+     * Input example:
+     *     array('test', 'twoWord', 'three_word_test', 'another test');
+     * Output:
+     *     array('Test' => 'test', 'Two Word' => 'twoWord', 'Three Word Test' => 'three_word_test', 'Another Test' => 'another test')
+     *
+     *
+     * @param $arr
+     * @return array
+     */
+    public static function arrayToSelectList($arr)
+    {
+        //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
+        $new = array();
+        foreach ($arr  as $v) {
+            $n = $v;
+            $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
+            $n = preg_replace('/[A-Z]/', ' $0', $n);
+            $n = ucwords($n);
+            $new[$n] =  $v;
+        }
+        return $new;
+    }
+
+
+    /**
      * @param Option\ArrayIterator $optionIterator
      * @return $this
      */
