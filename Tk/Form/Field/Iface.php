@@ -136,7 +136,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
     public function load($values)
     {
         // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
-        if (isset($values[$this->getName()])) {
+        if (array_key_exists($this->getName(), $values)) {
             $this->setValue($values[$this->getName()]);
         }
         return $this;

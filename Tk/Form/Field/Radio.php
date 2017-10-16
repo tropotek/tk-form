@@ -9,6 +9,13 @@ namespace Tk\Form\Field;
  */
 class Radio extends Select
 {
+
+    /**
+     * @var null|callable
+     */
+    protected $onShowOption = null;
+
+
     
     /**
      * @param string $name
@@ -45,14 +52,13 @@ class Radio extends Select
     public function show()
     {
         $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
-        }
 
-        $c = false;
+        $checkedSet = false;
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = $t->getRepeat('option');
+
+            if (!$tOpt->keyExists('var', 'element')) continue;
 
             if ($option->isDisabled()) {
                 $tOpt->setAttr('option', 'disabled', 'disabled');
@@ -64,9 +70,8 @@ class Radio extends Select
             $tOpt->setAttr('element', 'name', $this->getFieldName());
             
             // allow only one radio to be selected.
-            if ($this->getValue() == $option->getValue() && !$c) {
+            if ($this->isSelected($option->getValue()) && !$checkedSet) {
                 $tOpt->setAttr('element', 'checked', 'checked');
-                $c = true;
             }
 
             // All other attributes
@@ -79,9 +84,16 @@ class Radio extends Select
 
             // Element css class names
             foreach($this->getCssList() as $v) {
-                $t->addClass('element', $v);
+                $t->addCss('element', $v);
             }
-            
+
+            if (is_callable($this->onShowOption)) {
+                call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
+            }
+
+            if ($this->getValue() == $option->getValue() && !$checkedSet) {
+                $checkedSet = true;
+            }
             $tOpt->appendRepeat();
         }
 
@@ -98,12 +110,12 @@ class Radio extends Select
     {
         $xhtml = <<<HTML
 <div>
-<div class="checkbox" repeat="option" var="option">
-  <label var="label">
-    <input type="radio" var="element" />
-    <span var="text"></span>
-  </label>
-</div>
+  <div class="radio" repeat="option" var="option">
+    <label var="label">
+      <input type="radio" var="element" />
+      <span var="text"></span>
+    </label>
+  </div>
 </div>
 HTML;
 
