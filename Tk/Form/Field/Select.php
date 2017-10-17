@@ -46,15 +46,17 @@ class Select extends Iface
      * @param $arr
      * @return array
      */
-    public static function arrayToSelectList($arr)
+    public static function arrayToSelectList($arr, $modify = true)
     {
         //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
         $new = array();
         foreach ($arr  as $v) {
             $n = $v;
-            $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
-            $n = preg_replace('/[A-Z]/', ' $0', $n);
-            $n = ucwords($n);
+            if ($modify) {
+                $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
+                $n = preg_replace('/[A-Z]/', ' $0', $n);
+                $n = ucwords($n);
+            }
             $new[$n] =  $v;
         }
         return $new;
@@ -157,8 +159,8 @@ class Select extends Iface
 
     public function load($values)
     {
-        if ($this->getForm()->isSubmitted() && !isset($values[$this->getName()])) {
-            $this->setValue('');
+        if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
+            $this->setValue(null);
         }
         parent::load($values);
         return $this;
@@ -222,15 +224,10 @@ class Select extends Iface
             $tOpt->insertText('option', $option->getText());
 
             // Add attributes
-            foreach($option->getAttrList() as $key => $val) {
-                if ($val === '' || $val === null) $val = $key;
-                $tOpt->setAttr('option', $key, $val);
-            }
+            $tOpt->setAttr('option', $option->getAttrList());
 
             // Add css class
-            foreach($option->getCssList() as $v) {
-                $tOpt->addCss('option', $v);
-            }
+            $tOpt->addCss('option', $option->getCssString());
 
             $tOpt->appendRepeat();
         }

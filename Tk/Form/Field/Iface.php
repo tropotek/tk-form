@@ -280,7 +280,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @param boolean $disabled
      * @return $this
      */
-    public function setDisabled($disabled)
+    public function setDisabled($disabled = true)
     {
         if ($disabled)
             $this->setAttr('disabled');

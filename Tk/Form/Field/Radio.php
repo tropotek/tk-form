@@ -75,17 +75,10 @@ class Radio extends Select
             }
 
             // All other attributes
-            foreach($this->getAttrList() as $key => $val) {
-                if ($val == '' || $val == null) {
-                    $val = $key;
-                }
-                $t->setAttr('element', $key, $val);
-            }
+            $t->setAttr('element', $this->getAttrList());
 
             // Element css class names
-            foreach($this->getCssList() as $v) {
-                $t->addCss('element', $v);
-            }
+            $t->addCss('element', $this->getCssString());
 
             if (is_callable($this->onShowOption)) {
                 call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
