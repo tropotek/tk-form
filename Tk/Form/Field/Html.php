@@ -10,35 +10,32 @@ namespace Tk\Form\Field;
  */
 class Html extends Input
 {
-    
+    /**
+     * @var null|string|\Dom\Template
+     */
     protected $html = null;
+
 
     /**
      * __construct
      *
      * @param string $name
-     * @param string $html
+     * @param null|string|\Dom\Template $html
      */
     public function __construct($name, $html = null)
     {
         parent::__construct($name);
-        //$this->html = $html;
-        $this->setValue($html);
+        $this->setHtml($html);
         $this->addCss('form-control-static');
     }
 
     /**
-     * @param mixed|string $html
+     * @param null|string|\Dom\Template $html
      * @return $this
      */
-    public function setValue($html)
+    public function setHtml($html)
     {
-        if ($html) {        // TODO: Check if this should be the expected behaviour
-            if ($html instanceof \Dom\Template) {
-                $html = $html->toString();
-            }
-            parent::setValue($html);
-        }
+        $this->html = $html;
         return $this;
     }
 
@@ -54,13 +51,20 @@ class Html extends Input
             return $t;
         }
 
-        $t->insertHtml('element', $this->getValue());
+        $html = $this->getValue();
+
+        if ($this->html !== null)
+            $html = $this->html;
+
+        if ($html instanceof \Dom\Template) {
+            $t->insertTemplate('element', $html);
+        } else {
+            $t->insertHtml('element', $html);
+        }
 
         $this->decorateElement($t);
         return $t;
     }
-
-
 
     /**
      * makeTemplate

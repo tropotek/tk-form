@@ -86,8 +86,6 @@ class Dom extends Iface
         return $this;
     }
 
-
-
     /**
      * Render Fields
      *
@@ -100,6 +98,7 @@ class Dom extends Iface
 
         $fieldList = $this->groupFieldset($this->form->getFieldList());
         $fieldsetName = 'null';
+        /** @var \Dom\Repeat $setRow */
         $setRow = null;
         /* @var $field Field\Iface */
         foreach ($fieldList as $field) {
@@ -113,7 +112,7 @@ class Dom extends Iface
                         }
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
-                        $setRow->addCss('fieldset', $field->getFieldset());
+                        $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()) );
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }
@@ -133,9 +132,9 @@ class Dom extends Iface
 
         $i = (count($tabGroups)%2) ? 0 : 1;
         foreach ($tabGroups as $gname => $group) {
-
             $tabBox = $t->getRepeat('tabBox');
             $fieldsetName = 'null';
+            /** @var \Dom\Repeat $setRow */
             $setRow = null;
             foreach ($group as $field) {
                 $tabBox->setAttr('tabBox', 'id', $this->form->getId().$this->cleanName($gname));
@@ -149,7 +148,7 @@ class Dom extends Iface
                         }
                         $setRow = $tabBox->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
-                        $setRow->addCss('fieldset', $field->getFieldset());
+                        $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()));
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }
@@ -180,8 +179,6 @@ class Dom extends Iface
 
 
     /**
-     * cleanName
-     *
      * @param string $str
      * @return string
      */
@@ -191,8 +188,6 @@ class Dom extends Iface
     }
 
     /**
-     *
-     *
      * @param array $fieldList
      * @return array
      */
@@ -217,11 +212,9 @@ class Dom extends Iface
 
 
     /**
-     * Render Fields
-     *
      * @param Field\Iface $field
      * @param Template $t
-     * @return mixed
+     * @param string $var
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
@@ -234,8 +227,6 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-
-            
             if ($field instanceof Field\Hidden) {
                 $html = $field->show();
             } else {
@@ -252,15 +243,14 @@ class Dom extends Iface
     }
 
     /**
-     * makeTemplate
-     *
-     * @return string
+     * @return \Dom\Template
      */
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
 <div class="">
 <script type="text/javascript"> //<![CDATA[
+// TODO: move to an external script
 // This is the Bootstrap Tab script
 jQuery(function($) {
     $('.formTabs').each(function(id, tabContainer) {
@@ -280,7 +270,7 @@ jQuery(function($) {
             if ($(tbox).find('.has-error').length) {
                 li.addClass('has-error');
             }
-            if (i == 0) {
+            if (i === 0) {
                 $(tbox).addClass('active');
                 li.addClass('active');
             }
