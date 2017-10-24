@@ -120,10 +120,12 @@ abstract class Iface extends Field\Iface
 
     /**
      * @param null|\Tk\Uri $redirect
+     * @return $this
      */
     public function setRedirect($redirect)
     {
         $this->redirect = $redirect;
+        return $this;
     }
 
     /**
