@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use function PHPSTORM_META\type;
 use Tk\Form\Exception;
 
 /**
