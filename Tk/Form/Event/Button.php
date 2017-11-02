@@ -44,6 +44,7 @@ class Button extends Iface
             $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-arrow-left');
         }
+        $this->addCss('btn btn-sm btn-default btn-once');
     }
 
     /**
@@ -78,13 +79,22 @@ class Button extends Iface
     /**
      * @param string $icon
      * @return $this
+     * @alias setIconLeft()
      */
     public function setIcon($icon)
+    {
+        return $this->setIconLeft($icon);
+    }
+
+    /**
+     * @param string $icon
+     * @return $this
+     */
+    public function setIconLeft($icon)
     {
         $this->iconLeft = $icon;
         return $this;
     }
-
 
     /**
      * @return boolean
@@ -112,7 +122,6 @@ class Button extends Iface
         return $this->iconRight;
     }
 
-
     /**
      * Get the element HTML
      *
@@ -136,17 +145,19 @@ class Button extends Iface
         $t->setAttr('element', 'value', $this->getEventName());
 
         // All other attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('element', $key, $val);
-        }
+        $t->setAttr('element', $this->getAttrList());
+//        foreach($this->getAttrList() as $key => $val) {
+//            if ($val == '' || $val == null) {
+//                $val = $key;
+//            }
+//            $t->setAttr('element', $key, $val);
+//        }
 
         // Element css class names
-        foreach($this->getCssList() as $v) {
-            $t->addCss('element', $v);
-        }
+        $t->addCss('element', $this->getCssList());
+//        foreach($this->getCssList() as $v) {
+//            $t->addCss('element', $v);
+//        }
 
         $t->insertText('text', $this->getLabel());
 
@@ -172,7 +183,7 @@ class Button extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<button type="button" class="btn btn-sm btn-default btn-once" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></button>
+<button type="button" class="" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></button>
 HTML;
         return \Dom\Loader::load($xhtml);
     }

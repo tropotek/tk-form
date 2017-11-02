@@ -49,17 +49,19 @@ class Dom extends Iface
         $t->setAttr('form', 'id', $this->getForm()->getId());
 
         // All other attributes
-        foreach($this->getForm()->getAttrList() as $key => $val) {
-            if ($val == '' || $val == null) {
-                $val = $key;
-            }
-            $t->setAttr('form', $key, $val);
-        }
+        $t->setAttr('form' ,$this->getForm()->getAttrList());
+//        foreach($this->getForm()->getAttrList() as $key => $val) {
+//            if ($val == '' || $val == null) {
+//                $val = $key;
+//            }
+//            $t->setAttr('form', $key, $val);
+//        }
 
         // Element css class names
-        foreach($this->getForm()->getCssList() as $v) {
-            $t->addCss('form', $v);
-        }
+        $t->addCss('form', $this->getForm()->getCssList());
+//        foreach($this->getForm()->getCssList() as $v) {
+//            $t->addCss('form', $v);
+//        }
 
         // render form errors
         if ($this->getForm()->hasErrors()) {
@@ -130,12 +132,12 @@ class Dom extends Iface
             $setRow->appendRepeat();
         }
 
+        $fieldsetName = 'null';
+        /** @var \Dom\Repeat $setRow */
+        $setRow = null;
         $i = (count($tabGroups)%2) ? 0 : 1;
         foreach ($tabGroups as $gname => $group) {
             $tabBox = $t->getRepeat('tabBox');
-            $fieldsetName = 'null';
-            /** @var \Dom\Repeat $setRow */
-            $setRow = null;
             foreach ($group as $field) {
                 $tabBox->setAttr('tabBox', 'id', $this->form->getId().$this->cleanName($gname));
                 $tabBox->setAttr('tabBox', 'data-name', $gname);
@@ -152,6 +154,7 @@ class Dom extends Iface
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }
+                $fieldsetName = $field->getFieldset();
                 $i++;
             }
             if ($setRow) {
@@ -209,7 +212,6 @@ class Dom extends Iface
         }
         return $grouped;
     }
-
 
     /**
      * @param Field\Iface $field

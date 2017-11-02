@@ -27,6 +27,7 @@ class Link extends Button
         parent::__construct($name);
         $this->url = \Tk\Uri::create($url);
         $this->setIcon($icon);
+        $this->addCss('btn btn-sm btn-default btn-once');
     }
 
     /**
@@ -59,7 +60,7 @@ class Link extends Button
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<a class="btn btn-sm btn-default btn-once" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></a>
+<a class="" var="element"><i var="iconL" choice="iconL"></i> <span var="text">Submit</span> <i var="iconR" choice="iconR"></i></a>
 HTML;
         return \Dom\Loader::load($xhtml);
     }
