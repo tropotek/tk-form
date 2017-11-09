@@ -37,6 +37,8 @@ class Dom extends Iface
      * Render the field and return the template or html string
      *
      * @return $this
+     * @todo This should return the Template object as per all other Renderer interfaces....
+     *       This will affect all projects, needs to be done ASAP, before EMS release.
      */
     public function show()
     {
