@@ -131,7 +131,7 @@ class Dom extends Iface
             }
         }
         if ($setRow) {
-            $setRow->appendRepeat();
+            $setRow->appendRepeat('fields');
         }
 
         $fieldsetName = 'null';
@@ -148,7 +148,7 @@ class Dom extends Iface
                 } else {
                     if ($fieldsetName != $field->getFieldset()) {
                         if ($setRow) {
-                            $setRow->appendRepeat();
+                            $setRow->appendRepeat('tabBox');
                         }
                         $setRow = $tabBox->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
@@ -160,9 +160,9 @@ class Dom extends Iface
                 $i++;
             }
             if ($setRow) {
-                $setRow->appendRepeat();
+                $setRow->appendRepeat('tabBox');
             }
-            $tabBox->appendRepeat();
+            $tabBox->appendRepeat('tab-content');
         }
 
         if (count($tabGroups)) {
@@ -301,8 +301,9 @@ jQuery(function($) {
   </div>
  
   <div class="tk-form-fields clearfix" var="fields">
+  
     <div class="formTabs" var="tabs" choice="tabs">
-      <div class="tab-content">
+      <div class="tab-content" var="tab-content">
         <div var="tabBox" repeat="tabBox" class="tab-pane">
           <fieldset var="fieldset" repeat="fieldset">
             <legend var="legend"></legend>
@@ -310,9 +311,11 @@ jQuery(function($) {
         </div>
       </div>
     </div>
+    
     <fieldset var="fieldset" repeat="fieldset">
       <legend var="legend"></legend>
     </fieldset>
+    
   </div>
     
   <!-- div class="tk-form-fields" var="fields"></div -->
