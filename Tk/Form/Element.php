@@ -13,17 +13,7 @@ abstract class Element implements \Tk\InstanceKey
 {
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
-
-//    /**
-//     * @var array
-//     */
-//    protected $attrList = array();
-//
-//    /**
-//     * @var array
-//     */
-//    protected $cssList = array();
-
+    use \Tk\CollectionTrait;
 
 
     /**
@@ -164,6 +154,7 @@ abstract class Element implements \Tk\InstanceKey
      *
      * @param $name
      * @return bool
+     * @deprecated use get() and getRenderer()
      */
     public function getParam($name)
     {
@@ -177,6 +168,7 @@ abstract class Element implements \Tk\InstanceKey
      * @param string $name
      * @param mixed $value
      * @return $this
+     * @deprecated use set() and setRenderer()
      */
     public function setParam($name, $value)
     {

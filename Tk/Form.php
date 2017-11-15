@@ -75,6 +75,11 @@ class Form extends Form\Element
      */
     protected $dispatcher = null;
 
+    /**
+     * @var null|Form\Renderer\Iface
+     */
+    protected $renderer = null;
+
 
 
     /**
@@ -134,6 +139,25 @@ class Form extends Form\Element
     {
         $this->dispatcher = $dispatcher;
     }
+
+    /**
+     * @return null|Form\Renderer\Iface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * @param null|Form\Renderer\Iface $renderer
+     * @return $this
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
+        return $this;
+    }
+
 
     /**
      * Useful for extended form objects
