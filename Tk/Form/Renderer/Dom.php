@@ -108,11 +108,11 @@ class Dom extends Iface
         foreach ($fieldList as $field) {
             if (!$field->getTabGroup()) {
                 if (!$field->getFieldset()) {
-                    $this->showField($field, $t);
+                    $this->showField($field, $t, 'fields');
                 } else {
                     if ($fieldsetName != $field->getFieldset()) {
                         if ($setRow) {
-                            $setRow->appendRepeat();
+                            $setRow->appendRepeat('fields');
                         }
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
@@ -231,6 +231,11 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
+
+            // TODO: Add a no field group option to Field, then render as is with nor field group class
+            // TODO: OR Better! add a fieldGroupClass param per instance of a field, allowing any field group per Field
+            // TODO: Making the Fields/renderers nestable could be a handy thing too
+
             if ($field instanceof Field\Hidden) {
                 $html = $field->show();
             } else {

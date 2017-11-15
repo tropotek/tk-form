@@ -360,6 +360,7 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * Decorate an element template
      *
      * @param \Dom\Template $t
+     * @param string $var
      * @return \Dom\Template|string
      */
     public function decorateElement(\Dom\Template $t, $var = 'element')
@@ -373,27 +374,11 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
 
         if ($this->isRequired() && !$this->getForm() && $this->getForm()->isEnableRequiredAttr()) {
             $this->setRequired(false);
-            //$t->setAttr($var, 'required', 'required');
         }
-
-//        if ($this->isReadonly()) {
-//            $t->setAttr($var, 'readonly', 'readonly');
-//        }
-
-//        if ($this->isDisabled()) {
-//            $t->setAttr($var, 'disabled', 'disabled');
-//        }
 
         // Add attributes
-        foreach($this->getAttrList() as $key => $val) {
-            if ($val === '' || $val === null) $val = $key;
-            $t->setAttr($var, $key, $val);
-        }
-
-        // Add element css class labels
-        foreach($this->getCssList() as $v) {
-            $t->addCss($var, $v);
-        }
+        $t->setAttr($var, $this->getAttrList());
+        $t->addCss($var, $this->getCssList());
 
         return $t;
     }
