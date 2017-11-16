@@ -15,6 +15,7 @@ use Tk\Form;
  */
 class Dom extends Iface
 {
+
     /**
      * @var string
      */
@@ -25,7 +26,7 @@ class Dom extends Iface
      * Create a new Renderer.
      *
      * @param Form $form
-     * @return Dom
+     * @return static
      * @deprecated I think this will be renamed or removed in the release version
      */
     static function create($form)
@@ -36,9 +37,9 @@ class Dom extends Iface
     /**
      * Render the field and return the template or html string
      *
-     * @return $this
+     * @return static
      * @todo This should return the Template object as per all other Renderer interfaces....
-     *       This will affect all projects, needs to be done ASAP, before EMS release.
+     * @todo this will affect all projects, needs to be done ASAP, before EMS release.
      */
     public function show()
     {
@@ -52,18 +53,9 @@ class Dom extends Iface
 
         // All other attributes
         $t->setAttr('form' ,$this->getForm()->getAttrList());
-//        foreach($this->getForm()->getAttrList() as $key => $val) {
-//            if ($val == '' || $val == null) {
-//                $val = $key;
-//            }
-//            $t->setAttr('form', $key, $val);
-//        }
 
         // Element css class names
         $t->addCss('form', $this->getForm()->getCssList());
-//        foreach($this->getForm()->getCssList() as $v) {
-//            $t->addCss('form', $v);
-//        }
 
         // render form errors
         if ($this->getForm()->hasErrors()) {
@@ -322,9 +314,7 @@ jQuery(function($) {
     </fieldset>
     
   </div>
-    
-  <!-- div class="tk-form-fields" var="fields"></div -->
-
+  
   <div class="tk-form-events clearfix" var="events"></div>
 </form>
 
