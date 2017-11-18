@@ -63,7 +63,8 @@ class Checkbox extends Input
     public function load($values)
     {
         parent::load($values);
-        if (!isset($values[$this->getName()])) {
+        // TODO: is Checking for null a sain thing here, so far yes, remove if not
+        if (!isset($values[$this->getName()]) && $this->getValue() === null) {
             $this->setValue('');
             if ($this->isArrayField())
                 $this->setValue(array());
