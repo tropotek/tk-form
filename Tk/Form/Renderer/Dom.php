@@ -43,19 +43,19 @@ class Dom extends Iface
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'form')) {
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'form')) {
             return $this;
         }
 
         // Field name attribute
-        $t->setAttr('form', 'id', $this->getForm()->getId());
+        $template->setAttr('form', 'id', $this->getForm()->getId());
 
         // All other attributes
-        $t->setAttr('form' ,$this->getForm()->getAttrList());
+        $template->setAttr('form' ,$this->getForm()->getAttrList());
 
         // Element css class names
-        $t->addCss('form', $this->getForm()->getCssList());
+        $template->addCss('form', $this->getForm()->getCssList());
 
         // render form errors
         if ($this->getForm()->hasErrors()) {
@@ -72,14 +72,14 @@ class Dom extends Iface
                 }
             }
             if ($estr) {
-                $t->appendHtml('errors', $estr);
-                $t->setChoice('errors');
+                $template->appendHtml('errors', $estr);
+                $template->setChoice('errors');
             }
         }
 
-        $this->showFields($t);
+        $this->showFields($template);
 
-        return $this;
+        return $template;
     }
 
     /**
