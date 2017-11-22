@@ -2,7 +2,6 @@
 namespace Tk\Form\Renderer;
 
 use Tk\Form\Field;
-use Tk\Form\Event;
 use Tk\Form\Element;
 
 /**
