@@ -75,12 +75,12 @@ class DomStatic extends Iface
     /**
      * Render
      *
-     * @return mixed
+     * @return \Dom\Template
      */
     public function show()
     {
         if (!$this->domForm || !$this->domForm->getNode()) {
-            return $this;
+            return $this->getTemplate();
         }
 
         foreach ($this->getForm()->getFieldList() as $field) {
@@ -93,7 +93,7 @@ class DomStatic extends Iface
             $this->showFormError();
         }
 
-        return $this;
+        return $this->getTemplate();
     }
 
     /**
