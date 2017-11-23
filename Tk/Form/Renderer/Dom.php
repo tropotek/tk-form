@@ -37,7 +37,7 @@ class Dom extends Iface
     /**
      * Render the field and return the template or html string
      *
-     * @return static
+     * @return \Dom\Template
      * @todo This should return the Template object as per all other Renderer interfaces....
      * @todo this will affect all projects, needs to be done ASAP, before EMS release.
      */
@@ -45,7 +45,7 @@ class Dom extends Iface
     {
         $template = $this->getTemplate();
         if (!$template->keyExists('var', 'form')) {
-            return $this;
+            return $template;
         }
 
         // Field name attribute
