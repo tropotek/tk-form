@@ -201,17 +201,17 @@
 
 
     var rowEl = $('<div class="row">' +
-      (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
       '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
       '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-      (options.horizontal == false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
+      (options.horizontal === false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
       '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
       '   </div>' +
-      (options.horizontal == false ? createVerticalButtons(options.moveAllBtn) : '') +
-      (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+      (options.horizontal === false ? createVerticalButtons(options.moveAllBtn) : '') +
+      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
       '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
       '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-      (options.horizontal == false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
+      (options.horizontal === false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
       '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
       '   </div></div>');
     if (prependElement.find('label.control-label')) {
@@ -238,6 +238,7 @@
     //   '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
     //   '   </div></div>');
 
+      console.log(options);
     $(options.parentElement + ' .selected').prop('name', $(options.element).prop('name'));
     $(options.parentElement + ' .unselected-title').text(options.title);
     $(options.parentElement + ' .selected-title').text('Selected');
@@ -245,7 +246,7 @@
 
   /** Creates the buttons when the dual list box is set in horizontal mode. */
   function createHorizontalButtons(number, copyAllBtn) {
-    if (number == 1) {
+    if (number === 1) {
       return (copyAllBtn ? '       <button type="button" class="btn btn-default col-xs-6 atr" data-type="atr" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-forward"></span></button>': '') +
         '       <button type="button" class="btn btn-default ' + (copyAllBtn ? 'pull-right col-xs-6' : 'col-xs-12') + ' str" data-type="str" style="margin-bottom: 5px;" disabled><span class="glyphicon glyphicon-triangle-right"></span></button>';
     } else {
@@ -375,7 +376,7 @@
 
   /** Checks whether or not an element is visible. The default jQuery implementation doesn't work. */
   $.fn.isVisible = function() {
-    return !($(this).css('visibility') == 'hidden' || $(this).css('display') == 'none');
+    return !($(this).css('visibility') === 'hidden' || $(this).css('display') === 'none');
   };
 
   /** Sorts options in a select / list box. */

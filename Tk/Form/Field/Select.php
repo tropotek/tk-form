@@ -161,6 +161,10 @@ class Select extends Iface
         if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
             $this->setValue(null);
         }
+        // TODO: check if this is ok.
+//        if (!empty($values[$this->getName()]) && $this->isArrayField() && is_string($values[$this->getName()])) {
+//            $values[$this->getName()] = explode(',', $values[$this->getName()]);
+//        }
         parent::load($values);
         return $this;
     }

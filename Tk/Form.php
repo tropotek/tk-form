@@ -580,24 +580,25 @@ class Form extends Form\Element
     {
         $array = array();
         /* @var $field Field\Iface */
-        foreach ($this->getFieldList() as $name => $field) {
+        foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
             if ($regex) {
-                if (is_string($regex) && !preg_match($regex, $name)) {
+                if (is_string($regex) && !preg_match($regex, $field->getName())) {
                     continue;
-                } else if (is_array($regex) && !in_array($name, $regex)) {
+                } else if (is_array($regex) && !in_array($field->getName(), $regex)) {
                     continue;
                 }
             }
             $value = $field->getValue();
+
             if (!$field->isArrayField() && is_array($value)) {
-                // Keep an eye on this for any unwanted issues, related to the data map and multiple value property maps
                 foreach ($value as $k => $v) {  // pull values out if the element is not an array
                     $array[$k] = $v;
                 }
             } else {
-                $array[$name] = $value;
+                $array[$field->getName()] = $value;
             }
+
         }
         return $array;
     }
