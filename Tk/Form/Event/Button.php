@@ -31,6 +31,7 @@ class Button extends Iface
      *
      * @param string $name
      * @param callable $callback
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $callback = null)
     {
@@ -130,35 +131,18 @@ class Button extends Iface
     public function show()
     {
         $t = $this->getTemplate();
-        
         if ($t->isParsed()) return '';
-
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
-
-        // Field name attribute
         if($t->getVarElement('element')->nodeName == 'button') {
             $t->setAttr('element', 'type', $this->getType());
             $t->setAttr('element', 'name', $this->getEventName());
         }
         $t->setAttr('element', 'value', $this->getEventName());
 
-        // All other attributes
         $t->setAttr('element', $this->getAttrList());
-//        foreach($this->getAttrList() as $key => $val) {
-//            if ($val == '' || $val == null) {
-//                $val = $key;
-//            }
-//            $t->setAttr('element', $key, $val);
-//        }
-
-        // Element css class names
         $t->addCss('element', $this->getCssList());
-//        foreach($this->getCssList() as $v) {
-//            $t->addCss('element', $v);
-//        }
-
         $t->insertText('text', $this->getLabel());
 
         if ($this->getIcon()) {
@@ -179,6 +163,7 @@ class Button extends Iface
      * makeTemplate
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {

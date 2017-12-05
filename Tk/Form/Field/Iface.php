@@ -59,19 +59,27 @@ abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererI
      * @var mixed
      */
     protected $template = null;
-    
-    
+
 
     /**
      * __construct
      *
      * @param string $name
+     * @throws Exception
      */
     public function __construct($name)
     {
         $this->setName($name);
     }
-     
+
+    /**
+     * @param $name
+     * @return static
+     */
+    public static function create($name)
+    {
+        return new static($name);
+    }
 
     /**
      * Set the name for this element

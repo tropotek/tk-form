@@ -66,10 +66,8 @@ abstract class Element implements \Tk\InstanceKey
     /**
      * Set the name for this element
      *
-     *
      * @param $name
      * @return $this
-     * @throws Exception
      */
     public function setName($name)
     {

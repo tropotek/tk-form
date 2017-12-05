@@ -29,6 +29,7 @@ abstract class Iface extends Field\Iface
      * @param string $name
      * @param callable $callback
      * @param \Tk\Uri $redirect
+     * @throws Exception
      */
     public function __construct($name, $callback = null, $redirect = null)
     {
@@ -39,6 +40,7 @@ abstract class Iface extends Field\Iface
 
     /**
      * Execute this events callback methods/functions
+     * @throws \Exception
      */
     public function execute()
     {
