@@ -16,6 +16,7 @@ class Submit extends Button
      *
      * @param string $name
      * @param callable $callback
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $callback = null)
     {
@@ -26,6 +27,15 @@ class Submit extends Button
         } else if ($name == 'update') {
             $this->setIcon('glyphicon glyphicon-arrow-left');
         }
+    }
+
+    /**
+     * @param $name
+     * @return Submit
+     */
+    public static function create($name, $callback = null)
+    {
+        return new self($name, $callback);
     }
 
 }

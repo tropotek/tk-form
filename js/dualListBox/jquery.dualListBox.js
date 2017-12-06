@@ -238,7 +238,6 @@
     //   '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
     //   '   </div></div>');
 
-      console.log(options);
     $(options.parentElement + ' .selected').prop('name', $(options.element).prop('name'));
     $(options.parentElement + ' .unselected-title').text(options.title);
     $(options.parentElement + ' .selected-title').text('Selected');
