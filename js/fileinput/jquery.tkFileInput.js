@@ -390,7 +390,7 @@
     var defaults = {
       dataUrl: '',
       enableDelete: false,
-      multipleSelect: false,
+      multipleSelect: null,
       serverConfirm: 'Are you sure you want to delete this file from the server?',
       localConfirm: '',
       cloneid: 0,
@@ -407,6 +407,10 @@
       // Defaults for the tkForm file field
       onInit: function(plugin) {
         $(this).closest('.form-group').find('.tk-file-delete').hide();
+        if (plugin.settings.multipleSelect === null) {
+          plugin.settings.multipleSelect = ($element.attr('name').indexOf('[]') > -1);
+        }
+
         if (!plugin.settings.multipleSelect)
           $element.removeAttr('multiple');
         plugin.settings.template.find('.tfi-input-filename').remove();

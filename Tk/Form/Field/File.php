@@ -55,6 +55,7 @@ class File extends Input
      * @param string $name
      * @param string|null $destPath If not set then the file will not be moved and the object will not be set
      * @param string|null $dataPath If not set then the \Tk\Config::getDataPath() will be used
+     * @throws Form\Exception
      */
     public function __construct($name, $destPath = null, $dataPath = null)
     {
@@ -69,6 +70,22 @@ class File extends Input
             $destPath = str_replace($dataPath, '', $destPath);
         }
         $this->destPath = rtrim($destPath, '/');
+
+        if ($this->isArrayField()) {
+            $this->setAttr('multiple', 'multiple');
+        }
+
+    }
+
+    /**
+     * @param $name
+     * @param string|null $destPath
+     * @param string|null $dataPath
+     * @return static
+     */
+    public static function create($name, $destPath = null, $dataPath = null)
+    {
+        return new static($name);
     }
 
     /**
@@ -154,6 +171,7 @@ class File extends Input
      *  ...
      * </code>
      * @return int Return the number of files modified
+     * @throws Form\Exception
      */
     public function saveFile()
     {
@@ -236,7 +254,6 @@ class File extends Input
                 $cnt++;
             }
         } catch (\Exception $e) {
-            // TODO: Test this on an error to see the result
             $this->addError($e->getMessage());
         }
 
@@ -384,12 +401,10 @@ class File extends Input
     public function show()
     {
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
+
         $t = parent::show();
         
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
-        if ($this->isArrayField()) {
-            $t->setAttr('element', 'multiple', 'true');
-        }
 
         if ($this->getValue() || \Tk\Request::create()->has($this->getDeleteEventName())) {
             $did = $this->makeId() . '-del';
@@ -411,6 +426,7 @@ class File extends Input
      * makeTemplate
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {
