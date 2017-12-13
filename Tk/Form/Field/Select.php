@@ -17,10 +17,11 @@ class Select extends Iface
      */
     protected $options = array();
 
-    
+
     /**
      * @param string $name
      * @param Option\ArrayIterator|array $optionIterator
+     * @throws Exception
      */
     public function __construct($name, $optionIterator = null)
     {
@@ -93,7 +94,6 @@ class Select extends Iface
      *
      * @param array|Option[] $options
      * @return $this
-     * @throws Exception
      */
     public function setOptions($options)
     {
@@ -155,11 +155,17 @@ class Select extends Iface
         return $this;
     }
 
-
+    /**
+     * @param array|\ArrayObject $values
+     * @return $this
+     */
     public function load($values)
     {
         if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
             $this->setValue(null);
+            if ($this->isArrayField()) {
+                $this->setValue(array());
+            }
         }
         // TODO: check if this is ok.
 //        if (!empty($values[$this->getName()]) && $this->isArrayField() && is_string($values[$this->getName()])) {
