@@ -399,9 +399,9 @@
         '<table class="table table-striped tfi-table"></table>',
       
       rowTpl:'<tr class="tfi-row">'+
-        '<td class="text-right"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a></td>'+
+        '<td class="text-right"><a href="#" title="View File" class="btn btn-xs btn-default tfi-btn-view"><i class="fa fa-eye"></i></a></td>'+
         '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>'+
-        '<td class="tfi-file-size"><span>673Kb</span></td>'+
+        '<td class="tfi-file-size"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a> &nbsp; <span>673Kb</span></td>'+
       '</tr>',
 
       // Defaults for the tkForm file field
@@ -447,7 +447,8 @@
           row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
           row.addClass('tfi-new');
           row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled').text(basename(file.name));
-          row.find('.tfi-file-size').text(formatBytes(file.size));
+          row.find('.tfi-btn-view').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled');
+          row.find('.tfi-file-size span').text(formatBytes(file.size));
           
           plugin.settings.table.append(row);
         }
@@ -520,10 +521,11 @@
               });
               row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(this.url));
               row.find('.tfi-filename').addClass('ui-lightbox').attr('href', this.url).text(basename(this.url));
+              row.find('.tfi-btn-view').addClass('ui-lightbox').attr('href', this.url);
               if ($.fn.magnificPopup && isImage(this.url)) {
                 row.find('.tfi-filename').magnificPopup({type: 'image'})
               }
-              row.find('.tfi-file-size').text(formatBytes(xhr.getResponseHeader('Content-Length')));
+              row.find('.tfi-file-size span').text(formatBytes(xhr.getResponseHeader('Content-Length')));
               table.append(row);
 
               plugin.settings.onUrlLoad.apply(element, [plugin,  this]);
