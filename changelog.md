@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.18 [2018-01-15]:
+-------------------------------
+ - Minor Code Updates
+ - Completerd Star Rating Plugin
+ - Finished Animals Plugin... NEXT!!!!
+
+
 Ver 2.0.17 [2017-09-27]:
 -------------------------------
  - Added student create and confirm placement pages
