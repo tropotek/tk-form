@@ -87,20 +87,23 @@ class ArrayObjectIterator extends ArrayIterator
         $value = '';
         $disabled = false;
 
-        if ( is_callable($this->textParam) ) {
-            $text = call_user_func_array($this->textParam, array($obj));
-        } else if (property_exists($obj, $this->textParam)) {
+        if (property_exists($obj, $this->textParam)) {
             $text = $obj->{$this->textParam};
+        } else if ( is_callable($this->textParam) ) {
+            $text = call_user_func_array($this->textParam, array($obj));
         }
-        if ( is_callable($this->valueParam) ) {
-            $text = call_user_func_array($this->valueParam, array($obj));
-        } else if (property_exists($obj, $this->valueParam)) {
+
+        if (property_exists($obj, $this->valueParam)) {
             $value = $obj->{$this->valueParam};
+        } else if ( is_callable($this->valueParam) ) {
+            $value = call_user_func_array($this->valueParam, array($obj));
         }
+
         if (property_exists($obj, $this->disableParam)) {
             $disabled = $obj->{$this->disableParam};
         }
         // Create the option object from the object supplied
+
         return new Option($text, $value, $disabled);
     }
 

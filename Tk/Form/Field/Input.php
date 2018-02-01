@@ -78,7 +78,6 @@ class Input extends Iface
      * makeTemplate
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {
