@@ -82,6 +82,7 @@ class File extends Input
      * @param string|null $destPath
      * @param string|null $dataPath
      * @return static
+     * @throws Form\Exception
      */
     public static function create($name, $destPath = null, $dataPath = null)
     {
@@ -400,7 +401,7 @@ class File extends Input
      */
     public function show()
     {
-        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b>' . $this->getNotes());
+        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b><br/>' . $this->getNotes());
 
         $t = parent::show();
         
