@@ -87,16 +87,16 @@ class ArrayObjectIterator extends ArrayIterator
         $value = '';
         $disabled = false;
 
-        if (property_exists($obj, $this->textParam)) {
-            $text = $obj->{$this->textParam};
-        } else if ( is_callable($this->textParam) ) {
+        if ( is_callable($this->textParam) ) {
             $text = call_user_func_array($this->textParam, array($obj));
+        } else if (property_exists($obj, $this->textParam)) {
+            $text = $obj->{$this->textParam};
         }
 
-        if (property_exists($obj, $this->valueParam)) {
-            $value = $obj->{$this->valueParam};
-        } else if ( is_callable($this->valueParam) ) {
+        if ( is_callable($this->valueParam) ) {
             $value = call_user_func_array($this->valueParam, array($obj));
+        } else if (property_exists($obj, $this->valueParam)) {
+            $value = $obj->{$this->valueParam};
         }
 
         if (property_exists($obj, $this->disableParam)) {
