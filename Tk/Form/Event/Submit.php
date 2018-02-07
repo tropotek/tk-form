@@ -32,6 +32,7 @@ class Submit extends Button
     /**
      * @param $name
      * @return Submit
+     * @throws \Tk\Form\Exception
      */
     public static function create($name, $callback = null)
     {
