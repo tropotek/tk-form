@@ -178,6 +178,7 @@ class Form extends Form\Element
      * If an button is found and its event is executed the result is returned
      *
      * @param $request
+     * @throws \Exception
      */
     public function execute($request = null)
     {
@@ -239,7 +240,6 @@ class Form extends Form\Element
      *
      * @param array $array
      * @return $this
-     * @throws Exception
      */
     public function load($array = array())
     {

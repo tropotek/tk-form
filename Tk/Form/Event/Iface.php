@@ -48,7 +48,7 @@ abstract class Iface extends Field\Iface
             call_user_func_array($callback, array($this->getForm(), $this));
         }
         if ($this->getRedirect()) {
-            $this->getRedirect()->redirect();
+            \Tk\Uri::create($this->getRedirect())->redirect();
         }
     }
 
