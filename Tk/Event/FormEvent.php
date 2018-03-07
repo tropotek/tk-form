@@ -7,7 +7,7 @@ namespace Tk\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class FormEvent extends Iface
+class FormEvent extends Event
 {
 
     /**
@@ -20,7 +20,6 @@ class FormEvent extends Iface
      */
     public function __construct($form)
     {
-        parent::__construct();
         $this->form = $form;
     }
 
