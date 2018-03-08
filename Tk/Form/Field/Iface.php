@@ -10,7 +10,7 @@ use Tk\Form;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Iface extends \Tk\Form\Element implements \Dom\Renderer\RendererInterface
+abstract class Iface extends \Tk\Form\Element
 {
 
     /**

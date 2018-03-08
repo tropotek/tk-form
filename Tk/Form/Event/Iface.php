@@ -5,7 +5,6 @@ use Tk\Form\Exception;
 use Tk\Form\Field;
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -27,8 +26,8 @@ abstract class Iface extends Field\Iface
      * __construct
      *
      * @param string $name
-     * @param callable $callback
-     * @param \Tk\Uri $redirect
+     * @param null|callable $callback
+     * @param null|\Tk\Uri $redirect
      * @throws Exception
      */
     public function __construct($name, $callback = null, $redirect = null)
@@ -51,6 +50,7 @@ abstract class Iface extends Field\Iface
             \Tk\Uri::create($this->getRedirect())->redirect();
         }
     }
+
 
     /**
      * Add a callback to the start of the event queue

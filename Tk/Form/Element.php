@@ -9,7 +9,7 @@ use Tk\Form;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Element implements \Tk\InstanceKey
+abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, \Dom\Renderer\DisplayInterface
 {
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
@@ -54,13 +54,6 @@ abstract class Element implements \Tk\InstanceKey
 
 
 
-
-    /**
-     * Get the element HTML
-     *
-     * @return string|\Dom\Template
-     */
-    abstract public function show();
 
 
     /**
