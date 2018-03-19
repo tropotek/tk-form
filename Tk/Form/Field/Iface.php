@@ -75,6 +75,7 @@ abstract class Iface extends \Tk\Form\Element
     /**
      * @param $name
      * @return static
+     * @throws Exception
      */
     public static function create($name)
     {

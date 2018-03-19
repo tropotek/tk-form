@@ -32,6 +32,7 @@ class ReCapture extends Iface
      * @param string $name
      * @param $publicKey
      * @param $privateKey
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $publicKey, $privateKey)
     {
@@ -136,6 +137,7 @@ class ReCapture extends Iface
      * Get the element HTML
      *
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

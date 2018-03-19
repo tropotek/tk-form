@@ -76,6 +76,8 @@ class DomStatic extends Iface
      * Render
      *
      * @return \Dom\Template
+     * @throws Exception
+     * @throws \Dom\Exception
      */
     public function show()
     {
@@ -102,6 +104,7 @@ class DomStatic extends Iface
      * @param Field\Iface $field
      * @return mixed
      * @throws Exception
+     * @throws \Dom\Exception
      */
     protected function showField(Field\Iface $field)
     {
@@ -217,6 +220,7 @@ class DomStatic extends Iface
      *
      * @param Field\Iface $field
      * @throws Exception
+     * @throws \Dom\Exception
      */
     protected function showError($field)
     {

@@ -17,6 +17,7 @@ class Hidden extends Input
      *
      * @param string $name
      * @param string $value
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $value = '')
     {

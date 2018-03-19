@@ -21,6 +21,7 @@ class RadioButton extends Radio
      *
      * @param string $name
      * @param string $text
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $text = '')
     {

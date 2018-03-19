@@ -47,6 +47,7 @@ class Select extends Iface
      *
      *
      * @param $arr
+     * @param bool $modify
      * @return array
      */
     public static function arrayToSelectList($arr, $modify = true)

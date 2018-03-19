@@ -16,10 +16,10 @@ class Radio extends Select
     protected $onShowOption = null;
 
 
-    
     /**
      * @param string $name
      * @param Option\ArrayIterator $optionIterator
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, Option\ArrayIterator $optionIterator = null)
     {

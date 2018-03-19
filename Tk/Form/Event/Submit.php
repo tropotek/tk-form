@@ -31,6 +31,7 @@ class Submit extends Button
 
     /**
      * @param $name
+     * @param null $callback
      * @return Submit
      * @throws \Tk\Form\Exception
      */

@@ -427,7 +427,6 @@ class File extends Input
      * makeTemplate
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {

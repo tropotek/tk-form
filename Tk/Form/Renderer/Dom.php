@@ -38,6 +38,7 @@ class Dom extends Iface
      * Render the field and return the template or html string
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      * @todo This should return the Template object as per all other Renderer interfaces....
      * @todo this will affect all projects, needs to be done ASAP, before EMS release.
      */
@@ -86,6 +87,7 @@ class Dom extends Iface
      * Render Fields
      *
      * @param Template $t
+     * @throws \Dom\Exception
      */
     public function showFields(Template $t)
     {
@@ -211,6 +213,7 @@ class Dom extends Iface
      * @param Field\Iface $field
      * @param Template $t
      * @param string $var
+     * @throws \Dom\Exception
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {

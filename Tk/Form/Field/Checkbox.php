@@ -23,6 +23,7 @@ class Checkbox extends Input
      * __construct
      *
      * @param string $name
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name)
     {

@@ -163,7 +163,6 @@ class Button extends Iface
      * makeTemplate
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {

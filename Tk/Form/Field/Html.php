@@ -21,6 +21,7 @@ class Html extends Input
      *
      * @param string $name
      * @param null|string|\Dom\Template $html
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $html = null)
     {
@@ -43,6 +44,7 @@ class Html extends Input
      * Get the element HTML
      *
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {
