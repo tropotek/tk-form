@@ -3,13 +3,10 @@ namespace Tk\Form\Field;
 
 
 /**
- *
- * Click link to find out more and generate a public and private cek
- * @link https://www.google.com/recaptcha/intro/index.html
- * 
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @see http://www.google.com/recaptcha/intro/index.html
  */
 class ReCapture extends Iface
 {
@@ -27,8 +24,6 @@ class ReCapture extends Iface
     protected $privateKey = '';
 
     /**
-     * __construct
-     *
      * @param string $name
      * @param $publicKey
      * @param $privateKey
@@ -41,13 +36,15 @@ class ReCapture extends Iface
         $this->privateKey = $privateKey;
     }
 
+    /**
+     * @param array|\ArrayObject $values
+     * @return $this
+     */
     public function load($values)
     {
         if ($this->getForm()->isSubmitted()) {
             $this->doValidate();
         }
-        
-        
         return $this;
     }
 
@@ -57,7 +54,6 @@ class ReCapture extends Iface
      */
     protected function doValidate($extraParams = array()) 
     {
-        
         $request = \Tk\Request::create();
         $remoteIp = $request->getIp();
         $rResponse = isset($request['g-recaptcha-response']) ? $request['g-recaptcha-response'] : '';
@@ -98,8 +94,6 @@ class ReCapture extends Iface
     }
 
     /**
-     * 
-     * 
      * @param $url
      * @param $data
      * @param int $port
@@ -120,10 +114,7 @@ class ReCapture extends Iface
         curl_close($curl);
         return $resp;
     }
-    
-    
-    
-    
+
     /**
      * @param mixed|string $html
      * @return $this

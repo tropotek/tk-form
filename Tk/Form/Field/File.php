@@ -6,9 +6,8 @@ use \Tk\Form;
 /**
  * Handle a single file upload field.
  *
- *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class File extends Input
@@ -43,7 +42,7 @@ class File extends Input
     protected $destPath = '';
 
     /**
-     * The full data path to save the file (EG: \Tk\Config::getInstance()->getDataPath()
+     * The full data path to save the file (EG: Tk.Config::getInstance()->getDataPath()
      * @var string
      */
     protected $dataPath = '';
@@ -54,7 +53,7 @@ class File extends Input
      *
      * @param string $name
      * @param string|null $destPath If not set then the file will not be moved and the object will not be set
-     * @param string|null $dataPath If not set then the \Tk\Config::getDataPath() will be used
+     * @param string|null $dataPath If not set then the Tk.Config::getDataPath() will be used
      * @throws Form\Exception
      */
     public function __construct($name, $destPath = null, $dataPath = null)
@@ -164,7 +163,7 @@ class File extends Input
      *  // resize the image if needed
      *  if ($form->getField('logo')->hasFile()) {
      *    $fullPath = $this->getConfig()->getDataPath() . $this->company->logo;
-     *    \Tk\Image::create($fullPath)->bestFit(256, 256)->save();
+     *    Tk.Image::create($fullPath)->bestFit(256, 256)->save();
      *  }
      *
      *  $this->company->save();

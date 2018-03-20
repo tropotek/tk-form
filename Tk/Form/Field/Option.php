@@ -4,10 +4,10 @@ namespace Tk\Form\Field;
 /**
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  *
- * @link http://www.w3schools.com/tags/tag_option.asp
+ * @see http://www.w3schools.com/tags/tag_option.asp
  */
 class Option
 {

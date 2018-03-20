@@ -22,7 +22,7 @@ use Tk\Form\FormEvents;
  * accept-charset is set as the $encoding parameter or use setEncoding()
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class Form extends Form\Element
@@ -256,7 +256,7 @@ class Form extends Form\Element
     
     /**
      * Clean the load() array
-     *  o create a new raw array for any \ArrayAccess objects like the request object
+     *  o create a new raw array for any ArrayAccess objects like the request object
      *  o add array keys that the request modifies (request replaces '.' with '_') with field names
      *    this will not modify keys that a field does not exist for.
      * 
@@ -265,7 +265,7 @@ class Form extends Form\Element
      */
     protected function cleanLoadArray($array)
     {
-        // get values from \ArrayAccess objects (IE: Request object)
+        // get values from ArrayAccess objects (IE: Request object)
         if ($array instanceof \ArrayAccess) {
             $a = array();
             foreach($array as $k => $v) $a[$k] = $v;

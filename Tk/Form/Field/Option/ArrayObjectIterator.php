@@ -13,7 +13,7 @@ use Tk\Form\Field\Option;
  * ?>
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class ArrayObjectIterator extends ArrayIterator
@@ -76,7 +76,7 @@ class ArrayObjectIterator extends ArrayIterator
     /**
      * Return the current element
      *
-     * @link http://php.net/manual/en/iterator.current.php
+     * @see http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      * @since 5.0.0
      */
