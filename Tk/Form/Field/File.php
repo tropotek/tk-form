@@ -73,7 +73,6 @@ class File extends Input
         if ($this->isArrayField()) {
             $this->setAttr('multiple', 'multiple');
         }
-
     }
 
     /**

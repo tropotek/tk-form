@@ -281,7 +281,7 @@ jQuery(function($) {
             ul.append(li);
         });
         $(tabContainer).prepend(ul);
-        $(tabContainer).find('li.has-error a').css('color', '#a94442').css('font-weight', 'bold');
+        $(tabContainer).find('li.has-error a');
         
         //$(tabContainer).find('li.has-error a').tab('show'); // shows last error tab
         $(tabContainer).find('li.has-error a').first().tab('show');   // shows first error tab

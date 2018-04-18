@@ -118,8 +118,9 @@
             if ($element.attr('data-maxsize') && file.size) {
               var maxSize = parseInt($element.attr('data-maxsize'), 10);
               if (file.size > maxSize) {
-                var msg = 'Error: <b>`'+name+'`</b> <i>['+formatBytes(file.size)+']</i> file size exceeds allowed maximum of <b>' + formatBytes($element.attr('data-maxsize'))+'</b>';
+                var msg = 'Error: <b>`' + name + '`</b> <i>[' + formatBytes(file.size) + ']</i> file size exceeds allowed maximum of <b>' + formatBytes($element.attr('data-maxsize')) + '</b>';
                 plugin.settings.onError.apply(element, [plugin, msg]);
+                file.error = msg;
                 continue;
               }
             }
@@ -137,7 +138,6 @@
         plugin.settings.onDelete.apply(element, [plugin]);
         $(this).hide();
       });
-
 
       plugin.settings.onInit.apply(element, [plugin]);
     };  /// End plugin.init()
@@ -416,6 +416,7 @@
         plugin.settings.template.find('.tfi-input-filename').remove();
         plugin.settings.template.find('.tfi-btn-input i').after('<span class="tfi-label">Select Files</span>');
       },
+
       onSelect: function(plugin) {
         if (!this.files.length) return;
         var filename = plugin.settings.template.find('.tfi-input-filename');
@@ -434,6 +435,13 @@
         var files = this.files;
         for(var i = 0; i < files.length; i++) {
           var file = files[i];
+          console.log(file);
+          if (file.error) {
+              //console.log(maxSize, file);
+            continue;
+          }
+
+
           var row = $(plugin.settings.rowTpl);
           row.attr('data-clone-id', plugin.settings.cloneid).data('file', file);
           row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
@@ -474,6 +482,7 @@
       
     };
 
+
     var plugin = this;
     plugin.settings = { };
     var $element = $(element);
@@ -492,7 +501,6 @@
       $element.closest('form').on('submit', function () {
         element.disabled = true;    // Stops duplicate file uploads 
       });
-      
 
       // It is expected that the files will be a json string array of urls in the input value
       var list = [];
