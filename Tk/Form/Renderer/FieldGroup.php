@@ -66,7 +66,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
                 if ($error)
-                    $estr = $error . "<br/>\n";
+                    $estr .= $error . "<br/>\n";
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);

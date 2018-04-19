@@ -399,7 +399,7 @@
         '<table class="table table-striped tfi-table"></table>',
       
       rowTpl:'<tr class="tfi-row">'+
-        '<td class="text-right"><a href="#" title="View File" class="btn btn-xs btn-default tfi-btn-view"><i class="fa fa-eye"></i></a></td>'+
+        '<td class="text-right hide"><a href="#" title="View File" class="btn btn-xs btn-default tfi-btn-view"><i class="fa fa-eye"></i></a></td>'+
         '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>'+
         '<td class="tfi-file-size"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a> &nbsp; <span>673Kb</span></td>'+
       '</tr>',
@@ -504,9 +504,10 @@
 
       // It is expected that the files will be a json string array of urls in the input value
       var list = [];
-      if ($element.attr('value'))
-        list = JSON.parse($element.attr('value'));
-      
+      if ($element.data('value')) {
+        list = $element.data('value');
+        //list = JSON.parse($element.data('value'));
+      }
       // Setup initial field value files
       if (list !== undefined && Array.isArray(list)) {
         for(var i = 0; i< list.length; i++) {
@@ -515,7 +516,11 @@
             type: 'HEAD',
             url: filename,
             complete: function(xhr) {
-              if (xhr.status !== 200) return;
+              var warn = '';
+              if (xhr.status !== 200) {
+                warn = ' - (Access Error)';
+              }
+
               this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
               row.data('filename', this.url);
@@ -528,8 +533,12 @@
                 return false;
               });
               row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(this.url));
-              row.find('.tfi-filename').addClass('ui-lightbox').attr('href', this.url).text(basename(this.url));
-              row.find('.tfi-btn-view').addClass('ui-lightbox').attr('href', this.url);
+              var css = '';
+              if (warn !== '') css = 'disabled';
+
+              row.find('.tfi-filename').addClass('ui-lightbox').addClass(css).attr('href', this.url).text(basename(this.url) + warn);
+              row.find('.tfi-btn-view').addClass('ui-lightbox').addClass(css).attr('href', this.url);
+
               if ($.fn.magnificPopup && isImage(this.url)) {
                 row.find('.tfi-filename').magnificPopup({type: 'image'})
               }

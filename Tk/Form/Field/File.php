@@ -402,7 +402,7 @@ class File extends Input
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b><br/>' . $this->getNotes());
 
         $t = parent::show();
-        
+
         $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
 
         if ($this->getValue() || \Tk\Request::create()->has($this->getDeleteEventName())) {
