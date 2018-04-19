@@ -422,6 +422,16 @@
         var filename = plugin.settings.template.find('.tfi-input-filename');
         filename.val('');
 
+        var hasError = false;
+        var files = this.files;
+        for(var i = 0; i < files.length; i++) {
+          var file = files[i];
+          if (file.error) {
+            hasError = true;
+            return;
+          }
+        }
+
         // Clone input field
         var clone = $(this).clone(this);
         plugin.settings.cloneid = plugin.settings.cloneid+1;
@@ -429,19 +439,9 @@
         if (!clone.attr('name').endsWith('[]')) clone.setAttr('name', clone.attr('name')+'[]');
         clone.attr('data-clone-id', plugin.settings.cloneid);
         $(this).closest('.form-group').append(clone);
-        
-        
+
         // create new rows
-        var files = this.files;
         for(var i = 0; i < files.length; i++) {
-          var file = files[i];
-          console.log(file);
-          if (file.error) {
-              //console.log(maxSize, file);
-            continue;
-          }
-
-
           var row = $(plugin.settings.rowTpl);
           row.attr('data-clone-id', plugin.settings.cloneid).data('file', file);
           row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
