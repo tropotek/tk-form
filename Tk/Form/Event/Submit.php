@@ -22,6 +22,7 @@ class Submit extends Button
     {
         $this->setType('submit');
         parent::__construct($name, $callback);
+        // TODO: These need to be removed
         if ($name == 'save') {
             $this->setIcon('glyphicon glyphicon-refresh');
         } else if ($name == 'update') {

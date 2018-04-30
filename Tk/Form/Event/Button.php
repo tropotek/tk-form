@@ -37,7 +37,7 @@ class Button extends Iface
     {
         parent::__construct($name, $callback);
 
-        // Not sure this belongs in the constructor as its more of a convenience than a necessity
+        // TODO: these need to be removed
         if ($name == 'save') {
             $this->setType('submit');
             $this->setIcon('glyphicon glyphicon-refresh');
