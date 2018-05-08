@@ -38,6 +38,21 @@ class ArrayObjectIterator extends ArrayIterator
      */
     protected $labelParam = '';
 
+    /**
+     * @var string
+     */
+    protected $selectedValue = '';
+
+    /**
+     * @var string
+     */
+    protected $selectedAppend = ' (Current)';
+
+    /**
+     * @var string
+     */
+    protected $selectedPrepend = '';
+
 
     /**
      *
@@ -74,6 +89,37 @@ class ArrayObjectIterator extends ArrayIterator
     }
 
     /**
+     * @param string $value
+     * @return ArrayObjectIterator
+     */
+    public function setSelectedValue($value)
+    {
+        $this->selectedValue = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $selectedAppend
+     * @return ArrayObjectIterator
+     */
+    public function setSelectedAppend($selectedAppend)
+    {
+        $this->selectedAppend = $selectedAppend;
+        return $this;
+    }
+
+    /**
+     * @param string $selectedPrepend
+     * @return ArrayObjectIterator
+     */
+    public function setSelectedPrepend($selectedPrepend)
+    {
+        $this->selectedPrepend = $selectedPrepend;
+        return $this;
+    }
+
+
+    /**
      * Return the current element
      *
      * @see http://php.net/manual/en/iterator.current.php
@@ -87,23 +133,28 @@ class ArrayObjectIterator extends ArrayIterator
         $value = '';
         $disabled = false;
 
-        if ( is_callable($this->textParam) ) {
-            $text = call_user_func_array($this->textParam, array($obj));
-        } else if (property_exists($obj, $this->textParam)) {
-            $text = $obj->{$this->textParam};
-        }
-
         if ( is_callable($this->valueParam) ) {
             $value = call_user_func_array($this->valueParam, array($obj));
         } else if (property_exists($obj, $this->valueParam)) {
             $value = $obj->{$this->valueParam};
         }
 
+        $pre = $app = '';
+        if ($value == $this->selectedValue) {
+            $pre = $this->selectedPrepend;
+            $app = $this->selectedAppend;
+        }
+        if ( is_callable($this->textParam) ) {
+            $text = call_user_func_array($this->textParam, array($obj));
+        } else if (property_exists($obj, $this->textParam)) {
+            $text = $pre . $obj->{$this->textParam} . $app;
+        }
+
         if (property_exists($obj, $this->disableParam)) {
             $disabled = $obj->{$this->disableParam};
         }
-        // Create the option object from the object supplied
 
+        // Create the option object from the object supplied
         return new Option($text, $value, $disabled);
     }
 
