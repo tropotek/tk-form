@@ -70,6 +70,8 @@ abstract class Iface extends Field\Iface
     /**
      * Add a callback to the end of the event queue
      *
+     * function (Tk\Form $form, Tk\Form\Event\Iface $event) {}
+     *
      * @param callable $callback
      * @return $this
      * @throws Exception
