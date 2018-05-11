@@ -94,7 +94,7 @@ class CheckboxGroup extends Select
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div var="group">
+<div class="checkbox-group" var="group">
   <div class="checkbox" repeat="option" var="option">
     <label var="label">
       <input type="checkbox" var="element" />
