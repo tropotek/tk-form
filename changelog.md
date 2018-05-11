@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.22 [2018-05-11]:
+-------------------------------
+ - Fixed Exception messages to include log
+ - Update Create Placement Button
+
+
 Ver 2.0.21 [2018-05-09]:
 -------------------------------
  - Added jQuery-File-Upload ???
