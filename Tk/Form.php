@@ -178,7 +178,7 @@ class Form extends Form\Element
      * If an button is found and its event is executed the result is returned
      *
      * @param $request
-     * @throws \Exception
+     * @throws \Tk\Exception
      */
     public function execute($request = null)
     {
