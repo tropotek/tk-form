@@ -59,7 +59,8 @@ class File extends Input
     public function __construct($name, $destPath = null, $dataPath = null)
     {
         parent::__construct($name);
-        $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')), \Tk\File::string2Bytes(ini_get('post_max_size')) );
+        $this->maxBytes = min( \Tk\File::string2Bytes(ini_get('upload_max_filesize')),
+            \Tk\File::string2Bytes(ini_get('post_max_size')) );
         $this->setType('file');
         if (!$dataPath) {
             $dataPath = \Tk\Config::getInstance()->getDataPath();
@@ -429,7 +430,7 @@ class File extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div>
+<div class="file-wrapper">
   <input type="text" class="form-control" var="element"/>
   <div class="tk-file-delete" choice="delete" var="delWrapper">
     <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>

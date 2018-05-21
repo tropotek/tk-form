@@ -210,7 +210,7 @@
       enableDelete: true,
       // Default Templates
       thumbTpl:
-      '<button type="button" class="btn btn-default tfi-btn-thumb" title="" style="visibility:hidden;position:absolute;">' +
+      '<button type="button" class="btn btn-default tfi-btn-thumb" title="" style="display: none;">' +
       '<img class="thumb-img" src="javascript:;" alt="Preview"/>&nbsp;' +
       '</button>',
 
@@ -433,13 +433,37 @@
           }
         }
 
+
         // Clone input field
-        var clone = $(this).clone(this);
+
         plugin.settings.cloneid = plugin.settings.cloneid+1;
-        clone.removeAttr('id').removeAttr('class').addClass('tfi-clone').removeAttr('value').hide();
-        if (!clone.attr('name').endsWith('[]')) clone.setAttr('name', clone.attr('name')+'[]');
+
+
+        // TODO: -------------------------------------------------
+        // TODO:
+        // TODO: Fix this as it is incompatible with IE
+        // TODO:
+        // TODO: -------------------------------------------------
+        // TODO: This is a rather large issue and to fix it
+        // TODO: we would have to rebuild all this script
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO: -------------------------------------------------
+        var _input = $(this);
+        var clone = _input.clone(true, true);
+        // This creates a clone and hides it and appends it.
+        clone.removeAttr('id').removeAttr('class')
+          .addClass('tfi-clone').removeAttr('value')
+          .css({visibility: 'hidden', position: 'absolute'});
+        if (!clone.attr('name').endsWith('[]'))
+          clone.setAttr('name', clone.attr('name')+'[]');
         clone.attr('data-clone-id', plugin.settings.cloneid);
         $(this).closest('.form-group').append(clone);
+
 
         // create new rows
         for(i = 0; i < files.length; i++) {
@@ -455,8 +479,10 @@
             });
           row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
           row.addClass('tfi-new');
-          row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled').text(basename(file.name));
-          row.find('.tfi-btn-view').attr('href', 'javascript:;').removeAttr('target').removeAttr('href').addClass('disabled');
+          row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target')
+            .removeAttr('href').addClass('disabled').text(basename(file.name));
+          row.find('.tfi-btn-view').attr('href', 'javascript:;').removeAttr('target')
+            .removeAttr('href').addClass('disabled');
           row.find('.tfi-file-size span').text(formatBytes(file.size));
           
           plugin.settings.table.append(row);
@@ -466,7 +492,8 @@
       onUrlLoad: function(plugin, uri) { },
       onDelete: function(plugin) {
         // remove row from table
-        $(this).addClass('active').find('a, button, input, .btn').attr('disabled', 'disabled').addClass('disabled').on('click', function () {return false;});
+        $(this).addClass('active').find('a, button, input, .btn').attr('disabled', 'disabled')
+          .addClass('disabled').on('click', function () {return false;});
         if ($(this).hasClass('tfi-new')) {
           $(this).closest('.form-group').find('[data-clone-id=' + $(this).attr('data-clone-id') + ']').remove();
         } else {
@@ -507,6 +534,7 @@
         list = $element.data('value');
         //list = JSON.parse($element.data('value'));
       }
+
       // Setup initial field value files
       if (list !== undefined && Array.isArray(list)) {
         for(var i = 0; i< list.length; i++) {
@@ -549,9 +577,12 @@
           });
         }
       }
-
     };  /// End plugin.init()
 
+    /**
+     * @param url
+     * @returns {string}
+     */
     var getIcon = function (url) {
       var ext = getExtension(url);
       switch(ext) {
@@ -578,7 +609,6 @@
     };
 
     /**
-     * 
      * @param uri
      * @param key
      * @param value
@@ -640,7 +670,6 @@
     };
 
     /**
-     *
      * @param bytes
      * @param decimals
      * @returns {*}
