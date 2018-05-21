@@ -76,7 +76,6 @@
 
     /**
      * constructor
-     *
      */
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
@@ -86,8 +85,14 @@
       if (plugin.settings.placeholder) {
         template.find('input.tfi-input-filename').attr('placeholder', plugin.settings.placeholder);
       }
-      if (plugin.settings.enableDelete)
+      if (plugin.settings.enableDelete) {
         template.find('.input-group-btn').append(plugin.settings.deleteTpl);
+      }
+
+
+
+
+
 
       if ($element.parents('.form-group-sm').length || $element.hasClass('input-sm')) {
         template.find('.btn').removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
@@ -106,10 +111,10 @@
         template.find('.tfi-btn-del').hide();
       }
 
-      $element.on('change', function(e) {
-        if (this.files.length)
+      $parent.on('change', 'input[type=file]', function(e) {
+        if (this.files.length) {
           template.find('.tfi-btn-del').show();
-
+        }
         var name = '';
         for(var i = 0; i < this.files.length; i++) {
           var file = this.files[i];
@@ -435,34 +440,36 @@
 
 
         // Clone input field
-
         plugin.settings.cloneid = plugin.settings.cloneid+1;
-
-
-        // TODO: -------------------------------------------------
-        // TODO:
-        // TODO: Fix this as it is incompatible with IE
-        // TODO:
-        // TODO: -------------------------------------------------
-        // TODO: This is a rather large issue and to fix it
-        // TODO: we would have to rebuild all this script
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO: -------------------------------------------------
+        var formGroup = $(this).closest('.form-group');
+        var parent = $(this).parent();
         var _input = $(this);
-        var clone = _input.clone(true, true);
-        // This creates a clone and hides it and appends it.
+        var clone = _input.clone(true, true);   // No file data
+        _input.before(clone);
+
+        console.log(_input);
+        console.log(clone);
+
+        _input.removeAttr('id').removeAttr('class')
+          .addClass('tfi-clone').removeAttr('value').hide();
+          //.css({visibility: 'hidden', position: 'absolute'});
+        if (!_input.attr('name').endsWith('[]'))
+          _input.setAttr('name', _input.attr('name')+'[]');
+        _input.attr('data-clone-id', plugin.settings.cloneid);
+        _input.detach();
+        formGroup.append(_input);
+
+        /*
+        // Not compatible with IE
         clone.removeAttr('id').removeAttr('class')
-          .addClass('tfi-clone').removeAttr('value')
-          .css({visibility: 'hidden', position: 'absolute'});
+          .addClass('tfi-clone').removeAttr('value').hide();
+          //.css({visibility: 'hidden', position: 'absolute'});
         if (!clone.attr('name').endsWith('[]'))
           clone.setAttr('name', clone.attr('name')+'[]');
         clone.attr('data-clone-id', plugin.settings.cloneid);
         $(this).closest('.form-group').append(clone);
+        */
+
 
 
         // create new rows
@@ -487,6 +494,8 @@
           
           plugin.settings.table.append(row);
         }
+
+
       },
       onFileLoad: function(plugin, file) { },
       onUrlLoad: function(plugin, uri) { },
@@ -521,11 +530,12 @@
       plugin.settings = $.extend({}, defaults, options);
       
       var table = plugin.settings.table = $(plugin.settings.tableTpl);
+
       $element.tkFileInput(plugin.settings);
       $element.closest('.input-group').parent().append(table);
 
-      $element.closest('form').on('submit', function () {
-        element.disabled = true;    // Stops duplicate file uploads 
+      $parent.closest('form').on('submit', function () {
+        element.disabled = true;    // Stops duplicate file uploads
       });
 
       // It is expected that the files will be a json string array of urls in the input value
@@ -577,6 +587,7 @@
           });
         }
       }
+
     };  /// End plugin.init()
 
     /**

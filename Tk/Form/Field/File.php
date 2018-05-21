@@ -141,7 +141,6 @@ class File extends Input
             // load object value if not submitted
             parent::load($values);
         }
-
         return $this;
     }
 
@@ -223,7 +222,7 @@ class File extends Input
      * If this is a multiple file field (isFieldArray() == true) then the $filepath
      * is the directory of the destination location.
      *
-     * If you need more control get the updaloadedFiles() and do it manually
+     * If you need more control get the uploadedFiles() and do it manually
      *
      * If the directory does not exist it will try to create it for you.
      *
@@ -430,7 +429,7 @@ class File extends Input
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="file-wrapper">
+<div class="tk-file-control">
   <input type="text" class="form-control" var="element"/>
   <div class="tk-file-delete" choice="delete" var="delWrapper">
     <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>

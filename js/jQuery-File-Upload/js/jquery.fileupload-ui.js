@@ -9,6 +9,86 @@
  * https://opensource.org/licenses/MIT
  */
 
+
+
+
+var templateUpload = '{% for (var i=0, file; file=o.files[i]; i++) { %}\n' +
+  '    <tr class="template-upload fade">\n' +
+  '        <td>\n' +
+  '            <span class="preview"></span>\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            <p class="name">{%=file.name%}</p>\n' +
+  '            <strong class="error text-danger"></strong>\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            <p class="size">Processing...</p>\n' +
+  '            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            {% if (!i && !o.options.autoUpload) { %}\n' +
+  '                <button class="btn btn-primary start" disabled>\n' +
+  '                    <i class="glyphicon glyphicon-upload"></i>\n' +
+  '                    <span>Start</span>\n' +
+  '                </button>\n' +
+  '            {% } %}\n' +
+  '            {% if (!i) { %}\n' +
+  '                <button class="btn btn-warning cancel">\n' +
+  '                    <i class="glyphicon glyphicon-ban-circle"></i>\n' +
+  '                    <span>Cancel</span>\n' +
+  '                </button>\n' +
+  '            {% } %}\n' +
+  '        </td>\n' +
+  '    </tr>\n' +
+  '{% } %}';
+
+var templateDownload = '{% for (var i=0, file; file=o.files[i]; i++) { %}\n' +
+  '    <tr class="template-download fade">\n' +
+  '        <td>\n' +
+  '            <span class="preview">\n' +
+  '                {% if (file.thumbnailUrl) { %}\n' +
+  '                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>\n' +
+  '                {% } %}\n' +
+  '            </span>\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            <p class="name">\n' +
+  '                {% if (file.url) { %}\n' +
+  '                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?\'data-gallery\':\'\'%}>{%=file.name%}</a>\n' +
+  '                {% } else { %}\n' +
+  '                    <span>{%=file.name%}</span>\n' +
+  '                {% } %}\n' +
+  '            </p>\n' +
+  '            {% if (file.error) { %}\n' +
+  '                <div><span class="label label-danger">Error</span> {%=file.error%}</div>\n' +
+  '            {% } %}\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            <span class="size">{%=o.formatFileSize(file.size)%}</span>\n' +
+  '        </td>\n' +
+  '        <td>\n' +
+  '            {% if (file.deleteUrl) { %}\n' +
+  '                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields=\'{"withCredentials":true}\'{% } %}>\n' +
+  '                    <i class="glyphicon glyphicon-trash"></i>\n' +
+  '                    <span>Delete</span>\n' +
+  '                </button>\n' +
+  '                <input type="checkbox" name="delete" value="1" class="toggle">\n' +
+  '            {% } else { %}\n' +
+  '                <button class="btn btn-warning cancel">\n' +
+  '                    <i class="glyphicon glyphicon-ban-circle"></i>\n' +
+  '                    <span>Cancel</span>\n' +
+  '                </button>\n' +
+  '            {% } %}\n' +
+  '        </td>\n' +
+  '    </tr>\n' +
+  '{% } %}';
+
+
+
+
+
+
+
 /* jshint nomen:false */
 /* global define, require, window */
 
@@ -63,6 +143,8 @@
             uploadTemplateId: 'template-upload',
             // The ID of the download template:
             downloadTemplateId: 'template-download',
+            uploadTemplate: templateUpload,
+            downloadTemplate: templateDownload,
             // The container for the list of files. If undefined, it is set to
             // an element with class "files" inside of the widget element:
             filesContainer: undefined,
@@ -658,10 +740,18 @@
             );
             if (tmpl) {
                 if (options.uploadTemplateId) {
-                    options.uploadTemplate = tmpl(options.uploadTemplateId);
+                    if (!options.uploadTemplate) {
+                      options.uploadTemplate = tmpl(options.uploadTemplateId);
+                    } else {
+                      options.uploadTemplate = tmpl(options.uploadTemplate);
+                    }
                 }
                 if (options.downloadTemplateId) {
-                    options.downloadTemplate = tmpl(options.downloadTemplateId);
+                    if (!options.downloadTemplate) {
+                      options.downloadTemplate = tmpl(options.downloadTemplateId);
+                    } else {
+                      options.downloadTemplate = tmpl(options.downloadTemplate);
+                    }
                 }
             }
         },
