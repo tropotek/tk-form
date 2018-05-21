@@ -210,7 +210,7 @@
       enableDelete: true,
       // Default Templates
       thumbTpl:
-      '<button type="button" class="btn btn-default tfi-btn-thumb" title="" style="display: none;">' +
+      '<button type="button" class="btn btn-default tfi-btn-thumb" title="" style="visibility:hidden;position:absolute;">' +
       '<img class="thumb-img" src="javascript:;" alt="Preview"/>&nbsp;' +
       '</button>',
 
@@ -422,9 +422,10 @@
         var filename = plugin.settings.template.find('.tfi-input-filename');
         filename.val('');
 
+        var i = 0;
         var hasError = false;
         var files = this.files;
-        for(var i = 0; i < files.length; i++) {
+        for(i = 0; i < files.length; i++) {
           var file = files[i];
           if (file.error) {
             hasError = true;
@@ -441,7 +442,7 @@
         $(this).closest('.form-group').append(clone);
 
         // create new rows
-        for(var i = 0; i < files.length; i++) {
+        for(i = 0; i < files.length; i++) {
           var row = $(plugin.settings.rowTpl);
           row.attr('data-clone-id', plugin.settings.cloneid).data('file', file);
           row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
@@ -479,9 +480,7 @@
         }
         return false;
       }
-      
     };
-
 
     var plugin = this;
     plugin.settings = { };
