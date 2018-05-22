@@ -78,7 +78,8 @@
      * constructor
      */
     plugin.init = function() {
-      plugin.settings = $.extend({}, defaults, options);
+      plugin.settings = $.extend({}, defaults, $element.data(), options);
+      //plugin.settings = $.extend({}, defaults, options);
 
       // ------------------ INIT ----------------------
       var template = plugin.settings.template = $(plugin.settings.template);
@@ -88,11 +89,6 @@
       if (plugin.settings.enableDelete) {
         template.find('.input-group-btn').append(plugin.settings.deleteTpl);
       }
-
-
-
-
-
 
       if ($element.parents('.form-group-sm').length || $element.hasClass('input-sm')) {
         template.find('.btn').removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
@@ -120,27 +116,27 @@
           var file = this.files[i];
           if (typeof file !== 'undefined') {
             name = file.name;
-            if ($element.attr('data-maxsize') && file.size) {
-              var maxSize = parseInt($element.attr('data-maxsize'), 10);
+            if ($(this).attr('data-maxsize') && file.size) {
+              var maxSize = parseInt($(this).attr('data-maxsize'), 10);
               if (file.size > maxSize) {
                 var msg = 'Error: <b>`' + name + '`</b> <i>[' + formatBytes(file.size) + ']</i> file size exceeds allowed maximum of <b>' + formatBytes($element.attr('data-maxsize')) + '</b>';
-                plugin.settings.onError.apply(element, [plugin, msg]);
+                plugin.settings.onError.apply(this, [plugin, msg]);
                 file.error = msg;
                 continue;
               }
             }
-            plugin.settings.onFileLoad.apply(element, [plugin,  file]);
+            plugin.settings.onFileLoad.apply(this, [plugin,  file]);
           }
         }
         $parent.find('.tfi-input-filename').val(name);
-        plugin.settings.onSelect.apply(element, [plugin]);
+        plugin.settings.onSelect.apply(this, [plugin]);
       });
 
       template.find('.tfi-btn-del').on('click', function(e) {
         var inputGroup = $(this).closest('.input-group');
         inputGroup.find('.tfi-input-filename').val('');
-        $element.attr('value', '');
-        plugin.settings.onDelete.apply(element, [plugin]);
+        inputGroup.find('.tfi-btn-input input[type=file]').attr('value', '');
+        plugin.settings.onDelete.apply(inputGroup.find('.tfi-btn-input input[type=file]'), [plugin]);
         $(this).hide();
       });
 
@@ -166,7 +162,6 @@
     plugin.init();
   };
 
-
   // add the plugin to the jQuery.fn object
   $.fn.tkFileInput = function(options) {
     return this.each(function() {
@@ -179,8 +174,6 @@
   }
 
 })(jQuery);
-
-
 
 
 /**
@@ -299,7 +292,8 @@
      * constructor
      */
     plugin.init = function() {
-      plugin.settings = $.extend({}, defaults, options);
+      plugin.settings = $.extend({}, defaults, $element.data(), options);
+      //plugin.settings = $.extend({}, defaults, options);
       $element.tkFileInput(plugin.settings);
 
     };  /// End plugin.init()
@@ -399,10 +393,13 @@
       serverConfirm: 'Are you sure you want to delete this file from the server?',
       localConfirm: '',
       cloneid: 0,
-      
-      tableTpl : 
+      // This settings deal with the existing file json objects
+      propId: 'id',           // (optional) The property name for an object ID, if non then the propName value will be used for delete requests
+      propPath: 'path',       // The property name for the value to be use as the filename
+
+      tableTpl :
         '<table class="table table-striped tfi-table"></table>',
-      
+
       rowTpl:'<tr class="tfi-row">'+
         '<td class="text-right hide"><a href="#" title="View File" class="btn btn-xs btn-default tfi-btn-view"><i class="fa fa-eye"></i></a></td>'+
         '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>'+
@@ -413,11 +410,11 @@
       onInit: function(plugin) {
         $(this).closest('.form-group').find('.tk-file-delete').hide();
         if (plugin.settings.multipleSelect === null) {
-          plugin.settings.multipleSelect = ($element.attr('name').indexOf('[]') > -1);
+          plugin.settings.multipleSelect = ($(this).attr('name').indexOf('[]') > -1);
         }
 
         if (!plugin.settings.multipleSelect)
-          $element.removeAttr('multiple');
+          this.removeAttr('multiple');
         plugin.settings.template.find('.tfi-input-filename').remove();
         plugin.settings.template.find('.tfi-btn-input i').after('<span class="tfi-label">Select Files</span>');
       },
@@ -430,55 +427,23 @@
         var i = 0;
         var hasError = false;
         var files = this.files;
+        var file = null;
         for(i = 0; i < files.length; i++) {
-          var file = files[i];
+          file = files[i];
           if (file.error) {
             hasError = true;
-            return;
+            //return;
+
           }
         }
 
-
-        // Clone input field
-        plugin.settings.cloneid = plugin.settings.cloneid+1;
-        var formGroup = $(this).closest('.form-group');
-        var parent = $(this).parent();
-        var _input = $(this);
-        var clone = _input.clone(true, true);   // No file data
-        _input.before(clone);
-
-        console.log(_input);
-        console.log(clone);
-
-        _input.removeAttr('id').removeAttr('class')
-          .addClass('tfi-clone').removeAttr('value').hide();
-          //.css({visibility: 'hidden', position: 'absolute'});
-        if (!_input.attr('name').endsWith('[]'))
-          _input.setAttr('name', _input.attr('name')+'[]');
-        _input.attr('data-clone-id', plugin.settings.cloneid);
-        _input.detach();
-        formGroup.append(_input);
-
-        /*
-        // Not compatible with IE
-        clone.removeAttr('id').removeAttr('class')
-          .addClass('tfi-clone').removeAttr('value').hide();
-          //.css({visibility: 'hidden', position: 'absolute'});
-        if (!clone.attr('name').endsWith('[]'))
-          clone.setAttr('name', clone.attr('name')+'[]');
-        clone.attr('data-clone-id', plugin.settings.cloneid);
-        $(this).closest('.form-group').append(clone);
-        */
-
-
-
         // create new rows
         for(i = 0; i < files.length; i++) {
+          file = files[i];
           var row = $(plugin.settings.rowTpl);
           row.attr('data-clone-id', plugin.settings.cloneid).data('file', file);
           row.find('.tfi-btn-delete').attr('href', 'javascript:;').on('click',
             function (e) {
-              $(this).blur();
               if (!plugin.settings.localConfirm || confirm(plugin.settings.localConfirm)) {
                 return plugin.settings.onDelete.apply($(this).closest('tr'), [plugin]);
               }
@@ -491,10 +456,35 @@
           row.find('.tfi-btn-view').attr('href', 'javascript:;').removeAttr('target')
             .removeAttr('href').addClass('disabled');
           row.find('.tfi-file-size span').text(formatBytes(file.size));
-          
+
+          if (file.error) {
+            console.error(file);
+          }
+
           plugin.settings.table.append(row);
         }
 
+        // --------------------------------------------------------------------------------------
+        // Clone input field
+        // --------------------------------------------------------------------------------------
+
+        plugin.settings.cloneid++;
+
+        var formGroup = $(this).closest('.form-group');
+        var parent = $(this).parent();
+        var _input = $(this);
+        var clone = _input.clone(true, true);   // No file data
+        _input.before(clone.prop('files', []).val('').clone(true, true));
+
+
+        _input.off('change');
+        _input.attr('name', _input.attr('data-name')).removeAttr('data-name');
+        _input.attr('data-clone-id', plugin.settings.cloneid);
+        _input.removeAttr('data-value').removeAttr('data-maxsize');
+        _input.removeAttr('id').removeAttr('class')
+          .addClass('tfi-clone').removeAttr('value').hide();
+        _input.detach();
+        formGroup.append(_input);
 
       },
       onFileLoad: function(plugin, file) { },
@@ -521,47 +511,60 @@
     var plugin = this;
     plugin.settings = { };
     var $element = $(element);
-    var $parent = $element.parent();    // Get the containing div
+    var $inputGroup = $element.closest('.input-group');
 
     /**
      * constructor
      */
     plugin.init = function() {
-      plugin.settings = $.extend({}, defaults, options);
-      
+      plugin.settings = $.extend({}, defaults, $element.data(), options);
+
       var table = plugin.settings.table = $(plugin.settings.tableTpl);
 
       $element.tkFileInput(plugin.settings);
+      if (!$element.attr('name').endsWith('[]')) {
+        $element.attr('name', $element.attr('name') + '[]');
+      }
+      $element.attr('data-name', $element.attr('name')).removeAttr('name');
       $element.closest('.input-group').parent().append(table);
-
-      $parent.closest('form').on('submit', function () {
-        element.disabled = true;    // Stops duplicate file uploads
-      });
 
       // It is expected that the files will be a json string array of urls in the input value
       var list = [];
       if ($element.data('value')) {
         list = $element.data('value');
-        //list = JSON.parse($element.data('value'));
+        $element.data('value', '');
       }
 
       // Setup initial field value files
       if (list !== undefined && Array.isArray(list)) {
         for(var i = 0; i< list.length; i++) {
-          var filename = plugin.settings.dataUrl + list[i];
+          var obj = list[i];
+          var path = '';
+          var id = null;
+          if (typeof obj === 'object') {
+            path = plugin.settings.dataUrl + obj[plugin.settings.propPath];
+            id = obj[plugin.settings.propId];
+          } else {
+            path = plugin.settings.dataUrl + obj;
+          }
+
           $.ajax({
             type: 'HEAD',
-            url: filename,
+            url: path,
+            id: id,
             complete: function(xhr) {
               var warn = '';
               if (xhr.status !== 200) {
                 warn = ' - (Access Error)';
               }
-
-              this.xhr = xhr;
+              //this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
               row.data('filename', this.url);
-              row.find('.tfi-btn-delete').attr('href', setQueryParameter(document.location.href, 'del', basepath(this.url))).on('click',
+              var delParam = basepath(this.url);
+              if (this.id) {
+                delParam = parseInt(this.id);
+              }
+              row.find('.tfi-btn-delete').attr('href', setQueryParameter(document.location.href, 'del', delParam)).on('click',
               function (e) {
                 $(this).blur();
                 if (!plugin.settings.serverConfirm || confirm(plugin.settings.serverConfirm)) {
@@ -579,10 +582,11 @@
               if ($.fn.magnificPopup && isImage(this.url)) {
                 row.find('.tfi-filename').magnificPopup({type: 'image'})
               }
+
               row.find('.tfi-file-size span').text(formatBytes(xhr.getResponseHeader('Content-Length')));
               table.append(row);
 
-              plugin.settings.onUrlLoad.apply(element, [plugin,  this]);
+              plugin.settings.onUrlLoad.apply($inputGroup.find('tfi-btn-input input[type=file]'), [plugin,  this]);
             }
           });
         }
@@ -664,7 +668,7 @@
       }
       return '';
     };
-    
+
     /**
      * @param filename
      */
