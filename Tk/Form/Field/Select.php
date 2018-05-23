@@ -26,10 +26,15 @@ class Select extends Iface
     public function __construct($name, $optionIterator = null)
     {
         parent::__construct($name);
+
         if ($optionIterator instanceof \Tk\Db\Map\ArrayObject || (is_array($optionIterator) && current($optionIterator) instanceof \Tk\Db\ModelInterface)) {
             $optionIterator = new Option\ArrayObjectIterator($optionIterator);
         } else if (is_array($optionIterator)) {
-            $optionIterator = new Option\ArrayIterator($optionIterator);
+            if (is_array(current($optionIterator))) {
+                $optionIterator = new Option\ArrayArrayIterator($optionIterator);
+            } else {
+                $optionIterator = new Option\ArrayIterator($optionIterator);
+            }
         }
 
         if ($optionIterator) {
@@ -229,7 +234,6 @@ class Select extends Iface
             }
 
             // TODO: render optgroup
-
             $tOpt->setAttr('option', 'value', $option->getValue());
             if ($this->isSelected($option->getValue())) {
                 $tOpt->setAttr('option', 'selected', 'selected');
