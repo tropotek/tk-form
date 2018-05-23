@@ -26,10 +26,10 @@ class Select extends Iface
     public function __construct($name, $optionIterator = null)
     {
         parent::__construct($name);
-        if (is_array($optionIterator)) {
-            $optionIterator = new Option\ArrayIterator($optionIterator);
-        } else if ($optionIterator instanceof \Tk\Db\Map\ArrayObject) {
+        if ($optionIterator instanceof \Tk\Db\Map\ArrayObject || (is_array($optionIterator) && current($optionIterator) instanceof \Tk\Db\ModelInterface)) {
             $optionIterator = new Option\ArrayObjectIterator($optionIterator);
+        } else if (is_array($optionIterator)) {
+            $optionIterator = new Option\ArrayIterator($optionIterator);
         }
 
         if ($optionIterator) {
