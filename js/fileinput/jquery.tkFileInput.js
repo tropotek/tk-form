@@ -474,7 +474,8 @@
         var parent = $(this).parent();
         var _input = $(this);
         var clone = _input.clone(true, true);   // No file data
-        _input.before(clone.prop('files', []).val('').clone(true, true));
+        //_input.before(clone.prop('files', {}).val('').clone(true, true));
+        _input.before(clone.val('').clone(true, true));
 
 
         _input.off('change');
