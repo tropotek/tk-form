@@ -22,6 +22,11 @@ class FormEvents
     /**
      * @event \Tk\Event\FormEvent
      */
+    const FORM_SHOW = 'form.show';
+
+    /**
+     * @event \Tk\Event\FormEvent
+     */
     const FORM_SUBMIT = 'form.submit';
 
 

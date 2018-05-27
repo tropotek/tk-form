@@ -40,7 +40,9 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * Render
+     * @return \Dom\Renderer\Renderer|\Dom\Template|null
+     * @throws \Dom\Exception
+     * @throws \ReflectionException
      */
     public function show()
     {

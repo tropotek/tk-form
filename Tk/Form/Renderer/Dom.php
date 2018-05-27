@@ -44,6 +44,13 @@ class Dom extends Iface
      */
     public function show()
     {
+        if ($this->getForm()->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this->getForm());
+            $e->set('form', $this->getForm());
+            $this->getForm()->getDispatcher()->dispatch(\Tk\Form\FormEvents::FORM_SHOW, $e);
+        }
+
+
         $template = $this->getTemplate();
         if (!$template->keyExists('var', 'form')) {
             return $template;

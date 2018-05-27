@@ -85,6 +85,12 @@ class DomStatic extends Iface
             return $this->getTemplate();
         }
 
+        if ($this->getForm()->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this->getForm());
+            $e->set('form', $this->getForm());
+            $this->getForm()->getDispatcher()->dispatch(\Tk\Form\FormEvents::FORM_SHOW, $e);
+        }
+
         foreach ($this->getForm()->getFieldList() as $field) {
             if (!$field instanceof Field\Iface) continue;
             $this->showField($field);
