@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.30 [2018-05-28]:
+-------------------------------
+ - Fixed goalsUrl in mail templates
+ - Added GOALS and Edit request URL fields to the staff edit pages
+
+
 Ver 2.0.29 [2018-05-24]:
 -------------------------------
 
