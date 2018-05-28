@@ -15,6 +15,11 @@ class Html extends Input
      */
     protected $html = null;
 
+    /**
+     * @var bool
+     */
+    protected $escapeText = false;
+
 
     /**
      * __construct
@@ -28,6 +33,16 @@ class Html extends Input
         parent::__construct($name);
         $this->setHtml($html);
         $this->addCss('form-control-static');
+    }
+
+    /**
+     * @param bool $b
+     * @return $this
+     */
+    public function setEscapeText($b = true)
+    {
+        $this->escapeText = $b;
+        return $this;
     }
 
     /**
@@ -61,6 +76,9 @@ class Html extends Input
         if ($html instanceof \Dom\Template) {
             $t->insertTemplate('element', $html);
         } else {
+            if ($this->escapeText) {
+                $html = htmlentities($html);
+            }
             $t->insertHtml('element', $html);
         }
 
