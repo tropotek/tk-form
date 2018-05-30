@@ -4,7 +4,6 @@ namespace Tk\Form;
 use Tk\Form;
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -41,7 +40,6 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      */
     protected $label = null;
 
-
     /**
      * @var boolean
      */
@@ -51,9 +49,6 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      * @var string
      */
     protected $notes = null;
-
-
-
 
 
     /**
