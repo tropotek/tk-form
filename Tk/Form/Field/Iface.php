@@ -341,8 +341,10 @@ abstract class Iface extends \Tk\Form\Element
             if (!$this->getForm() || $this->getForm()->isEnableRequiredAttr()) {
                 $this->setAttr('required');
             }
+            $this->setAttr('data-required', 'required');
         } else {
             $this->removeAttr('required');
+            $this->removeAttr('data-required');
         }
         return $this;
     }
