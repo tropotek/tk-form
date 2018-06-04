@@ -221,6 +221,7 @@ class Dom extends Iface
      * @param Template $t
      * @param string $var
      * @throws \Dom\Exception
+     * @throws \ReflectionException
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
@@ -233,11 +234,9 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-
             // TODO: Add a no field group option to Field, then render as is with nor field group class
             // TODO: OR Better! add a fieldGroupClass param per instance of a field, allowing any field group per Field
             // TODO: Making the Fields/renderers nestable could be a handy thing too
-
             if ($field instanceof Field\Hidden) {
                 $html = $field->show();
             } else {
