@@ -449,7 +449,21 @@
               }
               return false;
             });
+
+
           row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
+
+          if (isImage(file.name)) {
+            var img = $('<img/>');
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.file = file;
+            reader.onload = function (e) {
+              img.attr('src', this.result);
+            };
+          }
+
+
           row.addClass('tfi-new');
           row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target')
             .removeAttr('href').addClass('disabled').text(basename(file.name));
@@ -488,7 +502,9 @@
         formGroup.append(_input);
 
       },
-      onFileLoad: function(plugin, file) { },
+      onFileLoad: function(plugin, file) {
+      },
+      //onFileLoad: function(plugin, file) { },
       onUrlLoad: function(plugin, uri) { },
       onDelete: function(plugin) {
         // remove row from table
