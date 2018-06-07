@@ -146,7 +146,7 @@ class File extends Input
 
     /**
      * Update the physical file state.
-     * This should be called after the form data has been filly validated
+     * This should be called after the form data has been validated
      *
      * <code>
      *  ...
