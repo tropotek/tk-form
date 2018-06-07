@@ -325,11 +325,11 @@ class Form extends Form\Element
     {
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
-        if (!$field || !$field instanceof Event\Iface) {
-            \Tk\Log::warning('Event Field not found: `' . $fieldName . '`');
-            //throw new Form\Exception('Event Field not found: `' . $fieldName . '`');
+        if ($field && $field instanceof Event\Iface) {
+            $field->addCallback($callback);
+        } else {
+            //\Tk\Log::warning('Event Field not found: `' . $fieldName . '`');
         }
-        $field->addCallback($callback);
         return $field;
     }
 
