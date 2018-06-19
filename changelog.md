@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.46 [2018-06-20]:
+-------------------------------
+Fixed cron job for country and state names in companies
+Added OptGroup to \Tk\Form\Select and new OptGroupIterator
+
+
 Ver 2.0.44 [2018-06-07]:
 -------------------------------
 Minor Code Updates
