@@ -51,7 +51,7 @@ class CheckboxGroup extends Select
         foreach($this->getOptions() as $option) {
             $tOpt = $t->getRepeat('option');
 
-            if ($option->isDisabled()) {
+            if ($option->hasAttr('disabled')) {
                 $tOpt->setAttr('option', 'disabled', 'disabled');
                 $tOpt->setAttr('element', 'disabled', 'disabled');
             }
