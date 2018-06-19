@@ -47,25 +47,11 @@ class ArrayIterator implements \Iterator, \Countable
 
     /**
      * @param $list
-     * @return ArrayIterator
+     * @return static
      */
     static function create($list)
     {
-        return new self($list);
-    }
-
-    /**
-     * getKey
-     *
-     * @param $i
-     * @return mixed
-     */
-    protected function getKey($i)
-    {
-        $keys = array_keys($this->list);
-        if (isset($keys[$i]))
-            return $keys[$i];
-        return $i;
+        return new static($list);
     }
 
     /**
@@ -83,6 +69,20 @@ class ArrayIterator implements \Iterator, \Countable
     }
 
     /**
+     * getKey
+     *
+     * @param string $i
+     * @return mixed
+     */
+    protected function getKey($i)
+    {
+        $keys = array_keys($this->list);
+        if (isset($keys[$i]))
+            return $keys[$i];
+        return $i;
+    }
+
+    /**
      * Return the key of the current element
      *
      * @see http://php.net/manual/en/iterator.key.php
@@ -91,7 +91,6 @@ class ArrayIterator implements \Iterator, \Countable
      */
     public function key()
     {
-        //return $this->getKey($this->idx);
         return $this->idx;
     }
 
@@ -118,7 +117,6 @@ class ArrayIterator implements \Iterator, \Countable
     public function valid()
     {
         return ($this->idx < $this->count());
-        //return isset($this->list[$this->getKey($this->idx)]);
     }
 
     /**
@@ -148,7 +146,6 @@ class ArrayIterator implements \Iterator, \Countable
         return count($this->list);
     }
 
-
     /**
      * @return array
      */
@@ -157,7 +154,6 @@ class ArrayIterator implements \Iterator, \Countable
         $l = array();
         foreach ($this as $k => $v) {
             $l[$k] = $v;
-            //$l[$v->getValue()] = $v->getText();
         }
         return $l;
     }

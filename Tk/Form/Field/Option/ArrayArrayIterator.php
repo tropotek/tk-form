@@ -36,15 +36,6 @@ class ArrayArrayIterator extends ArrayIterator
     }
 
     /**
-     * @param $list
-     * @return ArrayIterator
-     */
-    static function create($list)
-    {
-        return new self($list);
-    }
-
-    /**
      * Return the current element
      *
      * @see http://php.net/manual/en/iterator.current.php
@@ -63,15 +54,16 @@ class ArrayArrayIterator extends ArrayIterator
         if (isset($arr[1])) {
             $val = $arr[1];
         }
-        $disable = false;
-        if (isset($arr[2])) {
-            $disable = $arr[2];
+        $option = Option::create($text, $val);
+
+        if (!empty($arr[2])) {
+            $option->setAttr('disabled', 'disabled');
         }
-        $label = '';
-        if (isset($arr[3])) {
-            $label = $arr[3];
+        if (!empty($arr[3])) {
+            $option->setAttr('label', $arr[3]);
         }
-        return new Option($text, $val, $disable, $label);
+
+        return $option;
     }
 
 }

@@ -131,7 +131,6 @@ class ArrayObjectIterator extends ArrayIterator
         $obj = $this->list[$this->getKey($this->idx)];
         $text = '';
         $value = '';
-        $disabled = false;
 
         if ( is_callable($this->valueParam) ) {
             $value = call_user_func_array($this->valueParam, array($obj));
@@ -150,12 +149,15 @@ class ArrayObjectIterator extends ArrayIterator
             $text = $pre . $obj->{$this->textParam} . $app;
         }
 
+        $option = Option::create($text, $value);
+
         if (property_exists($obj, $this->disableParam)) {
-            $disabled = $obj->{$this->disableParam};
+            if ($obj->{$this->disableParam})
+                $option->setAttr('disabled', 'disabled');
         }
 
         // Create the option object from the object supplied
-        return new Option($text, $value, $disabled);
+        return $option;
     }
 
 

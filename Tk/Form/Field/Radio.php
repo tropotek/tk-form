@@ -64,7 +64,7 @@ class Radio extends Select
                 $tOpt->setAttr('option', 'disabled', 'disabled');
                 $tOpt->setAttr('element', 'disabled', 'disabled');
             }
-            $tOpt->insertText('text', $option->getText());
+            $tOpt->insertText('text', $option->getName());
 
             $tOpt->setAttr('element', 'value', $option->getValue());
             $tOpt->setAttr('element', 'name', $this->getFieldName());

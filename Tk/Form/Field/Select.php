@@ -4,18 +4,13 @@ namespace Tk\Form\Field;
 use Tk\Form\Exception;
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class Select extends Iface
 {
-    
-    /**
-     * @var array|Option[]
-     */
-    protected $options = array();
+    use OptionList;
 
 
     /**
@@ -96,73 +91,6 @@ class Select extends Iface
         return $this;
     }
 
-    /**
-     * Set the options array
-     * The option array is in the format of array(array('name' => 'value'), array('name', 'value'),  etc...);
-     *   this format allows for duplicate name and values
-     *
-     * @param array|Option[] $options
-     * @return $this
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-        return $this;
-    }
-
-    /**
-     * @return array|Option[]
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param $name
-     * @param string $value
-     * @param string $cssClass
-     * @return Select
-     */
-    public function prependOption($name, $value = '', $cssClass = '')
-    {
-        $opt = new Option($name, $value);
-        if ($cssClass) $opt->addCss($cssClass);
-        return $this->prepend($opt);
-    }
-
-    /**
-     * @param $name
-     * @param string $value
-     * @param string $cssClass
-     * @return Select
-     */
-    public function appendOption($name, $value = '', $cssClass = '')
-    {
-        $opt = new Option($name, $value);
-        if ($cssClass) $opt->addCss($cssClass);
-        return $this->append($opt);
-    }
-    
-    /**
-     * @param Option $option
-     * @return Select
-     */
-    public function append(Option $option)
-    {
-        $this->options[] = $option;
-        return $this;
-    }
-
-    /**
-     * @param Option $option
-     * @return $this
-     */
-    public function prepend(Option $option)
-    {
-        array_unshift($this->options, $option);
-        return $this;
-    }
 
     /**
      * @param array|\ArrayObject $values
@@ -204,6 +132,23 @@ class Select extends Iface
         }
         return false;
     }
+
+    /**
+     * @param \Dom\Repeat $template
+     * @param Option $option
+     * @param string $var
+     */
+    private function showOption($template, $option, $var = 'option')
+    {
+        $template->insertText($var, $option->getName());
+        $template->setAttr($var, 'value', $option->getValue());
+        if ($this->isSelected($option->getValue())) {
+            $template->setAttr($var, 'selected', 'selected');
+        }
+        // Add attributes
+        $template->setAttr($var, $option->getAttrList());
+        $template->addCss($var, $option->getCssString());
+    }
     
     /**
      * Get the element HTML
@@ -216,44 +161,42 @@ class Select extends Iface
         if (!$t->keyExists('var', 'element')) {
             return $t;
         }
-
         if ($this->isArrayField()) {
             $t->setAttr('element', 'multiple', 'multiple');
         }
 
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
-            /* @var \Dom\Repeat $tOpt */
-            $tOpt = $t->getRepeat('option');
-
-            if ($option->isDisabled()) {
-                $tOpt->setAttr('option', 'disabled', 'disabled');
+            $tOpt = null;
+            if ($option instanceof OptGroup) {
+                $tOptGroup = $t->getRepeat('optgroup');
+                $tOptGroup->setAttr('optgroup', 'label', $option->getName());
+                foreach ($option->getOptions() as $opt) {
+                    $tOpt = $tOptGroup->getRepeat('option');
+                    //$this->showOption($tOptGroup, $opt);      // Wont work for some reason ??????
+                    $var = 'option';
+                    $tOpt->insertText($var, $opt->getName());
+                    $tOpt->setAttr($var, 'value', $opt->getValue());
+                    if ($this->isSelected($opt->getValue())) {
+                        $tOpt->setAttr($var, 'selected', 'selected');
+                    }
+                    // Add attributes
+                    $tOpt->setAttr($var, $opt->getAttrList());
+                    $tOpt->addCss($var, $opt->getCssString());
+                    $tOpt->appendRepeat();
+                }
+                $tOptGroup->appendRepeat();
+            } else {
+                /* @var \Dom\Repeat $tOpt */
+                $tOpt = $t->getRepeat('option');
+                $this->showOption($tOpt, $option);
+                $tOpt->appendRepeat();
             }
-            if ($option->getLabel()) {
-                $tOpt->setAttr('option', 'label', $option->getLabel());
-            }
-
-            // TODO: render optgroup
-            $tOpt->setAttr('option', 'value', $option->getValue());
-            if ($this->isSelected($option->getValue())) {
-                $tOpt->setAttr('option', 'selected', 'selected');
-            }
-            $tOpt->insertText('option', $option->getText());
-
-            // Add attributes
-            $tOpt->setAttr('option', $option->getAttrList());
-
-            // Add css class
-            $tOpt->addCss('option', $option->getCssString());
-
-            $tOpt->appendRepeat();
         }
 
         $this->decorateElement($t);
         return $t;
     }
-    
-    
 
     /**
      * makeTemplate
@@ -265,9 +208,12 @@ class Select extends Iface
         $xhtml = <<<HTML
 <select var="element" class="form-control">
   <option repeat="option" var="option"></option>
+  <optgroup label="" repeat="optgroup" var="optgroup">
+    <option repeat="option" var="option"></option>
+  </optgroup>
 </select>
 HTML;
-        
-        return \Dom\Loader::load($xhtml);
+        $tpl = \Dom\Loader::load($xhtml);
+        return $tpl;
     }
 }
