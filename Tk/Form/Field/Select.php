@@ -141,6 +141,7 @@ class Select extends Iface
     private function showOption($template, $option, $var = 'option')
     {
         $template->insertText($var, $option->getName());
+
         $template->setAttr($var, 'value', $option->getValue());
         if ($this->isSelected($option->getValue())) {
             $template->setAttr($var, 'selected', 'selected');
