@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.50 [2018-06-20]:
+-------------------------------
+Minor Code Updates
+
+
 Ver 2.0.48 [2018-06-20]:
 -------------------------------
 Fixed cron job for country and state names in companies
