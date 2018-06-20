@@ -47,8 +47,6 @@ class Option
         return $obj;
     }
 
-
-
     /**
      * @return string
      */
@@ -65,6 +63,28 @@ class Option
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->hasAttr('disabled');
+    }
+
+    /**
+     * @param bool $b
+     * @return $this
+     */
+    public function setDisabled($b = true)
+    {
+        if ($b) {
+            $this->setAttr('disabled', 'disabled');
+        } else {
+            $this->removeAttr('disabled');
+        }
+        return $this;
     }
 
 }
