@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.52 [2018-06-21]:
+-------------------------------
+Fixed Option glass re-added isDisabled() and setDisabled() methods
+
+
 Ver 2.0.50 [2018-06-20]:
 -------------------------------
 Minor Code Updates
