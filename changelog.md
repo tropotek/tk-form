@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.54 [2018-06-24]:
+-------------------------------
+Minor Code Updates
+Dev.ttek.org
+
+
 Ver 2.0.52 [2018-06-21]:
 -------------------------------
 Fixed Option glass re-added isDisabled() and setDisabled() methods
