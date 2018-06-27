@@ -326,7 +326,7 @@ abstract class Iface extends \Tk\Form\Element
      */
     public function isRequired()
     {
-        return $this->hasAttr('required');
+        return $this->hasAttr('data-required');
     }
 
     /**
