@@ -16,10 +16,12 @@ use Tk\Form;
 class Dom extends Iface
 {
 
+    const DEFAULT_FIELD_TEMPLATE = '\Tk\Form\Renderer\FieldGroup';
+
     /**
      * @var string
      */
-    protected $fieldGroupClass = '\Tk\Form\Renderer\FieldGroup';
+    protected $fieldGroupClass = self::DEFAULT_FIELD_TEMPLATE;
 
 
     /**
@@ -241,6 +243,7 @@ class Dom extends Iface
                 $html = $field->show();
             } else {
                 /** @var FieldGroup $fg */
+                if (!$this->fieldGroupClass) $this->fieldGroupClass = self::DEFAULT_FIELD_TEMPLATE;
                 $fg = new $this->fieldGroupClass($field);
                 $html = $fg->show();
             }
