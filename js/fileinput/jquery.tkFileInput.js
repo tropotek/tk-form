@@ -34,7 +34,7 @@
       '<div class="input-group tkFileInput">' +
       '<span class="input-group-btn">' +
       '<div class="btn btn-default tfi-btn-input" title="Select File(s)">' +   // file select button
-      '<i class="glyphicon glyphicon-folder-open"></i>' +
+      '<i class="fa fa-folder-open-o"></i>' +
       // <!-- where the original input will be placed -->
       // <input id="formEdit_attach" class="form-control tk-fileinput" type="file" multiple="true" data-maxsize="1038090240" name="attach[]" />
       '</div>' +
@@ -44,7 +44,7 @@
       '</div>',
       deleteTpl:
       '<button type="button" class="btn btn-default tfi-btn-del" title="Remove File(s)">' +   // tfi-btn-del button
-      '<i class="glyphicon glyphicon-trash"></i>' +
+      '<i class="fa fa-trash-o"></i>' +
       '</button>',
 
       // Defaults for the tkForm file field
@@ -61,7 +61,7 @@
         $(this).closest('.form-group').find('.tk-file-delete input[type=checkbox]').prop('checked', true);
       },
       onError: function (plugin, msg) {
-        var div = $('<span class="help-block alert alert-danger"><i class="glyphicon glyphicon-ban-circle"></i> ' + msg + '</span>').hide();
+        var div = $('<span class="help-block alert alert-danger"><i class="fa fa-ban"></i> ' + msg + '</span>').hide();
         $(this).closest('.input-group').parent().append(div);
         div.fadeIn(500);
         setTimeout(function () {

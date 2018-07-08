@@ -40,10 +40,10 @@ class Button extends Iface
         // TODO: these need to be removed
         if ($name == 'save') {
             $this->setType('submit');
-            $this->setIcon('glyphicon glyphicon-refresh');
+            $this->setIcon('fa fa-refresh');
         } else if ($name == 'update') {
             $this->setType('submit');
-            $this->setIcon('glyphicon glyphicon-arrow-left');
+            $this->setIcon('fa fa-arrow-left');
         }
         $this->addCss('btn btn-sm btn-default btn-once');
     }

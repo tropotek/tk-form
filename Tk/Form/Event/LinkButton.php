@@ -27,7 +27,7 @@ class LinkButton extends Link
     {
         if (!$icon) {
             if ($name == 'cancel') {
-                $icon = 'glyphicon glyphicon-remove';
+                $icon = 'fa fa-times';
             }
         }
         parent::__construct($name, null, $icon);

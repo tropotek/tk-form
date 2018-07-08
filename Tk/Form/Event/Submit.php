@@ -24,9 +24,9 @@ class Submit extends Button
         parent::__construct($name, $callback);
         // TODO: These need to be removed
         if ($name == 'save') {
-            $this->setIcon('glyphicon glyphicon-refresh');
+            $this->setIcon('fa fa-refresh');
         } else if ($name == 'update') {
-            $this->setIcon('glyphicon glyphicon-arrow-left');
+            $this->setIcon('fa fa-arrow-left');
         }
     }
 

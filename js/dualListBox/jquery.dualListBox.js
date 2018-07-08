@@ -246,31 +246,31 @@
   /** Creates the buttons when the dual list box is set in horizontal mode. */
   function createHorizontalButtons(number, copyAllBtn) {
     if (number === 1) {
-      return (copyAllBtn ? '       <button type="button" class="btn btn-default col-xs-6 atr" data-type="atr" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-forward"></span></button>': '') +
-        '       <button type="button" class="btn btn-default ' + (copyAllBtn ? 'pull-right col-xs-6' : 'col-xs-12') + ' str" data-type="str" style="margin-bottom: 5px;" disabled><span class="glyphicon glyphicon-triangle-right"></span></button>';
+      return (copyAllBtn ? '       <button type="button" class="btn btn-default col-xs-6 atr" data-type="atr" style="margin-bottom: 5px;"><span class="fa fa-angle-double-right"></span></button>': '') +
+        '       <button type="button" class="btn btn-default ' + (copyAllBtn ? 'pull-right col-xs-6' : 'col-xs-12') + ' str" data-type="str" style="margin-bottom: 5px;" disabled><span class="fa fa-angle-right"></span></button>';
     } else {
-      return '       <button type="button" class="btn btn-default ' + (copyAllBtn ? 'col-xs-6' : 'col-xs-12') + ' stl" data-type="stl" style="margin-bottom: 5px;" disabled><span class="glyphicon glyphicon-triangle-left"></span></button>' +
-        (copyAllBtn ? '       <button type="button" class="btn btn-default col-xs-6 pull-right atl" data-type="atl" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-backward"></span></button>' : '');
+      return '       <button type="button" class="btn btn-default ' + (copyAllBtn ? 'col-xs-6' : 'col-xs-12') + ' stl" data-type="stl" style="margin-bottom: 5px;" disabled><span class="fa fa-angle-left"></span></button>' +
+        (copyAllBtn ? '       <button type="button" class="btn btn-default col-xs-6 pull-right atl" data-type="atl" style="margin-bottom: 5px;"><span class="fa fa-angle-double-left"></span></button>' : '');
     }
   }
 
   /** Creates the buttons when the dual list box is set in vertical mode. */
   function createVerticalButtons(copyAllBtn) {
     return '   <div class="col-sm-2 center-block" style="margin-top: ' + (copyAllBtn ? '40px' : '130px') +'">' +
-      (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-12 atr" data-type="atr" style="margin: 0 0 10px 0;"><span class="glyphicon glyphicon-forward"></span></button>' : '') +
-      '       <button type="button" class="btn btn-default col-sm-12 str" data-type="str" style="margin: 0 0 10px 0;" disabled><span class="glyphicon glyphicon-triangle-right"></span></button>' +
-      '       <button type="button" class="btn btn-default col-sm-12 stl" data-type="stl" style="margin: 0 0 10px 0;" disabled><span class="glyphicon glyphicon-triangle-left"></span></button>' +
-      (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-12 atl" data-type="atl" style="margin: 0 0 10px 0;"><span class="glyphicon glyphicon-backward"></span></button>' : '') +
+      (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-12 atr" data-type="atr" style="margin: 0 0 10px 0;"><span class="fa fa-angle-double-right"></span></button>' : '') +
+      '       <button type="button" class="btn btn-default col-sm-12 str" data-type="str" style="margin: 0 0 10px 0;" disabled><span class="fa fa-angle-right"></span></button>' +
+      '       <button type="button" class="btn btn-default col-sm-12 stl" data-type="stl" style="margin: 0 0 10px 0;" disabled><span class="fa fa-angle-left"></span></button>' +
+      (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-12 atl" data-type="atl" style="margin: 0 0 10px 0;"><span class="fa fa-angle-double-left"></span></button>' : '') +
       '   </div>';
   }
 
   /** Creates the buttons when the dual list box is set in vertical mode. */
   // function createVerticalButtons2(copyAllBtn) {
   //   return '   <div class="col-sm-2 center-block" style="margin-top: ' + (copyAllBtn ? '80px' : '130px') +'">' +
-  //     (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 atr" data-type="atr" style="margin-bottom: 10px;"><span class="glyphicon glyphicon-list"></span> <span class="glyphicon glyphicon-chevron-right"></span></button>' : '') +
-  //     '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 str" data-type="str" style="margin-bottom: 20px;" disabled><span class="glyphicon glyphicon-chevron-right"></span></button>' +
-  //     '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 stl" data-type="stl" style="margin-bottom: 10px;" disabled><span class="glyphicon glyphicon-chevron-left"></span></button>' +
-  //     (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 atl" data-type="atl" style="margin-bottom: 10px;"><span class="glyphicon glyphicon-chevron-left"></span> <span class="glyphicon glyphicon-list"></span></button>' : '') +
+  //     (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 atr" data-type="atr" style="margin-bottom: 10px;"><span class="fa fa-list"></span> <span class="fa fa-angle-double-right"></span></button>' : '') +
+  //     '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 str" data-type="str" style="margin-bottom: 20px;" disabled><span class="fa fa-angle-right"></span></button>' +
+  //     '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 stl" data-type="stl" style="margin-bottom: 10px;" disabled><span class="fa fa-angle-left"></span></button>' +
+  //     (copyAllBtn ? '       <button type="button" class="btn btn-default col-sm-8 col-sm-offset-2 atl" data-type="atl" style="margin-bottom: 10px;"><span class="fa fa-angle-double-left"></span> <span class="fa fa-list"></span></button>' : '') +
   //     '   </div>';
   // }
 
