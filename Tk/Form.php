@@ -98,6 +98,7 @@ class Form extends Form\Element
         $this->setAttr('method', $method);
         if (!$action)  $action = \Tk\Uri::create();
         $this->setAttr('action', \Tk\Uri::create($action));
+        $this->setAttr('accept-charset', 'UTF-8');
     }
 
     /**
