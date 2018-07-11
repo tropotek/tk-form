@@ -92,7 +92,7 @@ class GmapSelect extends \Tk\Form\Field\Iface
     public function show()
     {
         $template = $this->getTemplate();
-        \App\Ui\Js::includeGoogleMaps($template, array('libraries' => 'places'));
+        \Bs\Ui\Js::includeGoogleMaps($template, array('libraries' => 'places'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.gmapSelect.js'));
 
         $css = <<<CSS
