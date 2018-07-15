@@ -97,6 +97,7 @@ class Dom extends Iface
      *
      * @param Template $t
      * @throws \Dom\Exception
+     * @throws \ReflectionException
      */
     public function showFields(Template $t)
     {
