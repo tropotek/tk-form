@@ -109,7 +109,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     {
         $xhtml = <<<HTML
 <div class="form-group form-group-sm" var="field-group">
-  <span class="help-block error-block" choice="errorText"><span class="" var="errorText"></span></span>
+  <span class="help-block error-block"><span class="" var="errorText" choice="errorText"></span></span>
   <label class="control-label" var="label" choice="label">
   </label><div var="element" class="controls"></div>
   <span class="help-block help-text" var="notes" choice="notes">&nbsp;</span>
