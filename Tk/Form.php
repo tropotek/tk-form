@@ -35,12 +35,7 @@ class Form extends Form\Element
 
     const METHOD_POST               = 'post';
     const METHOD_GET                = 'get';
-
-
-    /**
-     * @var int|null
-     */
-    private $instanceId = null;
+    
 
     /**
      * @var string
@@ -95,7 +90,6 @@ class Form extends Form\Element
      */
     public function __construct($formId, $method = self::METHOD_POST, $action = null)
     {
-        //$this->id = $formId.'_'.$this->getInstanceId();
         $this->id = $formId;
         $this->name = $formId;
         $this->setForm($this);
@@ -120,19 +114,6 @@ class Form extends Form\Element
         return $obj;
     }
 
-    /**
-     * get the unique table instance ID
-     * @return int|null
-     */
-    protected function getInstanceId()
-    {
-        static $count = 1;
-        if ($this->instanceId === null) {
-            $this->instanceId = $count++;
-        }
-        return $this->instanceId;
-    }
-    
     /**
      * Get the unique id for this element
      *
