@@ -95,8 +95,8 @@ class Form extends Form\Element
      */
     public function __construct($formId, $method = self::METHOD_POST, $action = null)
     {
-        $this->id = $formId.'_'.$this->getInstanceId();
-        //$this->name = $formId;
+        //$this->id = $formId.'_'.$this->getInstanceId();
+        $this->name = $formId;
         $this->setForm($this);
         $this->setAttr('method', $method);
         if (!$action)  $action = \Tk\Uri::create();
@@ -110,14 +110,14 @@ class Form extends Form\Element
      * @param string|\Tk\Uri|null $action
      * @return static
      */
-    public static function create($formId, $method = self::METHOD_POST, $action = null)
-    {
-        $obj = new static($formId, $method, $action);
-        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
-            $obj->setEnableRequiredAttr(true);
-        }
-        return $obj;
-    }
+//    public static function create($formId, $method = self::METHOD_POST, $action = null)
+//    {
+//        $obj = new static($formId, $method, $action);
+//        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
+//            $obj->setEnableRequiredAttr(true);
+//        }
+//        return $obj;
+//    }
 
     /**
      * get the unique table instance ID
