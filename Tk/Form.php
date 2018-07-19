@@ -38,6 +38,11 @@ class Form extends Form\Element
 
 
     /**
+     * @var int|null
+     */
+    private $instanceId = null;
+
+    /**
      * @var string
      */
     protected $id = '';
@@ -84,15 +89,13 @@ class Form extends Form\Element
 
 
     /**
-     * Create a form processor
-     *
      * @param string $formId
      * @param string $method
      * @param string|\Tk\Uri|null $action
      */
     public function __construct($formId, $method = self::METHOD_POST, $action = null)
     {
-        $this->id = $formId;
+        $this->id = $formId.'_'.$this->getInstanceId();
         //$this->name = $formId;
         $this->setForm($this);
         $this->setAttr('method', $method);
@@ -114,6 +117,19 @@ class Form extends Form\Element
             $obj->setEnableRequiredAttr(true);
         }
         return $obj;
+    }
+
+    /**
+     * get the unique table instance ID
+     * @return int|null
+     */
+    protected function getInstanceId()
+    {
+        static $count = 1;
+        if ($this->instanceId === null) {
+            $this->instanceId = $count++;
+        }
+        return $this->instanceId;
     }
     
     /**
