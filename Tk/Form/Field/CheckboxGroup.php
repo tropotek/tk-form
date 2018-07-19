@@ -47,6 +47,7 @@ class CheckboxGroup extends Select
     {
         $t = $this->getTemplate();
 
+
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = $t->getRepeat('option');
@@ -65,6 +66,9 @@ class CheckboxGroup extends Select
             }
 
             // All other attributes
+            $tOpt->setAttr('option', $option->getAttrList());
+            $tOpt->addCss('option', $option->getCssList());
+
             foreach($this->getAttrList() as $key => $val) {
                 if ($val == '' || $val == null) {
                     $val = $key;
@@ -80,7 +84,7 @@ class CheckboxGroup extends Select
             $tOpt->appendRepeat();
         }
 
-        $this->decorateElement($t);
+        $this->decorateElement($t, 'group');
         return $t;
     }
 
