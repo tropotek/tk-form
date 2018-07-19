@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.70 [2018-07-19]:
+-------------------------------
+Fixed table and form ids, fixed some styling
+
+
 Ver 2.0.68 [2018-07-18]:
 -------------------------------
 Upgraded date fields to use datetimepicker plugin
