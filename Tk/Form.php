@@ -97,6 +97,7 @@ class Form extends Form\Element
         if (!$action)  $action = \Tk\Uri::create();
         $this->setAttr('action', \Tk\Uri::create($action));
         $this->setAttr('accept-charset', 'UTF-8');
+        $this->initFields();
     }
 
     /**
@@ -161,6 +162,12 @@ class Form extends Form\Element
 
     /**
      * Useful for extended form objects
+     */
+    public function initFields() { }
+
+
+    /**
+     * Useful for extended form objects
      * To be called after all fields are added and
      */
     public function init()
@@ -178,7 +185,6 @@ class Form extends Form\Element
      * If an button is found and its event is executed the result is returned
      *
      * @param $request
-     * @throws \Tk\Exception
      * @throws \Exception
      */
     public function execute($request = null)
