@@ -267,6 +267,7 @@ class Dom extends Iface
 // TODO: move to an external script
 // This is the Bootstrap Tab script
 jQuery(function($) {
+  
     $('.formTabs').each(function(id, tabContainer) {
         var ul = $('<ul class="nav nav-tabs"></ul>');
         var errorSet = false;
