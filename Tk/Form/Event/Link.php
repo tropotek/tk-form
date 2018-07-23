@@ -47,7 +47,7 @@ class Link extends Button
     public function show()
     {
         $t = parent::show();
-        
+
         $t->setAttr('element', 'href', $this->getUrl());
         
         return $t;
