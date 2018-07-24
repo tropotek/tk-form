@@ -97,7 +97,6 @@ class Form extends Form\Element
         if (!$action)  $action = \Tk\Uri::create();
         $this->setAttr('action', \Tk\Uri::create($action));
         $this->setAttr('accept-charset', 'UTF-8');
-        $this->initFields();
     }
 
     /**
@@ -158,12 +157,6 @@ class Form extends Form\Element
         $this->renderer = $renderer;
         return $this;
     }
-
-
-    /**
-     * Useful for extended form objects
-     */
-    public function initFields() { }
 
 
     /**
