@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.78 [2018-07-24]:
+-------------------------------
+
+
 Ver 2.0.76 [2018-07-23]:
 -------------------------------
   - Added a new ModelGenerator console command to generate models and mappers
