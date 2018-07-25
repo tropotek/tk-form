@@ -14,20 +14,24 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 {
 
     /**
-     * @var Element
+     * @var Field\Iface
      */
     protected $field = null;
 
+    /**
+     * @var null|callable
+     */
+    protected $onShow = null;
+
+
 
     /**
-     * __construct
-     *
-     *
-     * @param Field\Iface $field
+     * @return static
      */
-    public function __construct($field)
+    static function create()
     {
-        $this->field = $field;
+        $obj = new static();
+        return $obj;
     }
 
     /**
@@ -40,27 +44,48 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
+     * @param Field\Iface $field
+     * @return $this
+     */
+    public function setField(Field\Iface $field)
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
+     * @return callable|null
+     */
+    protected function getOnShow()
+    {
+        return $this->onShow;
+    }
+
+    /**
+     * @param callable|null $onShow
+     * @return $this
+     */
+    public function setOnShow(callable $onShow)
+    {
+        $this->onShow = $onShow;
+        return $this;
+    }
+
+    /**
      * @return \Dom\Renderer\Renderer|\Dom\Template|null
-     * @throws \Dom\Exception
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function show()
     {
-        $t = $this->getTemplate();
+        //$t = $this->getTemplate();
+        $t = $this->__makeTemplate();
 
-        //$this->getField()->addCssClass('form-control');
-        
-        if ($this->getField() instanceof Field\Hidden) {
-            return $this->getField()->show();
-        }
-        // Render the element as getHtml() triggered setting of the id attribute...
-        $html = $this->getField()->show();
+        $html = $this->getField()->getTemplate();
         if ($html instanceof \Dom\Template) {
             $t->replaceTemplate('element', $html);
         } else {
             $t->replaceHtml('element', $html);
         }
-
 
         if ($this->getField()->hasErrors()) {
             $t->addCss('field-group', 'has-error has-feedback');
@@ -96,14 +121,18 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $reflect = new \ReflectionClass($this->getField());
         $t->addCss('field-group',  'tk-'.strtolower( $reflect->getShortName() ));
         $t->addCss('field-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
-        
+
+        if ($this->getOnShow()) {
+            call_user_func_array($this->getOnShow(), array($this));
+        }
+
         return $t;
     }
 
     /**
      * makeTemplate
      *
-     * @return string
+     * @return \Dom\Template
      */
     protected function __makeTemplate()
     {

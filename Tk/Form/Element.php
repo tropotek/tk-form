@@ -50,6 +50,11 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      */
     protected $notes = null;
 
+    /**
+     * @var null|callable
+     */
+    protected $onShow = null;
+
 
     /**
      * Set the name for this element
@@ -76,6 +81,23 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
         return $this->name;
     }
 
+    /**
+     * @return callable|null
+     */
+    protected function getOnShow()
+    {
+        return $this->onShow;
+    }
+
+    /**
+     * @param callable|null $onShow
+     * @return static
+     */
+    public function setOnShow(callable $onShow)
+    {
+        $this->onShow = $onShow;
+        return $this;
+    }
     
     /**
      * Create a label from a name string

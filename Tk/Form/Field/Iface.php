@@ -391,6 +391,9 @@ abstract class Iface extends \Tk\Form\Element
         $t->setAttr($var, $this->getAttrList());
         $t->addCss($var, $this->getCssList());
 
+        if ($this->getOnShow()) {
+            call_user_func_array($this->getOnShow(), array($this));
+        }
         return $t;
     }
 

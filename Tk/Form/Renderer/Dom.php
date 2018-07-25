@@ -15,32 +15,68 @@ use Tk\Form;
  */
 class Dom extends Iface
 {
-
-    const DEFAULT_FIELD_TEMPLATE = '\Tk\Form\Renderer\FieldGroup';
+//
+//    /**
+//     * @deprecated Use setFieldGroupRenderer
+//     */
+//    const DEFAULT_FIELD_TEMPLATE = '\Tk\Form\Renderer\FieldGroup';
+//
+//    /**
+//     * @var string
+//     * @deprecated Use setFieldGroupRenderer
+//     */
+//    protected $fieldGroupClass = '';
 
     /**
-     * @var string
+     * @var null|\Tk\Form\Renderer\FieldGroup
      */
-    protected $fieldGroupClass = self::DEFAULT_FIELD_TEMPLATE;
+    protected $fieldGroupRenderer = null;
 
 
     /**
-     * Create a new Renderer.
-     *
      * @param Form $form
      * @return static
-     * @deprecated I think this will be renamed or removed in the release version
      */
     static function create($form)
     {
-        return new static($form);
+        $obj = new static($form);
+        return $obj;
+    }
+
+    /**
+     * @param string $fieldGroupClass
+     * @return $this
+     * @deprecated Use setFieldGroupRenderer
+     */
+    public function setFieldGroupClass($fieldGroupClass)
+    {
+        \Tk\Log::notice('Using deprecated function: \Tk\Form\Renderer\Dom::setFieldGroupClass()');
+        return $this;
+    }
+
+    /**
+     * @return null|FieldGroup
+     */
+    public function getFieldGroupRenderer()
+    {
+        return $this->fieldGroupRenderer;
+    }
+
+    /**
+     * @param null|FieldGroup $fieldGroupRenderer
+     * @return static
+     */
+    public function setFieldGroupRenderer($fieldGroupRenderer)
+    {
+        $this->fieldGroupRenderer = $fieldGroupRenderer;
+        return $this;
     }
 
     /**
      * Render the field and return the template or html string
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
+     * @throws \Exception
      * @todo This should return the Template object as per all other Renderer interfaces....
      * @todo this will affect all projects, needs to be done ASAP, before EMS release.
      */
@@ -51,7 +87,6 @@ class Dom extends Iface
             $e->set('form', $this->getForm());
             $this->getForm()->getDispatcher()->dispatch(\Tk\Form\FormEvents::FORM_SHOW, $e);
         }
-
 
         $template = $this->getTemplate();
         if (!$template->keyExists('var', 'form')) {
@@ -96,8 +131,7 @@ class Dom extends Iface
      * Render Fields
      *
      * @param Template $t
-     * @throws \Dom\Exception
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function showFields(Template $t)
     {
@@ -176,16 +210,6 @@ class Dom extends Iface
         }
     }
 
-    /**
-     * @param string $fieldGroupClass
-     * @return $this
-     */
-    public function setFieldGroupClass($fieldGroupClass)
-    {
-        $this->fieldGroupClass = $fieldGroupClass;
-        return $this;
-    }
-
 
     /**
      * @param string $str
@@ -223,8 +247,7 @@ class Dom extends Iface
      * @param Field\Iface $field
      * @param Template $t
      * @param string $var
-     * @throws \Dom\Exception
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
@@ -237,16 +260,16 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-            // TODO: Add a no field group option to Field, then render as is with nor field group class
-            // TODO: OR Better! add a fieldGroupClass param per instance of a field, allowing any field group per Field
-            // TODO: Making the Fields/renderers nestable could be a handy thing too
+            // TODO: Making the Fields/renderers nestable could be a handy thing... ???
+            $html = '';
             if ($field instanceof Field\Hidden) {
                 $html = $field->show();
             } else {
-                /** @var FieldGroup $fg */
-                if (!$this->fieldGroupClass) $this->fieldGroupClass = self::DEFAULT_FIELD_TEMPLATE;
-                $fg = new $this->fieldGroupClass($field);
-                $html = $fg->show();
+                $html = $field->show();
+                if ($this->getFieldGroupRenderer()) {
+                    $this->getFieldGroupRenderer()->setField($field);
+                    $html = $this->getFieldGroupRenderer()->show();
+                }
             }
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate($var, $html);

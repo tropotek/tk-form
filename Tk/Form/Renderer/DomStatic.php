@@ -76,8 +76,7 @@ class DomStatic extends Iface
      * Render
      *
      * @return \Dom\Template
-     * @throws Exception
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -195,6 +194,7 @@ class DomStatic extends Iface
 
     /**
      * Show the overall form error if set
+     * @throws \Exception
      */
     protected function showFormError()
     {
