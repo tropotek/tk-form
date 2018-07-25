@@ -7,8 +7,6 @@ use Tk\Form\Event;
 use Tk\Form;
 
 /**
- * Class Dom
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -40,6 +38,10 @@ class Dom extends Iface
     static function create($form)
     {
         $obj = new static($form);
+
+        // TODO: remove this once we have fixed external dependant codes
+        $obj->setFieldGroupRenderer(FieldGroup::create($form));
+
         return $obj;
     }
 
@@ -261,15 +263,10 @@ class Dom extends Iface
             }
         } else {
             // TODO: Making the Fields/renderers nestable could be a handy thing... ???
-            $html = '';
-            if ($field instanceof Field\Hidden) {
-                $html = $field->show();
-            } else {
-                $html = $field->show();
-                if ($this->getFieldGroupRenderer()) {
-                    $this->getFieldGroupRenderer()->setField($field);
-                    $html = $this->getFieldGroupRenderer()->show();
-                }
+            $html = $html = $field->show();
+            if ($this->getFieldGroupRenderer() && !$field instanceof Field\Hidden) {
+                $this->getFieldGroupRenderer()->setField($field);
+                $html = $this->getFieldGroupRenderer()->show();
             }
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate($var, $html);

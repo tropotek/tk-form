@@ -5,13 +5,17 @@ use Tk\Form\Field;
 use Tk\Form\Element;
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
+
+    /**
+     * @var \Tk\Form
+     */
+    protected $form = null;
 
     /**
      * @var Field\Iface
@@ -24,18 +28,43 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected $onShow = null;
 
 
+    /**
+     * @param \Tk\Form $form
+     */
+    public function __construct($form)
+    {
+        $this->form = $form;
+    }
 
     /**
-     * @return static
+     * @param \Tk\Form $form
+     * @return FieldGroup
      */
-    static function create()
+    static function create($form)
     {
-        $obj = new static();
+        $obj = new static($form);
         return $obj;
     }
 
     /**
-     * 
+     * @return \Tk\Form
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param \Tk\Form $form
+     * @return static
+     */
+    public function setForm(\Tk\Form $form)
+    {
+        $this->form = $form;
+        return $this;
+    }
+
+    /**
      * @return Field\Iface
      */
     public function getField()
@@ -77,8 +106,8 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
      */
     public function show()
     {
-        //$t = $this->getTemplate();
-        $t = $this->__makeTemplate();
+        $this->template = $this->__makeTemplate();
+        $t = $this->getTemplate();
 
         $html = $this->getField()->getTemplate();
         if ($html instanceof \Dom\Template) {
@@ -123,7 +152,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $t->addCss('field-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
 
         if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($this));
+            call_user_func_array($this->getOnShow(), array($t, $this->getField()));
         }
 
         return $t;
