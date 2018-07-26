@@ -33,7 +33,7 @@ class Dom extends Iface
 
     /**
      * @param Form $form
-     * @return static
+     * @return Dom
      */
     static function create($form)
     {

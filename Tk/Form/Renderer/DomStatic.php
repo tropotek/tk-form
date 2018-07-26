@@ -90,6 +90,7 @@ class DomStatic extends Iface
             $this->getForm()->getDispatcher()->dispatch(\Tk\Form\FormEvents::FORM_SHOW, $e);
         }
 
+        $this->domForm->getNode()->setAttribute('class', $this->domForm->getNode()->getAttribute('class') . ' tk-static-form');
         foreach ($this->getForm()->getFieldList() as $field) {
             if (!$field instanceof Field\Iface) continue;
             $this->showField($field);
