@@ -283,45 +283,7 @@ class Dom extends Iface
     {
         $xhtml = <<<HTML
 <div class="">
-<script type="text/javascript"> //<![CDATA[
-// TODO: move to an external script
-// This is the Bootstrap Tab script
-jQuery(function($) {
-  
-    $('.formTabs').each(function(id, tabContainer) {
-        var ul = $('<ul class="nav nav-tabs"></ul>');
-        var errorSet = false;
-        
-        $(tabContainer).find('.tab-pane').each(function (i, tbox) {
-            var name = $(tbox).attr('data-name');
-            var li = $('<li></li>');
-            var a = $('<a></a>');
-            a.attr('href', '#'+tbox.id);
-            a.attr('data-toggle', 'tab');
-            a.text(name);
-            li.append(a);
-            
-            // Check for errors
-            if ($(tbox).find('.has-error').length) {
-                li.addClass('has-error');
-            }
-            if (i === 0) {
-                $(tbox).addClass('active');
-                li.addClass('active');
-            }
-            ul.append(li);
-        });
-        $(tabContainer).prepend(ul);
-        $(tabContainer).find('li.has-error a');
-        
-        //$(tabContainer).find('li.has-error a').tab('show'); // shows last error tab
-        $(tabContainer).find('li.has-error a').first().tab('show');   // shows first error tab
-    });
-    
-    // Deselect tab
-    $('.formTabs li a').on('click', function (e) { $(this).trigger('blur'); });
-});
-//]]></script>
+	<script src="/vendor/ttek/tk-form/js/form.js"></script>
 
 
 <form class="tk-form" var="form" role="form">
