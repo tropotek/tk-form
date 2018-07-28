@@ -14,8 +14,8 @@ jQuery(function() {
 
     $(tabContainer).find('.tab-pane').each(function (i, tbox) {
       var name = $(tbox).attr('data-name');
-      var li = $('<li></li>');
-      var a = $('<a></a>');
+      var li = $('<li class="nav-item"></li>');
+      var a = $('<a class="nav-link"></a>');
       a.attr('href', '#'+tbox.id);
       a.attr('data-toggle', 'tab');
       a.text(name);
@@ -28,6 +28,7 @@ jQuery(function() {
       if (i === 0) {
         $(tbox).addClass('active');
         li.addClass('active');
+        a.addClass('active');
       }
       ul.append(li);
     });
