@@ -38,7 +38,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 
     /**
      * @param \Tk\Form $form
-     * @return FieldGroup
+     * @return FieldGroup|static
      */
     static function create($form)
     {
@@ -117,7 +117,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         }
 
         if ($this->getField()->hasErrors()) {
-            $t->addCss('field-group', 'has-error has-feedback');
+            $t->addCss('field-group', 'has-error is-invalid has-feedback');
             
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
@@ -126,7 +126,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);
-                $t->insertHtml('errorText', $estr);
+                $t->appendHtml('errorText', $estr);
                 $t->setChoice('errorText');
             }
         }
@@ -136,15 +136,16 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             if ($label) $label .= ':';
             if ($this->getField()->isRequired()) {
                 $t->addCss('field-group', 'required');
+                $t->setAttr('label', 'title', 'Required');
             }
-            $t->insertHtml('label', $label);
+            $t->appendHtml('label', $label);
             $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
             $t->setChoice('label');
         }
         
         if ($this->getField()->getNotes() !== null) {
             $t->setChoice('notes');
-            $t->insertHtml('notes', $this->getField()->getNotes());
+            $t->appendHtml('notes', $this->getField()->getNotes());
         }
         
         $reflect = new \ReflectionClass($this->getField());
