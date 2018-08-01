@@ -74,12 +74,12 @@ class Html extends Input
             $html = $this->html;
 
         if ($html instanceof \Dom\Template) {
-            $t->insertTemplate('element', $html);
+            $t->appendTemplate('element', $html);
         } else {
             if ($this->escapeText) {
                 $html = htmlentities($html);
             }
-            $t->insertHtml('element', $html);
+            $t->appendHtml('element', $html);
         }
 
         $this->decorateElement($t);

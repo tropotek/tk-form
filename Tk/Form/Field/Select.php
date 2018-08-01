@@ -38,6 +38,17 @@ class Select extends Iface
     }
 
     /**
+     * @param string $name
+     * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
+     * @return static
+     * @throws Exception
+     */
+    public static function createSelect($name, $optionIterator = null)
+    {
+        return new static($name, $optionIterator);
+    }
+
+    /**
      * take a single dimensinoal array and convert it to a list for the select
      *
      * Input example:
