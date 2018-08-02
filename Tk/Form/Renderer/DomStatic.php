@@ -38,12 +38,9 @@ class DomStatic extends Iface
     }
 
     /**
-     * Create a new Renderer.
-     *
      * @param Form $form
      * @param \Dom\Template $template The template where the form resides
      * @return DomStatic
-     * @deprecated I think this will be renamed or removed in the release version
      */
     static function create($form, $template)
     {
