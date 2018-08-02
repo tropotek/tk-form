@@ -1,4 +1,9 @@
 /**
+ * This is here fo reference mainly. Can be used for non tk-base dependant sites
+ *
+ * For tk-base derived sites use the core.js project_core.initTkFormTabs();
+ *
+ *
  * @author Tropotek <info@tropotek.com>
  * @created: 28/07/18
  * @link http://www.tropotek.com/

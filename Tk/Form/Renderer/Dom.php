@@ -283,7 +283,8 @@ class Dom extends Iface
     {
         $xhtml = <<<HTML
 <div class="">
-	<script src="/vendor/ttek/tk-form/js/form.js" data-jsl-priority="-1"></script>
+<!-- This binds too late if we want to access the tab events. moved to tk-base core.js -->
+<!--<script src="/vendor/ttek/tk-form/js/form.js"></script>-->
 
 
 <form class="tk-form" var="form" role="form">
