@@ -283,7 +283,7 @@ class Dom extends Iface
     {
         $xhtml = <<<HTML
 <div class="">
-	<script src="/vendor/ttek/tk-form/js/form.js"></script>
+	<script src="/vendor/ttek/tk-form/js/form.js" data-jsl-priority="-1"></script>
 
 
 <form class="tk-form" var="form" role="form">
