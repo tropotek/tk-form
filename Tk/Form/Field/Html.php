@@ -32,7 +32,7 @@ class Html extends Input
     {
         parent::__construct($name);
         $this->setHtml($html);
-        $this->addCss('form-control-static');
+        $this->addCss('form-control-static form-control-plaintext');
     }
 
     /**
