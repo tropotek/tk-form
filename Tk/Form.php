@@ -88,7 +88,7 @@ class Form extends Form\Element
      * @param string $method
      * @param string|\Tk\Uri|null $action
      */
-    public function __construct($formId, $method = self::METHOD_POST, $action = null)
+    public function __construct($formId = 'form', $method = self::METHOD_POST, $action = null)
     {
         $this->id = $formId;
         $this->name = $formId;
@@ -105,7 +105,7 @@ class Form extends Form\Element
      * @param string|\Tk\Uri|null $action
      * @return static
      */
-    public static function create($formId, $method = self::METHOD_POST, $action = null)
+    public static function create($formId = 'form', $method = self::METHOD_POST, $action = null)
     {
         $obj = new static($formId, $method, $action);
         if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
@@ -163,7 +163,7 @@ class Form extends Form\Element
      * Useful for extended form objects
      * To be called after all fields are added and
      */
-    public function init()
+    public function initForm()
     {
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
@@ -244,7 +244,7 @@ class Form extends Form\Element
     public function load($array = array())
     {
         if (!$this->loading) {
-            $this->init();
+            $this->initForm();
             $this->loading = true;
         }
         if ($this->loadArray === null) $this->loadArray = array();
