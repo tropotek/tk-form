@@ -85,32 +85,28 @@ class Form extends Form\Element
 
     /**
      * @param string $formId
-     * @param string $method
-     * @param string|\Tk\Uri|null $action
      */
-    public function __construct($formId = 'form', $method = self::METHOD_POST, $action = null)
+    public function __construct($formId = 'form')
     {
         $this->id = $formId;
         $this->name = $formId;
         $this->setForm($this);
-        $this->setAttr('method', $method);
-        if (!$action)  $action = \Tk\Uri::create();
-        $this->setAttr('action', \Tk\Uri::create($action));
+        $this->setAttr('method', self::METHOD_POST);
+        $this->setAttr('action', \Tk\Uri::create());
         $this->setAttr('accept-charset', 'UTF-8');
     }
 
     /**
      * @param $formId
-     * @param string $method
-     * @param string|\Tk\Uri|null $action
      * @return static
      */
-    public static function create($formId = 'form', $method = self::METHOD_POST, $action = null)
+    public static function create($formId = 'form')
     {
-        $obj = new static($formId, $method, $action);
-        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
-            $obj->setEnableRequiredAttr(true);
-        }
+        $obj = new static($formId);
+        // TODO: to stop browser validation use the attr $form->setAttr('novalidate');
+//        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
+//            $obj->setEnableRequiredAttr(true);
+//        }
         return $obj;
     }
 
