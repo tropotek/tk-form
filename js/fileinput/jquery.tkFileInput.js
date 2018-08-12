@@ -32,15 +32,15 @@
       // Default Templates
       template:
       '<div class="input-group tkFileInput">' +
-      '<span class="input-group-btn">' +
-      '<div class="btn btn-default tfi-btn-input" title="Select File(s)">' +   // file select button
-      '<i class="fa fa-folder-open-o"></i>' +
-      // <!-- where the original input will be placed -->
-      // <input id="formEdit_attach" class="form-control tk-fileinput" type="file" multiple="true" data-maxsize="1038090240" name="attach[]" />
-      '</div>' +
-      // Append other buttons here ...
-      '</span>' +
-      '<input type="text" class="form-control tfi-input-filename" disabled="disabled" placeholder="Click To Add File.." /> <!-- don`t give a name ==> not send on POST/GET -->' +
+      '  <span class="input-group-btn input-group-prepend">' +
+      '    <div class="btn btn-default tfi-btn-input" title="Select File(s)">' +   // file select button
+      '      <i class="fa fa-folder-open-o"></i>' +
+             // <!-- where the original input will be placed -->
+             // <input id="formEdit_attach" class="form-control tk-fileinput" type="file" multiple="true" data-maxsize="1038090240" name="attach[]" />
+      '    </div>' +
+         // Append other buttons here ...
+      '  </span>' +
+      '  <input type="text" class="form-control tfi-input-filename" disabled="disabled" placeholder="Click To Add File.." /> <!-- don`t give a name ==> not send on POST/GET -->' +
       '</div>',
       deleteTpl:
       '<button type="button" class="btn btn-default tfi-btn-del" title="Remove File(s)">' +   // tfi-btn-del button
