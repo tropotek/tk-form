@@ -533,7 +533,7 @@
       $element.attr('data-name', $element.attr('name')).removeAttr('name');
       $element.closest('.input-group').parent().append(table);
 
-      // It is expected that the files will be a json string array of urls in the input value
+      // It is expected that the files will be a json string array of urls in the input data-value attribute
       var list = [];
       if ($element.data('value')) {
         list = $element.data('value');
