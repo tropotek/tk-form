@@ -16,7 +16,6 @@ class Select extends Iface
     /**
      * @param string $name
      * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
-     * @throws Exception
      */
     public function __construct($name, $optionIterator = null)
     {

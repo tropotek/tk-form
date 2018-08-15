@@ -21,7 +21,6 @@ class Link extends Button
      * @param string $name
      * @param string|\Tk\Uri $url
      * @param string $icon
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $url = null, $icon = 'fa fa-times')
     {
