@@ -110,10 +110,10 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     static function makeLabel($name)
     {
         $label = $name;
-        $label = preg_replace_callback('/[_\.]([a-zA-Z_])/', function ($match) {    // Handle underscores
+        $label = preg_replace_callback('/[_\.-]([a-zA-Z_])/', function ($match) {    // Handle underscores
             return strtoupper($match[1]);
         }, $label);
-        $label = ucfirst(preg_replace('/[A-Z_]/', ' $0', $label));
+        $label = ucfirst(preg_replace('/[A-Z_-]/', ' $0', $label));
         $label = preg_replace('/(\[\])/', '', $label);
         if (substr($label, -2) == 'Id') {
             $label = substr($label, 0, -3);
@@ -133,7 +133,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     protected function makeId($prepend = '')
     {
         if ($this->getForm() && $this->getForm() !== $this) {
-            $prepend .= $this->getForm()->getId() . '_';
+            $prepend .= $this->getForm()->getId() . '-';
         }
         return $prepend . $this->getName();
     }
@@ -296,7 +296,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     public function makeInstanceKey($key)
     {
         if ($this->getForm()) {
-            return $this->getForm()->getId() . '_' . $key;
+            return $this->getForm()->getId() . '-' . $key;
         }
         return $key;
     }
