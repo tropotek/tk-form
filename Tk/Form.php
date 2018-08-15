@@ -393,23 +393,20 @@ class Form extends Form\Element
         return $field;
     }
 
-
-
-
     /**
      * Remove a field from the form
      *
      * @param string $fieldName
-     * @return boolean
+     * @return Field\Iface|null returns null if not found
      */
     public function removeField($fieldName)
     {
+        $field = $this->getField($fieldName);
         $fieldName = str_replace('[]', '', $fieldName);
         if (isset($this->fieldList[$fieldName])) {
             unset($this->fieldList[$fieldName]);
-            return true;
         }
-        return false;
+        return $field;
     }
 
     /**
