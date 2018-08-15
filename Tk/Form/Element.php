@@ -32,6 +32,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     
     /**
      * @var array
+     * @deprecated
      */
     protected $paramList = null;
 
@@ -136,16 +137,6 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
         }
         return $prepend . $this->getName();
     }
-//    protected function makeId($prepend = 'fid_')
-//    {
-//        if ($this->getForm() && $prepend == 'fid_') {
-//            $prepend .= $this->getForm()->getId() . '_';
-//        }
-//        if (!$this->form) {
-//            vd('Warning: Form not set when requesting ID');
-//        }
-//        return $prepend . $this->getName();
-//    }
 
     /**
      * return the is attribute value
@@ -155,53 +146,6 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     public function getId()
     {
         return $this->makeId();
-    }
-    
-    /**
-     * Get a parameter from the array
-     *
-     * @param $name
-     * @return bool
-     * @deprecated use get() and getRenderer()
-     */
-    public function getParam($name)
-    {
-        if (!empty($this->paramList[$name])) {
-            return $this->paramList[$name];
-        }
-        return false;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     * @deprecated use set() and setRenderer()
-     */
-    public function setParam($name, $value)
-    {
-        $this->paramList[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * Get the param array
-     *
-     * @return array
-     */
-    public function getParamList()
-    {
-        return $this->paramList;
-    }
-
-    /**
-     * @param array $params
-     * @return $this
-     */
-    public function setParamList($params)
-    {
-        $this->paramList = $params;
-        return $this;
     }
     /**
      * Get the label of this field
@@ -216,7 +160,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     /**
      * Set the label of this field
      *
-     * @param $str
+     * @param string|null $str
      * @return $this
      */
     public function setLabel($str)
@@ -358,4 +302,59 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
 
+
+    // TODO remove paramsList and methods when we are sure it is no longer used for anything
+
+    /**
+     * Get a parameter from the array
+     *
+     * @param $name
+     * @return bool
+     * @deprecated use get() and getRenderer()
+     * @remove 2.4.0
+     */
+    public function getParam($name)
+    {
+        if (!empty($this->paramList[$name])) {
+            return $this->paramList[$name];
+        }
+        return false;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     * @deprecated use set() and setRenderer()
+     * @remove 2.4.0
+     */
+    public function setParam($name, $value)
+    {
+        $this->paramList[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Get the param array
+     *
+     * @return array
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function getParamList()
+    {
+        return $this->paramList;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function setParamList($params)
+    {
+        $this->paramList = $params;
+        return $this;
+    }
 }

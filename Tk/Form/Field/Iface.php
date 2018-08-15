@@ -65,7 +65,6 @@ abstract class Iface extends \Tk\Form\Element
      * __construct
      *
      * @param string $name
-     * @throws Exception
      */
     public function __construct($name)
     {
@@ -97,7 +96,6 @@ abstract class Iface extends \Tk\Form\Element
      *
      * @param $name
      * @return $this
-     * @throws Exception
      */
     public function setName($name)
     {
@@ -107,7 +105,7 @@ abstract class Iface extends \Tk\Form\Element
             $n = substr($n, 0, -2);
         }
         if (strstr($n, '[') !== false) {
-            throw new Exception('Invalid field name: ' . $n);
+            \Tk\Log::warning('Invalid field name: ' . $n);
         }
         parent::setName($n);
         return $this;

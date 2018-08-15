@@ -16,7 +16,6 @@ class Submit extends Button
      *
      * @param string $name
      * @param callable $callback
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $callback = null)
     {

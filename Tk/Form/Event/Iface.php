@@ -28,12 +28,11 @@ abstract class Iface extends Field\Iface
      * @param string $name
      * @param null|callable $callback
      * @param null|\Tk\Uri $redirect
-     * @throws Exception
      */
     public function __construct($name, $callback = null, $redirect = null)
     {
         parent::__construct($name);
-        $this->addCallback($callback);
+        $this->prependCallback($callback);
         $this->setRedirect($redirect);
     }
 
@@ -57,51 +56,27 @@ abstract class Iface extends Field\Iface
      *
      * @param callable $callback
      * @return $this
-     * @throws Exception
      */
     public function prependCallback($callback)
     {
-        if (!$callback) return $this;
-        $this->validateCallback($callback);
-        array_unshift($this->callbackList,  $callback);
+        if (is_callable($callback))
+            array_unshift($this->callbackList, $callback);
         return $this;
     }
 
     /**
      * Add a callback to the end of the event queue
-     *
      * function (Tk\Form $form, Tk\Form\Event\Iface $event) {}
      *
      * @param callable $callback
      * @return $this
-     * @throws Exception
+     * @since 2.0.68
      */
-    public function addCallback($callback)
+    public function appendCallback($callback)
     {
-        if (!$callback) return $this;
-        $this->validateCallback($callback);
-        $this->callbackList[] = $callback;
+        if (is_callable($callback))
+            $this->callbackList[] = $callback;
         return $this;
-    }
-
-    /**
-     * Validate a callback parameter
-     *
-     * @param $callback
-     * @throws Exception
-     */
-    protected function validateCallback($callback)
-    {
-        if (!is_callable($callback)) {
-            if (is_array($callback) && !empty($callback[1])) {
-                $class = get_class($callback[0]);
-                $method = $callback[1];
-                throw new Exception('Form event callback ' . $class.'::'.$method.'() cannot be found');
-            } else if (is_string($callback)) {
-                throw new Exception('Form event callback ' . $callback . ' cannot be found');
-            }
-            throw new Exception('Only callable values can be events. Check the method or function exists.');
-        }
     }
 
     /**
@@ -190,5 +165,19 @@ abstract class Iface extends Field\Iface
     {
         return '';
     }
-    
+
+
+    /**
+     * @param $callback
+     * @return $this
+     * @deprecated use prependCallback
+     * @remove 2.4.0
+     */
+    public function addCallback($callback)
+    {
+        if (!$callback) return $this;
+        if (is_callable($callback))
+            $this->callbackList[] = $callback;
+        return $this;
+    }
 }

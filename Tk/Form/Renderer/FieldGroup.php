@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form\Renderer;
 
+use function PHPSTORM_META\type;
 use Tk\Form\Field;
 use Tk\Form\Element;
 

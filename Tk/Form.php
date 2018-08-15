@@ -320,7 +320,7 @@ class Form extends Form\Element
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
         if ($field && $field instanceof Event\Iface) {
-            $field->addCallback($callback);
+            $field->appendCallback($callback);
         } else {
             //\Tk\Log::warning('Event Field not found: `' . $fieldName . '`');
         }
@@ -340,64 +340,61 @@ class Form extends Form\Element
         return false;
     }
 
+
     /**
-     * Add an field to this form
-     *
      * @param Field\Iface $field
+     * @param null|Field\Iface|string $refField
      * @return Field\Iface
+     * @since 2.0.68
      */
-    public function addField($field)
+    public function appendField(Field\Iface $field, $refField = null)
     {
-        $this->fieldList[$field->getName()] = $field;
         $field->setForm($this);
+        if (is_string($refField)) {
+            $refField = $this->getField(str_replace('[]', '', $refField));
+        }
+        if (!$refField || !$refField instanceof Field\Iface) {
+            $this->fieldList[$field->getName()] = $field;
+        } else {
+            $newArr = array();
+            /** @var Field\Iface $f */
+            foreach ($this->fieldList as $f) {
+                $newArr[$f->getName()] = $f;
+                if ($f === $refField) $newArr[$field->getName()] = $field;
+            }
+            $this->fieldList = $newArr;
+        }
         return $field;
     }
 
     /**
-     * Add a field element before another element
-     *
-     * @param string $fieldName
-     * @param Field\Iface $newField
+     * @param Field\Iface $field
+     * @param null|Field\Iface|string $refField
      * @return Field\Iface
+     * @since 2.0.68
      */
-    public function addFieldBefore($fieldName, $newField)
+    public function prependField(\Tk\Form\Field\Iface $field, $refField = null)
     {
-        $fieldName = str_replace('[]', '', $fieldName);
-        $newArr = array();
-        $newField->setForm($this);
-        /** @var Field\Iface $field */
-        foreach ($this->fieldList as $field) {
-            if ($field->getName() == $fieldName) {
-                $newArr[$newField->getName()] = $newField;
-            }
-            $newArr[$field->getName()] = $field;
+        $field->setForm($this);
+        if (is_string($refField)) {
+            $refField = $this->getField(str_replace('[]', '', $refField));
         }
-        $this->fieldList = $newArr;
-        return $newField;
+        if (!$refField || !$refField instanceof Field\Iface) {
+            $this->fieldList = array($field->getName() => $field) + $this->fieldList;
+        } else {
+            $newArr = array();
+            /** @var Field\Iface $f */
+            foreach ($this->fieldList as $f) {
+                if ($f === $refField) $newArr[$field->getName()] = $field;
+                $newArr[$f->getName()] = $f;
+            }
+            $this->fieldList = $newArr;
+        }
+        return $field;
     }
 
-    /**
-     * Add an element after another element
-     *
-     * @param string $fieldName
-     * @param Field\Iface $newField
-     * @return Field\Iface
-     */
-    public function addFieldAfter($fieldName, $newField)
-    {
-        $fieldName = str_replace('[]', '', $fieldName);
-        $newArr = array();
-        $newField->setForm($this);
-        /** @var Field\Iface $field */
-        foreach ($this->fieldList as $field) {
-            $newArr[$field->getName()] = $field;
-            if ($field->getName() == $fieldName) {
-                $newArr[$newField->getName()] = $newField;
-            }
-        }
-        $this->fieldList = $newArr;
-        return $newField;
-    }
+
+
 
     /**
      * Remove a field from the form
@@ -623,5 +620,47 @@ class Form extends Form\Element
      */
     public function show() {}
     
-    
+
+
+
+    /**
+     * Append an field to this form
+     *
+     * @param Field\Iface $field
+     * @return Field\Iface
+     * @deprecated Use appendField($field)
+     * @remove 2.4.0
+     */
+    public function addField($field)
+    {
+        return $this->appendField($field);
+    }
+
+    /**
+     * Add an element after another element
+     *
+     * @param string|Field\Iface|null $refField
+     * @param Field\Iface $field
+     * @return Field\Iface
+     * @deprecated Use appendField($field, $refField)
+     * @remove 2.4.0
+     */
+    public function addFieldAfter($refField, $field)
+    {
+        return $this->appendField($field, $refField);
+    }
+
+    /**
+     * Add a field element before another element
+     *
+     * @param string|Field\Iface|null $refField
+     * @param Field\Iface $field
+     * @return Field\Iface
+     * @deprecated Use prependField($field, $refField)
+     * @remove 2.4.0
+     */
+    public function addFieldBefore($refField, $field)
+    {
+        return $this->prependField($field, $refField);
+    }
 }
