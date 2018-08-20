@@ -22,8 +22,11 @@
   /** Initializes the DualListBox code as jQuery plugin. */
   $.fn.DualListBox = function(paramOptions, selected) {
     return this.each(function () {
+      // if (this.DualListBox != undefined) return;
+      // this.DualListBox = this;
+
       var defaults = {
-        element:    $(this).context,    // Select element which creates this dual list box.
+        element:    this,    // Select element which creates this dual list box.
         uri:        'local.json',       // JSON file that can be opened for the data.
         value:      'id',               // Value that is assigned to the value field in the option.
         text:       'name',             // Text that is assigned to the option field.
@@ -40,7 +43,7 @@
       };
 
       var htmlOptions = {
-        element:    $(this).context,
+        element:    this.context,
         uri:        $(this).data('source'),
         value:      $(this).data('value'),
         text:       $(this).data('text'),
@@ -55,14 +58,14 @@
       };
 
       var options = $.extend({}, defaults, htmlOptions, paramOptions);
-
       $.each(options, function(i, item) {
         if (item === undefined || item === null) { throw 'DualListBox: ' + i + ' is undefined.'; }
       });
 
-      options['parent'] = 'dual-list-box-' + options.title.replace(/ /g , "-");
-      options['parentElement'] = '#' + options.parent;
-
+      // options['parent'] = 'dual-list-box-' + options.title.replace(/ /g , "-");
+      // options['parentElement'] = '#' + options.parent;
+      options.parent = 'dual-list-box-' + options.title.replace(/ /g , "-");
+      options.parentElement = '#' + options.parent;
       selected = $.extend([{}], selected);
 
       if (options.json) {
@@ -88,7 +91,6 @@
     $.getJSON(options.uri, function(json) {
       $.each(json, function(key, item) {
         var text = '';
-
         if (multipleTextFields) {
           textToUse.forEach(function (entry) { text += item[entry] + ' '; });
         } else {
@@ -104,6 +106,89 @@
 
       construct(options);
     });
+  }
+
+  /** Constructs the jQuery plugin after the elements have been retrieved. */
+  function construct(options) {
+    createDualListBox(options);
+    parseStubListBox(options);
+    addListeners(options);
+  }
+
+  /** Creates a new dual list box with the right buttons and filter. */
+  function createDualListBox(options) {
+    $(options.element).parent().attr('id', options.parent);
+    var prependElement = $(options.parentElement);
+
+    var rowEl = $('<div class="row">' +
+      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+      '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
+      '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+      (options.horizontal === false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
+      '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+      '   </div>' +
+      (options.horizontal === false ? createVerticalButtons(options.moveAllBtn) : '') +
+      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+      '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
+      '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+      (options.horizontal === false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
+      '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+      '   </div></div>');
+
+    if (prependElement.find('label.control-label').length) {
+      //$(prependElement.find('label.control-label')).after(rowEl);
+      prependElement.find('label.control-label').remove();
+    }
+    $(options.parentElement).prepend(rowEl);
+
+
+
+    // $(options.parentElement).prepend(
+    //   '<div class="row">' +
+    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+    //   '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
+    //   '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+    //   (options.horizontal == false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
+    //   '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+    //   '   </div>' +
+    //   (options.horizontal == false ? createVerticalButtons(options.moveAllBtn) : '') +
+    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
+    //   '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
+    //   '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
+    //   (options.horizontal == false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
+    //   '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
+    //   '   </div></div>');
+
+    $(options.parentElement + ' .selected').prop('name', $(options.element).prop('name'));
+    $(options.parentElement + ' .unselected-title').text(options.title);
+    $(options.parentElement + ' .selected-title').text('Selected');
+  }
+
+  /** Parses the stub select / list box that is first created. */
+  function parseStubListBox(options) {
+    var textIsTooLong = false;
+
+    $(options.element).find('option').text(function (i, text) {
+      $(this).data('title', text);
+
+      if (text.length > options.textLength) {
+        textIsTooLong = true;
+        return text.substr(0, options.textLength) + '...';
+      }
+    }).each(function () {
+      if (textIsTooLong) {
+        $(this).prop('title', $(this).data('title'));
+      }
+
+      if ($(this).is(':selected')) {
+        $(this).appendTo(options.parentElement + ' .selected');
+      } else {
+        $(this).appendTo(options.parentElement + ' .unselected');
+      }
+    });
+
+    $(options.element).remove();
+    handleMovement(options);
   }
 
   /** Adds the event listeners to the buttons and filters. */
@@ -174,13 +259,6 @@
       }
   }
 
-  /** Constructs the jQuery plugin after the elements have been retrieved. */
-  function construct(options) {
-    createDualListBox(options);
-    parseStubListBox(options);
-    addListeners(options);
-  }
-
   /** Counts the elements per list box/select and shows it. */
   function countElements(parentElement) {
     var countUnselected = 0, countSelected = 0;
@@ -192,55 +270,6 @@
     $(parentElement + ' .selected-count').text(countSelected);
 
     toggleButtons(parentElement);
-  }
-
-  /** Creates a new dual list box with the right buttons and filter. */
-  function createDualListBox(options) {
-    $(options.element).parent().attr('id', options.parent);
-    var prependElement = $(options.parentElement);
-
-
-    var rowEl = $('<div class="row">' +
-      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
-      '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
-      '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-      (options.horizontal === false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
-      '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
-      '   </div>' +
-      (options.horizontal === false ? createVerticalButtons(options.moveAllBtn) : '') +
-      (options.horizontal === false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
-      '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
-      '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-      (options.horizontal === false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
-      '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
-      '   </div></div>');
-    if (prependElement.find('label.control-label')) {
-      //$(prependElement.find('label.control-label')).after(rowEl);
-      prependElement.find('label.control-label').remove();
-    }
-    $(options.parentElement).prepend(rowEl);
-
-
-
-    // $(options.parentElement).prepend(
-    //   '<div class="row">' +
-    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
-    //   '       <h4><span class="unselected-title"></span> <small>- showing <span class="unselected-count"></span></small></h4>' +
-    //   '       <input class="filter form-control filter-unselected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-    //   (options.horizontal == false ? '' : createHorizontalButtons(1, options.moveAllBtn)) +
-    //   '       <select class="unselected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
-    //   '   </div>' +
-    //   (options.horizontal == false ? createVerticalButtons(options.moveAllBtn) : '') +
-    //   (options.horizontal == false ? '   <div class="col-sm-5">' : '   <div class="col-sm-6">') +
-    //   '       <h4><span class="selected-title"></span> <small>- showing <span class="selected-count"></span></small></h4>' +
-    //   '       <input class="filter form-control filter-selected" type="text" placeholder="Filter" style="margin-bottom: 5px;">' +
-    //   (options.horizontal == false ? '' : createHorizontalButtons(2, options.moveAllBtn)) +
-    //   '       <select class="selected ' + options.selectClass + '" style="height: 200px; width: 100%;" multiple></select>' +
-    //   '   </div></div>');
-
-    $(options.parentElement + ' .selected').prop('name', $(options.element).prop('name'));
-    $(options.parentElement + ' .unselected-title').text(options.title);
-    $(options.parentElement + ' .selected-title').text('Selected');
   }
 
   /** Creates the buttons when the dual list box is set in horizontal mode. */
@@ -283,33 +312,6 @@
     $(options.parentElement + ' select').find('option').each(function() { $(this).show(); });
 
     countElements(options.parentElement);
-  }
-
-  /** Parses the stub select / list box that is first created. */
-  function parseStubListBox(options) {
-    var textIsTooLong = false;
-
-    $(options.element).find('option').text(function (i, text) {
-      $(this).data('title', text);
-
-      if (text.length > options.textLength) {
-        textIsTooLong = true;
-        return text.substr(0, options.textLength) + '...';
-      }
-    }).each(function () {
-      if (textIsTooLong) {
-        $(this).prop('title', $(this).data('title'));
-      }
-
-      if ($(this).is(':selected')) {
-        $(this).appendTo(options.parentElement + ' .selected');
-      } else {
-        $(this).appendTo(options.parentElement + ' .unselected');
-      }
-    });
-
-    $(options.element).remove();
-    handleMovement(options);
   }
 
   /** Toggles the buttons based on the length of the selects. */
