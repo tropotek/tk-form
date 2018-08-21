@@ -23,7 +23,6 @@ class Checkbox extends Input
      * __construct
      *
      * @param string $name
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name)
     {
@@ -56,7 +55,7 @@ class Checkbox extends Input
      */
     public function setCheckboxLabel($checkboxLabel)
     {
-        $this->setLabel('');
+        //$this->setLabel('');
         $this->checkboxLabel = $checkboxLabel;
         return $this;
     }
@@ -64,7 +63,6 @@ class Checkbox extends Input
     public function load($values)
     {
         parent::load($values);
-        // TODO: is Checking for null a sain thing here, so far yes, remove if not
         if (!isset($values[$this->getName()]) && $this->getValue() === null) {
             $this->setValue('');
             if ($this->isArrayField())
@@ -92,20 +90,20 @@ class Checkbox extends Input
     public function show()
     {
         $t = parent::show();
-        //if ($this->getValue() !== null) {
         if ($this->getValue() !== null && ($this->getValue() == $this->getName() || $this->getValue() === true)) {
             $t->setAttr('element', 'checked', 'checked');
         }
         $t->setAttr('element', 'value', $this->getName());
         $t->setAttr('hidden', 'name', $this->getName());
         $t->setAttr('hidden', 'value', '');
+        $t->setAttr('checkbox-label', 'for', $this->getId());
         if ($this->getCheckboxLabel()) {
-            $t->insertText('label', $this->getCheckboxLabel());
+            $t->insertHtml('label', $this->getCheckboxLabel());
             $t->addCss('checkbox', 'is-cbl');
         }
         return $t;
     }
-    
+
     /**
      * makeTemplate
      *
@@ -115,9 +113,10 @@ class Checkbox extends Input
     {
         $xhtml = <<<HTML
 <div class="checkbox" var="checkbox">
-  <label>
+  <label var="checkbox-label">
     <input type="hidden" var="hidden" value=""/>
-    <input type="checkbox" var="element"/> <span var="label" class="cb-label"></span>
+    <input type="checkbox" var="element"/> 
+    <span var="label" class="cb-label">&nbsp;</span>
   </label>
 </div>
 HTML;
