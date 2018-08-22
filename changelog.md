@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.96 [2018-08-23]:
+-------------------------------
+  - Fixed DuelListBox field
+  - Added the cube template
+
+
 Ver 2.0.94 [2018-08-20]:
 -------------------------------
 
