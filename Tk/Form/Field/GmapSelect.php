@@ -67,9 +67,10 @@ class GmapSelect extends \Tk\Form\Field\Iface
             }
             $vals[$this->getName().'Zoom'] =  $z;
         }
-        if (!count($vals)) $vals = null;
 
+        if (!count($vals)) $vals = null;
         $this->setValue($vals);
+
         return $this;
     }
 
