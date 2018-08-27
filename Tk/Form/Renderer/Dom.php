@@ -79,8 +79,6 @@ class Dom extends Iface
      *
      * @return \Dom\Template
      * @throws \Exception
-     * @todo This should return the Template object as per all other Renderer interfaces....
-     * @todo this will affect all projects, needs to be done ASAP, before EMS release.
      */
     public function show()
     {

@@ -18,21 +18,21 @@ class Textarea extends Iface
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'element')) {
+            return $template;
         }
 
         // set the field value
-        if ($t->getVarElement('element')->nodeName == 'textarea') {
+        if ($template->getVarElement('element')->nodeName == 'textarea') {
             $value = $this->getValue();
             if ($value !== null && !is_array($value)) {
-                $t->insertText('element', $value);
+                $template->insertText('element', $value);
             }
         }
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
     
     /**

@@ -51,12 +51,12 @@ class Radio extends Select
      */
     public function show()
     {
-        $t = $this->getTemplate();
+        $template = $this->getTemplate();
 
         $checkedSet = false;
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
-            $tOpt = $t->getRepeat('option');
+            $tOpt = $template->getRepeat('option');
 
             if (!$tOpt->keyExists('var', 'element')) continue;
 
@@ -75,10 +75,10 @@ class Radio extends Select
             }
 
             // All other attributes
-            $t->setAttr('element', $this->getAttrList());
+            $template->setAttr('element', $this->getAttrList());
 
             // Element css class names
-            $t->addCss('element', $this->getCssString());
+            $template->addCss('element', $this->getCssString());
 
             if (is_callable($this->onShowOption)) {
                 call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
@@ -90,8 +90,8 @@ class Radio extends Select
             $tOpt->appendRepeat();
         }
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
 
     /**

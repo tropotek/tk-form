@@ -63,9 +63,9 @@ class Html extends Input
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'element')) {
+            return $template;
         }
 
         $html = $this->getValue();
@@ -74,16 +74,16 @@ class Html extends Input
             $html = $this->html;
 
         if ($html instanceof \Dom\Template) {
-            $t->appendTemplate('element', $html);
+            $template->appendTemplate('element', $html);
         } else {
             if ($this->escapeText) {
                 $html = htmlentities($html);
             }
-            $t->appendHtml('element', $html);
+            $template->appendHtml('element', $html);
         }
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
 
     /**

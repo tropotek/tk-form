@@ -89,19 +89,19 @@ class Checkbox extends Input
      */
     public function show()
     {
-        $t = parent::show();
+        $template = parent::show();
         if ($this->getValue() !== null && ($this->getValue() == $this->getName() || $this->getValue() === true)) {
-            $t->setAttr('element', 'checked', 'checked');
+            $template->setAttr('element', 'checked', 'checked');
         }
-        $t->setAttr('element', 'value', $this->getName());
-        $t->setAttr('hidden', 'name', $this->getName());
-        $t->setAttr('hidden', 'value', '');
-        $t->setAttr('checkbox-label', 'for', $this->getId());
+        $template->setAttr('element', 'value', $this->getName());
+        $template->setAttr('hidden', 'name', $this->getName());
+        $template->setAttr('hidden', 'value', '');
+        $template->setAttr('checkbox-label', 'for', $this->getId());
         if ($this->getCheckboxLabel()) {
-            $t->insertHtml('label', $this->getCheckboxLabel());
-            $t->addCss('checkbox', 'is-cbl');
+            $template->insertHtml('label', $this->getCheckboxLabel());
+            $template->addCss('checkbox', 'is-cbl');
         }
-        return $t;
+        return $template;
     }
 
     /**

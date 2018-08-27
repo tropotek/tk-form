@@ -54,24 +54,24 @@ class Input extends Iface
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'element')) {
+            return $template;
         }
 
         // Set the input type attribute
-        $t->setAttr('element', 'type', $this->getType());
+        $template->setAttr('element', 'type', $this->getType());
 
         // Set the field value
-        if ($t->getVarElement('element')->nodeName == 'input' ) {
+        if ($template->getVarElement('element')->nodeName == 'input' ) {
             $value = $this->getValue();
             if ($value !== null && !is_array($value)) {
-                $t->setAttr('element', 'value', $value);
+                $template->setAttr('element', 'value', $value);
             }
         }
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
 
     /**

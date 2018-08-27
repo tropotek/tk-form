@@ -368,31 +368,31 @@ abstract class Iface extends \Tk\Form\Element
     /**
      * Decorate an element template
      *
-     * @param \Dom\Template $t
+     * @param \Dom\Template $template
      * @param string $var
      * @return \Dom\Template|string
      */
-    public function decorateElement(\Dom\Template $t, $var = 'element')
+    public function decorateElement(\Dom\Template $template, $var = 'element')
     {
-        if (!$t->keyExists('var', $var)) {
-            return $t;
+        if (!$template->keyExists('var', $var)) {
+            return $template;
         }
 
         // Field name attribute
-        $t->setAttr($var, 'name', $this->getFieldName());
+        $template->setAttr($var, 'name', $this->getFieldName());
 
         if ($this->isRequired() && !$this->getForm() && $this->getForm()->isEnableRequiredAttr()) {
             $this->setRequired(false);
         }
 
         // Add attributes
-        $t->setAttr($var, $this->getAttrList());
-        $t->addCss($var, $this->getCssList());
+        $template->setAttr($var, $this->getAttrList());
+        $template->addCss($var, $this->getCssList());
 
         if ($this->getOnShow()) {
             call_user_func_array($this->getOnShow(), array($this));
         }
-        return $t;
+        return $template;
     }
 
 

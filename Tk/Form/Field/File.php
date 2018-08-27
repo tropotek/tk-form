@@ -401,24 +401,24 @@ class File extends Input
     {
         $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b><br/>' . $this->getNotes());
 
-        $t = parent::show();
+        $template = parent::show();
 
-        $t->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
+        $template->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
 
         if ($this->getValue() || \Tk\Request::create()->has($this->getDeleteEventName())) {
             $did = $this->makeId() . '-del';
-            $t->setAttr('delete', 'id', $did);
-            $t->setAttr('label', 'for', $did);
-            $t->setAttr('delete', 'name', $did);
-            $t->setAttr('delete', 'value', $did);
-            $t->addCss('delWrapper', $did.'-wrap');
+            $template->setAttr('delete', 'id', $did);
+            $template->setAttr('label', 'for', $did);
+            $template->setAttr('delete', 'name', $did);
+            $template->setAttr('delete', 'value', $did);
+            $template->addCss('delWrapper', $did.'-wrap');
             if (\Tk\Request::create()->has($this->getDeleteEventName())) {
-                $t->setAttr('delete', 'checked', 'checked');
+                $template->setAttr('delete', 'checked', 'checked');
             }
-            $t->setChoice('delete');
+            $template->setChoice('delete');
         }
 
-        return $t;
+        return $template;
     }
 
     /**

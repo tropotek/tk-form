@@ -50,25 +50,25 @@ class InputGroup extends Input
      */
     public function show()
     {
-        $t = parent::show();
+        $template = parent::show();
 
         foreach ($this->prependList as $html) {
             if ($html instanceof \Dom\Template) {
-                $t->appendTemplate('prepend', $html);
+                $template->appendTemplate('prepend', $html);
             } else {
-                $t->appendHtml('prepend', $html);
+                $template->appendHtml('prepend', $html);
             }
         }
 
         foreach ($this->appendList as $html) {
             if ($html instanceof \Dom\Template) {
-                $t->appendTemplate('append', $html);
+                $template->appendTemplate('append', $html);
             } else {
-                $t->appendHtml('append', $html);
+                $template->appendHtml('append', $html);
             }
         }
 
-        return $t;
+        return $template;
     }
 
     /**

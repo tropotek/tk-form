@@ -15,7 +15,7 @@ class Select extends Iface
 
     /**
      * @param string $name
-     * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
+     * @param null|Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
      */
     public function __construct($name, $optionIterator = null)
     {
@@ -168,19 +168,19 @@ class Select extends Iface
      */
     public function show()
     {
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'element')) {
+            return $template;
         }
         if ($this->isArrayField()) {
-            $t->setAttr('element', 'multiple', 'multiple');
+            $template->setAttr('element', 'multiple', 'multiple');
         }
 
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = null;
             if ($option instanceof OptGroup) {
-                $tOptGroup = $t->getRepeat('optgroup');
+                $tOptGroup = $template->getRepeat('optgroup');
                 $tOptGroup->setAttr('optgroup', 'label', $option->getName());
                 foreach ($option->getOptions() as $opt) {
                     $tOpt = $tOptGroup->getRepeat('option');
@@ -199,14 +199,14 @@ class Select extends Iface
                 $tOptGroup->appendRepeat();
             } else {
                 /* @var \Dom\Repeat $tOpt */
-                $tOpt = $t->getRepeat('option');
+                $tOpt = $template->getRepeat('option');
                 $this->showOption($tOpt, $option);
                 $tOpt->appendRepeat();
             }
         }
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
 
     /**

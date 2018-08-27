@@ -94,6 +94,10 @@ class Form extends Form\Element
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', \Tk\Uri::create());
         $this->setAttr('accept-charset', 'UTF-8');
+
+        // TODO: Test how this affects EMS III
+        // This is dissabled by default because of error message rendering issues
+        $this->setAttr('novalidate', 'novalidate');
     }
 
     /**
@@ -103,10 +107,6 @@ class Form extends Form\Element
     public static function create($formId = 'form')
     {
         $obj = new static($formId);
-        // TODO: to stop browser validation use the attr $form->setAttr('novalidate');
-//        if (\Tk\Config::getInstance()->get('system.form.required.attr.enabled')) {
-//            $obj->setEnableRequiredAttr(true);
-//        }
         return $obj;
     }
 

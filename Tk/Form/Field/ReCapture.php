@@ -132,17 +132,17 @@ class ReCapture extends Iface
      */
     public function show()
     {
-        /* @var \Dom\Template $t */
-        $t = $this->getTemplate();
-        if (!$t->keyExists('var', 'element')) {
-            return $t;
+        /* @var \Dom\Template $template */
+        $template = $this->getTemplate();
+        if (!$template->keyExists('var', 'element')) {
+            return $template;
         }
-        $t->setAttr('element', 'data-sitekey', $this->publicKey);
+        $template->setAttr('element', 'data-sitekey', $this->publicKey);
 
-        $t->insertHtml('element', $this->getValue());
+        $template->insertHtml('element', $this->getValue());
 
-        $this->decorateElement($t);
-        return $t;
+        $this->decorateElement($template);
+        return $template;
     }
     
     /**

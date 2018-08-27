@@ -45,12 +45,12 @@ class CheckboxGroup extends Select
      */
     public function show()
     {
-        $t = $this->getTemplate();
+        $template = $this->getTemplate();
 
 
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $option) {
-            $tOpt = $t->getRepeat('option');
+            $tOpt = $template->getRepeat('option');
 
             if ($option->hasAttr('disabled')) {
                 $tOpt->setAttr('option', 'disabled', 'disabled');
@@ -84,8 +84,8 @@ class CheckboxGroup extends Select
             $tOpt->appendRepeat();
         }
 
-        $this->decorateElement($t, 'group');
-        return $t;
+        $this->decorateElement($template, 'group');
+        return $template;
     }
 
 

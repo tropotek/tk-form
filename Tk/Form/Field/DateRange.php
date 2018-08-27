@@ -45,26 +45,26 @@ class DateRange extends \Tk\Form\Field\Iface
      */
     public function show()
     {
-        $t = $this->getTemplate();
+        $template = $this->getTemplate();
 
-        $t->addCss('group', $this->getType());
+        $template->addCss('group', $this->getType());
         
-        $this->decorateElement($t, 'dateStart');
-        $this->decorateElement($t, 'dateEnd');
+        $this->decorateElement($template, 'dateStart');
+        $this->decorateElement($template, 'dateEnd');
 
-        $t->setAttr('dateStart', 'name', $this->getName() . 'Start');
-        $t->setAttr('dateEnd', 'name', $this->getName() . 'End');
-        $t->setAttr('dateStart', 'id', $this->getId().'Start');
-        $t->setAttr('dateEnd', 'id', $this->getId().'End');
+        $template->setAttr('dateStart', 'name', $this->getName() . 'Start');
+        $template->setAttr('dateEnd', 'name', $this->getName() . 'End');
+        $template->setAttr('dateStart', 'id', $this->getId().'Start');
+        $template->setAttr('dateEnd', 'id', $this->getId().'End');
 
         // Set the field value
         $value = $this->getValue();
         if (is_array($value)) {
-            $t->setAttr('dateStart', 'value', $value[$this->getName() . 'Start']);
-            $t->setAttr('dateEnd', 'value', $value[$this->getName() . 'End']);
+            $template->setAttr('dateStart', 'value', $value[$this->getName() . 'Start']);
+            $template->setAttr('dateEnd', 'value', $value[$this->getName() . 'End']);
         }
 
-        return $t;
+        return $template;
     }
 
     /**
