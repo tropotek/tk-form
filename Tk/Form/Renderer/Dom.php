@@ -261,16 +261,24 @@ class Dom extends Iface
             }
         } else {
             // TODO: Making the Fields/renderers nestable could be a handy thing... ???
-            $html = $html = $field->show();
+            // Or use a layout adapter type object
+            $html = $field->show();
             if ($this->getFieldGroupRenderer() && !$field instanceof Field\Hidden) {
                 $this->getFieldGroupRenderer()->setField($field);
                 $html = $this->getFieldGroupRenderer()->show();
             }
+
+            // TODO: The layout manager could render the following .....
+
+            $formRow = $t->getRepeat('form-row');
             if ($html instanceof \Dom\Template) {
-                $t->appendTemplate($var, $html);
+                //$t->appendTemplate($var, $html);
+                $formRow->appendTemplate('form-row', $html);
             } else {
-                $t->appendHtml($var, $html);
+                //$t->appendHtml($var, $html);
+                $formRow->appendHtml('form-row', $html);
             }
+            $formRow->appendRepeat();
         }
     }
 
@@ -283,35 +291,37 @@ class Dom extends Iface
 <div class="">
 <!-- This binds too late if we want to access the tab events. moved to tk-base core.js -->
 <!--<script src="/vendor/ttek/tk-form/js/form.js"></script>-->
-
-
-<form class="tk-form" var="form" role="form">
-  <div class="alert alert-danger clear" choice="errors">
-    <button data-dismiss="alert" class="close noblock">×</button>
-    <h4><i class="icon-ok-sign"></i> <strong>Form Error</strong></h4>
-    <span var="errors"></span>
-  </div>
- 
-  <div class="tk-form-fields clearfix" var="fields">
-  
-    <div class="formTabs" var="tabs" choice="tabs">
-      <div class="tab-content" var="tab-content">
-        <div var="tabBox" repeat="tabBox" class="tab-pane">
-          <fieldset var="fieldset" repeat="fieldset">
-            <legend var="legend"></legend>
-          </fieldset>
+  <form class="tk-form" var="form" role="form">
+    <div class="alert alert-danger clear" choice="errors">
+      <button data-dismiss="alert" class="close noblock">×</button>
+      <h4><i class="icon-ok-sign"></i> <strong>Form Error</strong></h4>
+      <span var="errors"></span>
+    </div>
+   
+    <div class="tk-form-fields clearfix" var="fields">
+    
+      <div class="formTabs" var="tabs" choice="tabs">
+        <div class="tab-content" var="tab-content">
+          <div var="tabBox" repeat="tabBox" class="tab-pane">
+            <fieldset var="fieldset" repeat="fieldset">
+              <legend var="legend"></legend>
+              <div class="form-row" var="form-row" repeat="form-row"></div>
+            </fieldset>
+            <div class="form-row" var="form-row" repeat="form-row"></div>
+          </div>
         </div>
       </div>
+      
+      <fieldset var="fieldset" repeat="fieldset">
+        <legend var="legend"></legend>
+          <div class="form-row" var="form-row" repeat="form-row"></div>
+      </fieldset>
+      
+      <div class="form-row" var="form-row" repeat="form-row"></div>
     </div>
     
-    <fieldset var="fieldset" repeat="fieldset">
-      <legend var="legend"></legend>
-    </fieldset>
-    
-  </div>
-  
-  <div class="tk-form-events clearfix" var="events"></div>
-</form>
+    <div class="tk-form-events clearfix" var="events"></div>
+  </form>
 
 </div>
 HTML;

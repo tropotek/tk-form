@@ -107,19 +107,46 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
      */
     public function show()
     {
-        $this->template = $this->__makeTemplate();
-        $t = $this->getTemplate();
+        $template = clone $this->getTemplate();     // Get a fresh template for each field
 
-        $html = $this->getField()->getTemplate();
-        if ($html instanceof \Dom\Template) {
-            $t->replaceTemplate('element', $html);
-        } else {
-            $t->replaceHtml('element', $html);
+        $this->showErrors($template);
+        $this->showLabel($template);
+        $this->showNotes($template);
+        $this->showField($template);
+
+        // Form Group Styles
+        $reflect = new \ReflectionClass($this->getField());
+        $template->addCss('form-group',  'tk-'.strtolower( $reflect->getShortName() ));
+        $template->addCss('form-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
+
+        if ($this->getOnShow()) {
+            call_user_func_array($this->getOnShow(), array($template, $this->getField()));
         }
 
+        return $template;
+    }
+
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showField($template)
+    {
+        $html = $this->getField()->getTemplate();
+        if ($html instanceof \Dom\Template) {
+            $template->replaceTemplate('element', $html);
+        } else {
+            $template->replaceHtml('element', $html);
+        }
+    }
+
+
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showErrors($template)
+    {
         if ($this->getField()->hasErrors()) {
-            $t->addCss('field-group', 'has-error is-invalid has-feedback');
-            
+            $template->addCss('form-group', 'has-error is-invalid has-feedback');
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
                 if ($error)
@@ -127,37 +154,39 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             }
             if ($estr) {
                 $estr = substr($estr, 0, -6);
-                $t->appendHtml('errorText', $estr);
-                $t->setChoice('errorText');
+                $template->appendHtml('errorText', $estr);
+                $template->setChoice('errorText');
             }
         }
+    }
 
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showLabel($template)
+    {
         if ($this->getField()->hasShowLabel() && $this->getField()->getLabel() !== null) {
             $label = $this->getField()->getLabel();
             if ($label) $label .= ':';
             if ($this->getField()->isRequired()) {
-                $t->addCss('field-group', 'required');
-                $t->setAttr('label', 'title', 'Required');
+                $template->addCss('form-group', 'required');
+                $template->setAttr('label', 'title', 'Required');
             }
-            $t->appendHtml('label', $label);
-            $t->setAttr('label', 'for', $this->getField()->getAttr('id'));
-            $t->setChoice('label');
+            $template->appendHtml('label', $label);
+            $template->setAttr('label', 'for', $this->getField()->getAttr('id'));
+            $template->setChoice('label');
         }
-        
+    }
+
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showNotes($template)
+    {
         if ($this->getField()->getNotes() !== null) {
-            $t->setChoice('notes');
-            $t->appendHtml('notes', $this->getField()->getNotes());
+            $template->setChoice('notes');
+            $template->appendHtml('notes', $this->getField()->getNotes());
         }
-        
-        $reflect = new \ReflectionClass($this->getField());
-        $t->addCss('field-group',  'tk-'.strtolower( $reflect->getShortName() ));
-        $t->addCss('field-group',  'tk-'.strtolower( \Tk\Dom\CssTrait::cleanCss($this->getField()->getName()) ));
-
-        if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($t, $this->getField()));
-        }
-
-        return $t;
     }
 
     /**
@@ -168,7 +197,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="form-group form-group-sm" var="field-group">
+<div class="form-group form-group-sm" var="form-group">
   <label class="control-label" var="label" choice="label"></label>
   <span class="help-block error-block"><span class="" var="errorText" choice="errorText"></span></span>
   <div var="element" class="controls"></div>
