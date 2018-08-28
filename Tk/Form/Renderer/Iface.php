@@ -24,6 +24,16 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      */
     protected $dispatcher = null;
 
+    /**
+     * @var null|\Tk\Form\Renderer\FieldGroup
+     */
+    protected $fieldGroupRenderer = null;
+
+    /**
+     * @var null|Layout
+     */
+    protected $layout = null;
+
 
     /**
      * construct
@@ -59,6 +69,42 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function setDispatcher($dispatcher)
     {
         $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @return null|FieldGroup
+     */
+    public function getFieldGroupRenderer()
+    {
+        return $this->fieldGroupRenderer;
+    }
+
+    /**
+     * @param null|FieldGroup $fieldGroupRenderer
+     * @return static
+     */
+    public function setFieldGroupRenderer($fieldGroupRenderer)
+    {
+        $this->fieldGroupRenderer = $fieldGroupRenderer;
+        return $this;
+    }
+
+    /**
+     * @return null|Layout
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @param null|Layout $layout
+     * @return static
+     */
+    public function setLayout(Layout $layout)
+    {
+        $this->layout = $layout;
+        return $this;
     }
 
 

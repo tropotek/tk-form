@@ -27,7 +27,7 @@ class Link extends Button
         parent::__construct($name);
         $this->url = \Tk\Uri::create($url);
         $this->setIcon($icon);
-        $this->addCss('btn btn-sm btn-default btn-once');
+        $this->addCss('btn btn-default btn-once');
     }
 
     /**

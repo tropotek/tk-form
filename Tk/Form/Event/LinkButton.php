@@ -21,7 +21,6 @@ class LinkButton extends Link
      * @param string $name
      * @param string|\Tk\Uri $url
      * @param string $icon
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $url, $icon = '')
     {
@@ -94,7 +93,7 @@ class LinkButton extends Link
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<a class="btn btn-sm btn-default" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
+<a class="" var="element"><i var="icon" choice="icon"></i> <span var="text">Link</span></a>
 HTML;
         return \Dom\Loader::load($xhtml);
     }

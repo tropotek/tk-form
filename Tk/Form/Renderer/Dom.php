@@ -13,22 +13,11 @@ use Tk\Form;
  */
 class Dom extends Iface
 {
-//
-//    /**
-//     * @deprecated Use setFieldGroupRenderer
-//     */
-//    const DEFAULT_FIELD_TEMPLATE = '\Tk\Form\Renderer\FieldGroup';
-//
-//    /**
-//     * @var string
-//     * @deprecated Use setFieldGroupRenderer
-//     */
-//    protected $fieldGroupClass = '';
 
     /**
-     * @var null|\Tk\Form\Renderer\FieldGroup
+     * @var null|\Dom\Repeat
      */
-    protected $fieldGroupRenderer = null;
+    protected $formRow = null;
 
 
     /**
@@ -57,28 +46,9 @@ class Dom extends Iface
     }
 
     /**
-     * @return null|FieldGroup
-     */
-    public function getFieldGroupRenderer()
-    {
-        return $this->fieldGroupRenderer;
-    }
-
-    /**
-     * @param null|FieldGroup $fieldGroupRenderer
-     * @return static
-     */
-    public function setFieldGroupRenderer($fieldGroupRenderer)
-    {
-        $this->fieldGroupRenderer = $fieldGroupRenderer;
-        return $this;
-    }
-
-    /**
      * Render the field and return the template or html string
      *
      * @return \Dom\Template
-     * @throws \Exception
      */
     public function show()
     {
@@ -131,7 +101,6 @@ class Dom extends Iface
      * Render Fields
      *
      * @param Template $t
-     * @throws \Exception
      */
     public function showFields(Template $t)
     {
@@ -140,6 +109,7 @@ class Dom extends Iface
 
         $fieldList = $this->groupFieldset($this->form->getFieldList());
         $fieldsetName = 'null';
+        $this->formRow = null;
         /** @var \Dom\Repeat $setRow */
         $setRow = null;
         /* @var $field Field\Iface */
@@ -167,6 +137,10 @@ class Dom extends Iface
                 }
                 $tabGroups[$field->getTabGroup()][] = $field;
             }
+        }
+        if ($this->formRow) {
+            $this->formRow->appendRepeat();
+            $this->formRow = null;
         }
         if ($setRow) {
             $setRow->appendRepeat('fields');
@@ -196,6 +170,10 @@ class Dom extends Iface
                 }
                 $fieldsetName = $field->getFieldset();
                 $i++;
+            }
+            if ($this->formRow) {
+                $this->formRow->appendRepeat();
+                $this->formRow = null;
             }
             if ($setRow) {
                 $setRow->appendRepeat('tabBox');
@@ -247,7 +225,6 @@ class Dom extends Iface
      * @param Field\Iface $field
      * @param Template $t
      * @param string $var
-     * @throws \Exception
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
@@ -260,25 +237,42 @@ class Dom extends Iface
                 $t->appendHtml('events', $html);
             }
         } else {
-            // TODO: Making the Fields/renderers nestable could be a handy thing... ???
             // Or use a layout adapter type object
             $html = $field->show();
             if ($this->getFieldGroupRenderer() && !$field instanceof Field\Hidden) {
+                $this->getFieldGroupRenderer()->setLayoutCol(null);
+                if ($this->getLayout()) {
+                    $this->getFieldGroupRenderer()->setLayoutCol($this->getLayout()->getCol($field->getName()));
+                }
                 $this->getFieldGroupRenderer()->setField($field);
                 $html = $this->getFieldGroupRenderer()->show();
             }
 
-            // TODO: The layout manager could render the following .....
-
-            $formRow = $t->getRepeat('form-row');
-            if ($html instanceof \Dom\Template) {
-                //$t->appendTemplate($var, $html);
-                $formRow->appendTemplate('form-row', $html);
+            if (!$this->getLayout()) {
+                $formRow = $t->getRepeat('form-row');
+                if ($html instanceof \Dom\Template) {
+                    $formRow->appendTemplate('form-row', $html);
+                } else {
+                    $formRow->appendHtml('form-row', $html);
+                }
+                $formRow->appendRepeat();
             } else {
-                //$t->appendHtml($var, $html);
-                $formRow->appendHtml('form-row', $html);
+                $layoutCol = $this->getLayout()->getCol($field->getName());
+                if ($this->formRow && $layoutCol->isRowEnabled()) {
+                    $this->formRow->appendRepeat();
+                    $this->formRow = null;
+                }
+                if (!$this->formRow || $layoutCol->isRowEnabled()) {
+                    $this->formRow = $t->getRepeat('form-row');
+                }
+
+                if ($html instanceof \Dom\Template) {
+                    $this->formRow->appendTemplate('form-row', $html);
+                } else {
+                    $this->formRow->appendHtml('form-row', $html);
+                }
             }
-            $formRow->appendRepeat();
+
         }
     }
 

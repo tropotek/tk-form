@@ -44,7 +44,7 @@ class Button extends Iface
             $this->setType('submit');
             $this->setIcon('fa fa-arrow-left');
         }
-        $this->addCss('btn btn-sm btn-default btn-once');
+        $this->addCss('btn btn-default btn-once');
     }
 
     /**
