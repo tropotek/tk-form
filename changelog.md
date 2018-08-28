@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.98 [2018-08-28]:
+-------------------------------
+  - adding ros/cols layout manager to form renderer
+
+
 Ver 2.0.96 [2018-08-23]:
 -------------------------------
   - Fixed DuelListBox field
