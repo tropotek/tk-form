@@ -43,6 +43,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function __construct(Form $form)
     {
         $this->form = $form;
+        $this->setLayout(new Layout());
     }
 
     /**
@@ -90,7 +91,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     }
 
     /**
-     * @return null|Layout
+     * @return Layout
      */
     public function getLayout()
     {
