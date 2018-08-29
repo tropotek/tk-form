@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.2 [2018-08-29]:
+-------------------------------
+
+
 Ver 2.1.0 [2018-08-29]:
 -------------------------------
   - Fixed form field errors and javascript issues
