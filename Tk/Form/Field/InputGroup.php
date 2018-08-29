@@ -58,6 +58,7 @@ class InputGroup extends Input
             } else {
                 $template->appendHtml('prepend', $html);
             }
+            $template->show('prepend');
         }
 
         foreach ($this->appendList as $html) {
@@ -66,6 +67,7 @@ class InputGroup extends Input
             } else {
                 $template->appendHtml('append', $html);
             }
+            $template->show('append');
         }
 
         return $template;
@@ -78,9 +80,9 @@ class InputGroup extends Input
     {
         $xhtml = <<<HTML
 <div class="input-group">
-  <div class="input-group-prepend" var="prepend"></div>
+  <div class="input-group-prepend" var="prepend" choice="prepend"></div>
   <input type="text" var="element" class="form-control" />
-  <div class="input-group-append" var="append"></div>
+  <div class="input-group-append" var="append" choice="append"></div>
 </div>
 HTML;
         return \Dom\Loader::load($xhtml);
