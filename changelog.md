@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.0 [2018-08-29]:
+-------------------------------
+  - Fixed form field errors and javascript issues
+
+
 Ver 2.0.100 [2018-08-29]:
 -------------------------------
   - adding ros/cols layout manager to form renderer
