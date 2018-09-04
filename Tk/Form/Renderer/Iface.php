@@ -102,7 +102,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * @param null|Layout $layout
      * @return static
      */
-    public function setLayout(Layout $layout)
+    public function setLayout($layout)
     {
         $this->layout = $layout;
         return $this;
