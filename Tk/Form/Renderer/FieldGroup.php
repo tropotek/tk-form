@@ -178,6 +178,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $fieldTemplate = $this->getField()->getTemplate();
             if ($fieldTemplate instanceof \Dom\Template) {
                 $fieldTemplate->addCss('element', 'is-invalid');
+                $template->addCss('form-group', 'tk-is-invalid');
             }
             $estr = '';
             foreach ($this->getField()->getErrors() as $error) {
