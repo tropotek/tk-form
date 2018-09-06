@@ -119,12 +119,17 @@ class Dom extends Iface
                     $this->showField($field, $t, 'fields');
                 } else {
                     if ($fieldsetName != $field->getFieldset()) {
+                        if ($this->formRow) {
+                            $this->formRow->appendRepeat();
+                            $this->formRow = null;
+                        }
                         if ($setRow) {
                             $setRow->appendRepeat('fields');
                         }
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
                         $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()) );
+
                     }
                     $this->showField($field, $setRow, 'fieldset');
                 }
@@ -159,6 +164,10 @@ class Dom extends Iface
                     $this->showField($field, $tabBox, 'tabBox');
                 } else {
                     if ($fieldsetName != $field->getFieldset()) {
+                        if ($this->formRow) {
+                            $this->formRow->appendRepeat();
+                            $this->formRow = null;
+                        }
                         if ($setRow) {
                             $setRow->appendRepeat('tabBox');
                         }
