@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.10 [2018-09-12]:
+-------------------------------
+
+
 Ver 2.1.8 [2018-09-11]:
 -------------------------------
   - Fixed form fields set issues with Loyout object
