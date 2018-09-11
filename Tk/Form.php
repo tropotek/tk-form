@@ -511,7 +511,7 @@ class Form extends Form\Element
         /* @var $field Field\Iface */
         foreach($this->getFieldList() as $field) {
             if ($field->hasErrors()) {
-                $e[$field->getName()] = array_merge($e, $field->getErrors());
+                $e[$field->getName()] = $field->getErrors();
             }
         }
         return $e;
