@@ -40,7 +40,8 @@
       '    </div>' +
          // Append other buttons here ...
       '  </span>' +
-      '  <input type="text" class="form-control tfi-input-filename" disabled="disabled" placeholder="Click To Add File.." /> <!-- don`t give a name ==> not send on POST/GET -->' +
+      '  <input type="text" class="form-control tfi-input-filename" disabled="disabled" placeholder="Click To Add File.." />' +
+        //  <!-- don`t give a name ==> not sent on POST/GET -->
       '</div>',
       deleteTpl:
       '<button type="button" class="btn btn-default tfi-btn-del" title="Remove File(s)">' +   // tfi-btn-del button
