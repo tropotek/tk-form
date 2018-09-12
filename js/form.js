@@ -27,7 +27,7 @@ jQuery(function() {
       li.append(a);
 
       // Check for errors
-      if ($(tbox).find('.has-error').length) {
+      if ($(tbox).find('.has-error, .is-invalid').length) {
         li.addClass('has-error');
       }
       if (i === 0) {
