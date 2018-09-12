@@ -231,7 +231,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     {
         $xhtml = <<<HTML
 <div class="form-group" var="form-group">
-  <label class="" var="label" choice="label">&nbsp;</label>
+  <label class="" var="label" choice="label"></label>
   <div var="element" class="controls"></div>
   <div class="invalid-feedback" var="error" choice="error"></div>
   <small class="form-text text-muted" var="notes" choice="notes"></small>

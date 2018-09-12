@@ -114,10 +114,6 @@ class Select extends Iface
                 $this->setValue(array());
             }
         }
-        // TODO: check if this is ok.
-//        if (!empty($values[$this->getName()]) && $this->isArrayField() && is_string($values[$this->getName()])) {
-//            $values[$this->getName()] = explode(',', $values[$this->getName()]);
-//        }
         parent::load($values);
         return $this;
     }
