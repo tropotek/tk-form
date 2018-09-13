@@ -237,7 +237,7 @@ class Dom extends Iface
      */
     protected function showField(Field\Iface $field, Template $t, $var = 'fields')
     {
-        if ($field instanceof Event\Iface) {
+        if ($field instanceof Event\Iface || $field instanceof Field\Hidden) {
             $html = $field->show();
             /* @var Event\Iface $field */
             if ($html instanceof \Dom\Template) {
@@ -248,7 +248,7 @@ class Dom extends Iface
         } else {
             // Or use a layout adapter type object
             $html = $field->show();
-            if ($this->getFieldGroupRenderer() && !$field instanceof Field\Hidden) {
+            if ($this->getFieldGroupRenderer()) {
                 $this->getFieldGroupRenderer()->setLayoutCol(null);
                 if ($this->getLayout()) {
                     $this->getFieldGroupRenderer()->setLayoutCol($this->getLayout()->getCol($field->getName()));
