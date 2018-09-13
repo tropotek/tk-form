@@ -404,7 +404,7 @@
 
       tableTpl: '<table class="table table-striped tfi-table"></table>',
       rowTpl: '<tr class="tfi-row" style="vertical-align: top;">' +
-      '<td class="text-right hide"><a href="#" title="Download" class="btn btn-xs btn-default tfi-btn-view"><i class="fa fa-download"></i></a></td>' +
+      '<td class="text-right hide"><a href="#" title="Download" class="btn btn-xs btn-default tfi-btn-view" target="_blank"><i class="fa fa-download"></i></a></td>' +
       '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>' +
       '<td class="tfi-file-size"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a> &nbsp; <span>673Kb</span></td>' +
       '</tr>',
