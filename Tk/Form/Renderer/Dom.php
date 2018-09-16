@@ -257,7 +257,7 @@ class Dom extends Iface
                 $html = $this->getFieldGroupRenderer()->show();
             }
 
-            if (!$this->getLayout()) {              // TODO: this may not be needed as there will always be a layout object available. (see parent constructor)
+            if (!$this->getLayout()) {
                 $formRow = $t->getRepeat('form-row');
                 if ($html instanceof \Dom\Template) {
                     $formRow->appendTemplate('form-row', $html);
