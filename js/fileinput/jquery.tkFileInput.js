@@ -28,12 +28,13 @@
       enableDelete: true,
       placeholder: '',
       deleteQueryName: 'del',   // will end up appending to the url ==>  &del={/relative/path.png}
+      isBootstrap4: false,
 
       // Default Templates
       template:
       '<div class="input-group tkFileInput">' +
       '  <span class="input-group-btn input-group-prepend">' +
-      '    <div class="btn btn-default tfi-btn-input" title="Select File(s)">' +   // file select button
+      '    <div class="btn btn-success tfi-btn-input" title="Select File(s)">' +   // file select button
       '      <i class="fa fa-folder-open-o"></i>' +
              // <!-- where the original input will be placed -->
              // <input id="formEdit_attach" class="form-control tk-fileinput" type="file" multiple="true" data-maxsize="1038090240" name="attach[]" />
@@ -86,6 +87,13 @@
 
       // ------------------ INIT ----------------------
       var template = plugin.settings.template = $(plugin.settings.template);
+
+      if (plugin.settings.isBootstrap4) {
+        template.find('.input-group-prepend').removeClass('input-group-btn');
+      } else {
+        template.find('.input-group-btn').removeClass('input-group-prepend');
+      }
+
       if (plugin.settings.placeholder) {
         template.find('input.tfi-input-filename').attr('placeholder', plugin.settings.placeholder);
       }

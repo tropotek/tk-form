@@ -4,10 +4,7 @@
   .tfi-btn-input {
     position: relative;
     overflow: hidden;
-    margin: 0;
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
+    //margin: 0;
 
     input[type=file] {
       position: absolute;
@@ -33,11 +30,6 @@
       max-height: 15px;
       display: inline-block;
     }
-  }
-
-  .btn {
-    box-shadow: none;
-    text-shadow: none;
   }
 
 
