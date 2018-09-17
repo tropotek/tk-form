@@ -405,7 +405,7 @@
       localConfirm: '',
       cloneid: 0,
       showThumb: false,
-      thumbHeight: 25,
+      thumbHeight: 32,
       // This settings deal with the existing file json objects
       propId: 'id',           // (optional) The property name for an object ID, if non then the propName value will be used for delete requests
       propPath: 'path',       // The property name for the value to be use as the filename
@@ -625,7 +625,7 @@
         img.attr('href', file);
         img.find('img').css({
           height: plugin.settings.thumbHeight,
-          verticalAlign: 'top',
+          verticalAlign: 'middle',
           border: '1px solid #CCC'
         });
         if ($.fn.magnificPopup) {
