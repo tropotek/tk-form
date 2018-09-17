@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.14 [2018-09-17]:
+-------------------------------
+  - Added an invoice edit/view page... cool stuff ;-)
+
+
 Ver 2.1.12 [2018-09-13]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-form
