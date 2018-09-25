@@ -101,11 +101,11 @@
         template.find('.input-group-btn').append(plugin.settings.deleteTpl);
       }
 
-      if ($element.parents('.form-group-sm').length || $element.hasClass('input-sm')) {
-        template.find('.btn').removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
-      } else if ($element.parents('.form-group-lg').length || $element.hasClass('input-lg')) {
-        template.find('.btn').removeClass('btn-sm').removeClass('btn-xs').addClass('btn-lg');
-      }
+      // if ($element.parents('.form-group-sm').length || $element.hasClass('input-sm')) {
+      //   template.find('.btn').removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
+      // } else if ($element.parents('.form-group-lg').length || $element.hasClass('input-lg')) {
+      //   template.find('.btn').removeClass('btn-sm').removeClass('btn-xs').addClass('btn-lg');
+      // }
 
       $element.detach();
       $parent.prepend(template);
