@@ -114,6 +114,12 @@ class Dom extends Iface
         $setRow = null;
         /* @var $field Field\Iface */
         foreach ($fieldList as $field) {
+
+            if ($field instanceof \Tk\Form\Field\Hidden) {
+                $field->setTabGroup('');
+                $field->setFieldset('');
+            }
+
             if (!$field->getTabGroup()) {
                 if (!$field->getFieldset()) {
                     $this->showField($field, $t, 'fields');
