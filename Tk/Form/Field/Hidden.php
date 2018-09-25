@@ -26,4 +26,20 @@ class Hidden extends Input
         $this->setType('hidden');
     }
 
+    /**
+     * @return string
+     */
+    public function getFieldset()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getTabGroup()
+    {
+        return '';
+    }
+
 }
