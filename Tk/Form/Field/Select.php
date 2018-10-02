@@ -12,6 +12,11 @@ class Select extends Iface
 {
     use OptionList;
 
+    /**
+     * @var null|callable
+     */
+    protected $onShowOption = null;
+
 
     /**
      * @param string $name
@@ -119,6 +124,27 @@ class Select extends Iface
     }
 
     /**
+     * @return callable|null
+     */
+    public function getOnShowOption(): callable
+    {
+        return $this->onShowOption;
+    }
+
+    /**
+     * Eg:
+     *  function ($template, $option, $var) { }
+     *
+     * @param callable|null $onShowOption
+     * @return Select
+     */
+    public function setOnShowOption(callable $onShowOption)
+    {
+        $this->onShowOption = $onShowOption;
+        return $this;
+    }
+
+    /**
      * Compare a value and see if it is selected.
      *
      * @param string $val
@@ -152,6 +178,11 @@ class Select extends Iface
         if ($this->isSelected($option->getValue())) {
             $template->setAttr($var, 'selected', 'selected');
         }
+
+        if (is_callable($this->onShowOption)) {
+            call_user_func_array($this->onShowOption, array($template, $option, $var));
+        }
+
         // Add attributes
         $template->setAttr($var, $option->getAttrList());
         $template->addCss($var, $option->getCssString());
@@ -181,15 +212,16 @@ class Select extends Iface
                 foreach ($option->getOptions() as $opt) {
                     $tOpt = $tOptGroup->getRepeat('option');
                     //$this->showOption($tOptGroup, $opt);      // Wont work for some reason ??????
-                    $var = 'option';
-                    $tOpt->insertText($var, $opt->getName());
-                    $tOpt->setAttr($var, 'value', $opt->getValue());
-                    if ($this->isSelected($opt->getValue())) {
-                        $tOpt->setAttr($var, 'selected', 'selected');
-                    }
+                    //$var = 'option';
+                    $this->showOption($tOpt, $opt);
+                    //$tOpt->insertText($var, $opt->getName());
+                    //$tOpt->setAttr($var, 'value', $opt->getValue());
+                    //if ($this->isSelected($opt->getValue())) {
+                    //    $tOpt->setAttr($var, 'selected', 'selected');
+                    //}
                     // Add attributes
-                    $tOpt->setAttr($var, $opt->getAttrList());
-                    $tOpt->addCss($var, $opt->getCssString());
+                    //$tOpt->setAttr($var, $opt->getAttrList());
+                    //$tOpt->addCss($var, $opt->getCssString());
                     $tOpt->appendRepeat();
                 }
                 $tOptGroup->appendRepeat();
