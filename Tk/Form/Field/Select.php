@@ -126,7 +126,7 @@ class Select extends Iface
     /**
      * @return callable|null
      */
-    public function getOnShowOption(): callable
+    public function getOnShowOption()
     {
         return $this->onShowOption;
     }
@@ -138,7 +138,7 @@ class Select extends Iface
      * @param callable|null $onShowOption
      * @return Select
      */
-    public function setOnShowOption(callable $onShowOption)
+    public function setOnShowOption($onShowOption)
     {
         $this->onShowOption = $onShowOption;
         return $this;
