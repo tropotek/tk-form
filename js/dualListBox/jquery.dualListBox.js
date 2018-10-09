@@ -139,7 +139,12 @@
       //$(prependElement.find('label.control-label')).after(rowEl);
       prependElement.find('label.control-label').remove();
     }
-    $(options.parentElement).prepend(rowEl);
+    if ($(options.parentElement).find('> label').length) {
+      $(options.parentElement).find('> label').after(rowEl);
+    } else {
+      $(options.parentElement).prepend(rowEl);
+    }
+
 
 
 
