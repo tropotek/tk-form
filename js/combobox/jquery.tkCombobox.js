@@ -9,6 +9,10 @@
  */
 
 /**
+ * Description:
+ *    {Not sure if this is used}
+ *
+ *
  * <code>
  *   $(document).ready(function() {
  *     // attach the plugin to an element
@@ -37,8 +41,6 @@
     // constructor method
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
-
-      
       combobox = $(
         '<div class="input-group tkCombobox">' +
           '<input type="text" class="form-control" />' +
@@ -67,7 +69,6 @@
       $element.before(combobox);
       $element.hide();
       cList.hide();
-
       
       var optionsList =  $element.find('option');
       for(var i = 0; i < optionsList.length; i++) {
@@ -96,7 +97,7 @@
       
       // See how this performs, close list if click outside.
       $(document).on('mouseup', function (e) {
-        if (!combobox.is(e.target) && combobox.has(e.target).length == 0) {
+        if (!combobox.is(e.target) && combobox.has(e.target).length === 0) {
           cList.hide();
         }
       });
