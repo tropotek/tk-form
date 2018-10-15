@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.26 [2018-10-16]:
+-------------------------------
+  - Merge branch 'master' of https://github.com/tropotek/tk-form
+
+
 Ver 2.1.24 [2018-10-10]:
 -------------------------------
 
