@@ -4,7 +4,7 @@ namespace Tk;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form\FormEvents;
-
+use Tk\Ui\Element;
 
 
 /**
@@ -439,7 +439,7 @@ class Form extends Form\Element
     /**
      * Get the field array
      *
-     * @return array
+     * @return array|Element[]
      */
     public function getFieldList()
     {
