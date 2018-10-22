@@ -173,7 +173,10 @@ class Select extends Iface
     private function showOption($template, $option, $var = 'option')
     {
         if (is_callable($this->onShowOption)) {
-            call_user_func_array($this->onShowOption, array($template, $option, $var));
+            $b = call_user_func_array($this->onShowOption, array($template, $option, $var));
+            if ($b === false) {
+                return;
+            }
         }
 
         $template->insertText($var, $option->getName());
