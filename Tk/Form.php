@@ -413,15 +413,16 @@ class Form extends Form\Element
      * Return a field object or null if not found
      *
      * @param string $fieldName
-     * @return Field\Iface|null
+     * @return null|Field\Iface
      */
     public function getField($fieldName)
     {
+        $f = null;
         $fieldName = str_replace('[]', '', $fieldName);
         if (array_key_exists($fieldName, $this->fieldList)) {
-            return $this->fieldList[$fieldName];
+            $f = $this->fieldList[$fieldName];
         }
-        return null;
+        return $f;
     }
 
     /**
