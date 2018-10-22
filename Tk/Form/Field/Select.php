@@ -172,15 +172,15 @@ class Select extends Iface
      */
     private function showOption($template, $option, $var = 'option')
     {
+        if (is_callable($this->onShowOption)) {
+            call_user_func_array($this->onShowOption, array($template, $option, $var));
+        }
+
         $template->insertText($var, $option->getName());
 
         $template->setAttr($var, 'value', $option->getValue());
         if ($this->isSelected($option->getValue())) {
             $template->setAttr($var, 'selected', 'selected');
-        }
-
-        if (is_callable($this->onShowOption)) {
-            call_user_func_array($this->onShowOption, array($template, $option, $var));
         }
 
         // Add attributes
@@ -211,17 +211,7 @@ class Select extends Iface
                 $tOptGroup->setAttr('optgroup', 'label', $option->getName());
                 foreach ($option->getOptions() as $opt) {
                     $tOpt = $tOptGroup->getRepeat('option');
-                    //$this->showOption($tOptGroup, $opt);      // Wont work for some reason ??????
-                    //$var = 'option';
                     $this->showOption($tOpt, $opt);
-                    //$tOpt->insertText($var, $opt->getName());
-                    //$tOpt->setAttr($var, 'value', $opt->getValue());
-                    //if ($this->isSelected($opt->getValue())) {
-                    //    $tOpt->setAttr($var, 'selected', 'selected');
-                    //}
-                    // Add attributes
-                    //$tOpt->setAttr($var, $opt->getAttrList());
-                    //$tOpt->addCss($var, $opt->getCssString());
                     $tOpt->appendRepeat();
                 }
                 $tOptGroup->appendRepeat();

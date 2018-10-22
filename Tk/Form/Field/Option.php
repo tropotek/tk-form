@@ -56,6 +56,16 @@ class Option
     }
 
     /**
+     * @param string $name
+     * @return Option
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
      * Specifies the value to be sent to a server
      *
      * @return string
