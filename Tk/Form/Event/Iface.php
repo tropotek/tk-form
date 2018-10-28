@@ -38,7 +38,6 @@ abstract class Iface extends Field\Iface
 
     /**
      * Execute this events callback methods/functions
-     * @throws \Exception
      */
     public function execute()
     {
