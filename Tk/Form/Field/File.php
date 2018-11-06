@@ -399,7 +399,7 @@ class File extends Input
      */
     public function show()
     {
-        $this->setNotes('Max. Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b><br/>' . $this->getNotes());
+        $this->setNotes('Max File Size: <b>' . \Tk\File::bytes2String($this->getMaxFileSize(), 0) . '</b><br/>' . $this->getNotes());
 
         $template = parent::show();
 
