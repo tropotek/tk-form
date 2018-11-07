@@ -351,7 +351,9 @@
     var copyImageHtml = function (img) {
       var cpy = $(img).clone();
       //cpy.attr('style', '').css({maxWidth: 250, height: 'auto'});
-      return cpy[0].outerHTML;
+      if (cpy.length)
+        return cpy[0].outerHTML;
+      return '';
     };
 
     // call the "constructor" method
