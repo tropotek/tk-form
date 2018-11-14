@@ -150,6 +150,7 @@ class Form extends Form\Element
      */
     public function setRenderer($renderer)
     {
+        $renderer->setForm($this);
         $this->renderer = $renderer;
         return $this;
     }

@@ -1,9 +1,7 @@
 <?php
 namespace Tk\Form\Renderer;
 
-use \Tk\Form;
-use \Tk\Form\Field;
-use Dom\Template;
+use Tk\Form;
 
 /**
  *
@@ -54,6 +52,16 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function getForm()
     {
         return $this->form;
+    }
+
+    /**
+     * @param Form $form
+     * @return Iface
+     */
+    public function setForm($form)
+    {
+        $this->form = $form;
+        return $this;
     }
 
     /**

@@ -21,7 +21,7 @@ class Dom extends Iface
 
 
     /**
-     * @param Form $form
+     * @param Form $form        //TODO: Once we remove the setFieldGroupRenderer() we can remove the form and use setForm()
      * @return Dom
      */
     static function create($form)
