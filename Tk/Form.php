@@ -612,11 +612,14 @@ class Form extends Form\Element
     }
     
     /**
-     * Not used in the form
-     *
-     * @return void|string|\Dom\Template
+     * @return null|string|\Dom\Template
      */
-    public function show() {}
+    public function show()
+    {
+        if ($this->getRenderer())
+            return $this->getRenderer()->show();
+        return '';
+    }
     
 
 
