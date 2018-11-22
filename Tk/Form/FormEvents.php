@@ -22,6 +22,11 @@ class FormEvents
     /**
      * @event \Tk\Event\FormEvent
      */
+    const FORM_LOAD_REQUEST = 'form.load.request';
+
+    /**
+     * @event \Tk\Event\FormEvent
+     */
     const FORM_SHOW = 'form.show';
 
     /**

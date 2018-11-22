@@ -182,12 +182,14 @@ class Form extends Form\Element
             $request = \Tk\Request::create();
         }
         // Load default field values
-        $this->loadFields($this->loadArray);
+        $this->load($this->loadArray);
+
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
             $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
         }
+        $this->loadFields();
 
         // get the triggered event, this also setup the form ready to fire an event if present.
         /* @var Event\Iface|null $event */
@@ -196,7 +198,13 @@ class Form extends Form\Element
 
         // Load request field values
         $cleanRequest = $this->cleanLoadArray($request);
-        $this->loadFields($cleanRequest);
+        $this->load($cleanRequest);
+        if ($this->getDispatcher()) {
+            $e = new \Tk\Event\FormEvent($this);
+            $e->set('form', $this);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD_REQUEST, $e);
+        }
+        $this->loadFields();
 
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
@@ -217,10 +225,9 @@ class Form extends Form\Element
      * @param array|\ArrayObject $array
      * @return $this
      */
-    protected function loadFields($array)
+    protected function loadFields($array = array())
     {
-        if ($array === null) return $this;
-
+        $array = array_merge($this->loadArray, $array);
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
@@ -240,8 +247,8 @@ class Form extends Form\Element
     public function load($array = array())
     {
         if (!$this->loading) {
-            $this->initForm();
             $this->loading = true;
+            $this->initForm();
         }
         if ($this->loadArray === null) $this->loadArray = array();
         if (is_array($array)) {
