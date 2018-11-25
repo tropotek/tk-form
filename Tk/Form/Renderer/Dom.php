@@ -52,6 +52,7 @@ class Dom extends Iface
      */
     public function show()
     {
+
         if ($this->getForm()->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this->getForm());
             $e->set('form', $this->getForm());
