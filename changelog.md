@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.1.46 [2018-11-28]:
+-------------------------------
+  - Added COA plugin
+  - Fixed table orderby with SQL Functions
+
+
 Ver 2.1.44 [2018-11-26]:
 -------------------------------
 
