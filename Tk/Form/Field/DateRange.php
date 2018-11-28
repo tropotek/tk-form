@@ -95,9 +95,9 @@ class DateRange extends \Tk\Form\Field\Iface
 
         $xhtml = <<<HTML
 <div class="input-group" var="group">
-  <input type="text" class="form-control dateStart" var="dateStart" data-parsley-error-message="Please enter a valid Start Date" />
+  <input type="text" class="form-control dateStart" var="dateStart" data-parsley-error-message="Please enter a valid Start Date" placeholder="Date From"/>
   <span class="input-group-addon">to</span>
-  <input type="text" class="form-control dateEnd" var="dateEnd" data-parsley-error-message="Please enter a valid End Date" />
+  <input type="text" class="form-control dateEnd" var="dateEnd" data-parsley-error-message="Please enter a valid End Date" placeholder="Date To" />
 </div>
 HTML;
         return \Dom\Loader::load($xhtml);
