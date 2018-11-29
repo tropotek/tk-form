@@ -44,6 +44,15 @@ class Layout
 
 
     /**
+     * Reset the layout back to its default state
+     */
+    public function reset()
+    {
+        $this->colList = array();
+        $this->defaultCol = null;
+    }
+
+    /**
      * @param string $fieldName
      * @param string $colCss
      * @return LayoutCol
