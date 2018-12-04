@@ -58,14 +58,6 @@ class Form extends Form\Element
     protected $loadArray = null;
 
     /**
-     * This will be set to true after the first call to load()
-     * Allowing us to know when the fields have finished being added
-     * to the form, good time to call init and trigger an event?
-     * @var bool
-     */
-    protected $loading = false;
-
-    /**
      * if true the required HTML5 attribute will be rendered
      * @var bool
      */
@@ -80,6 +72,12 @@ class Form extends Form\Element
      * @var null|Form\Renderer\Iface
      */
     protected $renderer = null;
+
+    /**
+     * set to true after initForm() is called
+     * @var bool
+     */
+    private $initialised = false;
 
 
 
@@ -96,7 +94,7 @@ class Form extends Form\Element
         $this->setAttr('accept-charset', 'UTF-8');
 
         // TODO: Test how this affects EMS III
-        // This is dissabled by default because of error message rendering issues
+        // This is disabled by default because of error message rendering issues
         $this->setAttr('novalidate', 'novalidate');
     }
 
@@ -157,11 +155,21 @@ class Form extends Form\Element
 
 
     /**
+     * @return bool
+     */
+    public function isInitialised()
+    {
+        return $this->initialised;
+    }
+
+    /**
      * Useful for extended form objects
      * To be called after all fields are added and
      */
     public function initForm()
     {
+        if ($this->initialised) return;
+        $this->initialised = true;
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
@@ -228,11 +236,14 @@ class Form extends Form\Element
     protected function loadFields($array = array())
     {
         $array = array_merge($this->loadArray, $array);
+        $this->initForm();      // TODO: not sure if this is a better place for it or not???
+
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
             $field->load($array);
         }
+
         return $this;
     }
 
@@ -246,10 +257,6 @@ class Form extends Form\Element
      */
     public function load($array = array())
     {
-        if (!$this->loading) {
-            $this->loading = true;
-            $this->initForm();
-        }
         if ($this->loadArray === null) $this->loadArray = array();
         if (is_array($array)) {
             $this->loadArray = array_merge($this->loadArray, $array);
@@ -320,7 +327,6 @@ class Form extends Form\Element
      * @param string $fieldName
      * @param callable $callback
      * @return Event\Iface
-     * @throws Form\Exception
      */
     public function addEventCallback($fieldName, $callback)
     {
