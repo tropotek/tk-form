@@ -189,9 +189,11 @@ class Form extends Form\Element
         if (!$request) {
             $request = \Tk\Request::create();
         }
+
+        $this->initForm();      // TODO: not sure if this is a better place for it or not???
+
         // Load default field values
         $this->load($this->loadArray);
-
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
@@ -236,8 +238,6 @@ class Form extends Form\Element
     protected function loadFields($array = array())
     {
         $array = array_merge($this->loadArray, $array);
-        $this->initForm();      // TODO: not sure if this is a better place for it or not???
-
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
