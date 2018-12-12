@@ -3,11 +3,8 @@ namespace Tk\Form\Renderer;
 
 use \Tk\Form;
 use \Tk\Form\Field;
-use \Tk\Form\Exception;
 
 /**
- * Class DomStatic
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -106,8 +103,7 @@ class DomStatic extends Iface
      *
      * @param Field\Iface $field
      * @return mixed
-     * @throws Exception
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     protected function showField(Field\Iface $field)
     {
@@ -223,8 +219,7 @@ class DomStatic extends Iface
      *
      *
      * @param Field\Iface $field
-     * @throws Exception
-     * @throws \Dom\Exception
+     * @throws \Exception
      */
     protected function showError($field)
     {

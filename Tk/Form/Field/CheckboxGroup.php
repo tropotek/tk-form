@@ -13,7 +13,6 @@ class CheckboxGroup extends Select
     /**
      * @param string $name
      * @param Option\ArrayIterator $optionIterator
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $optionIterator = null)
     {
