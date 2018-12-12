@@ -178,6 +178,11 @@ class DomStatic extends Iface
                     $el->setAttribute($k, $v);
                 }
             }
+            if (count($field->getCssList())) {
+                $css = $el->getAttribute('class');
+                $field->addCss($css);
+                $el->setAttribute('class', $field->getCssString());
+            }
         }
         
         // Render Errors
