@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.54 [2018-12-13]:
+-------------------------------
+  - Updated teh code to use the newest libs
+
+
 Ver 2.1.52 [2018-12-05]:
 -------------------------------
   - Updated the COA company manager
