@@ -139,7 +139,7 @@ class ArrayObjectIterator extends ArrayIterator
         }
 
         $pre = $app = '';
-        if ($value == $this->selectedValue) {
+        if ($this->selectedValue !== null && $this->selectedValue !== '' && $value == $this->selectedValue) {
             $pre = $this->selectedPrepend;
             $app = $this->selectedAppend;
         }

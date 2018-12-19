@@ -11,17 +11,6 @@ class CheckboxSelect extends CheckboxGroup
 {
 
     /**
-     * @param string $name
-     * @param Option\ArrayIterator $optionIterator
-     * @throws \Tk\Form\Exception
-     */
-//    public function __construct($name, $optionIterator = null)
-//    {
-//        parent::__construct($name, $optionIterator);
-//    }
-
-
-    /**
      * Get the element HTML
      *
      * @return string|\Dom\Template
@@ -47,7 +36,7 @@ class CheckboxSelect extends CheckboxGroup
             
             if ($this->isSelected($option->getValue())) {
                 $tOpt->setAttr('element', 'checked', 'checked');
-                $label .= $option->getName() . ', ';
+                //$label .= $option->getName() . ', ';
             }
 
             // All other attributes
@@ -69,7 +58,7 @@ class CheckboxSelect extends CheckboxGroup
             $tOpt->appendRepeat();
         }
 
-        $label = rtrim($label, ', ');
+        //$label = rtrim($label, ', ');
         if (!$label) {
             $label = $this->getLabel();
             if ($this->getAttr('placeholder'))
@@ -83,7 +72,6 @@ class CheckboxSelect extends CheckboxGroup
         $template->setAttr('button', 'data-placeholder', $place);
 
         //$this->decorateElement($template, 'group');
-
 
         $js = <<<JS
 jQuery(function (e) {
@@ -110,7 +98,7 @@ jQuery(function (e) {
         e.stopPropagation();
       });
       $(this).find('.dropdown-menu input').on('click', function(e) {
-        updateButton();
+        //updateButton();
       });
     });
     

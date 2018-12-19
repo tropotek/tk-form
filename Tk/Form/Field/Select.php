@@ -45,7 +45,6 @@ class Select extends Iface
      * @param string $name
      * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
      * @return static
-     * @throws Exception
      */
     public static function createSelect($name, $optionIterator = null)
     {
@@ -170,7 +169,7 @@ class Select extends Iface
      * @param Option $option
      * @param string $var
      */
-    private function showOption($template, $option, $var = 'option')
+    protected function showOption($template, $option, $var = 'option')
     {
         if (is_callable($this->onShowOption)) {
             $b = call_user_func_array($this->onShowOption, array($template, $option, $var));
