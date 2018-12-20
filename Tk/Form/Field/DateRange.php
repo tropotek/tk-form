@@ -60,8 +60,10 @@ class DateRange extends \Tk\Form\Field\Iface
         // Set the field value
         $value = $this->getValue();
         if (is_array($value)) {
-            $template->setAttr('dateStart', 'value', $value[$this->getName() . 'Start']);
-            $template->setAttr('dateEnd', 'value', $value[$this->getName() . 'End']);
+            if (!empty($value[$this->getName() . 'Start']))
+                $template->setAttr('dateStart', 'value', $value[$this->getName() . 'Start']);
+            if (!empty($value[$this->getName() . 'End']))
+                $template->setAttr('dateEnd', 'value', $value[$this->getName() . 'End']);
         }
 
         return $template;

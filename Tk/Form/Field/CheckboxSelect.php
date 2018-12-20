@@ -177,7 +177,7 @@ JS;
     {
         $xhtml = <<<HTML
 <div class="dropdown checkbox-select" var="group">
-  <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" var="button">
+  <button type="button" class="btn btn-light dropdown-toggle-off" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" var="button">
     <span><span var="value">-- Select --</span>  <i class="fa fa-caret-down"></i></span>
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset" var="dropdown-menu">
