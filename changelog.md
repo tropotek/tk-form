@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.66 [2019-01-21]:
+-------------------------------
+  - Added a default TaskLog billable value to the site settings
+
+
 Ver 2.1.64 [2019-01-14]:
 -------------------------------
 
