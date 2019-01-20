@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Field;
 
-use Tk\Form\Exception;
+
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -152,13 +152,15 @@ class Select extends Iface
     public function isSelected($val = '')
     {
         $value = $this->getValue();
-        if (is_array($value) ) {
-            if (in_array($val, $value)) {
-                return true;
-            }
-        } else {
-            if ($val !== null && $value == $val) {
-                return true;
+
+        // NOTE: I have tried to update this so that null, '' and false are all separate and selectable as needed...
+        if ($value !== null && $val !== null) {
+            if (is_array($value)) {
+                if (in_array($val, $value))
+                    return true;
+            } else {
+                if ($value == $val)
+                    return true;
             }
         }
         return false;
