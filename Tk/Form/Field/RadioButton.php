@@ -33,10 +33,12 @@ class RadioButton extends Radio
     /**
      * @param \Dom\Template $template
      * @param \Tk\Form\Field\Option $option
-     * @param boolean $checkedSet
+     * @param string $var
      */
-    public function showOption($template, $option, $checkedSet)
+    public function showOption($template, $option, $var = 'option')
     {
+        $checkedSet = false;        // TODO: Should this default to true/false
+
         // allow only one radio to be selected.
         if ($this->isSelected($option->getValue()) && !$checkedSet) {
             $template->addCss('label', 'active');
