@@ -176,7 +176,7 @@ JS;
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="dropdown checkbox-select" var="group">
+<div class="form-control dropdown checkbox-select" var="group">
   <button type="button" class="btn btn-light dropdown-toggle-off" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" var="button">
     <span><span var="value">-- Select --</span>  <i class="fa fa-caret-down"></i></span>
   </button>
