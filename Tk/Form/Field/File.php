@@ -267,20 +267,22 @@ class File extends Input
      */
     public function isValid()
     {
-        if (!$this->hasFile()) {
-            return true;
-        }
-
-        if (!count($this->getUploadedFiles()) && $this->isRequired()) {
-            $this->addError(strip_tags('Please select a file to upload'));
-        }
-        /* @var \Tk\UploadedFile $uploadedFile */
-        foreach ($this->getUploadedFiles() as $uploadedFile) {
-            if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
-                $this->addError(strip_tags($uploadedFile->getFilename()) .': '. $uploadedFile->getErrorMessage());
+        if (!count($this->errors)) {
+            if (!$this->hasFile()) {
+                return true;
             }
-            if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
-                $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
+
+            if (!count($this->getUploadedFiles()) && $this->isRequired()) {
+                $this->addError(strip_tags('Please select a file to upload'));
+            }
+            /* @var \Tk\UploadedFile $uploadedFile */
+            foreach ($this->getUploadedFiles() as $uploadedFile) {
+                if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
+                    $this->addError(strip_tags($uploadedFile->getFilename()) . ': ' . $uploadedFile->getErrorMessage());
+                }
+                if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
+                    $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
+                }
             }
         }
         // Return false if we have errors

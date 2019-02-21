@@ -125,7 +125,7 @@ class DomStatic extends Iface
         if ($field instanceof \Tk\Form\Field\File) {
             // Check form enctype exists
             $this->domForm->getNode()->setAttribute('enctype', \Tk\Form::ENCTYPE_MULTIPART);
-            return;
+            //return;
         }
 
         $value = $field->getValue();
@@ -242,7 +242,7 @@ class DomStatic extends Iface
                 $el = $this->domForm->getFormElement($field->getName().'[]');
             }
             if ($el == null) {
-                throw new Exception('Form element: `' . $field->getName() . '` not found. Check your validation field name parameters.');
+                throw new \Tk\Exception('Form element: `' . $field->getName() . '` not found. Check your validation field name parameters.');
             }
             $node = $el->getNode();
             // TODO: iterate up the tree to find the 'form-group' node
@@ -254,6 +254,7 @@ class DomStatic extends Iface
                 $parent->setAttribute('class', $parent->getAttribute('class') . ' ' . $this->formGroupErrorCss);
             }
             $var = $field->getName() . '-error';
+
             if ($this->template->keyExists('var', $var)) {
                 $this->template->setChoice($var);
                 if ($this->template->keyExists('var', $var)) {
