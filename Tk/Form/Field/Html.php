@@ -26,13 +26,23 @@ class Html extends Input
      *
      * @param string $name
      * @param null|string|\Dom\Template $html
-     * @throws \Tk\Form\Exception
      */
     public function __construct($name, $html = null)
     {
         parent::__construct($name);
         $this->setHtml($html);
         $this->addCss('form-control form-control-static form-control-plaintext');
+    }
+
+    /**
+     * @param string $name
+     * @param null|string $html
+     * @return Html
+     */
+    public static function createHtml($name, $html = null)
+    {
+        $obj = new static($name, $html);
+        return $obj;
     }
 
     /**
@@ -59,7 +69,6 @@ class Html extends Input
      * Get the element HTML
      *
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {
