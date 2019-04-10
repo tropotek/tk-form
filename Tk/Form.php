@@ -38,7 +38,6 @@ class Form extends Form\Element
 
 
 
-
     /**
      * @var string
      */
@@ -240,6 +239,7 @@ class Form extends Form\Element
     protected function loadFields($array = array())
     {
         $array = array_merge($this->loadArray, $array);
+
         /* @var $field Field\Iface */
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof Event\Iface) continue;
@@ -277,7 +277,7 @@ class Form extends Form\Element
      */
     protected function cleanLoadArray($array)
     {
-        // get values from ArrayAccess objects (IE: Request object)
+        // Get values from ArrayAccess objects (IE: Request object)
         if ($array instanceof \ArrayAccess) {
             $a = array();
             foreach($array as $k => $v) $a[$k] = $v;
@@ -291,6 +291,21 @@ class Form extends Form\Element
             if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
                 $array[$field->getName()] = $array[$cleanName];
             }
+
+            // TODO HACK: Trying to fix the issue when no field data is sent and then only the default field values exist
+            // TODO HACK: This is a mess, we need to go back to the drawing board on how we handle a request
+            // TODO HACK:   the main issue is the ability to call load() multiple times, then the request array
+            // TODO HACK:   when a value is null is ignored and only the loaded values exist when they should be
+            // TODO HACK:   set to null
+            // TODO HACK: The code below tries to fix this, I need to test a number of forms to ensure it does
+            // TODO HACK:   not have any unexpected consequences when saving field data
+            // TODO HACK:
+            if ($field->isReadonly() || $field->isDisabled()) continue;
+            if (!array_key_exists($field->getName(), $array)) {
+                $array[$field->getName()] = null;
+            }
+            // TODO HACK END:
+
         }
 
         return $array;

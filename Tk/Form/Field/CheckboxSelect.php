@@ -15,11 +15,6 @@ class CheckboxSelect extends CheckboxGroup
         'selectAll' => true
     );
 
-
-
-
-
-
     /**
      * Get the element HTML
      *
