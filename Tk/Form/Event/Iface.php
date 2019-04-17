@@ -82,11 +82,21 @@ abstract class Iface extends Field\Iface
     /**
      * getEvent
      *
-     * @return callable[]\array
+     * @return array
      */
     public function getCallbackList()
     {
         return $this->callbackList;
+    }
+
+    /**
+     * @param array $list
+     * @return $this
+     */
+    public function setCallbackList($list = array())
+    {
+        $this->callbackList = $list;
+        return $this;
     }
 
     /**
