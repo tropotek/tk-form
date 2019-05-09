@@ -174,7 +174,7 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_INIT, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
         }
     }
 
@@ -184,11 +184,12 @@ class Form extends Form\Element
      * If an button is found and its event is executed the result is returned
      *
      * @param $request
+     * @todo Can we use an array instead of the request here???
      */
     public function execute($request = null)
     {
         if (!$request) {
-            $request = \Tk\Request::create();
+            $request = \Tk\Request::createFromGlobals()->request->all();
         }
 
         $this->initForm();      // TODO: not sure if this is a better place for it or not???
@@ -198,7 +199,7 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD);
         }
         $this->loadFields();
 
@@ -213,14 +214,14 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD_REQUEST, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
         }
         $this->loadFields();
 
         if ($this->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_SUBMIT, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_SUBMIT);
         }
 
         if ($event) {
