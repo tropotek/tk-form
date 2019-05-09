@@ -1,7 +1,6 @@
 # Tk Form :boom: 
 
-__Project:__ [ttek/tk-form](http://packagist.org/packages/ttek/tk-form)  
-__Published:__ 01 Nov 2015
+__Project:__ [ttek/tk-form](http://packagist.org/packages/ttek/tk-form)
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
@@ -25,7 +24,7 @@ composer require ttek/tk-form
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-form": "~2.0"
+"ttek/tk-form": "~3.0"
 ```
 
 If you do not use Composer, you can grab the code from GitHub, and use any
