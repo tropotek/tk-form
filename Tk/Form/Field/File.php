@@ -100,7 +100,8 @@ class File extends Input
         $form->setAttr('enctype', Form::ENCTYPE_MULTIPART);
         
         // load any uploaded files if available
-        $request = \Tk\Request::create();
+        $request = \Tk\Request::createFromGlobals();
+
         $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
         if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
         if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
@@ -406,8 +407,8 @@ class File extends Input
         $template = parent::show();
 
         $template->setAttr('element', 'data-maxsize', $this->getMaxFileSize());
-
-        if ($this->getValue() || \Tk\Request::create()->has($this->getDeleteEventName())) {
+        $request = \Tk\Request::createFromGlobals();
+        if ($this->getValue() || $request->has($this->getDeleteEventName())) {
             $did = $this->makeId() . '-del';
             $template->setAttr('delete', 'id', $did);
             $template->setAttr('label', 'for', $did);
