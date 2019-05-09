@@ -183,7 +183,7 @@ class Form extends Form\Element
      *
      * If an button is found and its event is executed the result is returned
      *
-     * @param $request
+     * @param array $request
      * @todo Can we use an array instead of the request here???
      */
     public function execute($request = null)
@@ -191,6 +191,10 @@ class Form extends Form\Element
         if (!$request) {
             $request = \Tk\Request::createFromGlobals()->request->all();
         }
+
+        if ($request instanceof \Symfony\Component\HttpFoundation\Request)
+            $request = $request->request->all();
+        vd($request);
 
         $this->initForm();      // TODO: not sure if this is a better place for it or not???
 
