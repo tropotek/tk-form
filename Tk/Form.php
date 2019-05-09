@@ -194,7 +194,6 @@ class Form extends Form\Element
 
         if ($request instanceof \Symfony\Component\HttpFoundation\Request)
             $request = $request->request->all();
-        vd($request);
 
         $this->initForm();      // TODO: not sure if this is a better place for it or not???
 
