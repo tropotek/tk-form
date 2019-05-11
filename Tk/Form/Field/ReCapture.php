@@ -54,7 +54,7 @@ class ReCapture extends Iface
      */
     protected function doValidate($extraParams = array()) 
     {
-        $request = \Tk\Request::create();
+        $request = \Tk\Request::createFromGlobals();
         $remoteIp = $request->getIp();
         $rResponse = isset($request['g-recaptcha-response']) ? $request['g-recaptcha-response'] : '';
         if (!$this->privateKey) {

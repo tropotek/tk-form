@@ -1,7 +1,8 @@
 <?php
 namespace Tk\Form\Field;
 
-use \Tk\Form;
+use Tk\Form;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Handle a single file upload field.
@@ -21,7 +22,7 @@ class File extends Input
     protected $maxBytes = 0;
 
     /**
-     * @var \Tk\UploadedFile[]
+     * @var UploadedFile[]
      */
     protected $uploadedFiles = array();
 
@@ -101,8 +102,8 @@ class File extends Input
         
         // load any uploaded files if available
         $request = \Tk\Request::createFromGlobals();
-
         $this->uploadedFiles = $request->getUploadedFile(str_replace('.', '_', $this->getName()));
+
         if (!is_array($this->uploadedFiles)) $this->uploadedFiles = array($this->uploadedFiles);
         if (count($this->uploadedFiles) && ($this->uploadedFiles[0] == null || $this->uploadedFiles[0]->getError() == \UPLOAD_ERR_NO_FILE)) {
             $this->uploadedFiles = array();
@@ -114,8 +115,8 @@ class File extends Input
     /**
      * This method does the following:
      * 
-     *  o Loads the field value with the relative file path: `$destPath . '/' . $uploadedFile->getFilename()`
-     *  o Uploads the file to the path defined by: `$dataPath . $destPath . '/' . $uploadedFile->getFilename()`
+     *  o Loads the field value with the relative file path: `$destPath . '/' . $uploadedFile->getClientOriginalName()`
+     *  o Uploads the file to the path defined by: `$dataPath . $destPath . '/' . $uploadedFile->getClientOriginalName()`
      * 
      * Override this with your own if you need different functionality.
      * 
@@ -129,9 +130,9 @@ class File extends Input
             if ($this->hasFile()) {
                 $this->previousValue = $this->getValue();
                 $newVal = array();
-                /** @var \Tk\UploadedFile $uploadedFile */
+                /** @var UploadedFile $uploadedFile */
                 foreach ($this->getUploadedFiles() as $uploadedFile) {
-                    $newVal[] = $this->destPath . '/' . $uploadedFile->getFilename();
+                    $newVal[] = $this->destPath . '/' . $uploadedFile->getClientOriginalName();
                 }
                 $this->setValue($newVal);
             }
@@ -186,7 +187,7 @@ class File extends Input
             $cnt = $this->moveFile($this->dataPath . $this->destPath);
         } else {
             // Check if the delete file checkbox is checked.
-            if (\Tk\Request::create()->has($this->getDeleteEventName())) {
+            if (\Tk\Request::createFromGlobals()->has($this->getDeleteEventName())) {
                 $this->deleteFile($this->getValue());
             }
         }
@@ -249,8 +250,9 @@ class File extends Input
         $cnt = 0;
         try {
             foreach ($uploadedFiles as $uploadedFile) {
-                $fullPath = $destPath . '/' . $uploadedFile->getFilename();
-                $uploadedFile->moveTo($fullPath);
+                $uploadedFile->move($destPath, $uploadedFile->getClientOriginalName());
+//                $fullPath = $destPath . '/' . $uploadedFile->getClientOriginalName();
+//                $uploadedFile->move($fullPath);
                 $cnt++;
             }
         } catch (\Exception $e) {
@@ -276,7 +278,7 @@ class File extends Input
             if (!count($this->getUploadedFiles()) && $this->isRequired()) {
                 $this->addError(strip_tags('Please select a file to upload'));
             }
-            /* @var \Tk\UploadedFile $uploadedFile */
+            /* @var UploadedFile $uploadedFile */
             foreach ($this->getUploadedFiles() as $uploadedFile) {
                 if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
                     $this->addError(strip_tags($uploadedFile->getFilename()) . ': ' . $uploadedFile->getErrorMessage());
@@ -364,7 +366,7 @@ class File extends Input
      * Get a single uploaded file, default is to return the first file in the list.
      *
      * @param int $i For multiple files
-     * @return null|\Tk\UploadedFile
+     * @return null|UploadedFile
      */
     public function getUploadedFile($i = 0)
     {
@@ -376,7 +378,7 @@ class File extends Input
      * get a single uploaded file, if it is an array the first file with data
      * in the list will be returned.
      *
-     * @return \Tk\UploadedFile[]
+     * @return UploadedFile[]
      */
     public function getUploadedFiles()
     {
@@ -415,7 +417,7 @@ class File extends Input
             $template->setAttr('delete', 'name', $did);
             $template->setAttr('delete', 'value', $did);
             $template->addCss('delWrapper', $did.'-wrap');
-            if (\Tk\Request::create()->has($this->getDeleteEventName())) {
+            if (\Tk\Request::createFromGlobals()->has($this->getDeleteEventName())) {
                 $template->setAttr('delete', 'checked', 'checked');
             }
             $template->setChoice('delete');
