@@ -281,10 +281,10 @@ class File extends Input
             /* @var UploadedFile $uploadedFile */
             foreach ($this->getUploadedFiles() as $uploadedFile) {
                 if ($uploadedFile->getError() != \UPLOAD_ERR_OK) {
-                    $this->addError(strip_tags($uploadedFile->getFilename()) . ': ' . $uploadedFile->getErrorMessage());
+                    $this->addError(strip_tags($uploadedFile->getClientOriginalName()) . ': ' . $uploadedFile->getErrorMessage());
                 }
                 if ($uploadedFile->getSize() > $this->getMaxFileSize()) {
-                    $this->addError(strip_tags($uploadedFile->getFilename()) . ': File to large');
+                    $this->addError(strip_tags($uploadedFile->getClientOriginalName()) . ': File to large');
                 }
             }
         }
