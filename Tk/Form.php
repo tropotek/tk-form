@@ -180,7 +180,7 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_INIT, $e);
         }
     }
 
@@ -207,7 +207,7 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
         }
         $this->loadFields();
 
@@ -222,14 +222,14 @@ class Form extends Form\Element
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD_REQUEST, $e);
         }
         $this->loadFields();
 
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
             $e->set('form', $this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_SUBMIT);
+            $this->getDispatcher()->dispatch(FormEvents::FORM_SUBMIT, $e);
         }
 
         if ($event) {
