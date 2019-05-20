@@ -553,8 +553,6 @@
 
       // Setup initial field value files
       if (list !== undefined && Array.isArray(list)) {
-
-        console.log(list);
         for (var i = 0; i < list.length; i++) {
           var obj = list[i];
           var path = '';
