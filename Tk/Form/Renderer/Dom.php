@@ -130,6 +130,7 @@ class Dom extends Iface
                         }
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
+                        $setRow->addCss('fieldset', $field->getFieldsetCss());
                         $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()) );
 
                     }
@@ -175,6 +176,7 @@ class Dom extends Iface
                         }
                         $setRow = $tabBox->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
+                        $setRow->addCss('fieldset', $field->getFieldsetCss());
                         $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()));
                     }
                     $this->showField($field, $setRow, 'fieldset');

@@ -44,11 +44,16 @@ abstract class Iface extends \Tk\Form\Element
      * @var bool
      */
     protected $arrayField = false;
-        
+
     /**
      * @var string
      */
     protected $fieldset = '';
+        
+    /**
+     * @var string
+     */
+    protected $fieldsetCss = '';
 
     /**
      * @var string
@@ -242,12 +247,22 @@ abstract class Iface extends \Tk\Form\Element
     }
 
     /**
+     * @return string
+     */
+    public function getFieldsetCss()
+    {
+        return $this->fieldsetCss;
+    }
+
+    /**
      * @param string $fieldset
+     * @param string $css
      * @return $this
      */
-    public function setFieldset($fieldset)
+    public function setFieldset($fieldset, $css = '')
     {
         $this->fieldset = $fieldset;
+        $this->fieldsetCss = $css;
         return $this;
     }
 
