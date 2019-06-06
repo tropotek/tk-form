@@ -578,7 +578,7 @@
               //this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
               this.url = this.url.split("?")[0];
-              
+
               row.data('filename', this.url);
               var delParam = basepath(this.url);
               if (this.id) {
