@@ -420,7 +420,7 @@ class File extends Input
             if (\Tk\Request::createFromGlobals()->has($this->getDeleteEventName())) {
                 $template->setAttr('delete', 'checked', 'checked');
             }
-            $template->setChoice('delete');
+            $template->setVisible('delete');
         }
 
         return $template;

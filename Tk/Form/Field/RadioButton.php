@@ -45,7 +45,7 @@ class RadioButton extends Radio
         }
         if ($option->getCssString()) {
             $template->addCss('icon', $option->getCssString());
-            $template->setChoice('icon');
+            $template->setVisible('icon');
         }
     }
 

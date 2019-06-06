@@ -72,9 +72,9 @@ class CheckboxSelect extends CheckboxGroup
         $template->insertText('value', $label);
 
         if ($this->settings['search'])
-            $template->show('search');
+            $template->setVisible('search');
         if ($this->settings['selectAll'])
-            $template->show('select-all');
+            $template->setVisible('select-all');
 
         $place = $this->getLabel();
         if ($this->getAttr('placeholder'))

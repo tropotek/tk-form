@@ -58,7 +58,7 @@ class InputGroup extends Input
             } else {
                 $template->appendHtml('prepend', $html);
             }
-            $template->show('prepend');
+            $template->setVisible('prepend');
         }
 
         foreach ($this->appendList as $html) {
@@ -67,7 +67,7 @@ class InputGroup extends Input
             } else {
                 $template->appendHtml('append', $html);
             }
-            $template->show('append');
+            $template->setVisible('append');
         }
 
         return $template;

@@ -49,7 +49,7 @@ class FieldGroupOld extends FieldGroup
             if ($estr) {
                 $estr = substr($estr, 0, -6);
                 $template->appendHtml('errorText', $estr);
-                $template->show('errorText');
+                $template->setVisible('errorText');
             }
         }
     }
@@ -68,7 +68,7 @@ class FieldGroupOld extends FieldGroup
             }
             $template->appendHtml('label', $label);
             $template->setAttr('label', 'for', $this->getField()->getAttr('id'));
-            $template->show('label');
+            $template->setVisible('label');
         }
     }
 
@@ -78,7 +78,7 @@ class FieldGroupOld extends FieldGroup
     protected function showNotes($template)
     {
         if ($this->getField()->getNotes() !== null) {
-            $template->show('notes');
+            $template->setVisible('notes');
             $template->appendHtml('notes', $this->getField()->getNotes());
         }
     }

@@ -188,7 +188,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             if ($estr) {
                 $estr = substr($estr, 0, -6);
                 $template->appendHtml('error', $estr);
-                $template->show('error');
+                $template->setVisible('error');
             }
         }
     }
@@ -207,7 +207,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             }
             $template->appendHtml('label', $label);
             $template->setAttr('label', 'for', $this->getField()->getAttr('id'));
-            $template->show('label');
+            $template->setVisible('label');
         }
     }
 
@@ -217,7 +217,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected function showNotes($template)
     {
         if ($this->getField()->getNotes() !== null) {
-            $template->show('notes');
+            $template->setVisible('notes');
             $template->appendHtml('notes', $this->getField()->getNotes());
         }
     }

@@ -89,7 +89,7 @@ class Dom extends Iface
             }
             if ($estr) {
                 $template->appendHtml('errors', $estr);
-                $template->setChoice('errors');
+                $template->setVisible('errors');
             }
         }
 
