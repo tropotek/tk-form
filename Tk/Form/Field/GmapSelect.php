@@ -96,6 +96,25 @@ class GmapSelect extends \Tk\Form\Field\Iface
         \Bs\Ui\Js::includeGoogleMaps($template, array('libraries' => 'places'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.gmapSelect.js'));
 
+        $template->setAttr('canvas', 'data-name', $this->getName());
+
+
+        $js = <<<JS
+jQuery(function ($) {
+  
+    function init() {
+      var form = $(this);
+      if (!form.find('.tk-gmap-canvas').data('noJs')) {
+        form.find('.tk-gmap-canvas').gmapSelect();
+        form.find('.tk-gmap-select .latlng').hide();
+      }
+    }
+    $('form').on('init', document, init).each(init);
+  
+});
+JS;
+        $template->appendJs($js);
+
         $css = <<<CSS
 .tk-gmap-select .tk-gmap-canvas {
   width: 100%;
@@ -117,6 +136,10 @@ CSS;
         $template->setAttr('lng', 'id', $this->getId().'_lng');
         $template->setAttr('zoom', 'id', $this->getId().'_zoom');
 
+        // Add attributes
+        $template->setAttr('canvas', $this->getAttrList());
+        $template->addCss('canvas', $this->getCssList());
+
         $this->decorateElement($template);
         return $template;
     }
@@ -130,11 +153,15 @@ CSS;
     {
         $xhtml = <<<HTML
 <div class="tk-gmap-select" var="mapSelect">
-  <p class="latlng">
-    <label>Lat: </label> <input type="text" name="Lat" class="form-control" var="lat" />
-    <label>Lng: </label> <input type="text" name="Lng" class="form-control" var="lng" />
+  
+  <div class="input-group input-group-minmax latlng">
+    <span class="input-group-addon">Lat</span>
+    <input type="text" class="form-control" name="Lat" var="lat" />
+    <span class="input-group-addon">Lng</span>
+    <input type="text" class="form-control" name="Lng" var="lng" />
     <input type="hidden" name="Zoom" var="zoom" />
-  </p>
+  </div>
+  
   <div class="tk-gmap-canvas" var="canvas" style="display: none;"></div>
 </div>
 HTML;

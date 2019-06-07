@@ -20,6 +20,9 @@
  *   });
  * </code>
  *
+ *
+ * NOTE: The elemeent is the canvas for the map not a form element...
+ *
  */
 
 (function($) {
@@ -29,19 +32,28 @@
       lat: -37.797441,
       lng: 144.960773,
       zoom: 14,
+      elementNames: ['Lat', 'Lng', 'Zoom'],
       icon: null,
-      onSelect: function(lat, lng, zoom) {},
-      onChange: function(lat, lng, zoom) {}
+      onSelect: function(lat, lng, zoom) {
+        form.find('input[name="'+plugin.settings.name+plugin.settings.elementNames[0]+'"]').attr('value', lat);
+        form.find('input[name="'+plugin.settings.name+plugin.settings.elementNames[1]+'"]').attr('value', lng);
+        form.find('input[name="'+plugin.settings.name+plugin.settings.elementNames[2]+'"]').attr('value', zoom);
+      },
+      onChange: function(lat, lng, zoom) {
+        form.find('input[name="'+plugin.settings.name+plugin.settings.elementNames[2]+'"]').attr('value', zoom);
+      }
     };
     var plugin = this;
     plugin.settings = {};
     var map = null;
     var marker = null;
     var dragStartPosition = null;
+    var form = null;
 
     // constructor method
     plugin.init = function() {
-      plugin.settings = $.extend({}, defaults, options);
+      plugin.settings = $.extend({}, defaults, $(element).data(), options);
+      form = $(element).closest('form');
 
       // Init Map
       google.maps.visualRefresh = true;

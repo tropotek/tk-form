@@ -134,7 +134,7 @@ class Button extends Iface
         if (!$t->keyExists('var', 'element')) {
             return '';
         }
-        if($t->getVarElement('element')->nodeName == 'button') {
+        if($t->getVar('element')->nodeName == 'button') {
             $t->setAttr('element', 'type', $this->getType());
             $t->setAttr('element', 'name', $this->getEventName());
         }
@@ -145,12 +145,12 @@ class Button extends Iface
         $t->insertText('text', $this->getLabel());
 
         if ($this->getIcon()) {
-            $t->setChoice('iconL');
+            $t->setVisible('iconL');
             $t->addCss('iconL', $this->getIcon());
         }
 
         if ($this->getIconRight()) {
-            $t->setChoice('iconR');
+            $t->setVisible('iconR');
             $t->addCss('iconR', $this->getIconRight());
         }
 
