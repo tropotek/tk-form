@@ -32,6 +32,14 @@
  *
  *   });
  * </code>
+ *
+ * @TODO:
+ * @TODO:
+ * @TODO: We need to refactor this when used with the gmap.select.js
+ * @TODO: Currently this is not in a very modular state but it works, (see the institution edit page)
+ * @TODO:
+ * @TODO:
+ *
  */
 (function ($) {
   /**

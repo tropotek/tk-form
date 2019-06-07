@@ -452,7 +452,7 @@ class Form extends Form\Element
      * Return a field object or null if not found
      *
      * @param string $fieldName
-     * @return null|Iface
+     * @return null|Iface|Form\Event\Iface
      */
     public function getField($fieldName)
     {
