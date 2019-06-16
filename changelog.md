@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 3.0.8 [2019-06-17]:
+-------------------------------
+  - In the middle of updating the EMS Institutions pages
+  - Fixed multi File input field
+  - Cleaning up a lot of managers and editors
+  - Fixed Placementreport File upload Issue
+
+
 Ver 3.0.6 [2019-05-15]:
 -------------------------------
 
