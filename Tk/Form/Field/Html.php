@@ -33,6 +33,7 @@ class Html extends Input
         $this->setHtml($html);
         $this->addCss('');
         $this->setReadonly(true);
+        //$this->addCss('form-control disabled');
     }
 
     /**
