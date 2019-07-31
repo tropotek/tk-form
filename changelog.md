@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.10 [2019-07-31]:
+-------------------------------
+
+
 Ver 3.0.8 [2019-06-17]:
 -------------------------------
   - In the middle of updating the EMS Institutions pages
