@@ -221,14 +221,14 @@
       // Default Templates
       thumbTpl:
       '<button type="button" class="btn btn-default tfi-btn-thumb" title="" style="display: none;">' +
-      '<img class="thumb-img" src="javascript:;" alt="Preview"/>&nbsp;' +
+      '<img class="thumb-img img-fluid" src="javascript:;" alt="Preview"/>&nbsp;' +
       '</button>',
 
       // Defaults for the tkForm file field
       onInit: function (plugin) {
         $(this).closest('.form-group').find('.tk-file-delete').hide();
         var thumb = $(plugin.settings.thumbTpl);
-        plugin.settings.template.find('.input-group-btn').append(thumb);
+        plugin.settings.template.find('.input-group-btn, .input-group-prepend').append(thumb);
 
         if ($(this).parents('.form-group-sm').length || $(this).hasClass('input-sm')) {
           thumb.removeClass('btn-lg').removeClass('btn-xs').addClass('btn-sm');
@@ -275,13 +275,13 @@
       },
       onFileLoad: function (plugin, file) {
         if (typeof file === 'undefined') return;
-        var thumb = plugin.settings.template.find('.tfi-btn-thumb');
-        var img = thumb.find('img');
         var reader = new FileReader();
         reader.readAsDataURL(file);
         reader.file = file;
         reader.onload = function (e) {
           if (isImage(this.file.name)) {
+            var thumb = plugin.settings.template.find('.tfi-btn-thumb');
+            var img = thumb.find('img');
             thumb.show();
             img.attr('src', this.result);
             thumb.attr('data-content', copyImageHtml(img));
@@ -460,7 +460,6 @@
 
           row.find('.tfi-icon').removeClass('fa-file-o').addClass(getIcon(file.name));
 
-          //console.log(plugin.settings);
           if (isImage(file.name)) {
             loadThumb(row, file);
           }
@@ -854,18 +853,5 @@
   }
 
 })(jQuery);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

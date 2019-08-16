@@ -10,10 +10,7 @@ namespace Tk\Form\Event;
 class Submit extends Button
 {
 
-
     /**
-     * __construct
-     *
      * @param string $name
      * @param callable $callback
      */
