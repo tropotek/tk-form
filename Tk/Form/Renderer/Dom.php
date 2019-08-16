@@ -160,6 +160,8 @@ class Dom extends Iface
         $i = (count($tabGroups)%2) ? 0 : 1;
         foreach ($tabGroups as $gname => $group) {
             $tabBox = $t->getRepeat('tabBox');
+            if (!$tabBox)
+                throw new \Tk\Exception('No tabBox repeat available: `' . $gname . '`. Check tou have not double parsed the template.');
             foreach ($group as $field) {
                 $tabBox->setAttr('tabBox', 'id', $this->form->getId().$this->cleanName($gname));
                 $tabBox->setAttr('tabBox', 'data-name', $gname);
@@ -309,6 +311,7 @@ class Dom extends Iface
     
       <div class="formTabs" var="tabs" choice="tabs">
         <div class="tab-content" var="tab-content">
+        
           <div var="tabBox" repeat="tabBox" class="tab-pane">
             <fieldset var="fieldset" repeat="fieldset">
               <legend var="legend"></legend>
@@ -316,6 +319,7 @@ class Dom extends Iface
             </fieldset>
             <div class="form-row" var="form-row" repeat="form-row"></div>
           </div>
+          
         </div>
       </div>
       
