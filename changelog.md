@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.12 [2019-08-21]:
+-------------------------------
+  - UPdated the system to use the new dialog box suite
+
+
 Ver 3.0.10 [2019-07-31]:
 -------------------------------
 
