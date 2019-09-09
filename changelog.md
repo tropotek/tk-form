@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.14 [2019-09-10]:
+-------------------------------
+  - Added Min/Max unit value overrides to subjects
+
+
 Ver 3.0.12 [2019-08-21]:
 -------------------------------
   - UPdated the system to use the new dialog box suite
