@@ -153,15 +153,11 @@ CSS;
     {
         $xhtml = <<<HTML
 <div class="tk-gmap-select" var="mapSelect">
-  
   <div class="input-group input-group-minmax latlng">
-    <span class="input-group-addon">Lat</span>
-    <input type="text" class="form-control" name="Lat" var="lat" />
-    <span class="input-group-addon">Lng</span>
-    <input type="text" class="form-control" name="Lng" var="lng" />
+    <span class="input-group-addon">Lat</span> <input type="text" class="form-control" name="Lat" var="lat" />
+    <span class="input-group-addon">Lng</span> <input type="text" class="form-control" name="Lng" var="lng" />
     <input type="hidden" name="Zoom" var="zoom" />
   </div>
-  
   <div class="tk-gmap-canvas" var="canvas" style="display: none;"></div>
 </div>
 HTML;

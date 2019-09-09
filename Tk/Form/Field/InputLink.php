@@ -24,6 +24,7 @@ jQuery(function ($) {
   $('.tk-input-link').each(function () {
     var input = $(this).find('input');
     if (input.val() === '') {
+      //$(this).find('button').attr('disabled', 'disabled').addClass('disabled');
       $(this).find('.input-group-btn').hide();
     } else {
       $(this).find('button').on('click', function () {

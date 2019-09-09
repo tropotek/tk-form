@@ -71,8 +71,10 @@ class MinMax extends Iface
         // Set the field value
         $value = $this->getValue();
         if (is_array($value)) {
-            $t->setAttr('min', 'value', $value[$this->getName()]);
-            $t->setAttr('max', 'value', $value[$this->maxName]);
+            if (isset($value[$this->getName()]))
+                $t->setAttr('min', 'value', $value[$this->getName()]);
+            if (isset($value[$this->maxName]))
+                $t->setAttr('max', 'value', $value[$this->maxName]);
         }
 
         return $t;
