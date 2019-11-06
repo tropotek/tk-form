@@ -91,6 +91,9 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
     /**
+     *
+     * Callback: function ($template, $element) { }
+     *
      * @param callable|null $onShow
      * @return static
      */
