@@ -18,15 +18,14 @@ class Radio extends Select
 
     /**
      * @param string $name
-     * @param Option\ArrayIterator $optionIterator
-     * @throws \Tk\Form\Exception
+     * @param null|Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
      */
-    public function __construct($name, Option\ArrayIterator $optionIterator = null)
+    public function __construct($name, $optionIterator = null)
     {
-        parent::__construct($name);
-        if ($optionIterator) {
-            $this->appendOptionIterator($optionIterator);
-        }
+        parent::__construct($name, $optionIterator);
+//        if ($optionIterator) {
+//            $this->appendOptionIterator($optionIterator);
+//        }
     }
 
     /**
@@ -74,11 +73,9 @@ class Radio extends Select
                 $tOpt->setAttr('element', 'checked', 'checked');
             }
 
-            // All other attributes
-            $template->setAttr('element', $this->getAttrList());
-
-            // Element css class names
-            $template->addCss('element', $this->getCssString());
+            // Set attributes
+            $tOpt->setAttr('element', $this->getAttrList());
+            $tOpt->addCss('element', $this->getCssString());
 
             if (is_callable($this->onShowOption)) {
                 call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
