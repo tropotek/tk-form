@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.16 [2019-11-12]:
+-------------------------------
+  - Added more to the new CA plugin
+
+
 Ver 3.0.14 [2019-09-10]:
 -------------------------------
   - Added Min/Max unit value overrides to subjects
