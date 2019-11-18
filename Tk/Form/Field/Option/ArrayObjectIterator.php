@@ -143,12 +143,15 @@ class ArrayObjectIterator extends ArrayIterator
             $pre = $this->selectedPrepend;
             $app = $this->selectedAppend;
         }
-        $method = 'get'.ucfirst($this->textParam);
+        $method = '';
+        if (is_string($this->textParam))
+            $method = 'get'.ucfirst($this->textParam);
+
         if ( is_callable($this->textParam) ) {
             $text = call_user_func_array($this->textParam, array($obj));
         } else if (property_exists($obj, $this->textParam)) {
             $text = $pre . $obj->{$this->textParam} . $app;
-        } else if (method_exists($obj, $method)) {
+        } else if ($method && method_exists($obj, $method) && is_string($obj->$method())) {
             $text = $pre . $obj->$method() . $app;
         }
 
