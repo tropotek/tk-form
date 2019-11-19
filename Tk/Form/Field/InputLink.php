@@ -10,6 +10,26 @@ namespace Tk\Form\Field;
 class InputLink extends Input
 {
 
+    protected $copyEnabled = false;
+
+    /**
+     * @return bool
+     */
+    public function isCopyEnabled()
+    {
+        return $this->copyEnabled;
+    }
+
+    /**
+     * @param bool $copyEnabled
+     * @return InputLink
+     */
+    public function setCopyEnabled($copyEnabled = true)
+    {
+        $this->copyEnabled = $copyEnabled;
+        return $this;
+    }
+
     /**
      * Get the element HTML
      *
@@ -19,6 +39,9 @@ class InputLink extends Input
     {
         $template = parent::show();
 
+        if ($this->isCopyEnabled())
+            $template->setVisible('copy');
+
         $js = <<<JS
 jQuery(function ($) {
   $('.tk-input-link').each(function () {
@@ -27,8 +50,14 @@ jQuery(function ($) {
       //$(this).find('button').attr('disabled', 'disabled').addClass('disabled');
       $(this).find('.input-group-btn').hide();
     } else {
-      $(this).find('button').on('click', function () {
+      $(this).find('button.btn-lnk').on('click', function () {
         window.open(input.val());
+      });
+      $(this).find('button.btn-cpy').on('click', function () {
+        input.focus().select();
+        document.execCommand('copy');
+        input.blur().prop('selectionStart', 0).prop('selectionEnd',0);
+        return false;
       });
     }
   });
@@ -50,7 +79,8 @@ JS;
 <div class="input-group tk-input-link">
   <input type="text" var="element" class="form-control" />
   <span class="input-group-btn">
-    <button class="btn btn-default" type="button" title="Click to view the URL in a new window"><i class="fa fa-link"></i></button>
+    <button class="btn btn-default btn-cpy" type="button" title="Click to copy the link." choice="copy"><i class="fa fa-copy"></i></button>
+    <button class="btn btn-default btn-lnk" type="button" title="Click to view the URL in a new window."><i class="fa fa-link"></i></button>
   </span>
 </div>
 HTML;
