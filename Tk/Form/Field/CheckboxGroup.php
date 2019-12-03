@@ -48,7 +48,7 @@ class CheckboxGroup extends Select
 
 
         /* @var \Tk\Form\Field\Option $option */
-        foreach($this->getOptions() as $option) {
+        foreach($this->getOptions() as $i => $option) {
             $tOpt = $template->getRepeat('option');
 
             if ($option->hasAttr('disabled')) {
@@ -67,6 +67,9 @@ class CheckboxGroup extends Select
             // All other attributes
             $tOpt->setAttr('option', $option->getAttrList());
             $tOpt->addCss('option', $option->getCssList());
+
+            $tOpt->setAttr('element', 'id', $this->getId() . '-' . $i);
+            $tOpt->setAttr('label', 'for', $this->getId() . '-' . $i);
 
             foreach($this->getAttrList() as $key => $val) {
                 if ($val == '' || $val == null) {

@@ -54,7 +54,7 @@ class Radio extends Select
 
         $checkedSet = false;
         /* @var \Tk\Form\Field\Option $option */
-        foreach($this->getOptions() as $option) {
+        foreach($this->getOptions() as $i => $option) {
             $tOpt = $template->getRepeat('option');
 
             if (!$tOpt->keyExists('var', 'element')) continue;
@@ -76,6 +76,9 @@ class Radio extends Select
             // Set attributes
             $tOpt->setAttr('element', $this->getAttrList());
             $tOpt->addCss('element', $this->getCssString());
+
+            $tOpt->setAttr('element', 'id', $this->getId() . '-' . $i);
+            $tOpt->setAttr('label', 'for', $this->getId() . '-' . $i);
 
             if (is_callable($this->onShowOption)) {
                 call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
