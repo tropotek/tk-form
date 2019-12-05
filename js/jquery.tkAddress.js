@@ -125,14 +125,15 @@
       // Setup gmap select fields javascript
       // ---------------------------------------
       form.find(plugin.settings.gmapSelector + ' .latlng').hide();    // Hide map input fields
-      $.each(fields, function (i, el){
-        if (el.attr('name') === plugin.settings.fieldNames['address'] ||
-          el.attr('name') === plugin.settings.fieldNames['lat'] ||
-          el.attr('name') === plugin.settings.fieldNames['lng'] ||
-          el.attr('name') === plugin.settings.fieldNames['zoom']
-        ) return;
-        el.closest('.form-row').hide();
-      });
+      // TODO: Removed this as I am not sure is is still required????
+      // $.each(fields, function (i, el){
+      //   if (el.attr('name') === plugin.settings.fieldNames['address'] ||
+      //     el.attr('name') === plugin.settings.fieldNames['lat'] ||
+      //     el.attr('name') === plugin.settings.fieldNames['lng'] ||
+      //     el.attr('name') === plugin.settings.fieldNames['zoom']
+      //   ) return;
+      //   //el.closest('.form-row').hide();
+      // });
 
       var gmapSelect = form.find(plugin.settings.gmapSelector + ' .tk-gmap-canvas').gmapSelect({
         lat: parseFloat(fields.lat.val()),
