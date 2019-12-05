@@ -20,9 +20,11 @@ class Submit extends Button
         parent::__construct($name, $callback);
         // TODO: These need to be removed
         if ($name == 'save') {
+            $this->removeCss('btn-default');
             $this->addCss('btn-success');
             $this->setIcon('fa fa-refresh');
         } else if ($name == 'update') {
+            $this->removeCss('btn-default');
             $this->addCss('btn-success');
             $this->setIcon('fa fa-arrow-left');
         }

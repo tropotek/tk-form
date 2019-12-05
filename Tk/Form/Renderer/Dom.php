@@ -331,7 +331,7 @@ class Dom extends Iface
       <div class="form-row" var="form-row" repeat="form-row"></div>
     </div>
     
-    <div class="tk-form-events clearfix" var="events"></div>
+    <div class="form-row tk-form-events clearfix" var="events"></div>
   </form>
 
 </div>
