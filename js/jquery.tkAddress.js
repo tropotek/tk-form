@@ -34,9 +34,7 @@
  * </code>
  *
  * @TODO:
- * @TODO:
- * @TODO: We need to refactor this when used with the gmap.select.js
- * @TODO: Currently this is not in a very modular state but it works, (see the institution edit page)
+ * @TODO:  We should give the user the ability to enter the address manually by a toggle btn or something similar
  * @TODO:
  * @TODO:
  *
@@ -126,14 +124,16 @@
       // ---------------------------------------
       form.find(plugin.settings.gmapSelector + ' .latlng').hide();    // Hide map input fields
       // TODO: Removed this as I am not sure is is still required????
-      // $.each(fields, function (i, el){
-      //   if (el.attr('name') === plugin.settings.fieldNames['address'] ||
-      //     el.attr('name') === plugin.settings.fieldNames['lat'] ||
-      //     el.attr('name') === plugin.settings.fieldNames['lng'] ||
-      //     el.attr('name') === plugin.settings.fieldNames['zoom']
-      //   ) return;
-      //   //el.closest('.form-row').hide();
-      // });
+      $.each(fields, function (i, el){
+        if (el.attr('name') === plugin.settings.fieldNames['address'] ||
+          el.attr('name') === plugin.settings.fieldNames['lat'] ||
+          el.attr('name') === plugin.settings.fieldNames['lng'] ||
+          el.attr('name') === plugin.settings.fieldNames['zoom']
+        ) return;
+        // Remove the address fields
+        el.parents('.form-row').hide();
+        //el.closest('.form-row').hide();   // Can remove the submit buttons
+      });
 
       var gmapSelect = form.find(plugin.settings.gmapSelector + ' .tk-gmap-canvas').gmapSelect({
         lat: parseFloat(fields.lat.val()),
