@@ -1,6 +1,10 @@
 <?php
 namespace Tk\Form;
 
+use Tk\CollectionTrait;
+use Tk\ConfigTrait;
+use Tk\Dom\AttributesTrait;
+use Tk\Dom\CssTrait;
 use Tk\Form;
 
 /**
@@ -10,9 +14,10 @@ use Tk\Form;
  */
 abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, \Dom\Renderer\DisplayInterface
 {
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
-    use \Tk\CollectionTrait;
+    use AttributesTrait;
+    use CssTrait;
+    use CollectionTrait;
+    use ConfigTrait;
 
 
     /**
