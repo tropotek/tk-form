@@ -131,8 +131,9 @@
           el.attr('name') === plugin.settings.fieldNames['zoom']
         ) return;
         // Remove the address fields
-        el.parents('.form-row').hide();
-        //el.closest('.form-row').hide();   // Can remove the submit buttons
+        // TODO: See if this is required and if so work out a way to remove those fields.
+        //el.parents('.form-row').hide();   // Can remove the submit buttons (See student Change Request in EMS)
+        //el.closest('.form-row').hide();   // Can remove the submit buttons (See student Change Request in EMS)
       });
 
       var gmapSelect = form.find(plugin.settings.gmapSelector + ' .tk-gmap-canvas').gmapSelect({
