@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.28 [2020-01-07]:
+-------------------------------
+  - Fixing minor bugs ready for new release
+  - Added new course record to the tk-unk lib for ver 3.2
+
+
 Ver 3.0.26 [2019-12-06]:
 -------------------------------
 
