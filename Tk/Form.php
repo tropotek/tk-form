@@ -572,7 +572,7 @@ class Form extends Form\Element
     /**
      * Get the field array
      *
-     * @return array|Element[]
+     * @return array|Element[]|Field\Iface[]
      */
     public function getFieldList()
     {
