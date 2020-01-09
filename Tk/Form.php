@@ -86,6 +86,28 @@ class Form extends Form\Element
      */
     private $initialised = false;
 
+    /**
+     * If set then the field fieldset is set when added to the form
+     * @var string|null
+     */
+    private $fieldset = '';
+
+    /**
+     * @var string
+     */
+    private $fieldsetCss= '';
+
+    /**
+     * If set then the field tabgroup is set when added to the form
+     * @var string|null
+     */
+    private $tabGroup = '';
+
+    /**
+     * @var string
+     */
+    private $tabGroupCss = '';
+
 
 
     /**
@@ -379,6 +401,67 @@ class Form extends Form\Element
         return false;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getFieldset(): ?string
+    {
+        return $this->fieldset;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldsetCss(): ?string
+    {
+        return $this->fieldsetCss;
+    }
+
+    /**
+     * If set then the field fieldset is set when added to the form
+     *
+     * Set this to '' or null to clear it.
+     *
+     * @param string|null $fieldset
+     * @return Form
+     */
+    public function setFieldset(?string $fieldset, ?string $css = ''): Form
+    {
+        $this->fieldset = $fieldset;
+        $this->fieldsetCss = $css;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTabGroup(): ?string
+    {
+        return $this->tabGroup;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTabGroupCss(): ?string
+    {
+        return $this->tabGroupCss;
+    }
+
+    /**
+     * If set then the field ftabGroup is set when added to the form
+     *
+     * Set this to '' or null to clear it.
+     *
+     * @param string|null $tabGroup
+     * @return Form
+     */
+    public function setTabGroup(?string $tabGroup, ?string $css = ''): Form
+    {
+        $this->tabGroup = $tabGroup;
+        $this->tabGroupCss = $css;
+        return $this;
+    }
 
     /**
      * @param Iface $field
@@ -389,9 +472,14 @@ class Form extends Form\Element
     public function appendField(Iface $field, $refField = null)
     {
         $field->setForm($this);
+        if ($this->getFieldset())
+            $field->setFieldset($this->getFieldset(), $this->getFieldsetCss());
+        if ($this->getTabGroup())
+            $field->setTabGroup($this->getTabGroup(), $this->getTabGroupCss());
         if (is_string($refField)) {
             $refField = $this->getField(str_replace('[]', '', $refField));
         }
+
         if (!$refField || !$refField instanceof Iface) {
             $this->fieldList[$field->getName()] = $field;
         } else {
@@ -415,9 +503,14 @@ class Form extends Form\Element
     public function prependField(Iface $field, $refField = null)
     {
         $field->setForm($this);
+        if ($this->getFieldset())
+            $field->setFieldset($this->getFieldset(), $this->getFieldsetCss());
+        if ($this->getTabGroup())
+            $field->setTabGroup($this->getTabGroup(), $this->getTabGroupCss());
         if (is_string($refField)) {
             $refField = $this->getField(str_replace('[]', '', $refField));
         }
+
         if (!$refField || !$refField instanceof Iface) {
             $this->fieldList = array($field->getName() => $field) + $this->fieldList;
         } else {

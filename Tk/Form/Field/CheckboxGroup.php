@@ -67,30 +67,19 @@ class CheckboxGroup extends Select
             // All other attributes
             $tOpt->setAttr('option', $option->getAttrList());
             $tOpt->addCss('option', $option->getCssList());
+            
+            $tOpt->setAttr('element', $this->getAttrList());
+            $tOpt->addCss('element', $this->getCssList());
 
             $tOpt->setAttr('element', 'id', $this->getId() . '-' . $i);
             $tOpt->setAttr('label', 'for', $this->getId() . '-' . $i);
 
-            foreach($this->getAttrList() as $key => $val) {
-                if ($val == '' || $val == null) {
-                    $val = $key;
-                }
-                $tOpt->setAttr('element', $key, $val);
-            }
-
-            // Element css class names
-            foreach($this->getCssList() as $v) {
-                $tOpt->addCss('element', $v);
-            }
-            
             $tOpt->appendRepeat();
         }
 
         $this->decorateElement($template, 'group');
         return $template;
     }
-
-
 
     /**
      * makeTemplate
