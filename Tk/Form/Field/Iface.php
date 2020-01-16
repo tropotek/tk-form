@@ -262,7 +262,8 @@ abstract class Iface extends \Tk\Form\Element
     public function setFieldset($fieldset, $css = '')
     {
         $this->fieldset = $fieldset;
-        $this->fieldsetCss = $css;
+        if ($css)
+            $this->fieldsetCss = $css;
         return $this;
     }
 
