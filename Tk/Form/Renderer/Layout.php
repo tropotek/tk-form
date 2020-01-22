@@ -45,11 +45,13 @@ class Layout
 
     /**
      * Reset the layout back to its default state
+     * @return Layout
      */
     public function reset()
     {
         $this->colList = array();
         $this->defaultCol = null;
+        return $this;
     }
 
     /**
@@ -128,6 +130,7 @@ class Layout
      *
      * @param string $css
      * @param array $attr
+     * @return Layout
      */
     public function setDefaultCol($css = '', $attr = array())
     {
@@ -135,6 +138,7 @@ class Layout
         $this->defaultCol->addCss($css);
         $this->defaultCol->setAttr($attr);
         $this->defaultCol->setRowEnabled(true);
+        return $this;
     }
 
 }
