@@ -62,7 +62,11 @@
 
       var group = $(plugin.settings.groupTpl);
       group.find('.tki-iga').addClass(plugin.settings.igaCss);
-      $element.parent().prepend(group);
+
+
+      //$element.parent().prepend(group);
+      group.insertBefore($element);
+
       $element.detach();
       group.prepend($element);
 
@@ -76,7 +80,7 @@
 
       $element.on('change', function () {
         updateInput(group);
-      })
+      });
       updateInput(group);
 
 
