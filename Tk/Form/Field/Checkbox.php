@@ -28,6 +28,7 @@ class Checkbox extends Input
     {
         parent::__construct($name);
         $this->setType('checkbox');
+
     }
 
     /**

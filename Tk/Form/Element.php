@@ -61,6 +61,11 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      */
     protected $onShow = null;
 
+    /**
+     * @var null|callable
+     */
+    protected $onShowFieldGroup = null;
+
 
     /**
      * Set the name for this element
@@ -96,7 +101,6 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
     /**
-     *
      * Callback: function ($template, $element) { }
      *
      * @param callable|null $onShow
@@ -105,6 +109,26 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     public function setOnShow(callable $onShow)
     {
         $this->onShow = $onShow;
+        return $this;
+    }
+
+    /**
+     * @return callable|null
+     */
+    protected function getOnShowFieldGroup()
+    {
+        return $this->onShowFieldGroup;
+    }
+
+    /**
+     * Callback: function ($fieldGroup, $element) { }
+     *
+     * @param callable|null $onShowFieldGroup
+     * @return static
+     */
+    public function setOnShowFieldGroup(callable $onShowFieldGroup)
+    {
+        $this->onShowFieldGroup = $onShowFieldGroup;
         return $this;
     }
     
