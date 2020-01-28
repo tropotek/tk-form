@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Event;
 
-use Tk\Form\Exception;
+use Tk\Callback;
 use Tk\Form\Field;
 
 /**
@@ -12,9 +12,9 @@ use Tk\Form\Field;
 abstract class Iface extends Field\Iface
 {
     /**
-     * @var callable[]
+     * @var Callback
      */
-    protected $callbackList = array();
+    protected $callbackList = null;
 
     /**
      * @var null|\Tk\Uri
@@ -31,6 +31,7 @@ abstract class Iface extends Field\Iface
      */
     public function __construct($name, $callback = null, $redirect = null)
     {
+        $this->callbackList = Callback::create();
         parent::__construct($name);
         $this->prependCallback($callback);
         $this->setRedirect($redirect);
@@ -41,26 +42,31 @@ abstract class Iface extends Field\Iface
      */
     public function execute()
     {
-        foreach ($this->callbackList as $i => $callback) {
-            call_user_func_array($callback, array($this->getForm(), $this));
-        }
+        $this->getCallbackList()->execute($this->getForm(), $this);
         if ($this->getRedirect()) {
             \Tk\Uri::create($this->getRedirect())->redirect();
         }
     }
 
+    /**
+     * @return Callback
+     */
+    public function getCallbackList()
+    {
+        return $this->callbackList;
+    }
 
     /**
      * Add a callback to the start of the event queue
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
      *
      * @param callable $callback
+     * @param int $priority [optional]
      * @return $this
      */
-    public function prependCallback($callback)
+    public function prependCallback($callback, $priority=Callback::DEFAULT_PRIORITY)
     {
-        if (is_callable($callback))
-            array_unshift($this->callbackList, $callback);
+        $this->getCallbackList()->prepend($callback, $priority);
         return $this;
     }
 
@@ -69,33 +75,13 @@ abstract class Iface extends Field\Iface
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
      *
      * @param callable $callback
+     * @param int $priority [optional]
      * @return $this
      * @since 2.0.68
      */
-    public function appendCallback($callback)
+    public function appendCallback($callback, $priority=Callback::DEFAULT_PRIORITY)
     {
-        if (is_callable($callback))
-            $this->callbackList[] = $callback;
-        return $this;
-    }
-
-    /**
-     * getEvent
-     *
-     * @return array
-     */
-    public function getCallbackList()
-    {
-        return $this->callbackList;
-    }
-
-    /**
-     * @param array $list
-     * @return $this
-     */
-    public function setCallbackList($list = array())
-    {
-        $this->callbackList = $list;
+        $this->getCallbackList()->append($callback, $priority);
         return $this;
     }
 
@@ -186,8 +172,7 @@ abstract class Iface extends Field\Iface
     public function addCallback($callback)
     {
         if (!$callback) return $this;
-        if (is_callable($callback))
-            $this->callbackList[] = $callback;
+        $this->appendCallback($callback);
         return $this;
     }
 }
