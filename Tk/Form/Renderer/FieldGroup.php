@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form\Renderer;
 
+use Tk\Callback;
 use Tk\Form\Field;
 
 /**
@@ -27,7 +28,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected $layoutCol = null;
 
     /**
-     * @var \Tk\Callback
+     * @var Callback
      */
     protected $onShow = null;
 
@@ -38,7 +39,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     public function __construct($form)
     {
         $this->form = $form;
-        $this->onShow = \Tk\Callback::create();
+        $this->onShow = Callback::create();
     }
 
     /**
@@ -106,7 +107,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * @return \Tk\Callback
+     * @return Callback
      */
     protected function getOnShow()
     {
@@ -118,7 +119,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
      * @return $this
      * @deprecated use getOnShow()->append($callable, $priority)
      */
-    public function setOnShow(callable $onShow)
+    public function setOnShow($onShow)
     {
         $this->getOnShow()->append($onShow);
         return $this;

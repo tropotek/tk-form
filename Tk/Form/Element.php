@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form;
 
+use Tk\Callback;
 use Tk\CollectionTrait;
 use Tk\ConfigTrait;
 use Tk\Dom\AttributesTrait;
@@ -57,12 +58,12 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     protected $notes = null;
 
     /**
-     * @var \Tk\Callback
+     * @var Callback
      */
     protected $onShow = null;
 
     /**
-     * @var \Tk\Callback
+     * @var Callback
      */
     protected $onShowFieldGroup = null;
 
@@ -79,8 +80,8 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
         if (!$this->getLabel()) {
             $this->setLabel(self::makeLabel($this->getName()));
         }
-        $this->onShow = \Tk\Callback::create();
-        $this->onShowFieldGroup = \Tk\Callback::create();
+        $this->onShow = Callback::create();
+        $this->onShowFieldGroup = Callback::create();
         return $this;
     }
 
@@ -95,7 +96,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
     /**
-     * @return \Tk\Callback
+     * @return Callback
      */
     public function getOnShow()
     {
@@ -116,7 +117,7 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
     /**
-     * @return \Tk\Callback
+     * @return Callback
      */
     public function getOnShowFieldGroup()
     {
