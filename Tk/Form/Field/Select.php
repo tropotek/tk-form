@@ -3,6 +3,8 @@ namespace Tk\Form\Field;
 
 
 
+use Tk\Callback;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -13,7 +15,7 @@ class Select extends Iface
     use OptionList;
 
     /**
-     * @var null|callable
+     * @var Callback
      */
     protected $onShowOption = null;
 
@@ -24,6 +26,7 @@ class Select extends Iface
      */
     public function __construct($name, $optionIterator = null)
     {
+        $this->onShowOption = Callback::create();
         parent::__construct($name);
 
         if ($optionIterator instanceof \Tk\Db\Map\ArrayObject || (is_array($optionIterator) && current($optionIterator) instanceof \Tk\Db\ModelInterface)) {
@@ -123,11 +126,24 @@ class Select extends Iface
     }
 
     /**
-     * @return callable|null
+     * @return Callback
      */
     public function getOnShowOption()
     {
         return $this->onShowOption;
+    }
+
+    /**
+     *  function ($template, $option, $var) { }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnShowOption($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnShowOption()->append($callable, $priority);
+        return $this;
     }
 
     /**
@@ -136,10 +152,11 @@ class Select extends Iface
      *
      * @param callable|null $onShowOption
      * @return Select
+     * @deprecated use $this->addOnShowOption($callable, $priority)
      */
     public function setOnShowOption($onShowOption)
     {
-        $this->onShowOption = $onShowOption;
+        $this->addOnShowOption($onShowOption);
         return $this;
     }
 
@@ -173,11 +190,9 @@ class Select extends Iface
      */
     protected function showOption($template, $option, $var = 'option')
     {
-        if (is_callable($this->onShowOption)) {
-            $b = call_user_func_array($this->onShowOption, array($template, $option, $var));
-            if ($b === false) {
-                return;
-            }
+        if ($this->getOnShowOption()->isCallable()) {
+            $b = $this->getOnShowOption()->execute($template, $option, $var);
+            if ($b === false) return;
         }
 
         $template->insertText($var, $option->getName());

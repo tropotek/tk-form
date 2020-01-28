@@ -57,12 +57,12 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     protected $notes = null;
 
     /**
-     * @var null|callable
+     * @var \Tk\Callback
      */
     protected $onShow = null;
 
     /**
-     * @var null|callable
+     * @var \Tk\Callback
      */
     protected $onShowFieldGroup = null;
 
@@ -79,6 +79,8 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
         if (!$this->getLabel()) {
             $this->setLabel(self::makeLabel($this->getName()));
         }
+        $this->onShow = \Tk\Callback::create();
+        $this->onShowFieldGroup = \Tk\Callback::create();
         return $this;
     }
 
@@ -93,9 +95,9 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     }
 
     /**
-     * @return callable|null
+     * @return \Tk\Callback
      */
-    protected function getOnShow()
+    public function getOnShow()
     {
         return $this->onShow;
     }
@@ -105,17 +107,18 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      *
      * @param callable|null $onShow
      * @return static
+     * @deprecated use getOnShow()->append($callable, $priority)
      */
     public function setOnShow(callable $onShow)
     {
-        $this->onShow = $onShow;
+        $this->getOnShow()->append($onShow);
         return $this;
     }
 
     /**
-     * @return callable|null
+     * @return \Tk\Callback
      */
-    protected function getOnShowFieldGroup()
+    public function getOnShowFieldGroup()
     {
         return $this->onShowFieldGroup;
     }
@@ -125,10 +128,11 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      *
      * @param callable|null $onShowFieldGroup
      * @return static
+     * @deprecated use getOnShowFieldGroup()->append($callable, $priority)
      */
     public function setOnShowFieldGroup(callable $onShowFieldGroup)
     {
-        $this->onShowFieldGroup = $onShowFieldGroup;
+        $this->getOnShowFieldGroup()->append($onShowFieldGroup);
         return $this;
     }
     

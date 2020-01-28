@@ -388,7 +388,8 @@ abstract class Iface extends \Tk\Form\Element
     public function decorateElement(\Dom\Template $template, $var = 'element')
     {
         if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($template, $this));
+            $this->getOnShow()->execute($template, $this);
+            //call_user_func_array($this->getOnShow(), array($template, $this));
         }
         if (!$template->keyExists('var', $var)) {
             return $template;

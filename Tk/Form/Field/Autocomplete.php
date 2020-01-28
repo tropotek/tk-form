@@ -2,6 +2,8 @@
 namespace Tk\Form\Field;
 
 
+use Tk\Callback;
+
 /**
  *
  * @author Michael Mifsud <info@tropotek.com>
@@ -11,7 +13,7 @@ namespace Tk\Form\Field;
 class Autocomplete extends Input
 {
     /**
-     * @var null|callable
+     * @var Callback
      */
     protected $onAjax = null;
 
@@ -21,6 +23,7 @@ class Autocomplete extends Input
      */
     public function __construct($name)
     {
+        $this->onAjax = Callback::create();
         parent::__construct($name);
         $this->addCss('tk-autocomplete');
     }
@@ -28,8 +31,8 @@ class Autocomplete extends Input
     public function load($values)
     {
         $request = $this->getForm()->getRequest();
-        if ($request->has('a') && is_callable($this->getOnAjax())) {
-            $data = call_user_func_array($this->getOnAjax(), array($request, $this));
+        if ($request->has('a')) {
+            $data = $this->getOnAjax()->execute($this);
             if (is_array($data) | is_object($data)) {
                 \Tk\ResponseJson::createJson($data)->send();
                 exit();
@@ -39,26 +42,39 @@ class Autocomplete extends Input
     }
 
     /**
-     * @return callable|null
+     * @return Callback
      */
-    public function getOnAjax(): ?callable
+    public function getOnAjax()
     {
         return $this->onAjax;
     }
 
     /**
      * the callback should return an array of name/value pairs to use for the autocomplete
+     *  function ($autocomplete): array|object { }
      *
-     * function ($request, $field): array|object { }
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnAjax($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnAjax()->append($callable, $priority);
+        return $this;
+    }
+
+    /**
+     * the callback should return an array of name/value pairs to use for the autocomplete
+     *
+     * function ($request, $field): array|object { } deprecated $request removed
      *
      * @param callable|null $callable
      * @return Autocomplete
+     * @deprecated use $this->addOnAjax($callable, $priority)
      */
-    public function setOnAjax(?callable $callable): Autocomplete
+    public function setOnAjax(?callable $callable)
     {
-        if (is_callable($callable)) {
-            $this->onAjax = $callable;
-        }
+        $this->addOnAjax($callable);
         return $this;
     }
 

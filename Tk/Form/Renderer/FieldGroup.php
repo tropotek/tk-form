@@ -27,7 +27,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected $layoutCol = null;
 
     /**
-     * @var null|callable
+     * @var \Tk\Callback
      */
     protected $onShow = null;
 
@@ -38,6 +38,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     public function __construct($form)
     {
         $this->form = $form;
+        $this->onShow = \Tk\Callback::create();
     }
 
     /**
@@ -105,7 +106,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * @return callable|null
+     * @return \Tk\Callback
      */
     protected function getOnShow()
     {
@@ -115,10 +116,11 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     /**
      * @param callable|null $onShow
      * @return $this
+     * @deprecated use getOnShow()->append($callable, $priority)
      */
     public function setOnShow(callable $onShow)
     {
-        $this->onShow = $onShow;
+        $this->getOnShow()->append($onShow);
         return $this;
     }
 
@@ -149,9 +151,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $template->addCss('form-group', $this->getLayoutCol()->getCssList());
         }
 
-        if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($template, $this->getField()));
-        }
+        $this->getOnShow()->execute($template, $this->getField());
 
         return $template;
     }
@@ -167,6 +167,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         } else {
             $template->replaceHtml('element', $html);
         }
+        $this->getField()->getOnShowFieldGroup()->execute($template, $this);
     }
 
     /**

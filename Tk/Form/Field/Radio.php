@@ -10,11 +10,6 @@ namespace Tk\Form\Field;
 class Radio extends Select
 {
 
-    /**
-     * @var null|callable
-     */
-    protected $onShowOption = null;
-
 
     /**
      * @param string $name
