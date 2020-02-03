@@ -87,7 +87,7 @@ class Form extends Form\Element
     private $initialised = false;
 
     /**
-     * If set then the field fieldset is set when added to the form
+     * If set the field  method setFieldset() is called when a field is added to the form
      * @var string|null
      */
     private $fieldset = '';
@@ -98,7 +98,7 @@ class Form extends Form\Element
     private $fieldsetCss= '';
 
     /**
-     * If set then the field tabgroup is set when added to the form
+     * If set the field  method setTabGroup() is called when a field is added to the form
      * @var string|null
      */
     private $tabGroup = '';
@@ -296,13 +296,13 @@ class Form extends Form\Element
         }
         return $this;
     }
-    
+
     /**
      * Clean the load() array
      *  o create a new raw array for any ArrayAccess objects like the request object
      *  o add array keys that the request modifies (request replaces '.' with '_') with field names
      *    this will not modify keys that a field does not exist for.
-     * 
+     *
      * @param array|ArrayAccess $array
      * @return array
      */
@@ -433,6 +433,16 @@ class Form extends Form\Element
     }
 
     /**
+     * return the #fragment  value of a tab for auto selection of tabs after reload.
+     *
+     * @return string|null
+     */
+    public function getTabGroupFragment(string $tabGroup): ?string
+    {
+        return $this->getId() . preg_replace('/[^a-z0-9]/i', '_', $tabGroup);
+    }
+
+    /**
      * @return string|null
      */
     public function getTabGroup(): ?string
@@ -449,7 +459,7 @@ class Form extends Form\Element
     }
 
     /**
-     * If set then the field ftabGroup is set when added to the form
+     * If set then the field tabGroup is set when added to the form
      *
      * Set this to '' or null to clear it.
      *
@@ -742,7 +752,7 @@ class Form extends Form\Element
     {
         $this->enableRequiredAttr = $enableRequiredAttr;
     }
-    
+
     /**
      * @return null|string|Template
      */
@@ -752,7 +762,7 @@ class Form extends Form\Element
             return $this->getRenderer()->show();
         return '';
     }
-    
+
 
 
 

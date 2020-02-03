@@ -49,6 +49,7 @@ class Dom extends Iface
      * Render the field and return the template or html string
      *
      * @return \Dom\Template
+     * @throws \Exception
      */
     public function show()
     {
@@ -102,6 +103,7 @@ class Dom extends Iface
      * Render Fields
      *
      * @param Template $t
+     * @throws \Exception
      */
     public function showFields(Template $t)
     {
@@ -306,12 +308,12 @@ class Dom extends Iface
       <h4><i class="icon-ok-sign"></i> <strong>Form Error</strong></h4>
       <span var="errors"></span>
     </div>
-   
+
     <div class="tk-form-fields clearfix" var="fields">
-    
+
       <div class="formTabs" var="tabs" choice="tabs">
         <div class="tab-content" var="tab-content">
-        
+
           <div var="tabBox" repeat="tabBox" class="tab-pane">
             <fieldset var="fieldset" repeat="fieldset">
               <legend var="legend"></legend>
@@ -319,18 +321,18 @@ class Dom extends Iface
             </fieldset>
             <div class="form-row" var="form-row" repeat="form-row"></div>
           </div>
-          
+
         </div>
       </div>
-      
+
       <fieldset var="fieldset" repeat="fieldset">
         <legend var="legend"></legend>
           <div class="form-row" var="form-row" repeat="form-row"></div>
       </fieldset>
-      
+
       <div class="form-row" var="form-row" repeat="form-row"></div>
     </div>
-    
+
     <div class="form-row tk-form-events clearfix" var="events"></div>
   </form>
 
