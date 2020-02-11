@@ -108,11 +108,24 @@ abstract class Element extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      *
      * @param callable|null $onShow
      * @return static
-     * @deprecated use getOnShow()->append($callable, $priority)
+     * @deprecated use addOnShow($callable, $priority)
      */
-    public function setOnShow(callable $onShow)
+    public function setOnShow($onShow)
     {
-        $this->getOnShow()->append($onShow);
+        $this->addOnShow($onShow);
+        return $this;
+    }
+
+    /**
+     * Callback: function ($template, $element) { }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnShow(callable $callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnShow()->append($callable, $priority);
         return $this;
     }
 

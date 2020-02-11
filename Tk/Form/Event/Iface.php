@@ -29,7 +29,7 @@ abstract class Iface extends Field\Iface
      * @param null|callable $callback
      * @param null|\Tk\Uri $redirect
      */
-    public function __construct($name, $callback = null, $redirect = null)
+    public function __construct(string $name, ?callable $callback = null, ?\Tk\Uri $redirect = null)
     {
         $this->callbackList = Callback::create();
         parent::__construct($name);
@@ -64,7 +64,7 @@ abstract class Iface extends Field\Iface
      * @param int $priority [optional]
      * @return $this
      */
-    public function prependCallback($callback, $priority=Callback::DEFAULT_PRIORITY)
+    public function prependCallback(?callable $callback, $priority=Callback::DEFAULT_PRIORITY)
     {
         $this->getCallbackList()->prepend($callback, $priority);
         return $this;
@@ -79,7 +79,7 @@ abstract class Iface extends Field\Iface
      * @return $this
      * @since 2.0.68
      */
-    public function appendCallback($callback, $priority=Callback::DEFAULT_PRIORITY)
+    public function appendCallback(?callable $callback, $priority=Callback::DEFAULT_PRIORITY)
     {
         $this->getCallbackList()->append($callback, $priority);
         return $this;
