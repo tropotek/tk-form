@@ -199,7 +199,7 @@ class Dom extends Iface
         }
 
         if (count($tabGroups)) {
-            $t->setChoice('tabs');
+            $t->setVisible('tabs');
             $tabPainName = $this->form->getId().'-tabPane';
             $t->setAttr('tabs', 'id', $tabPainName);
         }

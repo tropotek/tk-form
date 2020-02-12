@@ -76,7 +76,7 @@ class LinkButton extends Link
 
         $t->insertText('text', $this->getLabel());
         if ($this->getIcon()) {
-            $t->setChoice('icon');
+            $t->setVisible('icon');
             $t->addClass('icon', $this->getIcon());
         }
         

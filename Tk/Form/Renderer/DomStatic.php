@@ -208,7 +208,7 @@ class DomStatic extends Iface
         $var = $choice = 'form-error';
         if ($this->getTemplate()->keyExists('var', $var)) {
             $this->getTemplate()->insertHtml($var, $msg);
-            $this->getTemplate()->setChoice($choice);
+            $this->getTemplate()->setVisible($choice);
         } else {
             $errNode = $this->domForm->getNode()->ownerDocument->createElement('div');
             $errNode->setAttribute('class', 'alert alert-danger clear');
@@ -256,7 +256,7 @@ class DomStatic extends Iface
             $var = $field->getName() . '-error';
 
             if ($this->template->keyExists('var', $var)) {
-                $this->template->setChoice($var);
+                $this->template->setVisible($var);
                 if ($this->template->keyExists('var', $var)) {
                     if (!$this->template->getText($var)) {
                         $this->template->insertHtml($var, $msg);
