@@ -74,9 +74,9 @@
       group.find('button').on('click', function () {
         $(this).blur();
         if (!group.find('input').attr('readonly')) return;
-        if (confirm('Are you sure you want to edit this field?')) {
+        //if (confirm('Are you sure you want to edit this field?')) {
           group.find('input').removeAttr('readonly');
-        }
+        //}
       });
 
       $element.on('change', function () {
