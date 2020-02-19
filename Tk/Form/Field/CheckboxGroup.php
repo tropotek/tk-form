@@ -46,7 +46,6 @@ class CheckboxGroup extends Select
     {
         $template = $this->getTemplate();
 
-
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $i => $option) {
             $tOpt = $template->getRepeat('option');
