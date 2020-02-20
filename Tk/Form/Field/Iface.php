@@ -416,10 +416,12 @@ abstract class Iface extends \Tk\Form\Element
      * Set a new template for this renderer.
      *
      * @param \Dom\Template|string $template
+     * @return Iface
      */
     public function setTemplate($template)
     {
         $this->template = $template;
+        return $this;
     }
 
     /**
