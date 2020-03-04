@@ -86,7 +86,7 @@ class File extends Input
      */
     public static function create($name, $destPath = null, $dataPath = null)
     {
-        return new static($name);
+        return new static($name, $destPath, $dataPath);
     }
 
     /**
