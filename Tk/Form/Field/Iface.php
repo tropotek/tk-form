@@ -349,9 +349,11 @@ abstract class Iface extends \Tk\Form\Element
     public function setRequired($required = true)
     {
         if ($required) {
-            if (!$this->getForm() || $this->getForm()->isEnableRequiredAttr()) {
+            // TODO: Check this does not affect anything significant, as I want to remove all form
+            //       references in cases that the field is rendered without a form
+            //if (!$this->getForm() || $this->getForm()->isEnableRequiredAttr()) {
                 $this->setAttr('required');
-            }
+            //}
             $this->setAttr('data-required', 'required');
         } else {
             $this->removeAttr('required');
@@ -398,9 +400,13 @@ abstract class Iface extends \Tk\Form\Element
         // Field name attribute
         $template->setAttr($var, 'name', $this->getFieldName());
 
-        if ($this->isRequired() && !$this->getForm() && $this->getForm()->isEnableRequiredAttr()) {
-            $this->setRequired(false);
-        }
+        // TODO: I have removed this as this should not be an automatic option
+        //       Remove this once we can confirm this works without issue
+        //       I am not sure why this exists, but looks like it is for a specific case
+        //       At any rate when the form = null we cannot call isEnableRequiredAttr()
+//        if ($this->isRequired() && !$this->getForm() && $this->getForm()->isEnableRequiredAttr()) {
+//            $this->setRequired(false);
+//        }
 
         // Add attributes
         $template->setAttr($var, $this->getAttrList());
