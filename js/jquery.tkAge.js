@@ -43,6 +43,7 @@
   var tkAge = function (element, options) {
     // plugin vars
     var defaults = {
+      precision: 0,                           // number of dcimal places if 0 only years shown
       dod: '',                                // Date Of Deth, if set then this is the max age
       igaCss: 'input-group-append',           // (for Bootstrap 4 use: data-iga-css="input-group-btn")
       groupTpl: '<div class="input-group"><div class="tki-iga"><div class="input-group-text" title="Age">Age: 0</div></div></div>'
@@ -97,9 +98,12 @@
       );
       // if date <= now() then exit with 0
       if (now > dob) {
-        var ageDifMs = now.getTime() - dob.getTime();
-        var ageDate = new Date(ageDifMs); // miliseconds from epoch
-        age = Math.abs(ageDate.getUTCFullYear() - 1970);
+        age = ((now.getTime() - dob.getTime()) / (31557600000));
+        if (plugin.settings.precision > 0) {
+          age = age.toFixed(plugin.settings.precision);
+        } else {
+          age = Math.floor(age);
+        }
       }
       group.find('.input-group-text').text('Age: ' + age);
 
