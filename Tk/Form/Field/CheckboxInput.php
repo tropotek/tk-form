@@ -53,22 +53,20 @@ class CheckboxInput extends Input
      */
     public function load($values)
     {
-        // When the value does not exist it is ignored (may not be the desired result for unselected checkbox or empty select box)
+        $vals = array();
         if (array_key_exists($this->getName(), $values)) {
-            $this->setValue($values[$this->getName()]);
+            $vals[$this->getName()] = $values[$this->getName()];
         }
+        $vals[$this->getCbName()] = false;
+
+        if (isset($values[$this->getCbName()]) && $this->getCbName() == $values[$this->getCbName()]) {
+            $vals[$this->getCbName()] = true;
+        }
+        if (!count($vals)) $vals = null;
+        $this->setValue($vals);
         return $this;
     }
 
-    /**
-     * Get the field value(s).
-     *
-     * @return string|array
-     */
-    public function getValue()
-    {
-        return trim(parent::getValue());
-    }
 
     /**
      * @return string
@@ -129,6 +127,13 @@ class CheckboxInput extends Input
         if ($this->getCbTitle()) {
             $template->setAttr('checkbox', 'title', $this->getCbTitle());
         }
+        // Element Values
+        $vals = $this->getValue();
+        if (isset($vals[$this->getCbName()]) && $vals[$this->getCbName()])
+            $template->setAttr('checkbox', 'checked', 'checked');
+        if (isset($vals[$this->getName()]) && $vals[$this->getName()])
+            $template->setAttr('element', 'value', $vals[$this->getName()]);
+
 
         return $template;
     }
