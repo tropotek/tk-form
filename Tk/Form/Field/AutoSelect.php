@@ -17,39 +17,40 @@ class AutoSelect extends Select
     protected $course = null;
 
     /**
-     * @var \Dom\Template
+     * @var \Tk\Ui\Dialog\Dialog
      */
-    protected $parentTemplate = null;
-
-    /**
-     * @var \App\Ui\Dialog\SupervisorCreate
-     */
-    protected $supervisorDialog = null;
+    protected $dialog = null;
 
 
     /**
-     * @param \Uni\Db\Course $course
      * @param string $name
-     * @param \Tk\Form\Field\Option\ArrayIterator|array $optionIterator
-     * @throws \Tk\Form\Exception
+     * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject|null $optionIterator
+     * @param \Tk\Ui\Dialog\Dialog|null $dialog
+     * @return static
      */
-    public function __construct($course, $name, $optionIterator = null)
+    public static function createAutoSelect(string $name, $optionIterator = null, $dialog = null)
     {
-        parent::__construct($name, $optionIterator);
-        $this->course = $course;
+        $obj = new static($name, $optionIterator);
+        if ($dialog)
+            $obj->setDialog($dialog);
+        return $obj;
     }
 
-    /**select2.js
-     * @param \Dom\Template $parentTemplate
-     * @return $this
-     * @throws \Exception
-     * @throws \Tk\Form\Exception
+    /**
+     * @return \Tk\Ui\Dialog\Dialog
      */
-    public function enableSupervisorCreate($parentTemplate)
+    public function getDialog(): \Tk\Ui\Dialog\Dialog
     {
-        $this->parentTemplate = $parentTemplate;
-        $this->supervisorDialog = new \App\Ui\Dialog\SupervisorCreate('Create ' .
-            \App\Db\Phrase::findValue('supervisor', $this->course->getId()), $this->course);
+        return $this->dialog;
+    }
+
+    /**
+     * @param \Tk\Ui\Dialog\Dialog $dialog
+     * @return AutoSelect
+     */
+    public function setDialog(\Tk\Ui\Dialog\Dialog $dialog): AutoSelect
+    {
+        $this->dialog = $dialog;
         return $this;
     }
 
@@ -77,28 +78,27 @@ class AutoSelect extends Select
     {
         $template = parent::show();
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/select2/select2.js'));
-        $template->appendCssUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/select2/select2-bootstrap4.css'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.autoSelect.js'));
+        //$template->setAttr('element', 'data-ajax', \Tk\Uri::create('/ajax/supervisor/select2'));
 
-        $template->setAttr('element', 'data-ajax', \Tk\Uri::create('/ajax/supervisor/select2'));
-        $template->setAttr('element', 'data-course-id', $this->course->getId());
-
-        if ($this->supervisorDialog) {
+        if ($this->dialog) {
             $template->setVisible('enableCreate');
-            $template->setAttr('createBtn', 'data-modal-id', $this->supervisorDialog->getId());
-            $this->parentTemplate->appendBodyTemplate($this->supervisorDialog->show());
+            $template->setAttr('createBtn', 'data-modal-id', $this->dialog->getId());
+            $template->appendBodyTemplate($this->dialog->show());
 
-            $js = <<<JS
+        }
+
+        $js = <<<JS
 jQuery(function ($) {
+  $('select.tk-auto-select').autoSelect();
+
   // Open the supervisor select dialog on button click
-  $('.tk-form').on('click', '.btn-create-supervisor', function (e) {
+  $('.tk-form').on('click', '.btn-create-dialog', function (e) {
     $('#'+$(this).data('modalId')).modal('show');
   });
 });
 JS;
-            $this->parentTemplate->appendJs($js);
-        }
+        $template->appendJs($js);
 
         return $template;
     }
@@ -109,14 +109,13 @@ JS;
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="input-group select2-bootstrap-append" var="input-group">
-  <select var="element" class="form-control tk-supervisor-select"><option repeat="option" var="option"></option></select>
-  <span class="input-group-btn" choice="enableCreate">
-    <button class="btn btn-default btn-create-supervisor" type="button" var="createBtn"><i class="fa fa-plus"></i></button>
+<div class="input-group" var="input-group">
+  <select var="element" class="form-control tk-auto-select"><option repeat="option" var="option"></option></select>
+  <span class="input-group-append input-group-btn" choice="enableCreate">
+    <button class="btn btn-default btn-create-dialog" type="button" var="createBtn"><i class="fa fa-plus"></i></button>
   </span>
 </div>
 HTML;
-
         return \Dom\Loader::load($xhtml);
     }
 

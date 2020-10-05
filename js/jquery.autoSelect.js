@@ -30,13 +30,13 @@
     // plugin vars
     var defaults = {
       theme: 'bootstrap4',
-      sFormGroup: '.input-group',
+      sFormGroup: '.form-group',
       onFoo: function() {}
     };
 
     // Params
-    plugin.settings = {};
     var plugin = this;
+    plugin.settings = {};
     var $element = $(element);    // Should be a select element
     var $form = null;
     var $formGroup = null;
@@ -49,15 +49,11 @@
       }
       $form = $element.closest('form');
       $formGroup = $element.closest(plugin.settings.sFormGroup);
+      $formGroup.addClass('form-group-select2');
 
-      //$.fn.select2.defaults.set( "theme", "bootstrap" );
-      $element.select2({
-        placeholder: $element.attr('placeholder'),
-        theme: plugin.settings.theme,
-        tags: true,
-        //allowClear: true,
-        tokenSeparators: [','],
-        ajax: {
+      var ajax = null;
+      if ($element.data('ajax')) {
+        ajax = {
           url: $element.data('ajax'),
           dataType: 'json',
           delay: 250,
@@ -82,7 +78,17 @@
             };
           },
           cache: true
-        },
+        };
+      }
+
+
+      $element.select2({
+        placeholder: $element.attr('placeholder'),
+        //theme: plugin.settings.theme,
+        tags: true,
+        //allowClear: true,
+        tokenSeparators: [','],
+        ajax: ajax,
         createTag: function(params) {   // Disable tag creation
           return undefined;
         }
@@ -144,11 +150,5 @@
 
 })(jQuery);
 
-
-
-// jQuery(function($) {
-//   $('.tk-supervisor-select').autoSelect({});
-//
-// });
 
 
