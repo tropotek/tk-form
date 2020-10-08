@@ -79,19 +79,18 @@ class AutoSelect extends Select
         $template = parent::show();
 
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.autoSelect.js'));
-        //$template->setAttr('element', 'data-ajax', \Tk\Uri::create('/ajax/supervisor/select2'));
 
         if ($this->dialog) {
             $template->setVisible('enableCreate');
             $template->setAttr('createBtn', 'data-modal-id', $this->dialog->getId());
             $template->appendBodyTemplate($this->dialog->show());
-
         }
 
         $js = <<<JS
 jQuery(function ($) {
-  $('select.tk-auto-select').autoSelect();
-
+  if ($.fn.autoSelect !== undefined) {
+     $('select.tk-auto-select').autoSelect();
+  }
   // Open the supervisor select dialog on button click
   $('.tk-form').on('click', '.btn-create-dialog', function (e) {
     $('#'+$(this).data('modalId')).modal('show');
