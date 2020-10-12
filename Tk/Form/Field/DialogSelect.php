@@ -34,7 +34,7 @@ class DialogSelect extends \Tk\Form\Field\Select
         if ($form) {
             if (!$title)    // TODO: this may need a better auto naming system
                 $title = 'Create ' . ucwords($name);
-            $this->dialog = \Tk\Ui\Dialog\JsonForm::createFormDialog($form, $title);
+            $this->dialog = \Tk\Ui\Dialog\JsonForm::createJsonForm($form, $title);
         }
     }
 
