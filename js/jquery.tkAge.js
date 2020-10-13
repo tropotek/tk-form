@@ -80,7 +80,8 @@
      * @param group
      */
     var update = function(group) {
-      var age = 0;
+      var years = 0;
+      var months = 0;
       var now = new Date();
       if (plugin.settings.dod && $(plugin.settings.dod).length) {
         var dodVal = $(plugin.settings.dod).val();
@@ -98,14 +99,12 @@
       );
       // if date <= now() then exit with 0
       if (now > dob) {
-        age = ((now.getTime() - dob.getTime()) / (31557600000));
-        if (plugin.settings.precision > 0) {
-          age = age.toFixed(plugin.settings.precision);
-        } else {
-          age = Math.floor(age);
-        }
+        var diff = new Date(now.getTime() - dob.getTime());
+        years = diff.getUTCFullYear() - 1970;
+        months = diff.getUTCMonth();
+        //var days = diff.getUTCDate() - 1;
       }
-      group.find('.input-group-text').text('Age: ' + age);
+      group.find('.input-group-text').text('Age: ' + years + '.' + months);
 
     };
 
