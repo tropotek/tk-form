@@ -1,5 +1,14 @@
 #CHANGELOG#
 
+Ver 3.0.60 [2020-10-19]:
+-------------------------------
+  - Added a form dialog field to TK lib
+  - Added new age addon to date input
+  - updated PathCase field locations
+  - Added colour field to PathCase
+  - Updated Weight Field to Path CAse
+
+
 Ver 3.0.58 [2020-05-18]:
 -------------------------------
 
