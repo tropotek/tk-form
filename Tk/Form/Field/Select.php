@@ -200,6 +200,7 @@ class Select extends Iface
         $template->setAttr($var, 'value', $option->getValue());
         if ($this->isSelected($option->getValue())) {
             $template->setAttr($var, 'selected', 'selected');
+            $template->addCss($var, 'selected');
         }
 
         // Add attributes
