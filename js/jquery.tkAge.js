@@ -35,8 +35,13 @@
  */
 ;
 (function ($) {
+
+  // This plugin causes massive load/infinate loop issue with the dualListBox plugin
+  //   I have removed it as it is no longer used anyway. delete this file
+  return;
+
+
   /**
-   *
    * @param element Form
    * @param options Object
    */
