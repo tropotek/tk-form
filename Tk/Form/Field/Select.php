@@ -134,7 +134,7 @@ class Select extends Iface
     }
 
     /**
-     *  function ($template, $option, $var) { }
+     *  function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) { }
      *
      * @param callable $callable
      * @param int $priority
@@ -148,7 +148,7 @@ class Select extends Iface
 
     /**
      * Eg:
-     *  function ($template, $option, $var) { }
+     *  function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) { }
      *
      * @param callable|null $onShowOption
      * @return Select
