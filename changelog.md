@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.72 [2020-10-26]:
+-------------------------------
+
+
 Ver 3.0.70 [2020-10-22]:
 -------------------------------
   - Merge branch '3.0' of ssh://github.com/tropotek/tk-form into 3.0
