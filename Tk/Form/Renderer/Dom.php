@@ -163,7 +163,7 @@ class Dom extends Iface
         foreach ($tabGroups as $gname => $group) {
             $tabBox = $t->getRepeat('tabBox');
             if (!$tabBox)
-                throw new \Tk\Exception('No tabBox repeat available: `' . $gname . '`. Check tou have not double parsed the template.');
+                throw new \Tk\Exception('No tabBox repeat available: `' . $gname . '`. Check you have not double parsed the template.');
             foreach ($group as $field) {
                 $tabBox->setAttr('tabBox', 'id', $this->form->getId().$this->cleanName($gname));
                 $tabBox->setAttr('tabBox', 'data-name', $gname);
