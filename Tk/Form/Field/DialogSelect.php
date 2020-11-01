@@ -62,7 +62,6 @@ class DialogSelect extends \Tk\Form\Field\Select
 
         // We appendToThe body as to avoid a nested form issue.
         $template->appendBodyTemplate($this->dialog->show());
-
         $template->setAttr('modelBtn', 'data-target', '#'.$this->dialog->getId());
         $template->setAttr('modelBtn', 'data-toggle', 'modal');
         $template->setAttr('modelBtn', 'title', $this->dialog->getTitle());
@@ -70,18 +69,17 @@ class DialogSelect extends \Tk\Form\Field\Select
         $js = <<<JS
 jQuery(function($) {
   $('.tk-json-form').on('DialogForm:submit', function (e, data) {
-    // console.log('DialogForm:submit');
-    // console.log(data);
     // Add the new contact/id to the select and select it
     var select = $('[data-target="#'+$(this).attr('id')+'"]').closest('.form-group').find('select');
-    var opt = $('<option></option>');
-    opt.text(data.name + ' (' + data.email + ')');
-    opt.attr('value', data.id);
-    select.append(opt);
-    select.val(data.id);
-    
+    var option = $('<option></option>')
+        .attr('selected', true)
+        .text(data.name + ' (' + data.email + ')')
+        //.attr('disabled', 'disabled')
+        .val(data.id);
+    option.appendTo(select);
+    select.trigger('change');
   }).on('DialogForm:error', function (xhr) {
-    // console.log('DialogForm:error');
+    console.log('DialogForm:error');
     // console.log(xhr);
   });
   
