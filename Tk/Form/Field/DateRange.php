@@ -49,9 +49,9 @@ class DateRange extends \Tk\Form\Field\Iface
 
         $template->addCss('group', $this->getType());
 
-        $this->setAttr('placeholder', 'Date From');
+        $this->setAttr('placeholder', ucwords($this->getName()) . ' From');
         $this->decorateElement($template, 'dateStart');
-        $this->setAttr('placeholder', 'Date To');
+        $this->setAttr('placeholder', ucwords($this->getName()) . ' To');
         $this->decorateElement($template, 'dateEnd');
 
         $template->setAttr('dateStart', 'name', $this->getName() . 'Start');
