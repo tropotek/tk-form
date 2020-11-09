@@ -72,9 +72,10 @@ class File extends Input
         }
         $this->destPath = rtrim($destPath, '/');
 
-        if ($this->isArrayField()) {
-            $this->setAttr('multiple', 'multiple');
-        }
+        // Add manually setAttr('multiple, 'multiple)....
+//        if ($this->isArrayField()) {
+//            $this->setAttr('multiple', 'multiple');
+//        }
     }
 
     /**
