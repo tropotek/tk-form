@@ -461,7 +461,7 @@
           if (isImage(file.name)) {
             loadThumb(row, file);
           }
-          
+
           row.addClass('tfi-new');
           row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target')
             .removeAttr('href').addClass('disabled').text(basename(file.name));
