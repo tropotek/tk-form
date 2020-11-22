@@ -1,5 +1,31 @@
 #CHANGELOG#
 
+Ver 3.0.82 [2020-11-23]:
+-------------------------------
+  - Tagging and releasing branch `3.0` with version `3.0.78`.
+  - Tagging and releasing branch `3.0` with version `3.0.76`.
+  - Tagging and releasing branch `3.0` with version `3.0.74`.
+  - Tagging and releasing branch `3.0` with version `3.0.72`.
+  - Tagging and releasing branch `3.0` with version `3.0.70`.
+  - Merge branch '3.0' of ssh://github.com/tropotek/tk-form into 3.0
+  - Tagging and releasing branch `3.0` with version `3.0.68`.
+  - Tagging and releasing branch `3.0` with version `3.0.66`.
+  - Removed tkAge jQuery plugin as it interfears with dualListBox plugin
+  - Tagging and releasing branch `3.0` with version `3.0.64`.
+  - Tagging and releasing branch `3.0` with version `3.0.62`.
+  - Tagging and releasing branch `3.0` with version `3.0.60`.
+  - Added a form dialog field to TK lib
+  - Added new age addon to date input
+  - updated PathCase field locations
+  - Added colour field to PathCase
+  - Updated Weight Field to Path CAse
+  - Tagging and releasing branch `3.0` with version `3.0.58`.
+  - Tagging and releasing branch `3.0` with version `3.0.56`.
+  - Added new placement table action to change status of bulk placements
+  - Tagging and releasing branch `3.0` with version `3.0.54`.
+  - Tagging and releasing branch `M	Tk/Form/Field/CheckboxGroup.php` with version `3.0.52`.
+
+
 Ver 3.0.78 [2020-11-10]:
 -------------------------------
 
