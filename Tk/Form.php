@@ -618,7 +618,7 @@ class Form extends Form\Element
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
         if (!$field || !$field instanceof Iface) {
-            throw new Exception('Type not found: `' . $fieldName . '`');
+            throw new Exception('Form Field not found: `' . $fieldName . '`');
         }
         $field->setValue($value);
         return $field;
