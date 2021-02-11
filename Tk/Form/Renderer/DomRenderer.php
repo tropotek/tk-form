@@ -7,6 +7,10 @@ use Tk\Form\Event;
 use Tk\Form;
 
 /**
+ * This is the new Form renderer that renderes the fields in order
+ * Non tabed and fieldset fields should be rendered after fieldsets and tabgroups
+ * if they are added after them, the Dom.php renderers non-grouped fields together for some reason
+ *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
