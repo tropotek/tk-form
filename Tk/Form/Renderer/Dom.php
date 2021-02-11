@@ -267,6 +267,8 @@ class Dom extends Iface
 
             if (!$this->getLayout()) {
                 $formRow = $t->getRepeat('form-row');
+                $formRow->addCss('form-row', 'tk-'.\Tk\ObjectUtil::basename($field) . '-row');
+                $formRow->addCss('form-row', 'tk-'.$field->getId() . '-row');
                 if ($html instanceof \Dom\Template) {
                     $formRow->appendTemplate('form-row', $html);
                 } else {
@@ -281,6 +283,8 @@ class Dom extends Iface
                 }
                 if (!$this->formRow || $layoutCol->isRowEnabled()) {
                     $this->formRow = $t->getRepeat('form-row');
+                    $this->formRow ->addCss('form-row', 'tk-'.lcfirst(\Tk\ObjectUtil::basename($field)) . '-row');
+                    $this->formRow ->addCss('form-row', 'tk-'.$field->getId() . '-row');
                 }
 
                 if ($html instanceof \Dom\Template) {
