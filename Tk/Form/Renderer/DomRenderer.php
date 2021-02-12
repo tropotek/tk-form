@@ -7,6 +7,7 @@ use Tk\Form\Event;
 use Tk\Form;
 
 /**
+ * --- EXPERIMENTAL ----
  * This is the new Form renderer that renderes the fields in order
  * Non tabed and fieldset fields should be rendered after fieldsets and tabgroups
  * if they are added after them, the Dom.php renderers non-grouped fields together for some reason
@@ -14,8 +15,9 @@ use Tk\Form;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated Testing class to see if I can fix the fields render order (For the ROT Entry Form)
  */
-class Dom extends Iface
+class DomRenderer extends Iface
 {
 
     /**
@@ -121,30 +123,58 @@ class Dom extends Iface
         $setRow = null;
         /* @var $field Field\Iface */
         foreach ($fieldList as $field) {
+            \Tk\Log::debug($field->getName() . ' [' . $field->getFieldset() . ']');
 
             if (!$field->getTabGroup()) {
-                if (!$field->getFieldset()) {
-                    $this->showField($field, $t, 'fields');
-                } else {
-                    if ($fieldsetName != $field->getFieldset()) {
-                        if ($this->formRow) {
-                            $this->formRow->appendRepeat();
-                            $this->formRow = null;
-                        }
-                        if ($setRow) {
-                            $setRow->appendRepeat('fields');
-                        }
+
+                if ($fieldsetName != $field->getFieldset()) {
+                    if ($this->formRow) {
+                        $this->formRow->appendRepeat();
+                        $this->formRow = null;
+                    }
+                    if ($setRow) {
+                        $setRow->appendRepeat('fields');
+                        $setRow = null;
+                    }
+                    if ($setRow == null && $field->getFieldset()) {
                         $setRow = $t->getRepeat('fieldset');
                         $setRow->insertText('legend', $field->getFieldset());
                         $setRow->addCss('fieldset', $field->getFieldsetCss());
-                        $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()) );
-
+                        $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()));
                     }
+                }
+
+                if (!$field->getFieldset()) {
+                    $this->showField($field, $t, 'fields');
+                } else {
                     $this->showField($field, $setRow, 'fieldset');
                 }
 
+
+//                if (!$field->getFieldset()) {
+//                    $this->showField($field, $t, 'fields');
+//                } else {
+//                    if ($fieldsetName != $field->getFieldset()) {
+//                        if ($this->formRow) {
+//                            $this->formRow->appendRepeat();
+//                            $this->formRow = null;
+//                        }
+//                        if ($setRow) {
+//                            $setRow->appendRepeat('fields');
+//                        }
+//                        $setRow = $t->getRepeat('fieldset');
+//                        $setRow->insertText('legend', $field->getFieldset());
+//                        $setRow->addCss('fieldset', $field->getFieldsetCss());
+//                        $setRow->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $field->getFieldset()) );
+//
+//                    }
+//                    $this->showField($field, $setRow, 'fieldset');
+//                }
+
                 $fieldsetName = $field->getFieldset();
                 $i++;
+
+
             } else {
                 if (!isset($tabGroups[$field->getTabGroup()])) {
                     $tabGroups[$field->getTabGroup()] = array();
