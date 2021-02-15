@@ -2,6 +2,7 @@
 namespace Tk\Form\Renderer;
 
 use Dom\Template;
+use Tk\Collection;
 use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
@@ -24,6 +25,12 @@ class DomRenderer extends Iface
      * @var null|\Dom\Repeat
      */
     protected $formRow = null;
+
+    protected $fieldsetTemplates = [];
+
+    protected $tabGroupTemplates = [];
+
+    protected $renderQueue = [];
 
 
     /**
@@ -113,6 +120,218 @@ class DomRenderer extends Iface
      */
     public function showFields(Template $t)
     {
+        // get fields
+        $tree = $this->makeFieldRenderTree($this->form->getFieldList());
+        //vd(\Tk\Debug\VarDump::varToString($tree));
+        /* @var $fields Field\Iface|array */
+        foreach ($tree as $name => $fields) {
+            //\Tk\Log::debug($field->getName() . sprintf('[%s] [%s] ', $field->getTabGroup(), $field->getFieldset()));
+            if (is_array($fields) && substr($name,0 , 3) == 'tg-') {     // Render Tab group
+                $tpl = $this->renderTabGroup(substr($name, 3), $fields);
+            } else if (is_array($fields) && substr($name,0 , 3) == 'fs-') {  // Render Fieldset
+                $tpl = $this->renderFieldset(substr($name, 3), '', $fields);
+            } else {    // render single field
+                $tpl = $this->renderField($fields);
+            }
+//vd($tpl->toString(false));
+            if ($fields instanceof Event\Iface || $fields instanceof Field\Hidden) {
+                $t->appendTemplate('events', $tpl);
+            } else {
+                $t->appendTemplate('fields', $tpl);
+            }
+
+        }
+    }
+
+
+
+    /**
+     * @param array $fieldList
+     * @return array
+     */
+    public function makeFieldRenderTree($fieldList)
+    {
+        $sets = array();
+        $rowId = 0;
+        /* @var $field Field\Iface */
+        foreach ($fieldList as $name => $field) {
+
+            $layoutCol = $this->getLayout()->getCol($field->getName());
+            if (!$layoutCol || $layoutCol->isRowEnabled()) {
+                $rowId++;
+            }
+            //\Tk\Log::debug($field->getName() . sprintf('[%s] [%s] ', $field->getTabGroup(), $field->getFieldset()));
+            if ($field->getTabGroup()) {
+                if ($field->getFieldset()) {
+                    // has tabGroup and fieldset
+                    $sets['tg-' . $field->getTabGroup()]['fs-' . $field->getFieldset()]['fields']['row-'.$rowId][] = $field;
+                } else {
+                    // has tabgroup only
+                    $sets['tg-' . $field->getTabGroup()]['row-'.$rowId][] = $field;
+                }
+            } else {
+                if ($field->getFieldset()) {
+                    // has fieldset
+                    $sets['fs-' . $field->getFieldset()]['row-'.$rowId][] = $field;
+                } else {
+                    // standalone field row
+                    $sets['row-'.$rowId][] = $field;
+                }
+            }
+
+        }
+        return $sets;
+    }
+
+    /**
+     *  array [
+     *     'fs-...' => [  .. Array Of fieldsets ... ]
+     *     'fields' =>  [ ... Array Of fields ... ]
+     *  ]
+     *
+     * @param string $tabGroup
+     * @param Field\Iface[]|array $fields
+     * @param Template $t
+     */
+    protected function renderTabGroup($tabGroup, $fields)
+    {
+        $queue = [];
+        $t = $this->getTabGroupTemplate($tabGroup);
+        //vd(\Tk\Debug\VarDump::varToString($tree));
+
+        // TODO: Render tabGroup details
+
+        foreach ($fields as $name => $tree) {
+            if (is_array($fields) && substr($name,0 , 3) == 'fs-') {  // Render Fieldset
+                $tpl = $this->renderFieldset(substr($name, 3), $tabGroup, $fields);
+            } else {    // render single field
+                $tpl = $queue[$name] = $this->renderField($fields);
+            }
+            $t->appendTemplate('tabGroup', $tpl);
+        }
+        return $t;
+    }
+
+    /**
+     *  array [
+     *     'fs-...' => [  .. Array Of fieldsets ... ]
+     *     'fields' =>  [ ... Array Of fields ... ]
+     *  ]
+     *
+     * @param string $fieldset
+     * @param string $tabGroup
+     * @param Field\Iface[]|array $fields
+     * @param Template $t
+     */
+    protected function renderFieldset($fieldset, $tabGroup = '', $fields)
+    {
+//        vd($fieldset);
+//        vd(\Tk\Debug\VarDump::varToString($fields, 2));
+        $t = $this->getFieldSetTemplate($fieldset, $tabGroup);
+
+        // TODO: Render fieldset details
+        $t->insertText('legend', $fieldset);
+        $t->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $fieldset));
+
+        $css = '';
+        /** @var Field\Iface[] $children */
+        foreach ($fields as $children) {
+            $css = $children[0]->getFieldsetCss();
+            $t->appendTemplate('fieldset', $this->renderField($children));
+        }
+        $t->addCss('fieldset', $css);
+        vd($t->toString(false));
+        return $t;
+    }
+
+    /**
+     * @param Field\Iface[]|array $fields
+     * @param Template $t
+     */
+    protected function renderField($fields)
+    {
+        //vd(\Tk\Debug\VarDump::varToString($field, 2));
+        $t = $this->getFieldTemplate();
+
+        foreach ($fields as $field) {
+            $html = $field->show();
+            if ($field instanceof Event\Iface || $field instanceof Field\Hidden) {
+                return $html;
+            }
+            if ($this->getFieldGroupRenderer()) {
+                $this->getFieldGroupRenderer()->setLayoutCol(null);
+                if ($this->getLayout()) {
+                    $this->getFieldGroupRenderer()->setLayoutCol($this->getLayout()->getCol($field->getName()));
+                }
+                $this->getFieldGroupRenderer()->setField($field);
+                $html = $this->getFieldGroupRenderer()->show();
+            }
+            if ($html instanceof \Dom\Template) {
+                $t->appendTemplate('form-row', $html);
+            } else {
+                $t->appendHtml('form-row', $html);
+            }
+        }
+
+
+        // TODO: Render field-row details
+//        $t->addCss('form-row', 'tk-' . lcfirst(\Tk\ObjectUtil::basename($field)) . '-row');
+//        $t->addCss('form-row', 'tk-' . $field->getId() . '-row');
+
+        return $t;
+    }
+
+
+    /**
+     * @param string $fieldname
+     * @param string $fieldset
+     * @param string $tabgroup
+     * @return string
+     */
+    private function hash($fieldname, $fieldset = '', $tabgroup = '')
+    {
+        return md5(sprintf('%s%s%s', $fieldname, $fieldset, $tabgroup));
+    }
+
+
+
+
+
+    /**
+     * @param array $fieldList
+     * @return array
+     */
+    public function groupFieldset1($fieldList)
+    {
+        $sets = array();
+
+        /* @var $field Field\Iface */
+        foreach ($fieldList as $name => $field) {
+            $setName = $field->getFieldset();
+            if (!$setName) {
+                $sets[][$name] = $field;
+                continue;
+            }
+            if ($setName && !isset($sets[$setName])) $sets[$setName] = array();
+            $sets[$setName][$name] = $field;
+        }
+        $grouped = array();
+        foreach ($sets as $fieldList) {
+            foreach ($fieldList as $name => $field) {
+                $grouped[$name] = $field;
+            }
+        }
+        return $grouped;
+    }
+
+    /**
+     * Render Fields
+     *
+     * @param Template $t
+     * @throws \Exception
+     */
+    public function showFields1(Template $t)
+    {
         $i = 0;
         $tabGroups = array();
 
@@ -123,7 +342,7 @@ class DomRenderer extends Iface
         $setRow = null;
         /* @var $field Field\Iface */
         foreach ($fieldList as $field) {
-            \Tk\Log::debug($field->getName() . ' [' . $field->getFieldset() . ']');
+          //  \Tk\Log::debug($field->getName() . ' [' . $field->getFieldset() . ']');
 
             if (!$field->getTabGroup()) {
 
@@ -239,49 +458,12 @@ class DomRenderer extends Iface
         }
     }
 
-
-    /**
-     * @param string $str
-     * @return string
-     */
-    protected function cleanName($str)
-    {
-        return preg_replace('/[^a-z0-9]/i', '_', $str);
-    }
-
-    /**
-     * @param array $fieldList
-     * @return array
-     */
-    public function groupFieldset($fieldList)
-    {
-        $sets = array();
-
-        /* @var $field Field\Iface */
-        foreach ($fieldList as $name => $field) {
-            $setName = $field->getFieldset();
-            if (!$setName) {
-                $sets[][$name] = $field;
-                continue;
-            }
-            if ($setName && !isset($sets[$setName])) $sets[$setName] = array();
-            $sets[$setName][$name] = $field;
-        }
-        $grouped = array();
-        foreach ($sets as $fieldList) {
-            foreach ($fieldList as $name => $field) {
-                $grouped[$name] = $field;
-            }
-        }
-        return $grouped;
-    }
-
     /**
      * @param Field\Iface $field
      * @param Template $t
      * @param string $var ???? Not being used???
      */
-    protected function showField(Field\Iface $field, Template $t, $var = 'fields')
+    protected function showField1(Field\Iface $field, Template $t, $var = 'fields')
     {
         if ($field instanceof Event\Iface || $field instanceof Field\Hidden) {
             $html = $field->show();
@@ -335,14 +517,69 @@ class DomRenderer extends Iface
     }
 
     /**
+     * [used in showFields1()]
+     * @param string $str
+     * @return string
+     */
+    protected function cleanName($str)
+    {
+        return preg_replace('/[^a-z0-9]/i', '_', $str);
+    }
+
+
+
+    /**
+     * @return \Dom\Template
+     */
+    public function getFieldTemplate()
+    {
+        $xhtml = <<<HTML
+<div class="form-row" var="form-row"></div>
+HTML;
+        return \Dom\Loader::load($xhtml);
+    }
+
+    /**
+     * @return \Dom\Template
+     */
+    public function getFieldsetTemplate($fieldset, $tabGroup = '')
+    {
+        if (!isset($this->fieldsetTemplates[$tabGroup][$fieldset])) {
+            $xhtml = <<<HTML
+    <fieldset var="fieldset">
+      <legend var="legend"></legend>
+    </fieldset>
+HTML;
+            $this->fieldsetTemplates[$tabGroup][$fieldset] =  \Dom\Loader::load($xhtml);
+        }
+        return $this->fieldsetTemplates[$tabGroup][$fieldset];
+    }
+
+    /**
+     * @return \Dom\Template
+     */
+    public function getTabGroupTemplate($tabGroup)
+    {
+        if (!isset($this->tabGroupTemplates[$tabGroup])) {
+            $xhtml = <<<HTML
+<div class="formTabs" var="tabs" choice="tabs">
+  <div class="tab-content" var="tab-content">
+    <div class="tab-pane" var="tabGroup" var-old="tabBox"></div>
+  </div>
+</div>
+HTML;
+            $this->tabGroupTemplates[$tabGroup] = \Dom\Loader::load($xhtml);
+        }
+        return $this->tabGroupTemplates[$tabGroup];
+    }
+
+    /**
      * @return \Dom\Template
      */
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="">
-<!-- This binds too late if we want to access the tab events. moved to tk-base core.js -->
-<!--<script src="/vendor/ttek/tk-form/js/form.js"></script>-->
+<div>
   <form class="tk-form" var="form" role="form">
     <div class="alert alert-danger clear" choice="errors">
       <button data-dismiss="alert" class="close noblock">×</button>
@@ -350,29 +587,30 @@ class DomRenderer extends Iface
       <span var="errors"></span>
     </div>
 
-    <div class="tk-form-fields clearfix" var="fields">
+    <div class="tk-form-fields clearfix" var="fields"></div>
 
-      <div class="formTabs" var="tabs" choice="tabs">
-        <div class="tab-content" var="tab-content">
+<!--      <div class="formTabs" var="tabs" choice="tabs">-->
+<!--        <div class="tab-content" var="tab-content">-->
+<!--          <div var="tabBox" repeat="tabBox" class="tab-pane">-->
+<!--          -->
+<!--            <fieldset var="fieldset" repeat="fieldset">-->
+<!--              <legend var="legend"></legend>-->
+<!--              <div class="form-row" var="form-row" repeat="form-row"></div>-->
+<!--            </fieldset>-->
+<!--            -->
+<!--            <div class="form-row" var="form-row" repeat="form-row"></div>-->
+<!--            -->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-          <div var="tabBox" repeat="tabBox" class="tab-pane">
-            <fieldset var="fieldset" repeat="fieldset">
-              <legend var="legend"></legend>
-              <div class="form-row" var="form-row" repeat="form-row"></div>
-            </fieldset>
-            <div class="form-row" var="form-row" repeat="form-row"></div>
-          </div>
-
-        </div>
-      </div>
-
-      <fieldset var="fieldset" repeat="fieldset">
-        <legend var="legend"></legend>
-          <div class="form-row" var="form-row" repeat="form-row"></div>
-      </fieldset>
-      <div class="form-row" var="form-row" repeat="form-row"></div>
-      
-    </div>
+<!--      <fieldset var="fieldset" repeat="fieldset">-->
+<!--        <legend var="legend"></legend>-->
+<!--          <div class="form-row" var="form-row" repeat="form-row"></div>-->
+<!--      </fieldset>-->
+<!--      -->
+<!--      <div class="form-row" var="form-row" repeat="form-row"></div>-->      
+<!--    </div>-->
 
     <div class="form-row tk-form-events clearfix" var="events"></div>
   </form>
