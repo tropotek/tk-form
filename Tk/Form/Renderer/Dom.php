@@ -10,6 +10,7 @@ use Tk\Form;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated Use the new Renderer\DomRenderer this should no longer be used.
  */
 class Dom extends Iface
 {
@@ -321,7 +322,7 @@ class Dom extends Iface
       <div class="formTabs" var="tabs" choice="tabs">
         <div class="tab-content" var="tab-content">
 
-          <div var="tabBox" repeat="tabBox" class="tab-pane">
+          <div class="tab-pane" var="tabBox" repeat="tabBox">
             <fieldset var="fieldset" repeat="fieldset">
               <legend var="legend"></legend>
               <div class="form-row" var="form-row" repeat="form-row"></div>
