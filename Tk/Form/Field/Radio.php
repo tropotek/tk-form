@@ -74,6 +74,7 @@ class Radio extends Select
 
             $tOpt->setAttr('element', 'id', $this->getId() . '-' . $i);
             $tOpt->setAttr('label', 'for', $this->getId() . '-' . $i);
+            $tOpt->setAttr('label', 'title', $option->getName());
 
             if (is_callable($this->onShowOption)) {
                 call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));

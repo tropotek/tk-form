@@ -3,6 +3,7 @@ namespace Tk\Form\Field;
 
 use Tk\Form\Exception;
 use Tk\Form;
+use Tk\Ui\Css;
 
 /**
  *
@@ -49,11 +50,16 @@ abstract class Iface extends \Tk\Form\Element
      * @var string
      */
     protected $fieldset = '';
-        
+
     /**
-     * @var string
+     * @var Css
      */
-    protected $fieldsetCss = '';
+    protected $fieldsetCss = null;
+
+    /**
+     * @var Css
+     */
+    protected $formGroupCss = null;
 
     /**
      * @var string
@@ -72,6 +78,8 @@ abstract class Iface extends \Tk\Form\Element
     public function __construct($name)
     {
         $this->setName($name);
+        $this->fieldsetCss = new Css();
+        $this->formGroupCss = new Css();
     }
 
     /**
@@ -201,7 +209,6 @@ abstract class Iface extends \Tk\Form\Element
         return $this;
     }
 
-
     /**
      * Add a CSS Class name to the node
      *
@@ -225,7 +232,6 @@ abstract class Iface extends \Tk\Form\Element
     {
         return parent::removeCss($class, $fixName);
     }
-
 
     /**
      * test if the array is sequential or associative
@@ -251,7 +257,7 @@ abstract class Iface extends \Tk\Form\Element
      */
     public function getFieldsetCss()
     {
-        return $this->fieldsetCss;
+        return $this->fieldsetCss->getCssString();
     }
 
     /**
@@ -263,7 +269,25 @@ abstract class Iface extends \Tk\Form\Element
     {
         $this->fieldset = $fieldset;
         if ($css)
-            $this->fieldsetCss = $css;
+            $this->fieldsetCss->addCss($css);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormGroupCss()
+    {
+        return $this->formGroupCss->getCssString();
+    }
+
+    /**
+     * @param string $css
+     * @return $this
+     */
+    public function addFormGroupCss($css = '')
+    {
+        $this->formGroupCss->addCss($css);
         return $this;
     }
 
@@ -284,8 +308,6 @@ abstract class Iface extends \Tk\Form\Element
         $this->tabGroup = $tabGroup;
         return $this;
     }
-
-
 
 
     /**

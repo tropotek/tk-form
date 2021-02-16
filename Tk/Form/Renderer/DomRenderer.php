@@ -7,6 +7,7 @@ use Tk\Form\Field;
 use Tk\Form\Event;
 use Tk\Form;
 use Tk\Str;
+use Tk\Ui\Css;
 
 /**
  * The new (2021) Form Renderer\DomRenderer should mirror the renderer of the Dom\Renderer class
@@ -23,6 +24,18 @@ class DomRenderer extends Iface
      * @var null|\Dom\Repeat
      */
     protected $formRow = null;
+
+    /**
+     * @var array|\Dom\Template[]
+     */
+    protected $tabGroupTemplates = [];
+
+    /**
+     * @var array|\Dom\Template[]
+     */
+    protected $fieldsetTemplates = [];
+
+
 
     /**
      * @param Form $form    //TODO: Once we remove the setFieldGroupRenderer() we can remove the form and use setForm()
@@ -99,18 +112,23 @@ class DomRenderer extends Iface
     {
         // Build a render tree so we render the tabGroups, fieldsets and fieldRows in the correct order
         $fields = $this->makeFieldRenderTree($this->form->getFieldList());
+        $show = array();
+
         /* @var $children Field\Iface|array */
         foreach ($fields as $rowId => $children) {
             if ($rowId == 'events-00') continue;
             if (is_array($children) && substr($rowId,0 , 3) == 'tg-') {     // Render Tab group
                 $tpl = $this->renderTabGroup(substr($rowId, 3), $children);
                 $t->appendTemplate('tab-content', $tpl);
+                $show['tabs'] = true;
             } else if (is_array($children) && substr($rowId,0 , 3) == 'fs-') {  // Render Fieldset
                 $tpl = $this->renderFieldset(substr($rowId, 3), '', $children);
                 $t->appendTemplate('fields', $tpl);
+                $show['fields'] = true;
             } else {    // render single field
                 $tpl = $this->renderField($children, $rowId);
                 $t->appendTemplate('fields', $tpl);
+                $show['fields'] = true;
             }
         }
 
@@ -118,7 +136,11 @@ class DomRenderer extends Iface
             foreach ($fields['events-00'] as $colId => $field) {
                 $tpl = $field->show();
                 $t->appendTemplate('events', $tpl);
+                $show['events'] = true;
             }
+        }
+        foreach ($show as $choice => $v) {
+            $t->setVisible($choice, true);
         }
     }
 
@@ -154,7 +176,8 @@ class DomRenderer extends Iface
     {
         $t = $this->getFieldSetTemplate($fieldset, $tabGroup);
         $t->insertText('legend', $fieldset);
-        $t->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $fieldset));
+        $t->addCss('fieldset', lcfirst(preg_replace('/[^a-z0-9_-]/i', '', $fieldset)));
+        //$t->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $fieldset));
 
         $css = '';
         /** @var Field\Iface[] $children */
@@ -180,6 +203,7 @@ class DomRenderer extends Iface
         else
             $t->addCss('form-row', 'tk-row-'.current($fields)->getId());
 
+        $rowCss = new Css();
         foreach ($fields as $field) {
             if ($field instanceof Event\Iface || $field instanceof Field\Hidden) continue;
             $html = $field->show();
@@ -189,11 +213,14 @@ class DomRenderer extends Iface
                     $this->getFieldGroupRenderer()->setLayoutCol($this->getLayout()->getCol($field->getName()));
                 $this->getFieldGroupRenderer()->setField($field);
                 $html = $this->getFieldGroupRenderer()->show();
+                $rowCss->addCss($field->getFormGroupCss());
             }
             if ($html instanceof \Dom\Template)
                 $t->appendTemplate('form-row', $html);
-             else
+            else
                 $t->appendHtml('form-row', $html);
+
+            $t->addCss('form-row', $rowCss->getCssString());
         }
         return $t;
     }
@@ -288,13 +315,13 @@ HTML;
       <span var="errors"></span>
     </div>
 
-    <div class="formTabs" var="tabs">
+    <div class="formTabs" var="tabs" choice="tabs">
       <div class="tab-content" var="tab-content"></div>
     </div>
 
-    <div class="tk-form-fields clearfix" var="fields"></div>
+    <div class="tk-form-fields clearfix" var="fields" choice="fields"></div>
 
-    <div class="form-row tk-form-events clearfix" var="events"></div>
+    <div class="form-row tk-form-events clearfix" var="events" choice="events"></div>
   </form>
 
 </div>
