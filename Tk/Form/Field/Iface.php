@@ -270,8 +270,11 @@ abstract class Iface extends \Tk\Form\Element
     public function setFieldset($fieldset, $css = '')
     {
         $this->fieldset = $fieldset;
-        if ($css)
+        if ($css) {
+            if (!$this->fieldsetCss)
+                $this->fieldsetCss = new Css();
             $this->fieldsetCss->addCss($css);
+        }
         return $this;
     }
 
@@ -291,6 +294,8 @@ abstract class Iface extends \Tk\Form\Element
      */
     public function addFormGroupCss($css = '')
     {
+        if (!$this->formGroupCss)
+            $this->formGroupCss = new Css();
         $this->formGroupCss->addCss($css);
         return $this;
     }
