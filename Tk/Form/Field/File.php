@@ -436,7 +436,7 @@ class File extends Input
     {
         $xhtml = <<<HTML
 <div class="tk-file-control">
-  <input type="text" class="form-control" var="element"/>
+  <input type="text" class="form-control form-control-lg" var="element"/>
   <div class="tk-file-delete" choice="delete" var="delWrapper">
     <input type="checkbox" class="" var="delete" id="file-del"/> <label for="file-del" var="label"> Delete File</label>
   </div>
