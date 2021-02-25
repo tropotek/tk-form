@@ -115,6 +115,7 @@ class Select extends Iface
      */
     public function load($values)
     {
+        vd($values);
         if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
             $this->setValue(null);
             if ($this->isArrayField()) {
@@ -169,9 +170,9 @@ class Select extends Iface
     public function isSelected($val = '')
     {
         $value = $this->getValue();
-
         // NOTE: I have tried to update this so that null, '' and false are all separate and selectable as needed...
         if ($value !== null && $val !== null) {
+vd($this->getName(), $val, $value);
             if (is_array($value)) {
                 if (in_array($val, $value))
                     return true;
