@@ -41,8 +41,7 @@ class Form extends Form\Element
 
     const METHOD_POST               = 'post';
     const METHOD_GET                = 'get';
-
-
+    
 
     /**
      * @var string
