@@ -58,6 +58,11 @@ class DialogSelect extends \Tk\Form\Field\Select
      */
     public function show()
     {
+        $this->dialog->addCss('tk-dialog-select');
+        $this->dialog->setAttr('data-select-id', $this->getId());
+        $this->dialog->setAttr('data-form-id', $this->getForm()->getId());
+        $this->dialog->setAttr('data-reset-on-hide', true);
+
         $template = parent::show();
 
         // We appendToThe body as to avoid a nested form issue.
@@ -67,37 +72,33 @@ class DialogSelect extends \Tk\Form\Field\Select
         $template->setAttr('modelBtn', 'title', $this->dialog->getTitle());
 
         $js = <<<JS
-jQuery(function($) {
+jQuery(function($) {  
   
-  $('.tk-create-select').each(function () {
-    var select = $(this).find('select');
-    var form = $(select.get(0).form);
-    form.on('DialogForm:submit', function (e, data) {
+  function init() {
+    var form = $(this);
+    var dialog = form.closest('.modal');
+    dialog.on('DialogForm:submit', function (e, data) {
       // Add the new contact/id to the select and select it
-      var select = $('[data-target="#'+$(this).attr('id')+'"]').closest('.form-group').find('select');
+      var select = $('#' + $(this).data('formId') + ' #' + $(this).data('selectId'));
       var option = $('<option></option>')
-          .attr('selected', true)
+          .attr('selected', 'selected')
           .text(data.name + ' (' + data.email + ')')
           //.attr('disabled', 'disabled')
           .val(data.id);
       option.appendTo(select);
       select.trigger('change');
     }).on('DialogForm:error', function (e, xhr) {
-      var dialog = $(this).closest('.modal');
+      //var dialog = $(this).closest('.modal');
       if (dialog.attr('id') !== $(e.currentTarget).attr('id')) return;
-      console.log('\Tk\Form\FieldDialogSelect: DialogForm:error');
-      console.log(dialog);
-      console.log(arguments);
+      console.log('\Tk\Form\Field\DialogSelect: DialogForm:error');
     });
-    
-  });
+  };
   
+  $('.tk-dialog-select form').on('init', 'body', init).each(init);
 });
 JS;
 
         $template->appendJs($js);
-
-
 
         return $template;
     }
