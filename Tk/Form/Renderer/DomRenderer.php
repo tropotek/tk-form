@@ -239,7 +239,9 @@ class DomRenderer extends Iface
                 $sets['events-00'][] = $field;
                 continue;
             }
-            $layoutCol = $this->getLayout()->getCol($field->getName());
+            $layoutCol = null;
+            if ($this->getLayout())
+                $layoutCol = $this->getLayout()->getCol($field->getName());
             if (!$layoutCol || $layoutCol->isRowEnabled()) {
                 $rowId++;
             }
