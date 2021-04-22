@@ -51,6 +51,7 @@
       gmapSelector: '.tk-gmap-select',
       toggleBtnSelector: '.btn-toggle',
       defaultMode: 'auto',
+      manualBtn: false,
       markerIcon: null,
       fieldNames: {
         address: 'address',
@@ -70,14 +71,25 @@
       onUpdateMode: function (plugin) {
         if ($(this).data('editMode') === 'auto') {
           $.each(fields, function () {
-            if ($(this).is('[name=address]')) return;
+
+            if (
+              $(this).is('[name=address]') ||
+              $(this).is('[name=mapLat]') ||
+              $(this).is('[name=mapLng]') ||
+              $(this).is('[name=mapZoom]')
+            ) return;
             var parent = $(this).closest('.form-group');
             parent.hide();
           });
           form.find('[name='+plugin.settings.fieldNames[0]+']').show();
         } else {
           $.each(fields, function () {
-            if ($(this).is('[name=address]')) return;
+            if (
+              $(this).is('[name=address]') ||
+              $(this).is('[name=mapLat]') ||
+              $(this).is('[name=mapLng]') ||
+              $(this).is('[name=mapZoom]')
+            ) return;
             var parent = $(this).closest('.form-group');
             parent.show();
           });
@@ -108,22 +120,26 @@
         }
       }
 
+      if (plugin.settings.manualBtn) {
+        $element.data('editMode', plugin.settings.defaultMode);
+        // Bind the manual edit toggle button
+        $element.parent().find(plugin.settings.toggleBtnSelector).on('click', function () {
+          var input = $(this).closest('.form-group').find('input.form-control');
+          if (input.data('editMode') === 'auto') {
+            input.data('editMode', 'manual');
+          } else {
+            input.data('editMode', 'auto');
+          }
+          updateFieldMode();
+        });
 
-      $element.data('editMode', plugin.settings.defaultMode);
-      // Bind the manual edit toggle button
-      $element.parent().find(plugin.settings.toggleBtnSelector).on('click', function () {
-        var input = $(this).closest('.form-group').find('input.form-control');
-        if (input.data('editMode') === 'auto') {
-          input.data('editMode', 'manual');
-        } else {
-          input.data('editMode', 'auto');
-        }
+        // hide address fields by default excecpt the "address" field itself
+        // 'auto' use google and hide fields, 'manual' use all address fields
         updateFieldMode();
-      });
-
-      // hide address fields by default excecpt the "address" field itself
-      // 'auto' use google and hide fields, 'manual' use all address fields
-      updateFieldMode();
+      } else {
+        $element.parent().find(plugin.settings.toggleBtnSelector).parent().hide();
+        $element.parent().removeClass('input-group input-append').addClass('form-group');
+      }
 
       if ($element.attr('data-marker-icon') !== undefined && plugin.settings.markerIcon === null) {
         plugin.settings.markerIcon = $element.attr('data-marker-icon');
