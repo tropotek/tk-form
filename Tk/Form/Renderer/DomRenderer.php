@@ -323,7 +323,8 @@ HTML;
 
     <div class="tk-form-fields clearfix" var="fields" choice="fields"></div>
 
-    <div class="form-row tk-form-events clearfix" var="events" choice="events"></div>
+<!--    <div class="form-row tk-form-events clearfix" var="events" choice="events"></div>-->
+    <div class="form-group tk-form-events clearfix" var="events" choice="events"></div>
   </form>
 
 </div>
