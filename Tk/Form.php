@@ -301,6 +301,21 @@ class Form extends Form\Element
     }
 
     /**
+     * Return all submit/button event fields
+     *
+     * @return Event\Iface[]|array
+     */
+    protected function getEventFields()
+    {
+        $list = [];
+        /* @var $field Iface */
+        foreach ($this->getFieldList() as $field) {
+            if ($field instanceof Event\Iface) $list[] = $field;
+        }
+        return $list;
+    }
+
+    /**
      * Loads the fields with values from an array.
      * EG:
      *   $array['field1'] = 'value1';
