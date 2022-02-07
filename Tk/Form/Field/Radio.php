@@ -32,7 +32,11 @@ class Radio extends Select
     public function isSelected($val = '')
     {
         $value = $this->getValue();
-        if ($value !== null && $value == $val) {
+        if (is_array($value) ) {
+            if (in_array($val, $value)) {
+                return true;
+            }
+        } else if ($value !== null && $value == $val) {
             return true;
         }
         return false;
@@ -51,6 +55,11 @@ class Radio extends Select
         /* @var \Tk\Form\Field\Option $option */
         foreach($this->getOptions() as $i => $option) {
             $tOpt = $template->getRepeat('option');
+
+            if ($this->getOnShowOption()->isCallable()) {
+                $b = $this->getOnShowOption()->execute($tOpt, $option, 'element');
+                if ($b === false) return $template;
+            }
 
             if (!$tOpt->keyExists('var', 'element')) continue;
 
@@ -79,9 +88,6 @@ class Radio extends Select
             if ($this->getOnShowOption()->isCallable()) {
                 $this->getOnShowOption()->execute($tOpt, $option, $checkedSet);
             }
-//            if (is_callable($this->onShowOption)) {
-//                call_user_func_array($this->onShowOption, array($tOpt, $option, $checkedSet));
-//            }
 
             if ($this->getValue() == $option->getValue() && !$checkedSet) {
                 $checkedSet = true;
