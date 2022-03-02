@@ -20,7 +20,7 @@ class GmapAddress extends \Tk\Form\Field\Input
         $template = parent::show();
         \Bs\Ui\Js::includeGoogleMaps($template, array('libraries' => 'places'));
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.tkAddress.js'));
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-form/js/jquery.tkAddress.js'));
         $js = <<<JS
 jQuery(function ($) {
     function init() {
