@@ -1,5 +1,5 @@
 {
-  "name": "ttek/tk-form",
+  "name": "uom/tk-form",
   "type": "library",
   "description": "Create dynamic forms easily with the Tk framework",
   "keywords": [
@@ -11,14 +11,7 @@
   "authors": [
     {
       "name": "Michael Mifsud",
-      "email": "info@tropotek.com.au",
       "homepage": "http://www.tropotek.com/"
-    }
-  ],
-  "funding": [
-    {
-      "type": "Paypal",
-      "url": "https://www.paypal.me/tropotek"
     }
   ],
   "autoload": {
@@ -27,8 +20,8 @@
     }
   },
   "require": {
-    "ttek/tk-framework": "~3.0.0",
-    "ttek/tk-ui": "~3.0.0"
+    "uom/tk-framework": "~3.0.0",
+    "uom/tk-ui": "~3.0.0"
   },
   "extra": {
     "branch-alias": {
