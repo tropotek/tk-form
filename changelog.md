@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 3.2.2 [2022-06-22]:
+-------------------------------
+  - added names to courses and subject
+  - Merge branch '3.2' of ssh://github.com/fvas-elearning/tk-form into 3.2
+  - Tagging and releasing branch `3.2` with version `3.2.0`.
+
+
 Ver 3.2.0 [2022-03-07]:
 -------------------------------
 
