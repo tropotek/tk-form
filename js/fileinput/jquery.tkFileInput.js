@@ -117,7 +117,7 @@
       } else {
         template.find('.tfi-btn-del').hide();
       }
-
+a
       $parent.on('change', 'input[type=file]', function (e) {
         if (this.files.length) {
           template.find('.tfi-btn-del').show();
