@@ -88,9 +88,7 @@ jQuery(function($) {
       option.appendTo(select);
       select.trigger('change');
     }).on('DialogForm:error', function (e, xhr) {
-      //var dialog = $(this).closest('.modal');
       if (dialog.attr('id') !== $(e.currentTarget).attr('id')) return;
-      console.log('\Tk\Form\Field\DialogSelect: DialogForm:error');
     });
   };
   
