@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.4 [2022-08-03]:
+-------------------------------
+  - removed comments
+
+
 Ver 3.2.2 [2022-06-22]:
 -------------------------------
   - added names to courses and subject
