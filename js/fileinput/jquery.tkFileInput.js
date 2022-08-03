@@ -402,9 +402,11 @@
     var defaults = {
       dataUrl: '',
       enableDelete: false,
-      multipleSelect: null,   // deprecated
       serverConfirm: 'Are you sure you want to delete this file from the server?',
       localConfirm: '',
+      enableSelect: false,
+      selectTitle: 'Select/Unselect this file',
+      multipleSelect: null,   // deprecated
       cloneid: 0,
       showThumb: false,
       thumbHeight: 32,
@@ -414,9 +416,10 @@
 
       tableTpl: '<table class="table table-striped tfi-table"></table>',
       rowTpl: '<tr class="tfi-row" style="vertical-align: top;">' +
-      '<td class="text-right hide"><a href="#" title="Download" class="btn btn-xs btn-default tfi-btn-view" target="_blank"><i class="fa fa-download"></i></a></td>' +
-      '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>' +
-      '<td class="tfi-file-size"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a> &nbsp; <span>673Kb</span></td>' +
+        '<td class="select text-right hide" title="Select/Unselect this file"><input type="checkbox" name="selected[]" value="" /></td>' +
+        '<td class="download text-right hide"><a href="#" title="Download" class="btn btn-xs btn-default tfi-btn-view" target="_blank"><i class="fa fa-download"></i></a></td>' +
+        '<td class="key"><i class="tfi-icon fa fa-file-o" title="Archive"></i>&nbsp; <a href="#" target="_blank" class="tfi-filename">someFileName.tgz</a></td>' +
+        '<td class="tfi-file-size"><a href="#" title="Delete" class="btn btn-xs btn-default tfi-btn-delete"><i class="fa fa-trash"></i></a> &nbsp; <span>673Kb</span></td>' +
       '</tr>',
 
       // Defaults for the tkForm file field
@@ -430,6 +433,7 @@
         plugin.settings.template.find('.tfi-btn-input i').after('<span class="tfi-label">Select Files</span>');
       },
 
+      // TODO: We need to create a function that displays and adds a file to the list
       onSelect: function (plugin) {
         if (!this.files.length) return;
         var filename = plugin.settings.template.find('.tfi-input-filename');
@@ -462,6 +466,20 @@
             loadThumb(row, file);
           }
 
+          if ( plugin.settings.enableSelect) {
+            // TODO: fix this when we figure out how to handle a file before the record is created
+            row.find('input[type=checkbox]').attr('disabled', 'disabled');
+            //row.find('input[type=checkbox]').prop('checked', (file.selected == '1'));
+            row.find('input[type=checkbox]').parent().attr('title', plugin.settings.selectTitle);
+            // row.find('input[type=checkbox]').on('change', function () {
+            //   if (plugin.settings.onSelected) {
+            //     return plugin.settings.onSelected.apply(row, [plugin]);
+            //   }
+            // });
+          } else {
+            row.find('input[type=checkbox]').remove();
+          }
+
           row.addClass('tfi-new');
           row.find('.tfi-filename').attr('href', 'javascript:;').removeAttr('target')
             .removeAttr('href').addClass('disabled').text(basename(file.name));
@@ -481,7 +499,6 @@
         var parent = $(this).parent();
         var _input = $(this);
         var clone = _input.clone(true, true);   // No file data
-        //_input.before(clone.prop('files', {}).val('').clone(true, true));
         _input.before(clone.val('').clone(true, true));
 
         _input.off('change');
@@ -496,9 +513,16 @@
         plugin.settings.cloneid++;
 
       },
+      onSelected: function (plugin) {
+        // console.log(this);
+        // console.log(arguments);
+        // TODO: call the API and toggle the object to selected
+        // TODO: refactor all of this JS file, also create a file field that handle the \Bs\File object
+        //       then we can put all the api endpoints (ie: delete, select, etc) there...
+        //       We could also play with the idea of drag&drop and progress etc...
+      },
       onFileLoad: function (plugin, file) {
       },
-      //onFileLoad: function(plugin, file) { },
       onUrlLoad: function (plugin, uri) {
       },
       onDelete: function (plugin) {
@@ -567,14 +591,27 @@
             //data: {'nolog':'nolog', 'crumb_ignore': 'crumb_ignore'},
             data: {'crumb_ignore': 'crumb_ignore'},
             id: id,
+            obj: obj,
             complete: function (xhr) {
               var warn = '';
               if (xhr.status !== 200) {
                 warn = ' - (Access Error)';
               }
-              //this.xhr = xhr;
               var row = $(plugin.settings.rowTpl);
+              row.file = this.obj;
               this.url = this.url.split("?")[0];
+
+              if ( plugin.settings.enableSelect) {
+                row.find('input[type=checkbox]').prop('checked', (row.file.selected == '1'));
+                row.find('input[type=checkbox]').parent().attr('title', plugin.settings.selectTitle);
+                row.find('input[type=checkbox]').on('change', function () {
+                  if (plugin.settings.onSelected) {
+                    return plugin.settings.onSelected.apply(row, [plugin]);
+                  }
+                });
+              } else {
+                row.find('input[type=checkbox]').remove();
+              }
 
               row.data('filename', this.url);
               var delParam = basepath(this.url);
@@ -654,6 +691,83 @@
       }
 
     };
+
+    /**
+     * @param uri
+     * @param key
+     * @param value
+     * @returns {string}
+     */
+    var setQueryParameter = function (uri, key, value) {
+      var re = new RegExp("([?&])(" + key + "=)[^&#]*", "g");
+      if (uri.match(re))
+        return uri.replace(re, '$1$2' + value);
+
+      // need to add parameter to URI
+      var paramString = (uri.indexOf('?') < 0 ? "?" : "&") + encodeURIComponent(key) + "=" + encodeURIComponent(value);
+      var hashIndex = uri.indexOf('#');
+      if (hashIndex < 0)
+        return uri + paramString;
+      else
+        return uri.substring(0, hashIndex) + paramString + uri.substring(hashIndex);
+    };
+
+    /**
+     * @param path
+     * @returns {XML|string}
+     */
+    var basename = function (path) {
+      return path.replace(/\\/g, '/').replace(/.*\//, '');
+    };
+
+    /**
+     * @param path
+     */
+    var basepath = function (path) {
+      return path.replace(plugin.settings.dataUrl, '');
+    };
+
+    /**
+     * @param file
+     */
+    var getExtension = function (file) {
+      var pos = file.lastIndexOf('.');
+      if (pos > -1) {
+        return file.substring(pos + 1);
+      }
+      return '';
+    };
+
+    /**
+     * @param filename
+     */
+    var isImage = function (filename) {
+      var ext = getExtension(basename(filename)).toLowerCase();
+      switch (ext) {
+        case 'jpg':
+        case 'jpeg':
+        case 'gif':
+        case 'png':
+          return true;
+      }
+      return false;
+    };
+
+    /**
+     * @param bytes
+     * @param decimals
+     * @returns {*}
+     */
+    var formatBytes = function (bytes, decimals) {
+      if (bytes === 0 || isNaN(bytes) || bytes === null) return '0 Byte';
+      var k = 1024; // or 1024 for binary
+      var dm = decimals + 1 || 2;
+      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      var i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    };
+
+
 
     /**
      * @param url
@@ -758,81 +872,6 @@
           return 'fa-file-word-o';
       }
       return 'fa-file-o';
-    };
-
-    /**
-     * @param uri
-     * @param key
-     * @param value
-     * @returns {string}
-     */
-    var setQueryParameter = function (uri, key, value) {
-      var re = new RegExp("([?&])(" + key + "=)[^&#]*", "g");
-      if (uri.match(re))
-        return uri.replace(re, '$1$2' + value);
-
-      // need to add parameter to URI
-      var paramString = (uri.indexOf('?') < 0 ? "?" : "&") + encodeURIComponent(key) + "=" + encodeURIComponent(value);
-      var hashIndex = uri.indexOf('#');
-      if (hashIndex < 0)
-        return uri + paramString;
-      else
-        return uri.substring(0, hashIndex) + paramString + uri.substring(hashIndex);
-    };
-
-    /**
-     * @param path
-     * @returns {XML|string}
-     */
-    var basename = function (path) {
-      return path.replace(/\\/g, '/').replace(/.*\//, '');
-    };
-
-    /**
-     * @param path
-     */
-    var basepath = function (path) {
-      return path.replace(plugin.settings.dataUrl, '');
-    };
-
-    /**
-     * @param file
-     */
-    var getExtension = function (file) {
-      var pos = file.lastIndexOf('.');
-      if (pos > -1) {
-        return file.substring(pos + 1);
-      }
-      return '';
-    };
-
-    /**
-     * @param filename
-     */
-    var isImage = function (filename) {
-      var ext = getExtension(basename(filename)).toLowerCase();
-      switch (ext) {
-        case 'jpg':
-        case 'jpeg':
-        case 'gif':
-        case 'png':
-          return true;
-      }
-      return false;
-    };
-
-    /**
-     * @param bytes
-     * @param decimals
-     * @returns {*}
-     */
-    var formatBytes = function (bytes, decimals) {
-      if (bytes === 0 || isNaN(bytes) || bytes === null) return '0 Byte';
-      var k = 1024; // or 1024 for binary
-      var dm = decimals + 1 || 2;
-      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      var i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     };
 
     // call the "constructor" method
