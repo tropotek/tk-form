@@ -30,6 +30,11 @@ class CheckboxSelect extends CheckboxGroup
         foreach($this->getOptions() as $option) {
             $tOpt = $template->getRepeat('option');
 
+            if ($this->getOnShowOption()->isCallable()) {
+                $b = $this->getOnShowOption()->execute($tOpt, $option, 'element');
+                if ($b === false) return $template;
+            }
+
             if ($option->hasAttr('disabled')) {
                 $tOpt->setAttr('option', 'disabled', 'disabled');
                 $tOpt->setAttr('element', 'disabled', 'disabled');

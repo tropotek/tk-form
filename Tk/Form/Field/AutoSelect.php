@@ -78,7 +78,7 @@ class AutoSelect extends Select
     {
         $template = parent::show();
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-form/js/jquery.autoSelect.js'));
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-form/js/jquery.autoSelect.js'));
 
         if ($this->dialog) {
             $template->setVisible('enableCreate');

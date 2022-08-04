@@ -1,6 +1,27 @@
 #CHANGELOG#
 
-Ver 3.0.114 [2022-08-04]:
+Ver 3.2.6 [2022-08-04]:
+-------------------------------
+  - Dissabled report file attachments for now.
+
+
+Ver 3.2.4 [2022-08-03]:
+-------------------------------
+  - removed comments
+
+
+Ver 3.2.2 [2022-06-22]:
+-------------------------------
+  - added names to courses and subject
+  - Merge branch '3.2' of ssh://github.com/fvas-elearning/tk-form into 3.2
+  - Tagging and releasing branch `3.2` with version `3.2.0`.
+
+
+Ver 3.2.0 [2022-03-07]:
+-------------------------------
+
+
+Ver 3.0.114 [2022-03-03]:
 -------------------------------
 
 
