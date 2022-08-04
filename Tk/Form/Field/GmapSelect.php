@@ -94,7 +94,7 @@ class GmapSelect extends \Tk\Form\Field\Iface
     {
         $template = $this->getTemplate();
         \Bs\Ui\Js::includeGoogleMaps($template, array('libraries' => 'places'));
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-form/js/jquery.gmapSelect.js'));
+        $template->appendJsUrl(\Tk\Uri::create($this->getConfig()->getOrgVendor() . '/tk-form/js/jquery.gmapSelect.js'));
 
         $template->setAttr('canvas', 'data-name', $this->getName());
 
