@@ -28,7 +28,7 @@ use Tk\Ui\Element;
  *
  * accept-charset is set as the $encoding parameter or use setEncoding()
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

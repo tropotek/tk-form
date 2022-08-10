@@ -9,7 +9,7 @@ use Tk\Form\Field\Option\ArrayIterator;
  *    for creating new records and selecting in one field
  *
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

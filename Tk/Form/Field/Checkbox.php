@@ -6,7 +6,7 @@ namespace Tk\Form\Field;
  *
  * @bug: little bug when fields are disabled, the checkbox state is assumed false instead of ignored? Not sure the fix here.
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

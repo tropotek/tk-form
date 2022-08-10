@@ -5,7 +5,7 @@ namespace Tk\Form\Field;
 /**
  * NOTE: This object is designed for Bootstrap 4+ as previous versions it will not work as expected
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

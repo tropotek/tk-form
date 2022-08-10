@@ -4,7 +4,7 @@
  * For tk-base derived sites use the core.js project_core.initTkFormTabs();
  *
  *
- * @author Tropotek <info@tropotek.com>
+ * @author Tropotek <http://www.tropotek.com/>
  * @created: 28/07/18
  * @link http://www.tropotek.com/
  * @license Copyright 2018 Tropotek

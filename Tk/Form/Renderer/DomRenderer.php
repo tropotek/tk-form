@@ -13,7 +13,7 @@ use Tk\Ui\Css;
  * The new (2021) Form Renderer\DomRenderer should mirror the renderer of the Dom\Renderer class
  * however it is far more cleaner and maintainable.
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
