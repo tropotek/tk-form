@@ -109,7 +109,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     /**
      * @return Callback
      */
-    protected function getOnShow()
+    public function getOnShow()
     {
         return $this->onShow;
     }
