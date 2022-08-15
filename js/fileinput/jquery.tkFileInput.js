@@ -505,15 +505,11 @@
 
         _input.off('change');
         _input.attr('name', _input.attr('data-name')).removeAttr('data-name');
-        //_input.attr('data-clone-id', plugin.settings.cloneid);
         _input.removeAttr('data-value').removeAttr('data-maxsize');
         _input.removeAttr('id').removeAttr('class')
           .addClass('tfi-clone').removeAttr('value').hide();
         _input.detach();
         formGroup.append(_input);
-
-        //plugin.settings.cloneid++;
-
       },
 
       // Called when the file checkbox has been clicked
@@ -632,7 +628,6 @@
               $('.tfi-filename, .tfi-icon', row).magnificPopup({type: 'image'})
             }
           }
-
 
           table.append(row);
           plugin.settings.onUrlLoad.apply($('tfi-btn-input input[type=file]', $inputGroup), [plugin, obj]);
