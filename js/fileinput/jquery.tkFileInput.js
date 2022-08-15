@@ -533,7 +533,6 @@
       onDelete: function (plugin, file) {
         // Remove row from table
         let row = $(this);
-        console.log(row);
         if ($(this).is('.tfi-new')) {
           row.remove();
         } else {
