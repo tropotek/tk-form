@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.14 [2022-08-15]:
+-------------------------------
+  - Added new \Bs\Form\Field\File object for \Bs\Db\File objects
+
+
 Ver 3.2.12 [2022-08-11]:
 -------------------------------
   - Fixed placementRepot file upload
