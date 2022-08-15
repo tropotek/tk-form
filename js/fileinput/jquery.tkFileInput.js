@@ -621,17 +621,18 @@
             return false;
           });
 
-
+          $('.tfi-filename', row).attr('href', fileUrl).text(basename(fileUrl));
+          $('.tfi-btn-view', row).attr('href', fileUrl);
           $('.tfi-icon', row).removeClass('fa-file-o').addClass(getIcon(fileUrl));
           if (isImage(fileUrl)) {
             loadThumb(row, fileUrl);
+            $('.tfi-filename', row).addClass('ui-lightbox');
+            $('.tfi-btn-view', row).addClass('ui-lightbox');
+            if ($.fn.magnificPopup) {
+              $('.tfi-filename, .tfi-icon', row).magnificPopup({type: 'image'})
+            }
           }
 
-          $('.tfi-filename', row).addClass('ui-lightbox').attr('href', fileUrl).text(basename(fileUrl));
-          $('.tfi-btn-view', row).addClass('ui-lightbox').attr('href', fileUrl);
-          if ($.fn.magnificPopup && isImage(fileUrl)) {
-            $('.tfi-filename, .tfi-icon', row).magnificPopup({type: 'image'})
-          }
 
           table.append(row);
           plugin.settings.onUrlLoad.apply($('tfi-btn-input input[type=file]', $inputGroup), [plugin, obj]);
