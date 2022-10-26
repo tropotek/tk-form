@@ -32,10 +32,6 @@ use Tk\Form\Field\Option;
 class OptGroupIterator extends ArrayIterator
 {
 
-    public function __construct(array $list)
-    {
-        parent::__construct($list);
-    }
 
     /**
      * @interface \Iterator

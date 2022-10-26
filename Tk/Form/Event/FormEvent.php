@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Event;
+namespace Tk\Form\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 use Tk\Form;

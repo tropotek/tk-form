@@ -1,10 +1,8 @@
 <?php
 namespace Tk;
 
-use Tk\Event\FormEvent;
+use Tk\Form\Event\FormEvent;
 use Tk\Form\Action\ActionInterface;
-use Tk\Form\Exception;
-use Tk\Form\Field;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Form extends Form\Element
+class Form extends Form\Element implements FormInterface
 {
 
     const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
@@ -37,10 +35,7 @@ class Form extends Form\Element
 
     protected string $id = '';
 
-    /**
-     * @var array|FieldInterface[]
-     */
-    protected array $fieldList = [];
+    protected Collection $fieldList;
 
     protected ?ActionInterface $triggeredEvent = null;
 
@@ -57,6 +52,7 @@ class Form extends Form\Element
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
+        $this->fieldList = new Collection();
         $this->setForm($this);
         $this->setName($formId);
         $this->setAttr('method', self::METHOD_POST);
@@ -111,10 +107,10 @@ class Form extends Form\Element
             $e = new FormEvent($this);
             $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD);
         }
-        $this->loadFields($values);
+        $this->loadValues($values);
 
         // get the triggered event, this also set up the form ready to fire an event if present.
-        $event = $this->getTriggeredEvent($values);
+        $event = $this->getTriggeredAction($values);
         if (!$this->isSubmitted()) {
             $this->executeFields($values);
             return;
@@ -127,15 +123,15 @@ class Form extends Form\Element
             $e = new FormEvent($this);
             $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
         }
-        $this->loadFields($values);
+        $this->loadValues($values);
         $this->executeFields($values);
 
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
             $this->getDispatcher()->dispatch($e, FormEvents::FORM_SUBMIT);
         }
-
-        $event?->execute($values);
+        if ($event) $event->execute($values);
+        //$event?->execute($values);
     }
 
     /**
@@ -143,12 +139,12 @@ class Form extends Form\Element
      * EG:
      *   $array['field1'] = 'value1';
      */
-    protected function loadFields(array $array): static
+    public function loadValues(array $values): static
     {
-        $array = array_merge($this->defaultValues, $array);
+        $values = array_merge($this->defaultValues, $values);
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof ActionInterface) continue;
-            $field->load($array);
+            $field->load($values);
         }
         return $this;
     }
@@ -221,7 +217,7 @@ class Form extends Form\Element
      * This will only return a valid value <b>after</b> the
      *   execute() method has been called.
      */
-    public function getTriggeredEvent(array $array = []): ?ActionInterface
+    public function getTriggeredAction(array $array = []): ?ActionInterface
     {
         if (!$this->triggeredEvent) {
             foreach($this->fieldList as $field) {
@@ -240,137 +236,55 @@ class Form extends Form\Element
      */
     public function isSubmitted(): bool
     {
-        return $this->getTriggeredEvent() != null;
+        return $this->getTriggeredAction() != null;
     }
 
-
-    /**
-     * @param FieldInterface $field
-     * @param null|FieldInterface|string $refField
-     * @return FieldInterface
-     * @since 2.0.68
-     */
-    public function appendField(FieldInterface $field, $refField = null)
+    public function appendField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
         $field->setForm($this);
-        if ($this->getFieldset())
-            $field->setFieldset($this->getFieldset(), $this->getFieldsetCss());
-        if ($this->getTabGroup())
-            $field->setTabGroup($this->getTabGroup(), $this->getTabGroupCss());
-        if (is_string($refField)) {
-            $refField = $this->getField(str_replace('[]', '', $refField));
-        }
-
-        if (!$refField || !$refField instanceof FieldInterface) {
-            $this->fieldList[$field->getName()] = $field;
-        } else {
-            $newArr = array();
-            /** @var FieldInterface $f */
-            foreach ($this->fieldList as $f) {
-                $newArr[$f->getName()] = $f;
-                if ($f === $refField) $newArr[$field->getName()] = $field;
-            }
-            $this->fieldList = $newArr;
-        }
-        return $field;
+        return $this->getFieldList()->append($field->getName(), $field, $refField);
     }
 
-    /**
-     * @param FieldInterface $field
-     * @param null|FieldInterface|string $refField
-     * @return FieldInterface
-     * @since 2.0.68
-     */
-    public function prependField(FieldInterface $field, $refField = null)
+    public function prependField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
         $field->setForm($this);
-        if ($this->getFieldset())
-            $field->setFieldset($this->getFieldset(), $this->getFieldsetCss());
-        if ($this->getTabGroup())
-            $field->setTabGroup($this->getTabGroup(), $this->getTabGroupCss());
-        if (is_string($refField)) {
-            $refField = $this->getField(str_replace('[]', '', $refField));
-        }
-
-        if (!$refField || !$refField instanceof FieldInterface) {
-            $this->fieldList = array($field->getName() => $field) + $this->fieldList;
-        } else {
-            $newArr = array();
-            /** @var FieldInterface $f */
-            foreach ($this->fieldList as $f) {
-                if ($f === $refField) $newArr[$field->getName()] = $field;
-                $newArr[$f->getName()] = $f;
-            }
-            $this->fieldList = $newArr;
-        }
+        $this->getFieldList()->prepend($field->getName(), $field, $refField);
         return $field;
     }
 
     /**
      * Remove a field from the form
-     *
-     * @param string $fieldName
-     * @return FieldInterface|null returns null if not found
      */
-    public function removeField($fieldName)
+    public function removeField(string $fieldName): ?FieldInterface
     {
-        $field = $this->getField($fieldName);
-        $fieldName = str_replace('[]', '', $fieldName);
-        if (isset($this->fieldList[$fieldName])) {
-            unset($this->fieldList[$fieldName]);
-        }
+        $field = $this->getFieldList()->get($fieldName);
+        $this->getFieldList()->remove($fieldName);
         return $field;
     }
 
     /**
      * Return a field object or null if not found
-     *
-     * @param string $fieldName
-     * @return null|FieldInterface|Form\Event\FieldInterface
      */
-    public function getField($fieldName)
+    public function getField(string $fieldName): ?FieldInterface
     {
-        $f = null;
-        $fieldName = str_replace('[]', '', $fieldName);
-        if (array_key_exists($fieldName, $this->fieldList)) {
-            $f = $this->fieldList[$fieldName];
-        }
-        return $f;
+        return $this->getFieldList()->get($fieldName);
     }
 
     /**
-     * Set the field array
-     *
-     * @param array $arr
-     * @return $this
+     * Get the field list Collection
      */
-    public function setFieldList($arr = array())
-    {
-        $this->fieldList = $arr;
-        return $this;
-    }
-
-    /**
-     * Get the field array
-     *
-     * @return array|Element[]|Field\FieldInterface[]
-     */
-    public function getFieldList()
+    public function getFieldList(): Collection
     {
         return $this->fieldList;
     }
 
     /**
      * Returns a form field value. Returns NULL if no field exists
-     *
-     * @param string $fieldName The element type name.
-     * @return string|array
      */
-    public function getFieldValue($fieldName)
+    public function getFieldValue(string $fieldName): mixed
     {
-        $fieldName = str_replace('[]', '', $fieldName);
-        $field = $this->getField($fieldName);
-        if ($field instanceof FieldInterface) {
+        $field = $this->getFieldList()->get($fieldName);
+        if ($field) {
             return $field->getValue();
         }
         return null;
@@ -378,31 +292,21 @@ class Form extends Form\Element
 
     /**
      * Sets the value of an element type.
-     *
-     * @param string $fieldName The field name.
-     * @param mixed $value The field value.
-     * @return FieldInterface
-     * @throws Exception
      */
-    public function setFieldValue($fieldName, $value)
+    public function setFieldValue($fieldName, $value): ?FieldInterface
     {
-        $fieldName = str_replace('[]', '', $fieldName);
-        $field = $this->getField($fieldName);
-        if (!$field || !$field instanceof FieldInterface) {
-            throw new Exception('Form Field not found: `' . $fieldName . '`');
-        }
-        $field->setValue($value);
+        /** @var FieldInterface $field */
+        $field = $this->getFieldList()->get($fieldName);
+        if ($field) $field->setValue($value);
+        //$field?->setValue($value);
         return $field;
     }
 
     /**
      * Does this form contain errors
-     *
-     * @return bool
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
-        /* @var $field FieldInterface */
         foreach ($this->fieldList as $field) {
             if ($field->hasErrors()) {
                 return true;
@@ -414,44 +318,27 @@ class Form extends Form\Element
         return false;
     }
 
-    /**
-     * Get all the errors associated with this forms request
-     *
-     * @return array
-     */
-    public function getAllErrors()
+    public function getErrors(): array
     {
-        $e = $this->errors;
-        /* @var $field FieldInterface */
+        $e = [];
         foreach($this->getFieldList() as $field) {
-            if ($field->hasErrors()) {
-                $e[$field->getName()] = $field->getErrors();
+            if ($field->hasError()) {
+                $e[$field->getName()] = $field->getError();
             }
         }
         return $e;
     }
 
     /**
-     * Adds field error.
-     *
-     * If the field is not found in the form then the error message is set to
-     * the form error message.
-     *
-     * If $msg is null the field's error list is cleared
-     *
-     * @param string $fieldName A field name.
-     * @param string $msg The error message.
+     * Adds field error message.
      */
-    public function addFieldError($fieldName, $msg = '')
+    public function addFieldError(string $fieldName, string $msg = ''): static
     {
-        $fieldName = str_replace('[]', '', $fieldName);
-        /* @var $field FieldInterface */
-        $field = $this->getField($fieldName);
+        $field = $this->getFieldList()->get($fieldName);
         if ($field) {
             $field->addError($msg);
-        } else {
-            $this->addError($msg);
         }
+        return $this;
     }
 
     /**
@@ -462,35 +349,30 @@ class Form extends Form\Element
      *
      * @param array $errors
      */
-    public function addFieldErrors($errors)
+    public function addFieldErrors(array $errors): static
     {
         foreach ($errors as $fieldName => $errorList) {
-            $fieldName = str_replace('[]', '', $fieldName);
-            $field = $this->getField($fieldName);
-            if (!$field) {
-                $this->addError($errorList);
-            } else {
+            $field = $this->getFieldList()->get($fieldName);
+            if ($field) {
                 $field->addError($errorList);
             }
         }
+        return $this;
     }
 
     /**
      * This will return an array of the field's values,
-     *
-     * @param null|array|string $regex A regular expression or array of field names to get
-     * @return array
      */
-    public function getValues($regex = null)
+    public function getValues(string|array|null $search = null): array
     {
-        $array = array();
+        $array = [];
         /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\FieldInterface) continue;
-            if ($regex) {
-                if (is_string($regex) && !preg_match($regex, $field->getName())) {
+            if ($field instanceof ActionInterface) continue;
+            if ($search) {
+                if (is_string($search) && !preg_match($search, $field->getName())) {
                     continue;
-                } else if (is_array($regex) && !in_array($field->getName(), $regex)) {
+                } else if (is_array($search) && !in_array($field->getName(), $search)) {
                     continue;
                 }
             }
@@ -506,6 +388,5 @@ class Form extends Form\Element
         }
         return $array;
     }
-
 
 }

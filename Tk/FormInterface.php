@@ -1,6 +1,9 @@
 <?php
 namespace Tk;
 
+use Tk\Form\Action\ActionInterface;
+use Tk\Form\Field\FieldInterface;
+
 interface FormInterface
 {
 
@@ -44,7 +47,7 @@ interface FormInterface
      * If the regex value is supplied only the field
      * names that match that regular expression are returned.
      */
-    public function getValues(string $regex = ''): array;
+    public function getValues(string|array|null $search = null): array;
 
     /**
      * Load all fields with values from an array.
@@ -69,14 +72,14 @@ interface FormInterface
      * If a $refField is supplied search the field list for that reference field
      * and insert the new field after the first found field.
      */
-    public function appendField(FieldInterface $field, string $refField = null): static;
+    public function appendField(FieldInterface $field, ?string $refField = null): FieldInterface;
 
     /**
      * Append a field to the start of the field list.
      * If a $refField is supplied search the field list for that reference field
      * and insert the new field before the first found field.
      */
-    public function prependField(FieldInterface $field, string $refField = null): static;
+    public function prependField(FieldInterface $field, ?string $refField = null): FieldInterface;
 
 
 
