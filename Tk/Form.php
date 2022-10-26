@@ -53,8 +53,8 @@ class Form extends Form\Element implements FormInterface
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
         $this->fieldList = new Collection();
-        $this->setForm($this);
         $this->setName($formId);
+        $this->setForm($this);
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', Uri::create());
         $this->setAttr('accept-charset', $charset);
@@ -147,6 +147,35 @@ class Form extends Form\Element implements FormInterface
             $field->load($values);
         }
         return $this;
+    }
+
+    /**
+     * This will return an array of the field's values,
+     */
+    public function getValues(string|array|null $search = null): array
+    {
+        $array = [];
+        /* @var $field FieldInterface */
+        foreach ($this->getFieldList() as $field) {
+            if ($field instanceof ActionInterface) continue;
+            if ($search) {
+                if (is_string($search) && !preg_match($search, $field->getName())) {
+                    continue;
+                } else if (is_array($search) && !in_array($field->getName(), $search)) {
+                    continue;
+                }
+            }
+            $value = $field->getValue();
+
+            if (!$field->isMultiple() && is_array($value)) {
+                foreach ($value as $k => $v) {  // pull values out if the element is not an array
+                    $array[$k] = $v;
+                }
+            } else {
+                $array[$field->getName()] = $value;
+            }
+        }
+        return $array;
     }
 
     /**
@@ -358,35 +387,6 @@ class Form extends Form\Element implements FormInterface
             }
         }
         return $this;
-    }
-
-    /**
-     * This will return an array of the field's values,
-     */
-    public function getValues(string|array|null $search = null): array
-    {
-        $array = [];
-        /* @var $field FieldInterface */
-        foreach ($this->getFieldList() as $field) {
-            if ($field instanceof ActionInterface) continue;
-            if ($search) {
-                if (is_string($search) && !preg_match($search, $field->getName())) {
-                    continue;
-                } else if (is_array($search) && !in_array($field->getName(), $search)) {
-                    continue;
-                }
-            }
-            $value = $field->getValue();
-
-            if (!$field->isMultiple() && is_array($value)) {
-                foreach ($value as $k => $v) {  // pull values out if the element is not an array
-                    $array[$k] = $v;
-                }
-            } else {
-                $array[$field->getName()] = $value;
-            }
-        }
-        return $array;
     }
 
 }

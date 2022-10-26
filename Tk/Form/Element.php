@@ -34,7 +34,6 @@ abstract class Element implements InstanceKey
      */
     abstract public function execute(array $values = []): void;
 
-
     /**
      * Create a label from a name string
      * The default label uses the name (EG: `fieldNameSelect` -> `Field Name Select`)
@@ -58,6 +57,10 @@ abstract class Element implements InstanceKey
     public function setForm(Form $form): static
     {
         $this->form = $form;
+        if (!$this->getId()) {
+            $this->setId($this->makeInstanceKey($this->getName()));
+            $this->setLabel(self::makeLabel($this->getName()));
+        }
         return $this;
     }
 
@@ -72,16 +75,10 @@ abstract class Element implements InstanceKey
     /**
      * Set the name for this element
      * This will initialise the element as it should be set after creation
-     * @throws Exception
      */
     public function setName(string $name): static
     {
-        if (!$this->getForm()) throw new Exception('Form must be set before calling modifiers.');
         $this->name = $name;
-        if (!$this->getLabel()) {
-            $this->setLabel(self::makeLabel($this->getName()));
-            $this->setId($this->makeInstanceKey($this->getName()));
-        }
         return $this;
     }
 

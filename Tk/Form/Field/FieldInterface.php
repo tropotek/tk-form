@@ -2,7 +2,6 @@
 namespace Tk\Form\Field;
 
 use Dom\Renderer\Css;
-use Tk\Form;
 use Tk\Form\Element;
 use Tk\Form\Exception;
 
@@ -17,13 +16,14 @@ abstract class FieldInterface extends Element
      * for a full list of input types see: https://www.w3schools.com/tags/att_input_type.asp
      */
     const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
-    const TYPE_LINK     = 'link';
-    const TYPE_BUTTON   = 'button';
-    const TYPE_SUBMIT   = 'submit';
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
     const TYPE_SELECT   = 'select';     // Special case, not <input>
     const TYPE_TEXTAREA = 'textarea';   // Special case, not <input>
+
+    const TYPE_LINK     = 'link';
+    const TYPE_BUTTON   = 'button';
+    const TYPE_SUBMIT   = 'submit';
 
     protected mixed $value = null;
 
@@ -82,7 +82,6 @@ abstract class FieldInterface extends Element
      *   o 'name[][]'
      *   o 'name[key][]'
      *
-     * @throws Exception
      */
     public function setName(string $name): static
     {

@@ -43,18 +43,18 @@ interface FormInterface
     public function getErrors(): array;
 
     /**
-     * Get all the fields current values as an array
-     * If the regex value is supplied only the field
-     * names that match that regular expression are returned.
-     */
-    public function getValues(string|array|null $search = null): array;
-
-    /**
      * Load all fields with values from an array.
      * These values should come from either the request
      * or from a data form mapper
      */
     public function loadValues(array $values): static;
+
+    /**
+     * Get all the fields current values as an array
+     * If the regex value is supplied only the field
+     * names that match that regular expression are returned.
+     */
+    public function getValues(string|array|null $search = null): array;
 
 
     /**
