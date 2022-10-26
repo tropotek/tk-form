@@ -29,7 +29,7 @@ class Renderer
     {
         $this->form = $form;
         $this->dispatcher = $this->getFactory()->getEventDispatcher();
-        $this->initFieldTemplates($this->getSystem()->makePath($this->getConfig()->get('form.template.path')));
+        $this->initFieldTemplates($this->makePath($this->getConfig()->get('form.template.path')));
     }
 
     protected function initFieldTemplates(string $path): void
@@ -60,9 +60,12 @@ class Renderer
         //vd(array_keys($this->fieldTemplates));
     }
 
-    public function getFieldTemplate(string $fieldName): Template
+    public function getFieldTemplate(string $fieldType): Template
     {
-        return clone ($this->fieldTemplates[$fieldName] ?? $this->fieldTemplates['input']);
+        if (isset($this->fieldTemplates[$fieldType])) {
+            return clone $this->fieldTemplates[$fieldType];
+        }
+        return clone $this->fieldTemplates['hidden'];
     }
 
     public function getForm(): Form
