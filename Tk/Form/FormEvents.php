@@ -2,9 +2,7 @@
 namespace Tk\Form;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2017 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class FormEvents
 {
@@ -23,16 +21,14 @@ class FormEvents
      * @event \Tk\Event\FormEvent
      */
     const FORM_LOAD_REQUEST = 'form.load.request';
-
-    /**
-     * @event \Tk\Event\FormEvent
-     */
-    const FORM_SHOW = 'form.show';
-
     /**
      * @event \Tk\Event\FormEvent
      */
     const FORM_SUBMIT = 'form.submit';
 
+    /**
+     * @event \Tk\Event\FormEvent
+     */
+    const FORM_SHOW = 'form.show';
 
 }
