@@ -11,57 +11,33 @@ use Tk\Form\Field\Option;
  *   $iterator = new ArrayIterator(array('-- Select --' => '', 'Admin' => 'admin', 'Moderator' => 'moderator', 'User' => 'user'));
  * ?>
  *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayIterator implements \Iterator, \Countable
 {
 
-    /**
-     * @var int
-     */
-    protected $idx = 0;
+    protected int $idx = 0;
 
-    /**
-     * @var array
-     */
-    protected $list = array();
+    protected array $list = [];
 
 
-    /**
-     *
-     * @param array $list
-     */
-    public function __construct($list)
+    public function __construct(array $list)
     {
         if (key($list) == 0 && !is_object(current($list))) {
-            $l = array();
-            foreach($list as $k => $v) {
-                $l[$k] = $v;
-            }
-            $list = $l;
+            $list = array_combine($list, $list);
         }
         $this->list = $list;
     }
 
-    /**
-     * @param $list
-     * @return static
-     */
-    static function create($list)
+    static function create(array $list): static
     {
         return new static($list);
     }
 
     /**
-     * Return the current element
-     *
-     * @see http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function current()
+    public function current(): mixed
     {
         $key = $this->getKey($this->idx);
         $el = $this->list[$key];
@@ -69,12 +45,9 @@ class ArrayIterator implements \Iterator, \Countable
     }
 
     /**
-     * getKey
-     *
-     * @param string $i
-     * @return mixed
+     * @interface \Iterator
      */
-    protected function getKey($i)
+    protected function getKey(string $i): mixed
     {
         $keys = array_keys($this->list);
         if (isset($keys[$i]))
@@ -83,78 +56,47 @@ class ArrayIterator implements \Iterator, \Countable
     }
 
     /**
-     * Return the key of the current element
-     *
-     * @see http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->idx;
     }
 
     /**
-     * Move forward to next element
-     *
-     * @see http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function next()
+    public function next(): void
     {
         $this->idx++;
     }
 
     /**
-     * Checks if current position is valid
-     *
-     * @see http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function valid()
+    public function valid(): bool
     {
         return ($this->idx < $this->count());
     }
 
     /**
-     * Rewind the Iterator to the first element
-     *
-     * @see http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->idx = 0;
     }
 
     /**
-     * Count elements of an object
-     *
-     * @see http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
-     * @since 5.1.0
+     * @interface \Countable
      */
-    public function count()
+    public function count(): int
     {
         return count($this->list);
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
-        $l = array();
-        foreach ($this as $k => $v) {
-            $l[$k] = $v;
-        }
-        return $l;
+        return $this->list;
     }
 }

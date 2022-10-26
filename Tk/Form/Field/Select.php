@@ -2,44 +2,42 @@
 namespace Tk\Form\Field;
 
 
-
-use Tk\Callback;
+use Tk\CallbackCollection;
+use Tk\Db\Mapper\ModelIface;
+use Tk\Db\Mapper\Result;
+use Tk\Form\Exception;
+use Tk\Form\Field\Option\ArrayIterator;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Select extends Iface
+class Select extends FieldInterface
 {
     use OptionList;
 
-    /**
-     * @var Callback
-     */
-    protected $onShowOption = null;
+
+    protected CallbackCollection $onShowOption;
 
     /**
-     * If true then
-     * @var bool
+     * Enable strict type checking for null, '', 0, false, etc
+     * @todo Check if this is needed or maybe we always do strict checking???
      */
-    protected $strict = false;
+    protected bool $strict = false;
 
 
-    /**
-     * @param string $name
-     * @param null|Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
-     */
-    public function __construct($name, $optionIterator = null)
+    public function __construct(string $name, array|Result|ArrayIterator $optionIterator = null)
     {
-        $this->onShowOption = Callback::create();
-        parent::__construct($name);
+        $this->onShowOption = CallbackCollection::create();
+        parent::__construct($name, self::TYPE_SELECT);
 
-        if ($optionIterator instanceof \Tk\Db\Map\ArrayObject || (is_array($optionIterator) && current($optionIterator) instanceof \Tk\Db\ModelInterface)) {
+        if ($optionIterator instanceof Result) {
             $optionIterator = new Option\ArrayObjectIterator($optionIterator);
-        } else if (is_array($optionIterator)) {
-            if (is_array(current($optionIterator))) {
+        } elseif (is_array($optionIterator)) {
+            $curr = current($optionIterator);
+            if (is_array($curr)) {
                 $optionIterator = new Option\ArrayArrayIterator($optionIterator);
+            } elseif ($curr instanceof ModelIface) {
+                $optionIterator = new Option\ArrayObjectIterator($optionIterator);
             } else {
                 $optionIterator = new Option\ArrayIterator($optionIterator);
             }
@@ -47,33 +45,25 @@ class Select extends Iface
 
         if ($optionIterator) {
             $this->appendOptionIterator($optionIterator);
+        } else {
+            throw new Exception('Invalid optionIterator.');
         }
     }
 
-    /**
-     * @param string $name
-     * @param Option\ArrayIterator|array|\Tk\Db\Map\ArrayObject $optionIterator
-     * @return static
-     */
-    public static function createSelect($name, $optionIterator = null)
+    public static function createSelect(string $name, array|Result|ArrayIterator $optionIterator = null): static
     {
         return new static($name, $optionIterator);
     }
 
     /**
-     * take a single dimensinoal array and convert it to a list for the select
+     * take a single dimensional array and convert it to a list for the select
      *
      * Input example:
      *     array('test', 'twoWord', 'three_word_test', 'another test');
      * Output:
      *     array('Test' => 'test', 'Two Word' => 'twoWord', 'Three Word Test' => 'three_word_test', 'Another Test' => 'another test')
-     *
-     *
-     * @param $arr
-     * @param bool $modify
-     * @return array
      */
-    public static function arrayToSelectList($arr, $modify = true)
+    public static function arrayToSelectList(array $arr, bool $modify = true): array
     {
         //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
         $new = array();
@@ -90,11 +80,7 @@ class Select extends Iface
     }
 
 
-    /**
-     * @param Option\ArrayIterator $optionIterator
-     * @return $this
-     */
-    public function appendOptionIterator(Option\ArrayIterator $optionIterator)
+    public function appendOptionIterator(Option\ArrayIterator $optionIterator): static
     {
         foreach($optionIterator as $option) {
             $this->append($option);
@@ -102,11 +88,7 @@ class Select extends Iface
         return $this;
     }
 
-    /**
-     * @param Option\ArrayIterator $optionIterator
-     * @return $this
-     */
-    public function prependOptionIterator(Option\ArrayIterator $optionIterator)
+    public function prependOptionIterator(Option\ArrayIterator $optionIterator): static
     {
         foreach($optionIterator as $option) {
             $this->prepend($option);
@@ -114,16 +96,11 @@ class Select extends Iface
         return $this;
     }
 
-
-    /**
-     * @param array|\ArrayObject $values
-     * @return $this
-     */
-    public function load($values)
+    public function load(array $values): static
     {
         if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
             $this->setValue(null);
-            if ($this->isArrayField()) {
+            if ($this->isMultiple()) {
                 $this->setValue(array());
             }
         }
@@ -131,27 +108,17 @@ class Select extends Iface
         return $this;
     }
 
-    /**
-     * @return Callback
-     */
-    public function getOnShowOption()
+    public function getOnShowOption(): CallbackCollection
     {
         return $this->onShowOption;
     }
 
-    /**
-     * @return bool
-     */
     public function isStrict(): bool
     {
         return $this->strict;
     }
 
-    /**
-     * @param bool $strict
-     * @return $this
-     */
-    public function setStrict(bool $strict)
+    public function setStrict(bool $strict): static
     {
         $this->strict = $strict;
         return $this;
@@ -159,140 +126,36 @@ class Select extends Iface
 
     /**
      *  function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) { }
-     *
-     * @param callable $callable
-     * @param int $priority
-     * @return $this
      */
-    public function addOnShowOption($callable, $priority = Callback::DEFAULT_PRIORITY)
+    public function addOnShowOption(callable $callable, $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
         $this->getOnShowOption()->append($callable, $priority);
         return $this;
     }
 
     /**
-     * Eg:
-     *  function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) { }
-     *
-     * @param callable|null $onShowOption
-     * @return Select
-     * @deprecated use $this->addOnShowOption($callable, $priority)
-     */
-    public function setOnShowOption($onShowOption)
-    {
-        $this->addOnShowOption($onShowOption);
-        return $this;
-    }
-
-    /**
      * Compare a value and see if it is selected.
-     *
-     * @param string $val
-     * @return bool
      */
-    public function isSelected($val = '')
+    public function isSelected(string $val = ''): bool
     {
         $value = $this->getValue();
-
-        // NOTE: I have tried to update this so that null, '' and false are all separate and selectable as needed...
-        if ($value !== null && $val !== null) {
-            if (is_array($value)) {
-                if (in_array($val, $value))
-                    return true;
-            } else {
+        // NOTE: Ensure that null, '' and false are all separate and selectable as needed...
+        if ($val !== null) {
+//            if (is_array($value)) {
+//                if (in_array($val, $value))
+//                    return true;
+//            } else {
                 if ($this->isStrict()) {
-                    $val = (string)$val;
+                    //$val = (string)$val;
                     if ($value === $val)
                         return true;
                 } else {
                     if ($value == $val)
                         return true;
                 }
-            }
+//            }
         }
         return false;
     }
 
-    /**
-     * @param \Dom\Repeat $template
-     * @param Option $option
-     * @param string $var
-     */
-    protected function showOption($template, $option, $var = 'option')
-    {
-        if ($this->getOnShowOption()->isCallable()) {
-            $b = $this->getOnShowOption()->execute($template, $option, $var);
-            if ($b === false) return;
-        }
-
-        $template->insertText($var, $option->getName());
-
-        $template->setAttr($var, 'value', $option->getValue());
-        if ($this->isSelected($option->getValue())) {
-            $template->setAttr($var, 'selected', 'selected');
-            $template->addCss($var, 'selected');
-        }
-
-        // Add attributes
-        $template->setAttr($var, $option->getAttrList());
-        $template->addCss($var, $option->getCssString());
-    }
-    
-    /**
-     * Get the element HTML
-     *
-     * @return string|\Dom\Template
-     */
-    public function show()
-    {
-        $template = $this->getTemplate();
-        if (!$template->keyExists('var', 'element')) {
-            return $template;
-        }
-        if ($this->isArrayField()) {
-            $template->setAttr('element', 'multiple', 'multiple');
-        }
-
-        /* @var \Tk\Form\Field\Option $option */
-        foreach($this->getOptions() as $option) {
-            $tOpt = null;
-            if ($option instanceof OptGroup) {
-                $tOptGroup = $template->getRepeat('optgroup');
-                $tOptGroup->setAttr('optgroup', 'label', $option->getName());
-                foreach ($option->getOptions() as $opt) {
-                    $tOpt = $tOptGroup->getRepeat('option');
-                    $this->showOption($tOpt, $opt);
-                    $tOpt->appendRepeat();
-                }
-                $tOptGroup->appendRepeat();
-            } else {
-                /* @var \Dom\Repeat $tOpt */
-                $tOpt = $template->getRepeat('option');
-                $this->showOption($tOpt, $option);
-                $tOpt->appendRepeat();
-            }
-        }
-
-        $this->decorateElement($template);
-        return $template;
-    }
-
-    /**
-     * makeTemplate
-     *
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
-        $xhtml = <<<HTML
-<select var="element" class="form-control">
-  <option repeat="option" var="option"></option>
-  <optgroup label="" repeat="optgroup" var="optgroup">
-    <option repeat="option" var="option"></option>
-  </optgroup>
-</select>
-HTML;
-        $tpl = \Dom\Loader::load($xhtml);
-        return $tpl;
-    }
 }

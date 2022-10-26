@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form\Field\Option;
 
+use Tk\Db\Mapper\Result;
 use Tk\Form\Field\Option;
 
 /**
@@ -12,59 +13,29 @@ use Tk\Form\Field\Option;
  *   $list = new ObjectArrayIterator(\App\Db\User::getMapper()->findAll(), 'name', 'id');
  * ?>
  *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayObjectIterator extends ArrayIterator
 {
-    /**
-     * @var string
-     */
-    protected $textParam = '';
 
-    /**
-     * @var string
-     */
-    protected $valueParam = '';
+    protected string $textParam = '';
 
-    /**
-     * @var string
-     */
-    protected $disableParam = '';
+    protected string $valueParam = '';
 
-    /**
-     * @var string
-     */
-    protected $labelParam = '';
+    protected string $disableParam = '';
 
-    /**
-     * @var string
-     */
-    protected $selectedValue = '';
+    protected string $labelParam = '';
 
-    /**
-     * @var string
-     */
-    protected $selectedAppend = ' (Current)';
+    protected string $selectedValue = '';
 
-    /**
-     * @var string
-     */
-    protected $selectedPrepend = '';
+    protected string $selectedAppend = ' (Current)';
+
+    protected string $selectedPrepend = '';
 
 
-    /**
-     *
-     * @param array $list
-     * @param string|callable $textParam
-     * @param string|callable $valueParam
-     * @param string $disableParam
-     * @param string $labelParam
-     */
-    public function __construct($list = array(), $textParam = 'name', $valueParam = 'id', $disableParam = '', $labelParam = '')
+    public function __construct(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = '')
     {
-        if ($list instanceof \Tk\Db\Map\ArrayObject) {
+        if ($list instanceof Result) {
             $list = $list->toArray();
         }
         parent::__construct($list);
@@ -75,58 +46,33 @@ class ArrayObjectIterator extends ArrayIterator
         $this->labelParam = $labelParam;
     }
 
-    /**
-     * @param array $list
-     * @param string|callable $textParam
-     * @param string|callable $valueParam
-     * @param string $disableParam
-     * @param string $labelParam
-     * @return ArrayObjectIterator
-     */
-    static function create($list = array(), $textParam = 'name', $valueParam = 'id', $disableParam = '', $labelParam = '')
+    static function create(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = ''): static
     {
         return new self($list, $textParam, $valueParam, $disableParam, $labelParam);
     }
 
-    /**
-     * @param string $value
-     * @return ArrayObjectIterator
-     */
-    public function setSelectedValue($value)
+    public function setSelectedValue(string $value): static
     {
         $this->selectedValue = $value;
         return $this;
     }
 
-    /**
-     * @param string $selectedAppend
-     * @return ArrayObjectIterator
-     */
-    public function setSelectedAppend($selectedAppend)
+    public function setSelectedAppend(string $selectedAppend): static
     {
         $this->selectedAppend = $selectedAppend;
         return $this;
     }
 
-    /**
-     * @param string $selectedPrepend
-     * @return ArrayObjectIterator
-     */
-    public function setSelectedPrepend($selectedPrepend)
+    public function setSelectedPrepend(string $selectedPrepend): static
     {
         $this->selectedPrepend = $selectedPrepend;
         return $this;
     }
 
-
     /**
-     * Return the current element
-     *
-     * @see http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function current()
+    public function current(): mixed
     {
         $obj = $this->list[$this->getKey($this->idx)];
         $text = '';
@@ -139,7 +85,7 @@ class ArrayObjectIterator extends ArrayIterator
         }
 
         $pre = $app = '';
-        if ($this->selectedValue !== null && $this->selectedValue !== '' && $value == $this->selectedValue) {
+        if ($this->selectedValue !== '' && $value == $this->selectedValue) {
             $pre = $this->selectedPrepend;
             $app = $this->selectedAppend;
         }
@@ -147,7 +93,7 @@ class ArrayObjectIterator extends ArrayIterator
         if (is_string($this->textParam))
             $method = 'get'.ucfirst($this->textParam);
 
-        if ( is_callable($this->textParam) ) {
+        if (is_callable($this->textParam)) {
             $text = call_user_func_array($this->textParam, array($obj));
         } else if ($method && method_exists($obj, $method) && is_string($obj->$method())) {
             $text = $pre . $obj->$method() . $app;
@@ -165,7 +111,5 @@ class ArrayObjectIterator extends ArrayIterator
         // Create the option object from the object supplied
         return $option;
     }
-
-
 
 }

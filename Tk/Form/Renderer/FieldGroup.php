@@ -18,7 +18,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     protected $form = null;
 
     /**
-     * @var Field\Iface
+     * @var Field\FieldInterface
      */
     protected $field = null;
 
@@ -71,7 +71,7 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * @return Field\Iface
+     * @return Field\FieldInterface
      */
     public function getField()
     {
@@ -79,10 +79,10 @@ class FieldGroup extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     }
 
     /**
-     * @param Field\Iface $field
+     * @param Field\FieldInterface $field
      * @return $this
      */
-    public function setField(Field\Iface $field)
+    public function setField(Field\FieldInterface $field)
     {
         $this->field = $field;
         return $this;

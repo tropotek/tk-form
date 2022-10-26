@@ -19,30 +19,15 @@ use Tk\Form\Field\Option;
  *     3 => 'label'      // Option Label (optional)
  *   )
  *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayArrayIterator extends ArrayIterator
 {
 
     /**
-     *
-     * @param array $list
+     * @interface \Iterator
      */
-    public function __construct(array $list)
-    {
-        parent::__construct($list);
-    }
-
-    /**
-     * Return the current element
-     *
-     * @see http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
-     */
-    public function current()
+    public function current(): mixed
     {
         $key = $this->getKey($this->idx);
         $arr = $this->list[$key];

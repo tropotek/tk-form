@@ -11,7 +11,7 @@ use \Tk\Form\Field;
  */
 class DomStatic extends Iface
 {
-    
+
     /**
      * @var \Dom\Form
      */
@@ -86,7 +86,7 @@ class DomStatic extends Iface
 
         $this->domForm->getNode()->setAttribute('class', $this->domForm->getNode()->getAttribute('class') . ' tk-static-form');
         foreach ($this->getForm()->getFieldList() as $field) {
-            if (!$field instanceof Field\Iface) continue;
+            if (!$field instanceof Field\FieldInterface) continue;
             $this->showField($field);
         }
 
@@ -101,18 +101,18 @@ class DomStatic extends Iface
     /**
      * Render the form field values
      *
-     * @param Field\Iface $field
+     * @param Field\FieldInterface $field
      * @return mixed
      * @throws \Exception
      */
-    protected function showField(Field\Iface $field)
+    protected function showField(Field\FieldInterface $field)
     {
-        if (!$field instanceof Field\Iface) {
+        if (!$field instanceof Field\FieldInterface) {
             return;
         }
-        
+
         $elName = $field->getName();
-        if ($field->isArrayField()) {
+        if ($field->isMultiple()) {
             $elName .= '[]';
         }
 
@@ -130,12 +130,12 @@ class DomStatic extends Iface
 
         $value = $field->getValue();
         $elName = $field->getName();
-        if (is_array($value) || $field->isArrayField()) {
+        if (is_array($value) || $field->isMultiple()) {
             $elName = $field->getName() . '[]';
         }
         $elList = $this->domForm->getFormElementList($elName);
 
-        
+
         /* @var $el \Dom\Form\Element */
         foreach ($elList as $i => $el) {
             if (!$el) continue;
@@ -169,7 +169,7 @@ class DomStatic extends Iface
                     break;
             }
 
-            if ($field instanceof \Tk\Form\Event\Iface) {
+            if ($field instanceof \Tk\Form\Event\FieldInterface) {
                 $field->setAttr('name', $field->getEventName());
             }
             $field->setAttr('id', $field->getId());
@@ -184,7 +184,7 @@ class DomStatic extends Iface
                 $el->setAttribute('class', $field->getCssString());
             }
         }
-        
+
         // Render Errors
         if ($field->hasErrors()) {
             $this->showError($field);
@@ -223,7 +223,7 @@ class DomStatic extends Iface
     /**
      *
      *
-     * @param Field\Iface $field
+     * @param Field\FieldInterface $field
      * @throws \Exception
      */
     protected function showError($field)
@@ -238,7 +238,7 @@ class DomStatic extends Iface
 
         if ($msg != null) {
             $el = $this->domForm->getFormElement($field->getName());
-            if ($field->isArrayField()) {
+            if ($field->isMultiple()) {
                 $el = $this->domForm->getFormElement($field->getName().'[]');
             }
             if ($el == null) {

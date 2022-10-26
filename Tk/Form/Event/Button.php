@@ -7,7 +7,7 @@ namespace Tk\Form\Event;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Button extends Iface
+class Button extends FieldInterface
 {
 
     /**
@@ -67,7 +67,7 @@ class Button extends Iface
         return $this->type;
     }
 
-    
+
     /**
      * @return string
      */
@@ -151,7 +151,7 @@ class Button extends Iface
                 $template->addCss('iconR', $this->getIconRight());
             }
         }
-        
+
         return $template;
     }
 

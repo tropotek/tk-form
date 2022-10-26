@@ -1,93 +1,56 @@
 <?php
 namespace Tk\Form\Field;
 
+use Dom\Renderer\Traits\AttributesTrait;
+use Dom\Renderer\Traits\CssTrait;
+
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
- *
+ * @author tropotek <http://www.tropotek.com/>
  * @see http://www.w3schools.com/tags/tag_option.asp
  */
 class Option
 {
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
+    use AttributesTrait;
+    use CssTrait;
+
+    protected string $name = '';
+
+    protected string $value = '';
 
 
-    /**
-     * @var string
-     */
-    protected $name = '';
-
-    /**
-     * @var string
-     */
-    protected $value = '';
-
-
-
-    /**
-     * @param string $name
-     * @param string $value
-     */
-    public function __construct($name, $value = '')
+    public function __construct(string $name, string $value = '')
     {
         $this->name = $name;
         $this->value = $value;
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     * @return static
-     */
-    static function create($name, $value = '')
+    static function create(string $name, string $value = ''): static
     {
-        $obj = new static($name, $value);
-        return $obj;
+        return new static($name, $value);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Option
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * Specifies the value to be sent to a server
-     *
-     * @return string
-     */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDisabled()
+    public function isDisabled(): bool
     {
         return $this->hasAttr('disabled');
     }
 
-    /**
-     * @param bool $b
-     * @return $this
-     */
-    public function setDisabled($b = true)
+    public function setDisabled(bool $b = true): static
     {
         if ($b) {
             $this->setAttr('disabled', 'disabled');

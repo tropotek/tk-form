@@ -3,51 +3,14 @@ namespace Tk\Form\Field;
 
 
 /**
- *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Textarea extends Iface
+class Textarea extends Input
 {
-    
-    /**
-     * Get the element HTML
-     *
-     * @return string|\Dom\Template
-     */
-    public function show()
+
+    public function __construct(string $name)
     {
-        $template = $this->getTemplate();
-        if (!$template->keyExists('var', 'element')) {
-            return $template;
-        }
-
-        // set the field value
-        if ($template->getVar('element')->nodeName == 'textarea') {
-            $value = $this->getValue();
-            if ($value !== null && !is_array($value)) {
-                $template->insertText('element', $value);
-            }
-        }
-
-        $this->decorateElement($template);
-        return $template;
+        parent::__construct($name, self::TYPE_TEXTAREA);
     }
-    
-    /**
-     * makeTemplate
-     *
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
 
-        $xhtml = <<<HTML
-<textarea class="form-control" var="element"></textarea>
-HTML;
-        return \Dom\Loader::load($xhtml);
-    }
-    
-    
 }

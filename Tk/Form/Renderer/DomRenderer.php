@@ -79,7 +79,7 @@ class DomRenderer extends Iface
 
         // render form errors
         if ($this->getForm()->hasErrors()) {
-            /* @var $field Field\Iface */
+            /* @var $field Field\FieldInterface */
             foreach ($this->getForm()->getFieldList() as $field) {
                 if ($field->hasErrors()) {
                     $field->addCss('errors');
@@ -114,7 +114,7 @@ class DomRenderer extends Iface
         $fields = $this->makeFieldRenderTree($this->form->getFieldList());
         $show = array();
 
-        /* @var $children Field\Iface|array */
+        /* @var $children Field\FieldInterface|array */
         foreach ($fields as $rowId => $children) {
             if ($rowId == 'events-00') continue;
             if (is_array($children) && substr($rowId,0 , 3) == 'tg-') {     // Render Tab group
@@ -146,7 +146,7 @@ class DomRenderer extends Iface
 
     /**
      * @param string $tabGroup
-     * @param Field\Iface[]|array $fields
+     * @param Field\FieldInterface[]|array $fields
      * @param Template $t
      */
     protected function renderTabGroup($tabGroup, $fields)
@@ -155,7 +155,7 @@ class DomRenderer extends Iface
         $t->setAttr('tab-group', 'id', $this->getForm()->getId() . $this->cleanName($tabGroup));
         $t->setAttr('tab-group', 'data-name', $tabGroup);
 
-        /* @var $children Field\Iface|array */
+        /* @var $children Field\FieldInterface|array */
         foreach ($fields as $rowId => $children) {
             if (is_array($children) && substr($rowId,0 , 3) == 'fs-')   // Render Fieldset
                 $tpl = $this->renderFieldset(substr($rowId, 3), $tabGroup, $children);
@@ -169,7 +169,7 @@ class DomRenderer extends Iface
     /**
      * @param string $fieldset
      * @param string $tabGroup
-     * @param Field\Iface[]|array $fields
+     * @param Field\FieldInterface[]|array $fields
      * @param Template $t
      */
     protected function renderFieldset($fieldset, $tabGroup = '', $fields)
@@ -180,7 +180,7 @@ class DomRenderer extends Iface
         //$t->addCss('fieldset', preg_replace('/[^a-z0-9_-]/i', '', $fieldset));
 
         $css = '';
-        /** @var Field\Iface[] $children */
+        /** @var Field\FieldInterface[] $children */
         foreach ($fields as $rowId => $children) {
             if (current($children)->getFieldsetCss())
                 $css = current($children)->getFieldsetCss();
@@ -191,7 +191,7 @@ class DomRenderer extends Iface
     }
 
     /**
-     * @param Field\Iface[]|array $fields
+     * @param Field\FieldInterface[]|array $fields
      * @param string $rowId
      * @param Template $t
      */
@@ -205,7 +205,7 @@ class DomRenderer extends Iface
 
         $rowCss = new Css();
         foreach ($fields as $field) {
-            if ($field instanceof Event\Iface || $field instanceof Field\Hidden) continue;
+            if ($field instanceof Event\FieldInterface || $field instanceof Field\Hidden) continue;
             $html = $field->show();
             if ($this->getFieldGroupRenderer()) {
                 $this->getFieldGroupRenderer()->setLayoutCol(null);
@@ -233,9 +233,9 @@ class DomRenderer extends Iface
     {
         $sets = array();
         $rowId = 0;
-        /* @var $field Field\Iface */
+        /* @var $field Field\FieldInterface */
         foreach ($fieldList as $name => $field) {
-            if ($field instanceof Event\Iface || $field instanceof Field\Hidden) {
+            if ($field instanceof Event\FieldInterface || $field instanceof Field\Hidden) {
                 $sets['events-00'][] = $field;
                 continue;
             }

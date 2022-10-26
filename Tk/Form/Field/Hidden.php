@@ -3,41 +3,24 @@ namespace Tk\Form\Field;
 
 
 /**
- *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class Hidden extends Input
 {
 
-
-    /**
-     * __construct
-     *
-     * @param string $name
-     * @param string $value
-     * @throws \Tk\Form\Exception
-     */
-    public function __construct($name, $value = '')
+    public function __construct(string $name, string $value = '')
     {
         parent::__construct($name);
         $this->setValue($value);
         $this->setType('hidden');
     }
 
-    /**
-     * @return string
-     */
-    public function getFieldset()
+    public function getFieldset(): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getTabGroup()
+    public function getTabGroup(): string
     {
         return '';
     }

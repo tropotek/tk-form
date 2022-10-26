@@ -24,17 +24,46 @@ composer require ttek/tk-form
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-form": "~3.2"
+"ttek/tk-form": "~8.0.0"
 ```
 
 If you do not use Composer, you can grab the code from GitHub, and use any
 PSR-0 compatible autoloader to load the classes.
 
-## Introduction
 
+### Form State
 
-
-
+```
+   Create Form
+       |
+       |
+ Add Form Fields
+       |
+       |
+ Load Field Values
+       |
+       |
+ if (isSubmitted) ----[YES]---------------
+       |                                 |
+       |                                 |
+      [No]                   Load Request Into Field values
+       |                                 |
+       |                                 |
+       |                         Validate Field Data
+       |                                 |
+       |                                 |
+       | <----------[YES]-------  if (hasErrors)
+       |                                 |
+       |                                 |
+       |                                [No]
+       |                                 |
+       |                                 |
+  Render Form                   Save Data To Storage    
+                                         | 
+                                         |
+                               Redirect To Success Page
+  
+```
 
 
 

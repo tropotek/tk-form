@@ -7,7 +7,7 @@ namespace Tk\Form\Event;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Hidden extends Iface
+class Hidden extends FieldInterface
 {
 
     /**

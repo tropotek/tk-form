@@ -4,13 +4,13 @@ namespace Tk;
 use ArrayAccess;
 use ArrayObject;
 use Dom\Template;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Event\FormEvent;
+use Tk\Form\Exception;
 use Tk\Form\Field;
 use Tk\Form\Event;
-use Tk\Form\Field\Iface;
+use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
-use Tk\Ui\Element;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 /**
@@ -41,20 +41,17 @@ class Form extends Form\Element
 
     const METHOD_POST               = 'post';
     const METHOD_GET                = 'get';
-    
+
+
+    protected string $id = '';
 
     /**
-     * @var string
-     */
-    protected $id = '';
-
-    /**
-     * @var Iface[]
+     * @var FieldInterface[]
      */
     protected $fieldList = array();
 
     /**
-     * @var Event\Iface
+     * @var Event\FieldInterface
      */
     protected $triggeredEvent = null;
 
@@ -108,15 +105,14 @@ class Form extends Form\Element
     private $tabGroupCss = '';
 
 
-
     /**
      * @param string $formId
+     * @throws Exception
      */
-    public function __construct($formId = 'form')
+    public function __construct(string $formId = 'form')
     {
-        $this->id = $formId;
-        $this->name = $formId;
         $this->setForm($this);
+        $this->setName($formId);
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', Uri::create());
         $this->setAttr('accept-charset', 'UTF-8');
@@ -234,7 +230,7 @@ class Form extends Form\Element
         $this->loadFields();
 
         // get the triggered event, this also setup the form ready to fire an event if present.
-        /* @var Event\Iface|null $event */
+        /* @var Event\FieldInterface|null $event */
         $event = $this->getTriggeredEvent($request);
         if (!$this->isSubmitted()) {
             $this->executeFields();
@@ -277,9 +273,9 @@ class Form extends Form\Element
     protected function loadFields($array = array())
     {
         $array = array_merge($this->loadArray, $array);
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) continue;
+            if ($field instanceof Event\FieldInterface) continue;
             $field->load($array);
         }
         return $this;
@@ -292,9 +288,9 @@ class Form extends Form\Element
      */
     protected function executeFields()
     {
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) continue;
+            if ($field instanceof Event\FieldInterface) continue;
             $field->execute();
         }
         return $this;
@@ -303,14 +299,14 @@ class Form extends Form\Element
     /**
      * Return all submit/button event fields
      *
-     * @return Event\Iface[]|array
+     * @return Event\FieldInterface[]|array
      */
     protected function getEventFields()
     {
         $list = [];
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) $list[] = $field;
+            if ($field instanceof Event\FieldInterface) $list[] = $field;
         }
         return $list;
     }
@@ -351,7 +347,7 @@ class Form extends Form\Element
         }
 
         // Fix keys for conversions of '_' to '.' for fields that have been modified
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
             $cleanName = str_replace('.', '_', $field->getName());
             if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
@@ -384,14 +380,14 @@ class Form extends Form\Element
      *   execute() method has been called.
      *
      * @param array $array
-     * @return Event\Iface
+     * @return Event\FieldInterface
      */
     public function getTriggeredEvent($array = null)
     {
         if ($array && !$this->triggeredEvent) {
-            /* @var $field Iface */
+            /* @var $field FieldInterface */
             foreach($this->fieldList as $field) {
-                if ($field instanceof Event\Iface) {
+                if ($field instanceof Event\FieldInterface) {
                     if (isset($array[$field->getEventName()])) {
                         $this->triggeredEvent = $field;
                         break;
@@ -409,13 +405,13 @@ class Form extends Form\Element
      *
      * @param string $fieldName
      * @param callable $callback
-     * @return Event\Iface
+     * @return Event\FieldInterface
      */
     public function addEventCallback($fieldName, $callback)
     {
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
-        if ($field && $field instanceof Event\Iface) {
+        if ($field && $field instanceof Event\FieldInterface) {
             $field->appendCallback($callback);
         } else {
             //\Tk\Log::warning('Event Field not found: `' . $fieldName . '`');
@@ -509,12 +505,12 @@ class Form extends Form\Element
     }
 
     /**
-     * @param Iface $field
-     * @param null|Iface|string $refField
-     * @return Iface
+     * @param FieldInterface $field
+     * @param null|FieldInterface|string $refField
+     * @return FieldInterface
      * @since 2.0.68
      */
-    public function appendField(Iface $field, $refField = null)
+    public function appendField(FieldInterface $field, $refField = null)
     {
         $field->setForm($this);
         if ($this->getFieldset())
@@ -525,11 +521,11 @@ class Form extends Form\Element
             $refField = $this->getField(str_replace('[]', '', $refField));
         }
 
-        if (!$refField || !$refField instanceof Iface) {
+        if (!$refField || !$refField instanceof FieldInterface) {
             $this->fieldList[$field->getName()] = $field;
         } else {
             $newArr = array();
-            /** @var Iface $f */
+            /** @var FieldInterface $f */
             foreach ($this->fieldList as $f) {
                 $newArr[$f->getName()] = $f;
                 if ($f === $refField) $newArr[$field->getName()] = $field;
@@ -540,12 +536,12 @@ class Form extends Form\Element
     }
 
     /**
-     * @param Iface $field
-     * @param null|Iface|string $refField
-     * @return Iface
+     * @param FieldInterface $field
+     * @param null|FieldInterface|string $refField
+     * @return FieldInterface
      * @since 2.0.68
      */
-    public function prependField(Iface $field, $refField = null)
+    public function prependField(FieldInterface $field, $refField = null)
     {
         $field->setForm($this);
         if ($this->getFieldset())
@@ -556,11 +552,11 @@ class Form extends Form\Element
             $refField = $this->getField(str_replace('[]', '', $refField));
         }
 
-        if (!$refField || !$refField instanceof Iface) {
+        if (!$refField || !$refField instanceof FieldInterface) {
             $this->fieldList = array($field->getName() => $field) + $this->fieldList;
         } else {
             $newArr = array();
-            /** @var Iface $f */
+            /** @var FieldInterface $f */
             foreach ($this->fieldList as $f) {
                 if ($f === $refField) $newArr[$field->getName()] = $field;
                 $newArr[$f->getName()] = $f;
@@ -574,7 +570,7 @@ class Form extends Form\Element
      * Remove a field from the form
      *
      * @param string $fieldName
-     * @return Iface|null returns null if not found
+     * @return FieldInterface|null returns null if not found
      */
     public function removeField($fieldName)
     {
@@ -590,7 +586,7 @@ class Form extends Form\Element
      * Return a field object or null if not found
      *
      * @param string $fieldName
-     * @return null|Iface|Form\Event\Iface
+     * @return null|FieldInterface|Form\Event\FieldInterface
      */
     public function getField($fieldName)
     {
@@ -617,7 +613,7 @@ class Form extends Form\Element
     /**
      * Get the field array
      *
-     * @return array|Element[]|Field\Iface[]
+     * @return array|Element[]|Field\FieldInterface[]
      */
     public function getFieldList()
     {
@@ -634,7 +630,7 @@ class Form extends Form\Element
     {
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
-        if ($field instanceof Iface) {
+        if ($field instanceof FieldInterface) {
             return $field->getValue();
         }
         return null;
@@ -645,14 +641,14 @@ class Form extends Form\Element
      *
      * @param string $fieldName The field name.
      * @param mixed $value The field value.
-     * @return Iface
+     * @return FieldInterface
      * @throws Exception
      */
     public function setFieldValue($fieldName, $value)
     {
         $fieldName = str_replace('[]', '', $fieldName);
         $field = $this->getField($fieldName);
-        if (!$field || !$field instanceof Iface) {
+        if (!$field || !$field instanceof FieldInterface) {
             throw new Exception('Form Field not found: `' . $fieldName . '`');
         }
         $field->setValue($value);
@@ -666,7 +662,7 @@ class Form extends Form\Element
      */
     public function hasErrors()
     {
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->fieldList as $field) {
             if ($field->hasErrors()) {
                 return true;
@@ -686,7 +682,7 @@ class Form extends Form\Element
     public function getAllErrors()
     {
         $e = $this->errors;
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach($this->getFieldList() as $field) {
             if ($field->hasErrors()) {
                 $e[$field->getName()] = $field->getErrors();
@@ -709,7 +705,7 @@ class Form extends Form\Element
     public function addFieldError($fieldName, $msg = '')
     {
         $fieldName = str_replace('[]', '', $fieldName);
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         $field = $this->getField($fieldName);
         if ($field) {
             $field->addError($msg);
@@ -748,9 +744,9 @@ class Form extends Form\Element
     public function getValues($regex = null)
     {
         $array = array();
-        /* @var $field Iface */
+        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\Iface) continue;
+            if ($field instanceof Event\FieldInterface) continue;
             if ($regex) {
                 if (is_string($regex) && !preg_match($regex, $field->getName())) {
                     continue;
@@ -760,7 +756,7 @@ class Form extends Form\Element
             }
             $value = $field->getValue();
 
-            if (!$field->isArrayField() && is_array($value)) {
+            if (!$field->isMultiple() && is_array($value)) {
                 foreach ($value as $k => $v) {  // pull values out if the element is not an array
                     $array[$k] = $v;
                 }
@@ -804,8 +800,8 @@ class Form extends Form\Element
     /**
      * Append an field to this form
      *
-     * @param Iface $field
-     * @return Iface
+     * @param FieldInterface $field
+     * @return FieldInterface
      * @deprecated Use appendField($field)
      * @remove 2.4.0
      */
@@ -817,9 +813,9 @@ class Form extends Form\Element
     /**
      * Add an element after another element
      *
-     * @param string|Iface|null $refField
-     * @param Iface $field
-     * @return Iface
+     * @param string|FieldInterface|null $refField
+     * @param FieldInterface $field
+     * @return FieldInterface
      * @deprecated Use appendField($field, $refField)
      * @remove 2.4.0
      */
@@ -831,9 +827,9 @@ class Form extends Form\Element
     /**
      * Add a field element before another element
      *
-     * @param string|Iface|null $refField
-     * @param Iface $field
-     * @return Iface
+     * @param string|FieldInterface|null $refField
+     * @param FieldInterface $field
+     * @return FieldInterface
      * @deprecated Use prependField($field, $refField)
      * @remove 2.4.0
      */

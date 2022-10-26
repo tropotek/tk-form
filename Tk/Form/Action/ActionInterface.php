@@ -1,38 +1,24 @@
 <?php
-namespace Tk\Form\Event;
+namespace Tk\Form\Action;
 
-use Tk\Callback;
+use Tk\CallbackCollection;
 use Tk\Form\Field;
-use Tk\Request;
+use Tk\Uri;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-abstract class Iface extends Field\Iface
+abstract class ActionInterface extends Field\FieldInterface
 {
-    /**
-     * @var Callback
-     */
-    protected $callbackList = null;
 
-    /**
-     * @var null|\Tk\Uri
-     */
-    protected $redirect = null;
+    protected CallbackCollection $callbackList;
+
+    protected ?Uri $redirect = null;
 
 
-    /**
-     * __construct
-     *
-     * @param string $name
-     * @param null|callable $callback
-     * @param null|\Tk\Uri $redirect
-     */
-    public function __construct(string $name, ?callable $callback = null, ?\Tk\Uri $redirect = null)
+    public function __construct(string $name, ?callable $callback = null, ?Uri $redirect = null)
     {
-        $this->callbackList = Callback::create();
+        $this->callbackList = CallbackCollection::create();
         parent::__construct($name);
         $this->prependCallback($callback);
         $this->setRedirect($redirect);
@@ -45,14 +31,12 @@ abstract class Iface extends Field\Iface
     {
         $this->getCallbackList()->execute($this->getForm(), $this);
         if ($this->getRedirect()) {
-            \Tk\Uri::create($this->getRedirect())->redirect();
+            Uri::create($this->getRedirect())->redirect();
         }
     }
 
-    /**
-     * @return Callback
-     */
-    public function getCallbackList()
+
+    public function getCallbackList(): CallbackCollection
     {
         return $this->callbackList;
     }
@@ -87,7 +71,7 @@ abstract class Iface extends Field\Iface
     }
 
     /**
-     * @return null|\Tk\Uri
+     * @return null|Uri
      */
     public function getRedirect()
     {
@@ -95,7 +79,7 @@ abstract class Iface extends Field\Iface
     }
 
     /**
-     * @param null|\Tk\Uri $redirect
+     * @param null|Uri $redirect
      * @return $this
      */
     public function setRedirect($redirect)
@@ -142,7 +126,7 @@ abstract class Iface extends Field\Iface
      *
      * @return boolean
      */
-    public function isArrayField()
+    public function isMultiple()
     {
         return false;
     }

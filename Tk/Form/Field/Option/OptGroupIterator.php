@@ -27,44 +27,20 @@ use Tk\Form\Field\Option;
  *     ...
  *   )
  *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class OptGroupIterator extends ArrayIterator
 {
 
-
-    /**
-     *
-     * @param array $list
-     */
     public function __construct(array $list)
     {
         parent::__construct($list);
-
-        // create an internal structure we can iterate successfully
-//        $newList = array();
-//        foreach ($this->list as $k => $v) {
-//            if (is_array($v)) {
-//                foreach ($v as $n1 => $v1) {
-//                    $newList[] = array($n1, $v1, $k);
-//                }
-//            } else {
-//                $newList[] = array($k, $v);
-//            }
-//        }
-//        $this->list = $newList;
     }
 
     /**
-     * Return the current element
-     *
-     * @see http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
+     * @interface \Iterator
      */
-    public function current()
+    public function current(): mixed
     {
         $key = $this->getKey($this->idx);
         $arr = $this->list[$key];

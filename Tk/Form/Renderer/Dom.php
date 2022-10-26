@@ -77,7 +77,7 @@ class Dom extends Iface
 
         // render form errors
         if ($this->getForm()->hasErrors()) {
-            /* @var $field Field\Iface */
+            /* @var $field Field\FieldInterface */
             foreach ($this->getForm()->getFieldList() as $field) {
                 if ($field->hasErrors()) {
                     $field->addCss('errors');
@@ -116,7 +116,7 @@ class Dom extends Iface
         $this->formRow = null;
         /** @var \Dom\Repeat $setRow */
         $setRow = null;
-        /* @var $field Field\Iface */
+        /* @var $field Field\FieldInterface */
         foreach ($fieldList as $field) {
 
             if (!$field->getTabGroup()) {
@@ -224,7 +224,7 @@ class Dom extends Iface
     {
         $sets = array();
 
-        /* @var $field Field\Iface */
+        /* @var $field Field\FieldInterface */
         foreach ($fieldList as $name => $field) {
             $setName = $field->getFieldset();
             if (!$setName) {
@@ -244,13 +244,13 @@ class Dom extends Iface
     }
 
     /**
-     * @param Field\Iface $field
+     * @param Field\FieldInterface $field
      * @param Template $t
      * @param string $var ???? Not being used???
      */
-    protected function showField(Field\Iface $field, Template $t, $var = 'fields')
+    protected function showField(Field\FieldInterface $field, Template $t, $var = 'fields')
     {
-        if ($field instanceof Event\Iface || $field instanceof Field\Hidden) {
+        if ($field instanceof Event\FieldInterface || $field instanceof Field\Hidden) {
             $html = $field->show();
             if ($html instanceof \Dom\Template) {
                 $t->appendTemplate('events', $html);
@@ -338,7 +338,7 @@ class Dom extends Iface
           <div class="form-row" var="form-row" repeat="form-row"></div>
       </fieldset>
       <div class="form-row" var="form-row" repeat="form-row"></div>
-      
+
     </div>
 
     <div class="form-row tk-form-events clearfix" var="events"></div>

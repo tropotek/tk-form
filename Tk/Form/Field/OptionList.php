@@ -3,87 +3,55 @@
 namespace Tk\Form\Field;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @link http://www.tropotek.com/
- * @license Copyright 2018 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 trait OptionList
 {
-
     /**
      * @var array|Option[]
      */
-    protected $options = array();
+    protected array $options = [];
 
 
-
-    /**
-     * Set the options array
-     *
-     * @param array|Option[] $options
-     * @return $this
-     */
-    public function setOptions($options)
+    public function setOptions(array $options): static
     {
         $this->options = $options;
         return $this;
     }
 
-    /**
-     * @return array|Option[]
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-
-    /**
-     * @param $name
-     * @param string $value
-     * @param string $cssClass
-     * @return $this
-     */
-    public function prependOption($name, $value = '', $cssClass = '')
+    public function prependOption(string $name, string $value = '', string $cssClass = ''): static
     {
         $opt = new Option($name, $value);
         if ($cssClass) $opt->addCss($cssClass);
         return $this->prepend($opt);
     }
 
-    /**
-     * @param $name
-     * @param string $value
-     * @param string $cssClass
-     * @return $this
-     */
-    public function appendOption($name, $value = '', $cssClass = '')
+    public function appendOption(string $name, string $value = '', string $cssClass = ''): static
     {
         $opt = new Option($name, $value);
         if ($cssClass) $opt->addCss($cssClass);
         return $this->append($opt);
     }
 
-    /**
-     * @param Option $option
-     * @return $this
-     */
-    public function append(Option $option)
+    public function append(Option $option): static
     {
         $this->options[] = $option;
         return $this;
     }
 
-    /**
-     * @param Option $option
-     * @return $this
-     */
-    public function prepend(Option $option)
+    public function prepend(Option $option): static
     {
         array_unshift($this->options, $option);
         return $this;
     }
 
-
-
+    public function getValue(): string
+    {
+        return '';
+    }
 }
