@@ -1,13 +1,10 @@
 <?php
 namespace Tk;
 
-use ArrayAccess;
-use ArrayObject;
-use Dom\Template;
 use Tk\Event\FormEvent;
+use Tk\Form\Action\ActionInterface;
 use Tk\Form\Exception;
 use Tk\Form\Field;
-use Tk\Form\Event;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,12 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *  text/plain                           |  Spaces are converted to "+" symbols, but no special characters are encoded
  * </code>
  *
- *
- * accept-charset is set as the $encoding parameter or use setEncoding()
- *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class Form extends Form\Element
 {
@@ -46,144 +38,50 @@ class Form extends Form\Element
     protected string $id = '';
 
     /**
-     * @var FieldInterface[]
+     * @var array|FieldInterface[]
      */
-    protected $fieldList = array();
+    protected array $fieldList = [];
 
-    /**
-     * @var Event\FieldInterface
-     */
-    protected $triggeredEvent = null;
+    protected ?ActionInterface $triggeredEvent = null;
 
-    /**
-     * @var array
-     */
-    protected $loadArray = null;
+    protected array $defaultValues = [];
 
-    /**
-     * if true the required HTML5 attribute will be rendered
-     * @var bool
-     */
-    private $enableRequiredAttr = false;
-
-    /**
-     * @var null|EventDispatcherInterface
-     */
-    protected $dispatcher = null;
-
-    /**
-     * @var null|Form\Renderer\Iface
-     */
-    protected $renderer = null;
+    protected ?EventDispatcherInterface $dispatcher = null;
 
     /**
      * set to true after initForm() is called
-     * @var bool
+     * to avoid duplicate init calls
      */
-    private $initialised = false;
-
-    /**
-     * If set the field  method setFieldset() is called when a field is added to the form
-     * @var string|null
-     */
-    private $fieldset = '';
-
-    /**
-     * @var string
-     */
-    private $fieldsetCss= '';
-
-    /**
-     * If set the field  method setTabGroup() is called when a field is added to the form
-     * @var string|null
-     */
-    private $tabGroup = '';
-
-    /**
-     * @var string
-     */
-    private $tabGroupCss = '';
+    private bool $initiated = false;
 
 
-    /**
-     * @param string $formId
-     * @throws Exception
-     */
-    public function __construct(string $formId = 'form')
+    public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
         $this->setForm($this);
         $this->setName($formId);
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', Uri::create());
-        $this->setAttr('accept-charset', 'UTF-8');
-
-        // TODO: Test how this affects EMS III
-        // This is disabled by default because of error message rendering issues
-        $this->setAttr('novalidate', 'novalidate');
+        $this->setAttr('accept-charset', $charset);
     }
 
-    /**
-     * @param $formId
-     * @return static
-     */
-    public static function create($formId = 'form')
+    public static function create(string $formId = 'form', string $charset = 'UTF-8'): static
     {
-        $obj = new static($formId);
-        return $obj;
+        return new static($formId, $charset);
     }
 
-    /**
-     * Get the unique id for this element
-     *
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return null|EventDispatcherInterface
-     */
-    public function getDispatcher()
+    public function getDispatcher(): ?EventDispatcherInterface
     {
         return $this->dispatcher;
     }
 
-    /**
-     * @param null|EventDispatcherInterface $dispatcher
-     */
-    public function setDispatcher($dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }
 
-    /**
-     * @return null|Form\Renderer\Iface
-     */
-    public function getRenderer()
+    public function isInitiated(): bool
     {
-        return $this->renderer;
-    }
-
-    /**
-     * @param null|Form\Renderer\Iface $renderer
-     * @return $this
-     */
-    public function setRenderer($renderer)
-    {
-        $renderer->setForm($this);
-        $this->renderer = $renderer;
-        return $this;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isInitialised()
-    {
-        return $this->initialised;
+        return $this->initiated;
     }
 
     /**
@@ -192,106 +90,77 @@ class Form extends Form\Element
      */
     public function initForm()
     {
-        if ($this->initialised) return;
-        $this->initialised = true;
+        if ($this->initiated) return;
+        $this->initiated = true;
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
-            $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_INIT, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
         }
     }
 
     /**
-     * Execute the object
-     *
-     * If an button is found and its event is executed the result is returned
-     *
-     * @param array $request
-     * @todo Can we use an array instead of the request here???
+     * If an Action event is found its event is executed the result is returned
      */
-    public function execute($request = null)
+    public function execute(array $values = []): void
     {
-        if (!$request) {
-            $request = Request::createFromGlobals()->request->all();
-        }
-
-        if ($request instanceof \Symfony\Component\HttpFoundation\Request)
-            $request = $request->request->all();
-
-        $this->initForm();      // TODO: not sure if this is a better place for it or not???
+        //$this->initForm();      // TODO: not sure if this is a better place for it or not???
 
         // Load default field values
-        $this->load($this->loadArray);
+        //$this->setDefaultValues($this->defaultValues);
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
-            $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD);
         }
-        $this->loadFields();
+        $this->loadFields($values);
 
-        // get the triggered event, this also setup the form ready to fire an event if present.
-        /* @var Event\FieldInterface|null $event */
-        $event = $this->getTriggeredEvent($request);
+        // get the triggered event, this also set up the form ready to fire an event if present.
+        $event = $this->getTriggeredEvent($values);
         if (!$this->isSubmitted()) {
-            $this->executeFields();
+            $this->executeFields($values);
             return;
         }
 
         // Load request field values
-        $cleanRequest = $this->cleanLoadArray($request);
-        $this->load($cleanRequest);
+        //$values = $this->cleanLoadArray($values);
+        //$this->setDefaultValues($values);
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
-            $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_LOAD_REQUEST, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
         }
-        $this->loadFields();
-        $this->executeFields();
+        $this->loadFields($values);
+        $this->executeFields($values);
 
         if ($this->getDispatcher()) {
             $e = new FormEvent($this);
-            $e->set('form', $this);
-            $this->getDispatcher()->dispatch(FormEvents::FORM_SUBMIT, $e);
+            $this->getDispatcher()->dispatch($e, FormEvents::FORM_SUBMIT);
         }
 
-        if ($event) {
-            $event->execute();
-//            if ($event->getRedirect()) {
-//                \Tk\Uri::create($event->getRedirect())->redirect();
-//            }
-        }
+        $event?->execute($values);
     }
 
     /**
-     * Loads the fields with values from an array.
+     * Loads the fields with values from the array.
      * EG:
      *   $array['field1'] = 'value1';
-     *
-     * @param array|ArrayObject $array
-     * @return $this
      */
-    protected function loadFields($array = array())
+    protected function loadFields(array $array): static
     {
-        $array = array_merge($this->loadArray, $array);
-        /* @var $field FieldInterface */
+        $array = array_merge($this->defaultValues, $array);
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\FieldInterface) continue;
+            if ($field instanceof ActionInterface) continue;
             $field->load($array);
         }
         return $this;
     }
 
     /**
-     * This is called only after new data loaded into the fields
-     *
-     * @return $this
+     * This is called after new data loaded into the fields
      */
-    protected function executeFields()
+    protected function executeFields(array $values): static
     {
-        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\FieldInterface) continue;
-            $field->execute();
+            if ($field instanceof ActionInterface) continue;
+            $field->execute($values);
         }
         return $this;
     }
@@ -299,33 +168,15 @@ class Form extends Form\Element
     /**
      * Return all submit/button event fields
      *
-     * @return Event\FieldInterface[]|array
+     * @return ActionInterface[]|array
      */
-    protected function getEventFields()
+    protected function getEventFields(): array
     {
         $list = [];
-        /* @var $field FieldInterface */
         foreach ($this->getFieldList() as $field) {
-            if ($field instanceof Event\FieldInterface) $list[] = $field;
+            if ($field instanceof ActionInterface) $list[] = $field;
         }
         return $list;
-    }
-
-    /**
-     * Loads the fields with values from an array.
-     * EG:
-     *   $array['field1'] = 'value1';
-     *
-     * @param array $array
-     * @return $this
-     */
-    public function load($array = array())
-    {
-        if ($this->loadArray === null) $this->loadArray = array();
-        if (is_array($array)) {
-            $this->loadArray = array_merge($this->loadArray, $array);
-        }
-        return $this;
     }
 
     /**
@@ -333,176 +184,65 @@ class Form extends Form\Element
      *  o create a new raw array for any ArrayAccess objects like the request object
      *  o add array keys that the request modifies (request replaces '.' with '_') with field names
      *    this will not modify keys that a field does not exist for.
-     *
-     * @param array|ArrayAccess $array
-     * @return array
+     *  @todo: See if this is required anymore
      */
-    protected function cleanLoadArray($array)
-    {
-        // Get values from ArrayAccess objects (IE: Request object)
-        if ($array instanceof ArrayAccess) {
-            $a = array();
-            foreach($array as $k => $v) $a[$k] = $v;
-            $array = $a;
-        }
-
-        // Fix keys for conversions of '_' to '.' for fields that have been modified
-        /* @var $field FieldInterface */
-        foreach ($this->getFieldList() as $field) {
-            $cleanName = str_replace('.', '_', $field->getName());
-            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
-                $array[$field->getName()] = $array[$cleanName];
-            }
-
-            // TODO HACK: Trying to fix the issue when no field data is sent and then only the default field values exist
-            // TODO HACK: This is a mess, we need to go back to the drawing board on how we handle a request
-            // TODO HACK:   the main issue is the ability to call load() multiple times, then the request array
-            // TODO HACK:   when a value is null is ignored and only the loaded values exist when they should be
-            // TODO HACK:   set to null
-            // TODO HACK: The code below tries to fix this, I need to test a number of forms to ensure it does
-            // TODO HACK:   not have any unexpected consequences when saving field data
-            // TODO HACK:
-            if ($field->isReadonly() || $field->isDisabled()) continue;
-            if (!array_key_exists($field->getName(), $array)) {
-                $array[$field->getName()] = null;
-            }
-            // TODO HACK END:
-
-        }
-
-        return $array;
-    }
+//    protected function cleanLoadArray(array $array)
+//    {
+//        // Fix keys for conversions of '_' to '.' for fields that have been modified
+//        /* @var $field FieldInterface */
+//        foreach ($this->getFieldList() as $field) {
+//            $cleanName = str_replace('.', '_', $field->getName());
+//            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
+//                $array[$field->getName()] = $array[$cleanName];
+//            }
+//
+//            // TODO HACK: Trying to fix the issue when no field data is sent and then only the default field values exist
+//            // TODO HACK: This is a mess, we need to go back to the drawing board on how we handle a request
+//            // TODO HACK:   the main issue is the ability to call load() multiple times, then the request array
+//            // TODO HACK:   when a value is null is ignored and only the loaded values exist when they should be
+//            // TODO HACK:   set to null
+//            // TODO HACK: The code below tries to fix this, I need to test a number of forms to ensure it does
+//            // TODO HACK:   not have any unexpected consequences when saving field data
+//            // TODO HACK:
+//            if ($field->isReadonly() || $field->isDisabled()) continue;
+//            if (!array_key_exists($field->getName(), $array)) {
+//                $array[$field->getName()] = null;
+//            }
+//            // TODO HACK END:
+//
+//        }
+//
+//        return $array;
+//    }
 
     /**
      * Get the field event to execute
      *
      * This will only return a valid value <b>after</b> the
      *   execute() method has been called.
-     *
-     * @param array $array
-     * @return Event\FieldInterface
      */
-    public function getTriggeredEvent($array = null)
+    public function getTriggeredEvent(array $array = []): ?ActionInterface
     {
-        if ($array && !$this->triggeredEvent) {
-            /* @var $field FieldInterface */
+        if (!$this->triggeredEvent) {
             foreach($this->fieldList as $field) {
-                if ($field instanceof Event\FieldInterface) {
-                    if (isset($array[$field->getEventName()])) {
-                        $this->triggeredEvent = $field;
-                        break;
-                    }
+                if (!$field instanceof ActionInterface) continue;
+                if (array_key_exists($field->getEventName(), $array)) {
+                    $this->triggeredEvent = $field;
+                    break;
                 }
             }
         }
         return $this->triggeredEvent;
     }
 
-
-    /**
-     * Add a callback to an event element,
-     * The element must be of the type \Tk\Form\Field\Event
-     *
-     * @param string $fieldName
-     * @param callable $callback
-     * @return Event\FieldInterface
-     */
-    public function addEventCallback($fieldName, $callback)
-    {
-        $fieldName = str_replace('[]', '', $fieldName);
-        $field = $this->getField($fieldName);
-        if ($field && $field instanceof Event\FieldInterface) {
-            $field->appendCallback($callback);
-        } else {
-            //\Tk\Log::warning('Event Field not found: `' . $fieldName . '`');
-        }
-        return $field;
-    }
-
     /**
      * Check if the form has been submitted
-     *
-     * @return bool
      */
-    public function isSubmitted()
+    public function isSubmitted(): bool
     {
-        if ($this->getTriggeredEvent()) {
-            return true;
-        }
-        return false;
+        return $this->getTriggeredEvent() != null;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getFieldset(): ?string
-    {
-        return $this->fieldset;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFieldsetCss(): ?string
-    {
-        return $this->fieldsetCss;
-    }
-
-    /**
-     * If set then the field fieldset is set when added to the form
-     *
-     * Set this to '' or null to clear it.
-     *
-     * @param string|null $fieldset
-     * @return Form
-     */
-    public function setFieldset(?string $fieldset, ?string $css = ''): Form
-    {
-        $this->fieldset = $fieldset;
-        $this->fieldsetCss = $css;
-        return $this;
-    }
-
-    /**
-     * return the #fragment  value of a tab for auto selection of tabs after reload.
-     *
-     * @return string|null
-     */
-    public function getTabGroupFragment(string $tabGroup): ?string
-    {
-        return $this->getId() . preg_replace('/[^a-z0-9]/i', '_', $tabGroup);
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTabGroup(): ?string
-    {
-        return $this->tabGroup;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTabGroupCss(): ?string
-    {
-        return $this->tabGroupCss;
-    }
-
-    /**
-     * If set then the field tabGroup is set when added to the form
-     *
-     * Set this to '' or null to clear it.
-     *
-     * @param string|null $tabGroup
-     * @return Form
-     */
-    public function setTabGroup(?string $tabGroup, ?string $css = ''): Form
-    {
-        $this->tabGroup = $tabGroup;
-        $this->tabGroupCss = $css;
-        return $this;
-    }
 
     /**
      * @param FieldInterface $field
@@ -763,78 +503,9 @@ class Form extends Form\Element
             } else {
                 $array[$field->getName()] = $value;
             }
-
         }
         return $array;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnableRequiredAttr()
-    {
-        return $this->enableRequiredAttr;
-    }
 
-    /**
-     * @param bool $enableRequiredAttr
-     */
-    public function setEnableRequiredAttr($enableRequiredAttr = true)
-    {
-        $this->enableRequiredAttr = $enableRequiredAttr;
-    }
-
-    /**
-     * @return null|string|Template
-     */
-    public function show()
-    {
-        if ($this->getRenderer())
-            return $this->getRenderer()->show();
-        return '';
-    }
-
-
-
-
-    /**
-     * Append an field to this form
-     *
-     * @param FieldInterface $field
-     * @return FieldInterface
-     * @deprecated Use appendField($field)
-     * @remove 2.4.0
-     */
-    public function addField($field)
-    {
-        return $this->appendField($field);
-    }
-
-    /**
-     * Add an element after another element
-     *
-     * @param string|FieldInterface|null $refField
-     * @param FieldInterface $field
-     * @return FieldInterface
-     * @deprecated Use appendField($field, $refField)
-     * @remove 2.4.0
-     */
-    public function addFieldAfter($refField, $field)
-    {
-        return $this->appendField($field, $refField);
-    }
-
-    /**
-     * Add a field element before another element
-     *
-     * @param string|FieldInterface|null $refField
-     * @param FieldInterface $field
-     * @return FieldInterface
-     * @deprecated Use prependField($field, $refField)
-     * @remove 2.4.0
-     */
-    public function addFieldBefore($refField, $field)
-    {
-        return $this->prependField($field, $refField);
-    }
 }

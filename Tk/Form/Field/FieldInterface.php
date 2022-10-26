@@ -17,7 +17,9 @@ abstract class FieldInterface extends Element
      * for a full list of input types see: https://www.w3schools.com/tags/att_input_type.asp
      */
     const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
+    const TYPE_LINK     = 'link';
     const TYPE_BUTTON   = 'button';
+    const TYPE_SUBMIT   = 'submit';
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
     const TYPE_SELECT   = 'select';     // Special case, not <input>
@@ -65,7 +67,7 @@ abstract class FieldInterface extends Element
      * Should be called after the form is initialised and loaded with values and before the
      * form is rendered.
      */
-    public function execute(): void { }
+    public function execute(array $values = []): void { }
 
     /**
      * Set the name for this element

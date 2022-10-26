@@ -16,18 +16,17 @@ abstract class ActionInterface extends Field\FieldInterface
     protected ?Uri $redirect = null;
 
 
-    public function __construct(string $name, ?callable $callback = null, ?Uri $redirect = null)
+    public function __construct(string $name, $type = 'button', ?callable $callback = null)
     {
         $this->callbackList = CallbackCollection::create();
         parent::__construct($name);
-        $this->prependCallback($callback);
-        $this->setRedirect($redirect);
+        $this->appendCallback($callback);
     }
 
     /**
      * Execute this events callback methods/functions
      */
-    public function execute()
+    public function execute(array $values = []): void
     {
         $this->getCallbackList()->execute($this->getForm(), $this);
         if ($this->getRedirect()) {
@@ -44,12 +43,8 @@ abstract class ActionInterface extends Field\FieldInterface
     /**
      * Add a callback to the start of the event queue
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
-     *
-     * @param callable $callback
-     * @param int $priority [optional]
-     * @return $this
      */
-    public function prependCallback(?callable $callback, $priority=Callback::DEFAULT_PRIORITY)
+    public function prependCallback(callable $callback, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
         $this->getCallbackList()->prepend($callback, $priority);
         return $this;
@@ -58,106 +53,32 @@ abstract class ActionInterface extends Field\FieldInterface
     /**
      * Add a callback to the end of the event queue
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
-     *
-     * @param callable $callback
-     * @param int $priority [optional]
-     * @return $this
-     * @since 2.0.68
      */
-    public function appendCallback(?callable $callback, $priority=Callback::DEFAULT_PRIORITY)
+    public function appendCallback(callable $callback, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
         $this->getCallbackList()->append($callback, $priority);
         return $this;
     }
 
-    /**
-     * @return null|Uri
-     */
-    public function getRedirect()
+    public function getRedirect(): ?Uri
     {
         return $this->redirect;
     }
 
-    /**
-     * @param null|Uri $redirect
-     * @return $this
-     */
-    public function setRedirect($redirect)
+    public function setRedirect(?Uri $redirect): static
     {
         $this->redirect = $redirect;
         return $this;
     }
 
-    /**
-     * 'fid-'.$form->getId().{$this->name}
-     *
-     * @return string
-     */
-    public function getEventName()
+    public function getEventName(): string
     {
         return $this->makeInstanceKey($this->getName());
     }
 
-    /**
-     * Get the field value(s).
-     *
-     * @return string|array
-     */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->getName();
     }
 
-    /**
-     * isRequired
-     *
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return false;
-    }
-
-    /**
-     * Does this fields data come as an array.
-     * If the name ends in [] then it will be flagged as an arrayField.
-     *
-     * EG: name=`name[]`
-     *
-     * @return boolean
-     */
-    public function isMultiple()
-    {
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFieldset()
-    {
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTabGroup()
-    {
-        return '';
-    }
-
-
-    /**
-     * @param $callback
-     * @return $this
-     * @deprecated use prependCallback
-     * @remove 2.4.0
-     */
-    public function addCallback($callback)
-    {
-        if (!$callback) return $this;
-        $this->appendCallback($callback);
-        return $this;
-    }
 }
