@@ -31,7 +31,17 @@ If you do not use Composer, you can grab the code from GitHub, and use any
 PSR-0 compatible autoloader to load the classes.
 
 
-### Form State
+
+
+### TODO
+
+- Add more functionality to file uploads using jquery
+- Implement a WYSIWYG editor in javascript, idealy using classes sowe can make them selectable
+- Implement select2 for multi select fields
+
+
+
+### Form State Chart
 
 ```
    Create Form
