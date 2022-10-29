@@ -2,15 +2,19 @@
 namespace Tk\Form\Field;
 
 use Dom\Renderer\Css;
+use Dom\Renderer\RendererInterface;
+use Dom\Renderer\Traits\RendererTrait;
+use Tk\CallbackCollection;
 use Tk\Form\Element;
-use Tk\Form\Exception;
 
 /**
  *
  * @author Tropotek <http://www.tropotek.com/>
  */
-abstract class FieldInterface extends Element
+abstract class FieldInterface extends Element implements RendererInterface
 {
+    use RendererTrait;
+
     /**
      * Some basic element types
      * for a full list of input types see: https://www.w3schools.com/tags/att_input_type.asp
@@ -18,18 +22,19 @@ abstract class FieldInterface extends Element
     const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
-    const TYPE_SELECT   = 'select';     // Special case, not <input>
-    const TYPE_TEXTAREA = 'textarea';   // Special case, not <input>
-
+    const TYPE_SELECT   = 'select';
+    const TYPE_TEXTAREA = 'textarea';
     const TYPE_LINK     = 'link';
     const TYPE_BUTTON   = 'button';
     const TYPE_SUBMIT   = 'submit';
 
-    protected mixed $value = null;
+    protected mixed $value = '';
 
     protected string $type = '';
 
     protected string $error = '';
+
+    protected CallbackCollection $onShow;
 
 
     // TODO: review if these should reside in the render system???
@@ -44,22 +49,10 @@ abstract class FieldInterface extends Element
     public function __construct(string $name, string $type = 'text')
     {
         $this->fieldsetCss = new Css();
+        $this->onShow = new CallbackCollection();
+        $this->type = $type;
         $this->setName($name);
         $this->setType($type);
-    }
-
-    /**
-     * Assumes the field value resides within an array.
-     * This objects load() method is called by the form's execute() method
-     * Note: When the value does not exist it is ignored
-     *     (may not be the desired result for unselected checkbox or empty select box)
-     */
-    public function load(array $values): static
-    {
-        if (array_key_exists($this->getName(), $values)) {
-            $this->setValue($values[$this->getName()]);
-        }
-        return $this;
     }
 
     /**
@@ -68,6 +61,25 @@ abstract class FieldInterface extends Element
      * form is rendered.
      */
     public function execute(array $values = []): void { }
+
+    /**
+     * The value in a string format that can be rendered to the template
+     * Recommended that values be PHP native types not objects, use the data mapper for complex types
+     */
+    public function setValue(mixed $value): static
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    /**
+     * The value in a string/array format that can be rendered to the template
+     * Recommended that values be PHP native types not objects, use the data mapper for complex typess
+     */
+    public function getValue(): mixed
+    {
+        return $this->value;
+    }
 
     /**
      * Set the name for this element
@@ -124,25 +136,6 @@ abstract class FieldInterface extends Element
         return $this;
     }
 
-    /**
-     * The value should be of a type that can be handled by
-     * this field`s data mappers
-     */
-    public function setValue(mixed $value): static
-    {
-        $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * The value should be of a type that can be handled by
-     * this field`s data mappers
-     */
-    public function getValue(): mixed
-    {
-        return $this->value;
-    }
-
     public function getError(): string
     {
         return $this->error;
@@ -157,6 +150,20 @@ abstract class FieldInterface extends Element
     public function hasError(): bool
     {
         return !empty($this->error);
+    }
+
+    public function getOnShow(): CallbackCollection
+    {
+        return $this->onShow;
+    }
+
+    /**
+     * Callback: function (\Dom\Template $template, $element) { }
+     */
+    public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
+    {
+        $this->getOnShow()->append($callable, $priority);
+        return $this;
     }
 
     // Attribute helper methods

@@ -2,6 +2,7 @@
 namespace Tk\Form\Field;
 
 
+use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Db\Mapper\ModelIface;
 use Tk\Db\Mapper\Result;
@@ -20,7 +21,6 @@ class Select extends FieldInterface
 
     /**
      * Enable strict type checking for null, '', 0, false, etc
-     * @todo Check if this is needed or maybe we always do strict checking???
      */
     protected bool $strict = false;
 
@@ -96,18 +96,6 @@ class Select extends FieldInterface
         return $this;
     }
 
-    public function load(array $values): static
-    {
-        if ($this->getForm()->isSubmitted() && !array_key_exists($this->getName(), $values)) {
-            $this->setValue(null);
-            if ($this->isMultiple()) {
-                $this->setValue(array());
-            }
-        }
-        parent::load($values);
-        return $this;
-    }
-
     public function getOnShowOption(): CallbackCollection
     {
         return $this->onShowOption;
@@ -133,29 +121,107 @@ class Select extends FieldInterface
         return $this;
     }
 
-    /**
-     * Compare a value and see if it is selected.
-     */
-    public function isSelected(string $val = ''): bool
+    private function clearSelected(): static
     {
-        $value = $this->getValue();
-        // NOTE: Ensure that null, '' and false are all separate and selectable as needed...
-        if ($val !== null) {
-//            if (is_array($value)) {
-//                if (in_array($val, $value))
-//                    return true;
-//            } else {
-                if ($this->isStrict()) {
-                    //$val = (string)$val;
-                    if ($value === $val)
-                        return true;
-                } else {
-                    if ($value == $val)
-                        return true;
-                }
-//            }
+        /** @var Option $option */
+        foreach ($this->getOptions() as $option) {
+            $option->setSelected(false);
         }
-        return false;
+        return $this;
     }
 
+    /**
+     * The value in a string format
+     */
+    public function setValue(mixed $value): static
+    {
+        $this->value = $value;
+        $this->clearSelected();
+        /** @var Option $option */
+        foreach ($this->getOptions() as $option) {
+            if (is_array($value) && in_array($option->getValue(), $value, $this->isStrict())) {
+                if (in_array($option->getValue(), $value)) {
+                    $option->setSelected();
+                }
+            } else {
+                if ($this->isStrict()) {
+                    if ($option->getValue() === $value) {
+                        $option->setSelected();
+                    }
+                } else {
+                    if ($option->getValue() == $value) {
+                        $option->setSelected();
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * The value in a string format
+     */
+    public function getValue(): mixed
+    {
+        return $this->value;
+    }
+
+
+    function show(): ?Template
+    {
+        $template = $this->getTemplate();
+
+        // Render Element
+        $template->setAttr('element', 'name', $this->getHtmlName());
+        $template->setAttr('element', 'id', $this->getId());
+        $template->setAttr('element', 'type', $this->getType());
+        $template->setAttr('element', 'value', $this->getValue());
+
+        if ($this->hasError()) {
+            $template->replaceHtml('error', $this->getError());
+            $this->addCss('is-invalid');
+        }
+
+        /* @var Option $option */
+        foreach($this->getOptions() as $option) {
+            $tOpt = null;
+            if ($option instanceof OptionGroup) {
+                $tOptGroup = $template->getRepeat('optgroup');
+                $tOptGroup->setAttr('optgroup', 'label', $option->getName());
+                foreach ($option->getOptions() as $opt) {
+                    $tOpt = $tOptGroup->getRepeat('option');
+                    $this->showOption($tOpt, $opt);
+                    $tOpt->appendRepeat();
+                }
+                $tOptGroup->appendRepeat();
+            } else {
+                $tOpt = $template->getRepeat('option');
+                $this->showOption($tOpt, $option);
+                $tOpt->appendRepeat();
+            }
+        }
+
+        $this->getOnShow()?->execute($template, $this);
+
+        // Add any attributes
+        $template->setAttr('element', $this->getAttrList());
+        $template->addCss('element', $this->getCssList());
+
+        // Render Label
+        $template->setText('label', $this->getLabel());
+        $template->setAttr('label', 'for', $this->getId());
+
+        return $template;
+    }
+
+    protected function showOption(Template $template, Option $option, string $var = 'option'): void
+    {
+        if ($this->getOnShowOption()->isCallable()) {
+            $b = $this->getOnShowOption()->execute($template, $option, $var);
+            if ($b === false) return;
+        }
+        $template->setText($var, $option->getName());
+        $template->setAttr($var, $option->getAttrList());
+        $template->addCss($var, $option->getCssString());
+    }
 }

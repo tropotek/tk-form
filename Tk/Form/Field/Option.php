@@ -15,13 +15,11 @@ class Option
 
     protected string $name = '';
 
-    protected string $value = '';
 
-
-    public function __construct(string $name, string $value = '')
+    public function __construct(string $name, string $value)
     {
         $this->name = $name;
-        $this->value = $value;
+        $this->setValue($value);
     }
 
     static function create(string $name, string $value = ''): static
@@ -42,7 +40,13 @@ class Option
 
     public function getValue(): string
     {
-        return $this->value;
+        return $this->getAttr('value');
+    }
+
+    public function setValue(string $value): static
+    {
+        $this->setAttr('value', $value);
+        return $this;
     }
 
     public function isDisabled(): bool
@@ -53,9 +57,24 @@ class Option
     public function setDisabled(bool $b = true): static
     {
         if ($b) {
-            $this->setAttr('disabled', 'disabled');
+            $this->setAttr('disabled');
         } else {
             $this->removeAttr('disabled');
+        }
+        return $this;
+    }
+
+    public function isSelected(): bool
+    {
+        return $this->hasAttr('selected');
+    }
+
+    public function setSelected(bool $b = true): static
+    {
+        if ($b) {
+            $this->setAttr('selected');
+        } else {
+            $this->removeAttr('selected');
         }
         return $this;
     }

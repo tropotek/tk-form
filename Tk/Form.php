@@ -37,9 +37,7 @@ class Form extends Form\Element implements FormInterface
 
     protected Collection $fieldList;
 
-    protected ?ActionInterface $triggeredEvent = null;
-
-    protected array $defaultValues = [];
+    protected ?ActionInterface $triggeredAction = null;
 
     protected ?EventDispatcherInterface $dispatcher = null;
 
@@ -84,33 +82,35 @@ class Form extends Form\Element implements FormInterface
      * Useful for extended form objects
      * To be called after all fields are added and
      */
-    public function initForm()
-    {
-        if ($this->initiated) return;
-        $this->initiated = true;
-        if ($this->getDispatcher()) {
-            $e = new FormEvent($this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
-        }
-    }
+//    public function initForm()
+//    {
+//        if ($this->initiated) return;
+//        $this->initiated = true;
+//        if ($this->getDispatcher()) {
+//            $e = new FormEvent($this);
+//            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
+//        }
+//    }
 
     /**
      * If an Action event is found its event is executed the result is returned
      */
     public function execute(array $values = []): void
     {
-        //$this->initForm();      // TODO: not sure if this is a better place for it or not???
+        // TODO: should we do this here or leave it up to the user??
+//        $e = new FormEvent($this);
+//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD);
+//        $this->setFieldValues($values);
 
-        // Load default field values
-        //$this->setDefaultValues($this->defaultValues);
-        if ($this->getDispatcher()) {
-            $e = new FormEvent($this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD);
+        // Find the triggered action
+        foreach($this->fieldList as $field) {
+            if (!$field instanceof ActionInterface) continue;
+            if (array_key_exists($field->getId(), $values)) {
+                $this->triggeredAction = $field;
+                break;
+            }
         }
-        $this->loadValues($values);
 
-        // get the triggered event, this also set up the form ready to fire an event if present.
-        $event = $this->getTriggeredAction($values);
         if (!$this->isSubmitted()) {
             $this->executeFields($values);
             return;
@@ -119,19 +119,17 @@ class Form extends Form\Element implements FormInterface
         // Load request field values
         //$values = $this->cleanLoadArray($values);
         //$this->setDefaultValues($values);
-        if ($this->getDispatcher()) {
-            $e = new FormEvent($this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
-        }
-        $this->loadValues($values);
+        $e = new FormEvent($this);
+        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
+
+        $this->setFieldValues($values);
         $this->executeFields($values);
 
-        if ($this->getDispatcher()) {
-            $e = new FormEvent($this);
-            $this->getDispatcher()->dispatch($e, FormEvents::FORM_SUBMIT);
-        }
-        if ($event) $event->execute($values);
-        //$event?->execute($values);
+        $e = new FormEvent($this);
+        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_SUBMIT);
+
+        // get the triggered action, this also set up the form ready to fire an action if present.
+        $this->getTriggeredAction()->execute($values);
     }
 
     /**
@@ -139,12 +137,11 @@ class Form extends Form\Element implements FormInterface
      * EG:
      *   $array['field1'] = 'value1';
      */
-    public function loadValues(array $values): static
+    public function setFieldValues(array $values): static
     {
-        $values = array_merge($this->defaultValues, $values);
         foreach ($this->getFieldList() as $field) {
             if ($field instanceof ActionInterface) continue;
-            $field->load($values);
+            $field->setValue($values[$field->getName()] ?? '');
         }
         return $this;
     }
@@ -152,7 +149,7 @@ class Form extends Form\Element implements FormInterface
     /**
      * This will return an array of the field's values,
      */
-    public function getValues(string|array|null $search = null): array
+    public function getFieldValues(string|array|null $search = null): array
     {
         $array = [];
         /* @var $field FieldInterface */
@@ -246,18 +243,9 @@ class Form extends Form\Element implements FormInterface
      * This will only return a valid value <b>after</b> the
      *   execute() method has been called.
      */
-    public function getTriggeredAction(array $array = []): ?ActionInterface
+    public function getTriggeredAction(): ?ActionInterface
     {
-        if (!$this->triggeredEvent) {
-            foreach($this->fieldList as $field) {
-                if (!$field instanceof ActionInterface) continue;
-                if (array_key_exists($field->getEventName(), $array)) {
-                    $this->triggeredEvent = $field;
-                    break;
-                }
-            }
-        }
-        return $this->triggeredEvent;
+        return $this->triggeredAction;
     }
 
     /**
@@ -326,8 +314,7 @@ class Form extends Form\Element implements FormInterface
     {
         /** @var FieldInterface $field */
         $field = $this->getFieldList()->get($fieldName);
-        if ($field) $field->setValue($value);
-        //$field?->setValue($value);
+        $field?->setValue($value);
         return $field;
     }
 
@@ -388,5 +375,4 @@ class Form extends Form\Element implements FormInterface
         }
         return $this;
     }
-
 }

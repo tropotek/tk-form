@@ -1,6 +1,8 @@
 <?php
 namespace Tk\Form\Action;
 
+use Dom\Template;
+
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
@@ -8,7 +10,6 @@ class Submit extends ActionInterface
 {
 
     const ICON_LEFT = 'left';
-
     const ICON_RIGHT = 'right';
 
     /**
@@ -47,4 +48,34 @@ class Submit extends ActionInterface
         return $this;
     }
 
+    function show(): ?Template
+    {
+        $template = $this->getTemplate();
+
+        // Render Element
+        $template->setAttr('element', 'id', $this->getId());
+        if ($this->getType() != self::TYPE_LINK) {
+            $template->setAttr('element', 'name', $this->getId());
+            $template->setAttr('element', 'type', $this->getType());
+            $template->setAttr('element', 'value', $this->getValue());
+        }
+        $template->setText('text', $this->getLabel());
+
+        if ($this->getIcon()) {
+            if ($this->getIconPosition() == self::ICON_LEFT) {
+                $template->setVisible('icon-l');
+                $template->addCss('icon-l', $this->getIcon());
+            } else {
+                $template->setVisible('icon-r');
+                $template->addCss('icon-r', $this->getIcon());
+            }
+        }
+
+        $this->getOnShow()?->execute($template, $this);
+
+        $template->setAttr('element', $this->getAttrList());
+        $template->addCss('element', $this->getCssList());
+
+        return $template;
+    }
 }

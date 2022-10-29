@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Field\Option;
 
-use Tk\Form\Field\OptGroup;
+use Tk\Form\Field\OptionGroup;
 use Tk\Form\Field\Option;
 
 /**
@@ -43,7 +43,7 @@ class OptGroupIterator extends ArrayIterator
 
         $option = null;
         if (is_string($key) && is_array($arr)) {
-            $option = OptGroup::create($key);
+            $option = OptionGroup::create($key);
             foreach ($arr as $k => $v) {
                 $option->append(Option::create($k, $v));
             }

@@ -2,27 +2,36 @@
 namespace Tk\Form\Field;
 
 
+use Dom\Template;
+
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Hidden extends Input
+class Hidden extends FieldInterface
 {
 
     public function __construct(string $name, string $value = '')
     {
-        parent::__construct($name);
+        parent::__construct($name, self::TYPE_HIDDEN);
         $this->setValue($value);
-        $this->setType('hidden');
     }
 
-    public function getFieldset(): string
+    function show(): ?Template
     {
-        return '';
-    }
+        $template = $this->getTemplate();
 
-    public function getTabGroup(): string
-    {
-        return '';
+        $template->setAttr('element', 'name', $this->getName());
+        $template->setAttr('element', 'type', $this->getType());
+        $template->setAttr('element', 'value', $this->getValue());
+
+        if ($this->getOnShow()) {
+            $this->getOnShow()->execute($template, $this);
+        }
+
+        // Add any attributes
+        $template->setAttr('element', $this->getAttrList());
+
+        return $template;
     }
 
 }

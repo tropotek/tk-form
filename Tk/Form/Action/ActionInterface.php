@@ -2,6 +2,7 @@
 namespace Tk\Form\Action;
 
 use Tk\CallbackCollection;
+use Tk\Form;
 use Tk\Form\Field;
 use Tk\Uri;
 
@@ -19,8 +20,10 @@ abstract class ActionInterface extends Field\FieldInterface
     public function __construct(string $name, $type = 'button', ?callable $callback = null)
     {
         $this->callbackList = CallbackCollection::create();
-        parent::__construct($name);
-        $this->appendCallback($callback);
+        parent::__construct($name, $type);
+        if ($callback) {
+            $this->appendCallback($callback);
+        }
     }
 
     /**
@@ -69,11 +72,6 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         $this->redirect = $redirect;
         return $this;
-    }
-
-    public function getEventName(): string
-    {
-        return $this->makeInstanceKey($this->getName());
     }
 
     public function getValue(): string

@@ -1,15 +1,17 @@
 <?php
 namespace Tk\Form;
 
+use Dom\Builder;
 use Dom\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tk\Form\Event\FormEvent;
 use Tk\Form;
 use Tk\Traits\SystemTrait;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Renderer
+class Renderer extends \Dom\Renderer\Renderer
 {
     use SystemTrait;
 
@@ -17,55 +19,38 @@ class Renderer
 
     protected ?EventDispatcherInterface $dispatcher;
 
-    protected array $fieldTemplates = [];
-
     protected array $tabGroupTemplates = [];
 
     protected array $fieldsetTemplates = [];
 
+    protected Builder $builder;
 
 
     public function __construct(Form $form)
     {
         $this->form = $form;
         $this->dispatcher = $this->getFactory()->getEventDispatcher();
-        $this->initFieldTemplates($this->makePath($this->getConfig()->get('form.template.path')));
+        $this->builder = new Builder($this->makePath($this->getConfig()->get('form.template.path')));
+        $this->init();
     }
 
-    protected function initFieldTemplates(string $path): void
+    protected function init()
     {
-        // TODO: find out how to get this list dynamically???
-        $tplNames = [
-            'tpl-form',
-            'tpl-hidden',
-            'tpl-none',
-            'tpl-input',
-            'tpl-textarea',
-            'tpl-select',
-            'tpl-checkbox',
-            'tpl-radio',
-            'tpl-switch',
-            'tpl-file',
-            'tpl-button',
-            'tpl-submit',
-            'tpl-link',
-        ];
-        foreach ($tplNames as  $name) {
-            $doc = new \DOMDocument();
-            $doc->loadHTMLFile($path);
-            $tpl = $doc->getElementById($name);
-            $tpl->removeAttribute('id');
-            $this->fieldTemplates[substr($name, 4)] = Template::load($doc->saveXML($tpl));
+        $this->setTemplate($this->builder->getTemplate('tpl-form'));
+        /** @var Form\Field\FieldInterface $field */
+        foreach ($this->getForm()->getFieldList() as $field) {
+            if ($field->hasTemplate()) continue;
+            $field->setTemplate($this->buildTemplate($field->getType()));
         }
-        //vd(array_keys($this->fieldTemplates));
     }
 
-    public function getFieldTemplate(string $fieldType): Template
+    public function buildTemplate(string $fieldType): ?Template
     {
-        if (isset($this->fieldTemplates[$fieldType])) {
-            return clone $this->fieldTemplates[$fieldType];
+        $tpl = $this->builder->getTemplate('tpl-' . $fieldType);
+        if (!$tpl) {
+            $tpl = $this->builder->getTemplate('tpl-input');
         }
-        return clone $this->fieldTemplates['hidden'];
+        return $tpl;
     }
 
     public function getForm(): Form
@@ -85,7 +70,42 @@ class Renderer
     }
 
 
+    function show(): ?Template
+    {
+        if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
+        $template = $this->getTemplate();
 
+        $e = new FormEvent($this->getForm());
+        $this->getForm()->getDispatcher()?->dispatch($e, FormEvents::FORM_SHOW_PRE);
 
+        // Field name attribute
+        $template->setAttr('form', 'id', $this->getForm()->getId());
+
+        // All other attributes
+        $template->setAttr('form' ,$this->getForm()->getAttrList());
+
+        // Element css class names
+        $template->addCss('form', $this->getForm()->getCssList());
+
+        $this->showFields($template);
+
+        $this->getForm()->getDispatcher()?->dispatch($e, FormEvents::FORM_SHOW);
+        return $template;
+    }
+
+    /**
+     * Render Fields
+     */
+    protected function showFields(Template $template)
+    {
+        /** @var Form\Field\FieldInterface $field */
+        foreach ($this->form->getFieldList() as $row => $field) {
+            if ($field instanceof Form\Action\ActionInterface) {
+                $template->appendTemplate('actions', $field->show());
+            } else {
+                $template->appendTemplate('fields', $field->show());
+            }
+        }
+    }
 
 }

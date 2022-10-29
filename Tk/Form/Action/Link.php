@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Form\Action;
 
+use Dom\Template;
 use Tk\Uri;
 
 /**
@@ -21,6 +22,16 @@ class Link extends Submit
     public function getUrl(): Uri
     {
         return $this->url;
+    }
+
+    function show(): ?Template
+    {
+        $template = parent::show();
+
+        $template->setAttr('element', 'href', $this->getUrl());
+        //$template->replaceHtml('text', $this->getLabel());
+
+        return $template;
     }
 
 }
