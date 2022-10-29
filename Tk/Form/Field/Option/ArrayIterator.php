@@ -20,18 +20,21 @@ class ArrayIterator implements \Iterator, \Countable
 
     protected array $list = [];
 
+    protected string $selectAttr = 'selected';
 
-    public function __construct(array $list)
+
+    public function __construct(array $list, string $selectAttr = 'selected')
     {
+        $this->selectAttr = $selectAttr;
         if (key($list) == 0 && !is_object(current($list))) {
             $list = array_combine($list, $list);
         }
         $this->list = $list;
     }
 
-    static function create(array $list): static
+    static function create(array $list, string $selectAttr = 'selected'): static
     {
-        return new static($list);
+        return new static($list, $selectAttr);
     }
 
     /**
@@ -41,7 +44,12 @@ class ArrayIterator implements \Iterator, \Countable
     {
         $key = $this->getKey($this->idx);
         $el = $this->list[$key];
-        return new Option($key, $el);
+        return new Option($key, $el, $this->getSelectAttr());
+    }
+
+    public function getSelectAttr(): string
+    {
+        return $this->selectAttr;
     }
 
     /**

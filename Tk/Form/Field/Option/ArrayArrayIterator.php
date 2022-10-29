@@ -39,7 +39,7 @@ class ArrayArrayIterator extends ArrayIterator
         if (isset($arr[1])) {
             $val = $arr[1];
         }
-        $option = Option::create($text, $val);
+        $option = Option::create($text, $val, $this->getSelectAttr());
 
         if (!empty($arr[2])) {
             $option->setAttr('disabled', 'disabled');

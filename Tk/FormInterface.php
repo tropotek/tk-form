@@ -37,6 +37,11 @@ interface FormInterface
     public function hasErrors(): bool;
 
     /**
+     * set fields errors from an array of error messages
+     */
+    public function setErrors(array $errors): static;
+
+    /**
      * Return all child element errors and any form errors
      * as one array.
      */

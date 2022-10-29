@@ -260,14 +260,21 @@ class Form extends Form\Element implements FormInterface
     public function hasErrors(): bool
     {
         foreach ($this->fieldList as $field) {
-            if ($field->hasErrors()) {
+            if ($field->hasError()) {
                 return true;
             }
         }
-        if (count($this->getErrors())) {
-            return true;
-        }
         return false;
+    }
+
+    public function setErrors(array $errors): static
+    {
+        foreach($errors as $fieldName => $error) {
+            if ($error) {
+                $this->getField($fieldName)?->setError($error);
+            }
+        }
+        return $this;
     }
 
     public function getErrors(): array

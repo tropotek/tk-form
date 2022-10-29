@@ -25,6 +25,8 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
     const TYPE_FILE     = 'file';
+    const TYPE_CHECKBOX = 'checkbox';
+    const TYPE_RADIO    = 'radio';
 
     const TYPE_SELECT   = 'select';
     const TYPE_TEXTAREA = 'textarea';
@@ -82,7 +84,7 @@ abstract class FieldInterface extends Element implements RendererInterface
         }
         if ($this->hasError()) {
             $this->addCss(self::$CSS_ERROR);
-            $template->replaceHtml('error', $this->getError());
+            $template->insertHtml('error', $this->getError());
         }
 
         $this->getOnShow()?->execute($template, $this);
@@ -93,8 +95,12 @@ abstract class FieldInterface extends Element implements RendererInterface
         $template->addCss('element', $this->getCssList());
 
         // Render Label
-        $template->setText('label', $this->getLabel());
-        $template->setAttr('label', 'for', $this->getId());
+        if($this->getLabel()) {
+            $template->setText('label', $this->getLabel());
+            $template->setAttr('label', 'for', $this->getId());
+            $template->setVisible('label');
+        }
+
 
         return $template;
     }
@@ -318,6 +324,11 @@ abstract class FieldInterface extends Element implements RendererInterface
     {
         $this->tabGroup = $tabGroup;
         return $this;
+    }
+
+    protected function cleanName(string $str, string $replace = '-'): string
+    {
+        return preg_replace('/[^a-z0-9]/i', $replace, $str);
     }
 
 }

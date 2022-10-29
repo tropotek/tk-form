@@ -15,16 +15,19 @@ class Option
 
     protected string $name = '';
 
+    protected string $selectAttr = 'selected';
 
-    public function __construct(string $name, string $value)
+
+    public function __construct(string $name, string $value, string $selectAttr = 'selected')
     {
+        $this->selectAttr = $selectAttr;
         $this->name = $name;
         $this->setValue($value);
     }
 
-    static function create(string $name, string $value = ''): static
+    static function create(string $name, string $value = '', string $selectAttr = 'selected'): static
     {
-        return new static($name, $value);
+        return new static($name, $value, $selectAttr);
     }
 
     public function getName(): string
@@ -66,17 +69,22 @@ class Option
 
     public function isSelected(): bool
     {
-        return $this->hasAttr('selected');
+        return $this->hasAttr($this->selectAttr);
     }
 
     public function setSelected(bool $b = true): static
     {
         if ($b) {
-            $this->setAttr('selected');
+            $this->setAttr($this->selectAttr);
         } else {
-            $this->removeAttr('selected');
+            $this->removeAttr($this->selectAttr);
         }
         return $this;
+    }
+
+    public function getSelectAttr(): string
+    {
+        return $this->selectAttr;
     }
 
 }

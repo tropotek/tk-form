@@ -30,18 +30,7 @@ class Select extends FieldInterface
         $this->onShowOption = CallbackCollection::create();
         parent::__construct($name, self::TYPE_SELECT);
 
-        if ($optionIterator instanceof Result) {
-            $optionIterator = new Option\ArrayObjectIterator($optionIterator);
-        } elseif (is_array($optionIterator)) {
-            $curr = current($optionIterator);
-            if (is_array($curr)) {
-                $optionIterator = new Option\ArrayArrayIterator($optionIterator);
-            } elseif ($curr instanceof ModelIface) {
-                $optionIterator = new Option\ArrayObjectIterator($optionIterator);
-            } else {
-                $optionIterator = new Option\ArrayIterator($optionIterator);
-            }
-        }
+        $optionIterator = $this->createIterator($optionIterator, 'selected');
 
         if ($optionIterator) {
             $this->appendOptionIterator($optionIterator);
@@ -50,35 +39,27 @@ class Select extends FieldInterface
         }
     }
 
+    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $selectAttr = 'selected'): ?Option\ArrayIterator
+    {
+        if ($optionIterator instanceof Result) {
+            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $selectAttr);
+        } elseif (is_array($optionIterator)) {
+            $curr = current($optionIterator);
+            if (is_array($curr)) {
+                $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
+            } elseif ($curr instanceof ModelIface) {
+                $optionIterator = new Option\ArrayObjectIterator($optionIterator, $selectAttr);
+            } else {
+                $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
+            }
+        }
+        return $optionIterator;
+    }
+
     public static function createSelect(string $name, array|Result|ArrayIterator $optionIterator = null): static
     {
         return new static($name, $optionIterator);
     }
-
-    /**
-     * take a single dimensional array and convert it to a list for the select
-     *
-     * Input example:
-     *     array('test', 'twoWord', 'three_word_test', 'another test');
-     * Output:
-     *     array('Test' => 'test', 'Two Word' => 'twoWord', 'Three Word Test' => 'three_word_test', 'Another Test' => 'another test')
-     */
-    public static function arrayToSelectList(array $arr, bool $modify = true): array
-    {
-        //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
-        $new = array();
-        foreach ($arr  as $v) {
-            $n = $v;
-            if ($modify) {
-                $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
-                $n = preg_replace('/[A-Z]/', ' $0', $n);
-                $n = ucwords($n);
-            }
-            $new[$n] =  $v;
-        }
-        return $new;
-    }
-
 
     public function appendOptionIterator(Option\ArrayIterator $optionIterator): static
     {
@@ -121,7 +102,7 @@ class Select extends FieldInterface
         return $this;
     }
 
-    private function clearSelected(): static
+    protected function clearSelected(): static
     {
         /** @var Option $option */
         foreach ($this->getOptions() as $option) {
@@ -139,8 +120,8 @@ class Select extends FieldInterface
         $this->clearSelected();
         /** @var Option $option */
         foreach ($this->getOptions() as $option) {
-            if (is_array($value) && in_array($option->getValue(), $value, $this->isStrict())) {
-                if (in_array($option->getValue(), $value)) {
+            if ($this->isMultiple()) {
+                if (is_array($value) && in_array($option->getValue(), $value, $this->isStrict())) {
                     $option->setSelected();
                 }
             } else {
@@ -149,9 +130,7 @@ class Select extends FieldInterface
                         $option->setSelected();
                     }
                 } else {
-                    if ($option->getValue() == $value) {
-                        $option->setSelected();
-                    }
+                    $option->setSelected($this->getValue() ?: false);
                 }
             }
         }
@@ -206,8 +185,36 @@ class Select extends FieldInterface
             $b = $this->getOnShowOption()->execute($template, $option, $var);
             if ($b === false) return;
         }
+        if ($option->isSelected()) {
+            $option->setAttr($option->getSelectAttr());
+        }
+
         $template->setText($var, $option->getName());
         $template->setAttr($var, $option->getAttrList());
         $template->addCss($var, $option->getCssString());
+    }
+
+    /**
+     * take a single dimensional array and convert it to a list for the select
+     *
+     * Input example:
+     *     array('test', 'twoWord', 'three_word_test', 'another test');
+     * Output:
+     *     array('Test' => 'test', 'Two Word' => 'twoWord', 'Three Word Test' => 'three_word_test', 'Another Test' => 'another test')
+     */
+    public static function arrayToSelectList(array $arr, bool $modify = true): array
+    {
+        //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
+        $new = array();
+        foreach ($arr  as $v) {
+            $n = $v;
+            if ($modify) {
+                $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
+                $n = preg_replace('/[A-Z]/', ' $0', $n);
+                $n = ucwords($n);
+            }
+            $new[$n] =  $v;
+        }
+        return $new;
     }
 }

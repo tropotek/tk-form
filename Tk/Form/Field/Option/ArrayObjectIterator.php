@@ -33,12 +33,12 @@ class ArrayObjectIterator extends ArrayIterator
     protected string $selectedPrepend = '';
 
 
-    public function __construct(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = '')
+    public function __construct(array|Result $list = [], string $selectAttr = 'selected', callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = '')
     {
         if ($list instanceof Result) {
             $list = $list->toArray();
         }
-        parent::__construct($list);
+        parent::__construct($list, $selectAttr);
 
         $this->textParam = $textParam;
         $this->valueParam = $valueParam;
@@ -46,9 +46,9 @@ class ArrayObjectIterator extends ArrayIterator
         $this->labelParam = $labelParam;
     }
 
-    static function create(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = ''): static
+    static function create(array|Result $list = [], string $selectAttr = 'selected', callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = ''): static
     {
-        return new self($list, $textParam, $valueParam, $disableParam, $labelParam);
+        return new self($list, $selectAttr, $textParam, $valueParam, $disableParam, $labelParam);
     }
 
     public function setSelectedValue(string $value): static
@@ -89,9 +89,8 @@ class ArrayObjectIterator extends ArrayIterator
             $pre = $this->selectedPrepend;
             $app = $this->selectedAppend;
         }
-        $method = '';
-        if (is_string($this->textParam))
-            $method = 'get'.ucfirst($this->textParam);
+
+        $method = 'get'.ucfirst($this->textParam);
 
         if (is_callable($this->textParam)) {
             $text = call_user_func_array($this->textParam, array($obj));
@@ -101,11 +100,11 @@ class ArrayObjectIterator extends ArrayIterator
             $text = $pre . $obj->{$this->textParam} . $app;
         }
 
-        $option = Option::create($text, $value);
+        $option = Option::create($text, $value, $this->getSelectAttr());
 
         if (property_exists($obj, $this->disableParam)) {
             if ($obj->{$this->disableParam})
-                $option->setAttr('disabled', 'disabled');
+                $option->setDisabled(true);
         }
 
         // Create the option object from the object supplied
