@@ -27,12 +27,7 @@ class Hidden extends FieldInterface
             $this->setAttr('value', $this->getValue());
         }
 
-        if ($this->getOnShow()) {
-            $this->getOnShow()->execute($template, $this);
-        }
-
-        // Add any attributes
-        $template->setAttr('element', $this->getAttrList());
+        $this->decorate($template);
 
         return $template;
     }

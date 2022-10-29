@@ -176,14 +176,6 @@ class Select extends FieldInterface
         $this->setAttr('id', $this->getId());
         $this->setAttr('type', $this->getType());
 
-        if ($this->getNotes()) {
-            $template->replaceHtml('notes', $this->getNotes());
-        }
-        if ($this->hasError()) {
-            $template->replaceHtml('error', $this->getError());
-            $this->addCss('is-invalid');
-        }
-
         /* @var Option $option */
         foreach($this->getOptions() as $option) {
             $tOpt = null;
@@ -203,15 +195,7 @@ class Select extends FieldInterface
             }
         }
 
-        $this->getOnShow()?->execute($template, $this);
-
-        // Add any attributes
-        $template->setAttr('element', $this->getAttrList());
-        $template->addCss('element', $this->getCssList());
-
-        // Render Label
-        $template->setText('label', $this->getLabel());
-        $template->setAttr('label', 'for', $this->getId());
+        $this->decorate($template);
 
         return $template;
     }

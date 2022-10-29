@@ -27,25 +27,7 @@ class Textarea extends Input
             $template->setText('element', $this->getValue());
         }
 
-        if ($this->getNotes()) {
-            $template->replaceHtml('notes', $this->getNotes());
-        }
-        if ($this->hasError()) {
-            $template->replaceHtml('error', $this->getError());
-            $this->addCss('is-invalid');
-        }
-
-        $this->getOnShow()?->execute($template, $this);
-
-        // Add any attributes
-        $template->setAttr('element', $this->getAttrList());
-        $template->addCss('element', $this->getCssList());
-
-        // Render Label
-        $template->setText('label', $this->getLabel());
-        $template->setAttr('label', 'for', $this->getId());
-
-
+        $this->decorate($template);
 
         return $template;
     }

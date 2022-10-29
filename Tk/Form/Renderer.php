@@ -26,11 +26,11 @@ class Renderer extends \Dom\Renderer\Renderer
     protected Builder $builder;
 
 
-    public function __construct(Form $form)
+    public function __construct(Form $form, string $tplFile)
     {
         $this->form = $form;
         $this->dispatcher = $this->getFactory()->getEventDispatcher();
-        $this->builder = new Builder($this->makePath($this->getConfig()->get('form.template.path')));
+        $this->builder = new Builder($tplFile);
         $this->init();
     }
 
@@ -68,7 +68,6 @@ class Renderer extends \Dom\Renderer\Renderer
     {
         return $this->dispatcher;
     }
-
 
     function show(): ?Template
     {

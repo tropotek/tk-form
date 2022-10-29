@@ -79,10 +79,17 @@ class File extends Input
 
     function show(): ?Template
     {
+        $template = $this->getTemplate();
+
+        // Render Element
         $this->setAttr('data-maxsize', $this->maxBytes);
-        $template = parent::show();
+        $this->setAttr('name', $this->getHtmlName());
+        $this->setAttr('id', $this->getId());
+        $this->setAttr('type', $this->getType());
+
         $template->insertHtml('file-notes', 'Max File Size: <b>' . \Tk\FileUtil::bytes2String($this->maxBytes, 0) . '</b><br/>');
 
+        $this->decorate($template);
 
         return $template;
     }

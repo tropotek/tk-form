@@ -1,9 +1,11 @@
 <?php
 namespace Tk\Form\Field;
 
+use Dom\Renderer\Attributes;
 use Dom\Renderer\Css;
 use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
+use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
 
@@ -31,6 +33,9 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_BUTTON   = 'button';
     const TYPE_SUBMIT   = 'submit';
 
+    public static string $CSS_ERROR = 'is-invalid';
+    public static string $CSS_VALID = 'is-valid';
+
     protected mixed $value = '';
 
     protected string $type = '';
@@ -39,18 +44,20 @@ abstract class FieldInterface extends Element implements RendererInterface
 
     protected CallbackCollection $onShow;
 
+    protected Attributes $groupAttr;
 
     // TODO: review if these should reside in the render system???
+
+    protected string $tabGroup = '';
 
     protected string $fieldset = '';
 
     protected Css $fieldsetCss;
 
-    protected string $tabGroup = '';
-
 
     public function __construct(string $name, string $type = 'text')
     {
+        $this->groupAttr = new Attributes();
         $this->fieldsetCss = new Css();
         $this->onShow = new CallbackCollection();
         $this->type = $type;
@@ -64,6 +71,33 @@ abstract class FieldInterface extends Element implements RendererInterface
      * form is rendered.
      */
     public function execute(array $values = []): void { }
+
+    /**
+     * A basic common field renderer.
+     */
+    protected function decorate(Template $template): Template
+    {
+        if ($this->getNotes()) {
+            $template->replaceHtml('notes', $this->getNotes());
+        }
+        if ($this->hasError()) {
+            $this->addCss(self::$CSS_ERROR);
+            $template->replaceHtml('error', $this->getError());
+        }
+
+        $this->getOnShow()?->execute($template, $this);
+
+        // Add any attributes
+        $template->setAttr('field', $this->getGroupAttr()->getAttrList());
+        $template->setAttr('element', $this->getAttrList());
+        $template->addCss('element', $this->getCssList());
+
+        // Render Label
+        $template->setText('label', $this->getLabel());
+        $template->setAttr('label', 'for', $this->getId());
+
+        return $template;
+    }
 
     /**
      * The value in a string format that can be rendered to the template
@@ -238,6 +272,22 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
+    /**
+     * Get the object for managing the field groups
+     * attributes, use this to add attributes to the fields
+     * root element, use setGroupAttr() to set an attribute
+     */
+    public function getGroupAttr(): Attributes
+    {
+        return $this->groupAttr;
+    }
+
+    public function setGroupAttr(string $name, string $value): FieldInterface
+    {
+        $this->groupAttr->setAttr($name, $value);
+        return $this;
+    }
+
     // TODO: Tabgroups and fieldsets lets see if this belongs here? they are a rendering item???
 
     public function getFieldset(): string
@@ -269,6 +319,5 @@ abstract class FieldInterface extends Element implements RendererInterface
         $this->tabGroup = $tabGroup;
         return $this;
     }
-
 
 }
