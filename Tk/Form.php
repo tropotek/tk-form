@@ -17,7 +17,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * --------------------------------------|---------------------------------------
  *  application/x-www-form-urlencoded    |  All characters are encoded before sent (this is default)
  *  multipart/form-data                  |  No characters are encoded. This value is required when you are using forms that have a file upload control
- *  text/plain                           |  Spaces are converted to "+" symbols, but no special characters are encoded
+ *  text/plain                           |  Spaces are conve
+     *
+     * rted to "+" symbols, but no special characters are encoded
  * </code>
  *
  * @author Tropotek <http://www.tropotek.com/>
@@ -40,12 +42,6 @@ class Form extends Form\Element implements FormInterface
     protected ?ActionInterface $triggeredAction = null;
 
     protected ?EventDispatcherInterface $dispatcher = null;
-
-    /**
-     * set to true after initForm() is called
-     * to avoid duplicate init calls
-     */
-    private bool $initiated = false;
 
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
@@ -73,35 +69,14 @@ class Form extends Form\Element implements FormInterface
         $this->dispatcher = $dispatcher;
     }
 
-    public function isInitiated(): bool
-    {
-        return $this->initiated;
-    }
-
     /**
-     * Useful for extended form objects
-     * To be called after all fields are added and
-     */
-//    public function initForm()
-//    {
-//        if ($this->initiated) return;
-//        $this->initiated = true;
-//        if ($this->getDispatcher()) {
-//            $e = new FormEvent($this);
-//            $this->getDispatcher()->dispatch($e, FormEvents::FORM_INIT);
-//        }
-//    }
-
-    /**
-     * If an Action event is found its event is executed the result is returned
+     * Process the form request.
+     *
+     * The values should be that from a get or post request
+     * this is left up to the user to source and send through.
      */
     public function execute(array $values = []): void
     {
-        // TODO: should we do this here or leave it up to the user??
-//        $e = new FormEvent($this);
-//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD);
-//        $this->setFieldValues($values);
-
         // Find the triggered action
         foreach($this->fieldList as $field) {
             if (!$field instanceof ActionInterface) continue;
@@ -116,9 +91,6 @@ class Form extends Form\Element implements FormInterface
             return;
         }
 
-        // Load request field values
-        //$values = $this->cleanLoadArray($values);
-        //$this->setDefaultValues($values);
         $e = new FormEvent($this);
         $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
 
@@ -200,42 +172,6 @@ class Form extends Form\Element implements FormInterface
         }
         return $list;
     }
-
-    /**
-     * Clean the load() array
-     *  o create a new raw array for any ArrayAccess objects like the request object
-     *  o add array keys that the request modifies (request replaces '.' with '_') with field names
-     *    this will not modify keys that a field does not exist for.
-     *  @todo: See if this is required anymore
-     */
-//    protected function cleanLoadArray(array $array)
-//    {
-//        // Fix keys for conversions of '_' to '.' for fields that have been modified
-//        /* @var $field FieldInterface */
-//        foreach ($this->getFieldList() as $field) {
-//            $cleanName = str_replace('.', '_', $field->getName());
-//            if (array_key_exists($cleanName, $array) && !array_key_exists($field->getName(), $array)) {
-//                $array[$field->getName()] = $array[$cleanName];
-//            }
-//
-//            // TODO HACK: Trying to fix the issue when no field data is sent and then only the default field values exist
-//            // TODO HACK: This is a mess, we need to go back to the drawing board on how we handle a request
-//            // TODO HACK:   the main issue is the ability to call load() multiple times, then the request array
-//            // TODO HACK:   when a value is null is ignored and only the loaded values exist when they should be
-//            // TODO HACK:   set to null
-//            // TODO HACK: The code below tries to fix this, I need to test a number of forms to ensure it does
-//            // TODO HACK:   not have any unexpected consequences when saving field data
-//            // TODO HACK:
-//            if ($field->isReadonly() || $field->isDisabled()) continue;
-//            if (!array_key_exists($field->getName(), $array)) {
-//                $array[$field->getName()] = null;
-//            }
-//            // TODO HACK END:
-//
-//        }
-//
-//        return $array;
-//    }
 
     /**
      * Get the field event to execute
@@ -362,8 +298,6 @@ class Form extends Form\Element implements FormInterface
      *
      * If the field is not found in the form then the error message is added to
      * the form error messages.
-     *
-     * @param array $errors
      */
     public function addFieldErrors(array $errors): static
     {

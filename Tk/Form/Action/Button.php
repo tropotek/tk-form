@@ -10,7 +10,8 @@ class Button extends Submit
 
     public function __construct(string $name, $callback = null)
     {
-        parent::__construct($name, self::TYPE_BUTTON, $callback);
+        parent::__construct($name, $callback);
+        $this->setType(self::TYPE_BUTTON);
     }
 
 }

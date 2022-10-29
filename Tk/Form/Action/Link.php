@@ -15,8 +15,12 @@ class Link extends Submit
 
     public function __construct(string $name, Uri $url, string $icon = '')
     {
+        $this->url = $url;
         parent::__construct($name);
-        $this->setIcon($icon);
+        $this->setType(self::TYPE_LINK);
+        if ($icon) {
+            $this->setIcon($icon);
+        }
     }
 
     public function getUrl(): Uri

@@ -20,9 +20,12 @@ class Hidden extends FieldInterface
     {
         $template = $this->getTemplate();
 
-        $template->setAttr('element', 'name', $this->getName());
-        $template->setAttr('element', 'type', $this->getType());
-        $template->setAttr('element', 'value', $this->getValue());
+        $this->setAttr('name', $this->getHtmlName());
+        $this->setAttr('id', $this->getId());
+        $this->setAttr('type', $this->getType());
+        if (!is_array($this->getValue()) && !is_object($this->getValue())) {
+            $this->setAttr('value', $this->getValue());
+        }
 
         if ($this->getOnShow()) {
             $this->getOnShow()->execute($template, $this);

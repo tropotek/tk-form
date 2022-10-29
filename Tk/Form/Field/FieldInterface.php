@@ -22,8 +22,11 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
+    const TYPE_FILE     = 'file';
+
     const TYPE_SELECT   = 'select';
     const TYPE_TEXTAREA = 'textarea';
+
     const TYPE_LINK     = 'link';
     const TYPE_BUTTON   = 'button';
     const TYPE_SUBMIT   = 'submit';
@@ -175,7 +178,7 @@ abstract class FieldInterface extends Element implements RendererInterface
      */
     public function isMultiple(): bool
     {
-        return $this->hasAttr('disabled');
+        return $this->hasAttr('multiple');
     }
 
     /**

@@ -15,11 +15,16 @@ class Input extends FieldInterface
         $template = $this->getTemplate();
 
         // Render Element
-        $template->setAttr('element', 'name', $this->getHtmlName());
-        $template->setAttr('element', 'id', $this->getId());
-        $template->setAttr('element', 'type', $this->getType());
-        $template->setAttr('element', 'value', $this->getValue());
+        $this->setAttr('name', $this->getHtmlName());
+        $this->setAttr('id', $this->getId());
+        $this->setAttr('type', $this->getType());
+        if (!is_array($this->getValue()) && !is_object($this->getValue())) {
+            $this->setAttr('value', $this->getValue());
+        }
 
+        if ($this->getNotes()) {
+            $template->replaceHtml('notes', $this->getNotes());
+        }
         if ($this->hasError()) {
             $template->replaceHtml('error', $this->getError());
             $this->addCss('is-invalid');

@@ -17,9 +17,35 @@ class Textarea extends Input
 
     function show(): ?Template
     {
-        $template = parent::show();
+        $template = $this->getTemplate();
 
-        $template->setText('element', $this->getValue());
+        // Render Element
+        $this->setAttr('name', $this->getHtmlName());
+        $this->setAttr('id', $this->getId());
+
+        if (!is_array($this->getValue()) && !is_object($this->getValue())) {
+            $template->setText('element', $this->getValue());
+        }
+
+        if ($this->getNotes()) {
+            $template->replaceHtml('notes', $this->getNotes());
+        }
+        if ($this->hasError()) {
+            $template->replaceHtml('error', $this->getError());
+            $this->addCss('is-invalid');
+        }
+
+        $this->getOnShow()?->execute($template, $this);
+
+        // Add any attributes
+        $template->setAttr('element', $this->getAttrList());
+        $template->addCss('element', $this->getCssList());
+
+        // Render Label
+        $template->setText('label', $this->getLabel());
+        $template->setAttr('label', 'for', $this->getId());
+
+
 
         return $template;
     }
