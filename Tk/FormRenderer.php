@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Form;
+namespace Tk;
 
 use Dom\Builder;
 use Dom\Template;
@@ -11,7 +11,7 @@ use Tk\Traits\SystemTrait;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Renderer extends \Dom\Renderer\Renderer
+class FormRenderer extends \Dom\Renderer\Renderer
 {
     use SystemTrait;
 
@@ -23,6 +23,8 @@ class Renderer extends \Dom\Renderer\Renderer
 
     protected array $fieldsetTemplates = [];
 
+    protected array $params = [];
+
     protected Builder $builder;
 
 
@@ -30,12 +32,35 @@ class Renderer extends \Dom\Renderer\Renderer
     {
         $this->form = $form;
         $this->dispatcher = $this->getFactory()->getEventDispatcher();
-        $this->builder = new Builder($tplFile);
-        $this->init();
+        $this->init($tplFile);
     }
 
-    protected function init()
+    protected function init(string $tplFile)
     {
+        // Setup default options.
+        // These can be set in the form attributes data...
+        $this->params = [
+            'error-css' => 'is-invalid',
+            'valid-css' => 'is-valid',
+        ];
+
+        $this->builder = new Builder($tplFile);
+
+        // get any data-opt options from the template and remove them
+        $formEl = $this->builder->getDocument()->getElementById('tpl-form');
+        $cssPre = 'data-opt-';
+        /** @var \DOMAttr $attr */
+        foreach ($formEl->attributes as $attr) {
+            if (str_starts_with($attr->name, $cssPre)) {
+                $name = str_replace($cssPre, '', $attr->name);
+                $this->params[$name] = $attr->value;
+            }
+        }
+        // Remove option attributes
+        foreach ($this->params as $k => $v) {
+            $formEl->removeAttribute($cssPre . $k);
+        }
+
         $this->setTemplate($this->builder->getTemplate('tpl-form'));
         /** @var Form\Field\FieldInterface $field */
         foreach ($this->getForm()->getFieldList() as $field) {
@@ -64,6 +89,11 @@ class Renderer extends \Dom\Renderer\Renderer
         return $this;
     }
 
+    public function getParam(string $name, mixed $default = null): mixed
+    {
+        return $this->params[$name] ?? $default;
+    }
+
     public function getDispatcher(): EventDispatcherInterface
     {
         return $this->dispatcher;
@@ -75,7 +105,7 @@ class Renderer extends \Dom\Renderer\Renderer
         $template = $this->getTemplate();
 
         $e = new FormEvent($this->getForm());
-        $this->getForm()->getDispatcher()?->dispatch($e, FormEvents::FORM_SHOW_PRE);
+        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
 
         // Field name attribute
         $template->setAttr('form', 'id', $this->getForm()->getId());
@@ -88,7 +118,7 @@ class Renderer extends \Dom\Renderer\Renderer
 
         $this->showFields($template);
 
-        $this->getForm()->getDispatcher()?->dispatch($e, FormEvents::FORM_SHOW);
+        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
         return $template;
     }
 
@@ -102,6 +132,7 @@ class Renderer extends \Dom\Renderer\Renderer
             if ($field instanceof Form\Action\ActionInterface) {
                 $template->appendTemplate('actions', $field->show());
             } else {
+                $field->replaceParams($this->params);
                 $template->appendTemplate('fields', $field->show());
             }
         }

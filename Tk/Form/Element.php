@@ -27,6 +27,8 @@ abstract class Element implements InstanceKey
 
     protected string $notes = '';
 
+    protected array $params = [];
+
 
     /**
      * The parent form should call all child fields and action execute() methods
@@ -158,4 +160,30 @@ abstract class Element implements InstanceKey
         return $this->notes;
     }
 
+    public function setParam(string $name, mixed $value): static
+    {
+        $this->params[$name] = $value;
+        return $this;
+    }
+
+    public function getParam(string $name, mixed $default = null): mixed
+    {
+        return $this->params[$name] ?? $default;
+    }
+
+    public function hasParam(string $name): bool
+    {
+        return array_key_exists($name, $this->params);
+    }
+
+    public function replaceParams(array $params): static
+    {
+        $this->params = $params;
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
 }

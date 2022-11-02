@@ -35,9 +35,6 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_BUTTON   = 'button';
     const TYPE_SUBMIT   = 'submit';
 
-    public static string $CSS_ERROR = 'is-invalid';
-    public static string $CSS_VALID = 'is-valid';
-
     protected mixed $value = '';
 
     protected string $type = '';
@@ -83,8 +80,14 @@ abstract class FieldInterface extends Element implements RendererInterface
             $template->replaceHtml('notes', $this->getNotes());
         }
         if ($this->hasError()) {
-            $this->addCss(self::$CSS_ERROR);
+            if ($this->hasParam('error-css')) {
+                $this->addCss($this->getParam('error-css'));
+            }
             $template->insertHtml('error', $this->getError());
+        } else {
+//            if ($this->hasParam('valid-css')) {
+//                $this->addCss($this->getParam('valid-css'));
+//            }
         }
 
         $this->getOnShow()?->execute($template, $this);
