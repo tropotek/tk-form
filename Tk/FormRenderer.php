@@ -2,6 +2,7 @@
 namespace Tk;
 
 use Dom\Builder;
+use Dom\Renderer\Renderer;
 use Dom\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Form\Event\FormEvent;
@@ -11,13 +12,11 @@ use Tk\Traits\SystemTrait;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class FormRenderer extends \Dom\Renderer\Renderer
+class FormRenderer extends Renderer
 {
     use SystemTrait;
 
     protected Form $form;
-
-    protected ?EventDispatcherInterface $dispatcher;
 
     protected array $tabGroupTemplates = [];
 
@@ -25,13 +24,10 @@ class FormRenderer extends \Dom\Renderer\Renderer
 
     protected array $params = [];
 
-    protected Builder $builder;
-
 
     public function __construct(Form $form, string $tplFile)
     {
         $this->form = $form;
-        $this->dispatcher = $this->getFactory()->getEventDispatcher();
         $this->init($tplFile);
     }
 
@@ -44,10 +40,10 @@ class FormRenderer extends \Dom\Renderer\Renderer
             'valid-css' => 'is-valid',
         ];
 
-        $this->builder = new Builder($tplFile);
+        $builder = new Builder($tplFile);
 
         // get any data-opt options from the template and remove them
-        $formEl = $this->builder->getDocument()->getElementById('tpl-form');
+        $formEl = $builder->getDocument()->getElementById('tpl-form');
         $cssPre = 'data-opt-';
         /** @var \DOMAttr $attr */
         foreach ($formEl->attributes as $attr) {
@@ -61,19 +57,19 @@ class FormRenderer extends \Dom\Renderer\Renderer
             $formEl->removeAttribute($cssPre . $k);
         }
 
-        $this->setTemplate($this->builder->getTemplate('tpl-form'));
+        $this->setTemplate($builder->getTemplate('tpl-form'));
         /** @var Form\Field\FieldInterface $field */
-        foreach ($this->getForm()->getFieldList() as $field) {
+        foreach ($this->getForm()->getFields() as $field) {
             if ($field->hasTemplate()) continue;
-            $field->setTemplate($this->buildTemplate($field->getType()));
+            $field->setTemplate($this->buildTemplate($field->getType(), $builder));
         }
     }
 
-    public function buildTemplate(string $fieldType): ?Template
+    public function buildTemplate(string $type, Builder $builder): ?Template
     {
-        $tpl = $this->builder->getTemplate('tpl-' . $fieldType);
+        $tpl = $builder->getTemplate('tpl-' . $type);
         if (!$tpl) {
-            $tpl = $this->builder->getTemplate('tpl-input');
+            $tpl = $builder->getTemplate('tpl-input');
         }
         return $tpl;
     }
@@ -92,11 +88,6 @@ class FormRenderer extends \Dom\Renderer\Renderer
     public function getParam(string $name, mixed $default = null): mixed
     {
         return $this->params[$name] ?? $default;
-    }
-
-    public function getDispatcher(): EventDispatcherInterface
-    {
-        return $this->dispatcher;
     }
 
     function show(): ?Template
@@ -128,7 +119,7 @@ class FormRenderer extends \Dom\Renderer\Renderer
     protected function showFields(Template $template)
     {
         /** @var Form\Field\FieldInterface $field */
-        foreach ($this->form->getFieldList() as $row => $field) {
+        foreach ($this->form->getFields() as $row => $field) {
             if ($field instanceof Form\Action\ActionInterface) {
                 $template->appendTemplate('actions', $field->show());
             } else {

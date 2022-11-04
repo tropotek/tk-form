@@ -90,7 +90,7 @@ abstract class FieldInterface extends Element implements RendererInterface
 //            }
         }
 
-        $this->getOnShow()?->execute($template, $this);
+        $this->getOnShow()->execute($this, $template);
 
         // Add any attributes
         $template->setAttr('field', $this->getGroupAttr()->getAttrList());
@@ -204,7 +204,7 @@ abstract class FieldInterface extends Element implements RendererInterface
     }
 
     /**
-     * Callback: function (\Dom\Template $template, $element) { }
+     * Callback: function (FieldInterface $element, Template $template) { }
      */
     public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {

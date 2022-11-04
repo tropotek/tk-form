@@ -37,7 +37,7 @@ class Form extends Form\Element implements FormInterface
 
     protected string $id = '';
 
-    protected Collection $fieldList;
+    protected Collection $fields;
 
     protected ?ActionInterface $triggeredAction = null;
 
@@ -46,7 +46,7 @@ class Form extends Form\Element implements FormInterface
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
-        $this->fieldList = new Collection();
+        $this->fields = new Collection();
         $this->setName($formId);
         $this->setForm($this);
         $this->setAttr('method', self::METHOD_POST);
@@ -78,7 +78,7 @@ class Form extends Form\Element implements FormInterface
     public function execute(array $values = []): void
     {
         // Find the triggered action
-        foreach($this->fieldList as $field) {
+        foreach($this->getFields() as $field) {
             if (!$field instanceof ActionInterface) continue;
             if (array_key_exists($field->getId(), $values)) {
                 $this->triggeredAction = $field;
@@ -111,7 +111,7 @@ class Form extends Form\Element implements FormInterface
      */
     public function setFieldValues(array $values): static
     {
-        foreach ($this->getFieldList() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             $field->setValue($values[$field->getName()] ?? '');
         }
@@ -125,7 +125,7 @@ class Form extends Form\Element implements FormInterface
     {
         $array = [];
         /* @var $field FieldInterface */
-        foreach ($this->getFieldList() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             if ($search) {
                 if (is_string($search) && !preg_match($search, $field->getName())) {
@@ -152,7 +152,7 @@ class Form extends Form\Element implements FormInterface
      */
     protected function executeFields(array $values): static
     {
-        foreach ($this->getFieldList() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             $field->execute($values);
         }
@@ -167,7 +167,7 @@ class Form extends Form\Element implements FormInterface
     protected function getEventFields(): array
     {
         $list = [];
-        foreach ($this->getFieldList() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) $list[] = $field;
         }
         return $list;
@@ -194,14 +194,20 @@ class Form extends Form\Element implements FormInterface
 
     public function appendField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
+        if ($this->getFields()->has($field->getName())) {
+            throw new \Tk\Table\Exception("Field with name '{$field->getName()}' already exists.");
+        }
         $field->setForm($this);
-        return $this->getFieldList()->append($field->getName(), $field, $refField);
+        return $this->getFields()->append($field->getName(), $field, $refField);
     }
 
     public function prependField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
+        if ($this->getFields()->has($field->getName())) {
+            throw new \Tk\Table\Exception("Field with name '{$field->getName()}' already exists.");
+        }
         $field->setForm($this);
-        $this->getFieldList()->prepend($field->getName(), $field, $refField);
+        $this->getFields()->prepend($field->getName(), $field, $refField);
         return $field;
     }
 
@@ -210,8 +216,8 @@ class Form extends Form\Element implements FormInterface
      */
     public function removeField(string $fieldName): ?FieldInterface
     {
-        $field = $this->getFieldList()->get($fieldName);
-        $this->getFieldList()->remove($fieldName);
+        $field = $this->getFields()->get($fieldName);
+        $this->getFields()->remove($fieldName);
         return $field;
     }
 
@@ -220,15 +226,15 @@ class Form extends Form\Element implements FormInterface
      */
     public function getField(string $fieldName): ?FieldInterface
     {
-        return $this->getFieldList()->get($fieldName);
+        return $this->getFields()->get($fieldName);
     }
 
     /**
      * Get the field list Collection
      */
-    public function getFieldList(): Collection
+    public function getFields(): Collection
     {
-        return $this->fieldList;
+        return $this->fields;
     }
 
     /**
@@ -236,7 +242,7 @@ class Form extends Form\Element implements FormInterface
      */
     public function getFieldValue(string $fieldName): mixed
     {
-        $field = $this->getFieldList()->get($fieldName);
+        $field = $this->getFields()->get($fieldName);
         if ($field) {
             return $field->getValue();
         }
@@ -249,7 +255,7 @@ class Form extends Form\Element implements FormInterface
     public function setFieldValue($fieldName, $value): ?FieldInterface
     {
         /** @var FieldInterface $field */
-        $field = $this->getFieldList()->get($fieldName);
+        $field = $this->getFields()->get($fieldName);
         $field?->setValue($value);
         return $field;
     }
@@ -259,7 +265,7 @@ class Form extends Form\Element implements FormInterface
      */
     public function hasErrors(): bool
     {
-        foreach ($this->fieldList as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field->hasError()) {
                 return true;
             }
@@ -280,7 +286,7 @@ class Form extends Form\Element implements FormInterface
     public function getErrors(): array
     {
         $e = [];
-        foreach($this->getFieldList() as $field) {
+        foreach($this->getFields() as $field) {
             if ($field->hasError()) {
                 $e[$field->getName()] = $field->getError();
             }
@@ -293,7 +299,7 @@ class Form extends Form\Element implements FormInterface
      */
     public function addFieldError(string $fieldName, string $msg = ''): static
     {
-        $field = $this->getFieldList()->get($fieldName);
+        $field = $this->getFields()->get($fieldName);
         if ($field) {
             $field->addError($msg);
         }
@@ -309,7 +315,7 @@ class Form extends Form\Element implements FormInterface
     public function addFieldErrors(array $errors): static
     {
         foreach ($errors as $fieldName => $errorList) {
-            $field = $this->getFieldList()->get($fieldName);
+            $field = $this->getFields()->get($fieldName);
             if ($field) {
                 $field->addError($errorList);
             }
