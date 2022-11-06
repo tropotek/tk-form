@@ -1,8 +1,8 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Renderer\Traits\AttributesTrait;
-use Dom\Renderer\Traits\CssTrait;
+use Tk\Ui\Traits\AttributesTrait;
+use Tk\Ui\Traits\CssTrait;
 
 /**
  * @author tropotek <http://www.tropotek.com/>

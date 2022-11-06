@@ -1,21 +1,14 @@
 <?php
 namespace Tk\Form;
 
-use Dom\Renderer\Traits\AttributesTrait;
-use Dom\Renderer\Traits\CssTrait;
 use Tk\Form;
 use Tk\InstanceKey;
-use Tk\Traits\SystemTrait;
 
 /**
  * @author tropotek <http://www.tropotek.com/>
  */
-abstract class Element implements InstanceKey
+abstract class Element extends \Tk\Ui\Element implements InstanceKey
 {
-    use AttributesTrait;
-    use CssTrait;
-    use SystemTrait;
-
 
     protected ?Form $form = null;
 

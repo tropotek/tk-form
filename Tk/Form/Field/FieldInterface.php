@@ -1,13 +1,14 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Renderer\Attributes;
-use Dom\Renderer\Css;
+
 use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
+use Tk\Ui\Attributes;
+use Tk\Ui\Css;
 
 /**
  *
