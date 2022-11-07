@@ -6,6 +6,7 @@ use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tk\Traits\EventDispatcherTrait;
 
 
 /**
@@ -26,6 +27,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class Form extends Form\Element implements FormInterface
 {
+    use EventDispatcherTrait;
 
     const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
     const ENCTYPE_MULTIPART         = 'multipart/form-data';
@@ -41,12 +43,11 @@ class Form extends Form\Element implements FormInterface
 
     protected ?ActionInterface $triggeredAction = null;
 
-    protected ?EventDispatcherInterface $dispatcher = null;
-
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
         $this->fields = new Collection();
+        $this->setDispatcher($this->getFactory()->getEventDispatcher());
         $this->setName($formId);
         $this->setForm($this);
         $this->setAttr('method', self::METHOD_POST);
@@ -59,14 +60,22 @@ class Form extends Form\Element implements FormInterface
         return new static($formId, $charset);
     }
 
-    public function getDispatcher(): ?EventDispatcherInterface
+    /**
+     * The id can only be set once unless it is cleared first
+     */
+    protected function setId($id): static
     {
-        return $this->dispatcher;
-    }
-
-    public function setDispatcher(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
+        static $instances = [];
+        if ($this->getId()) return $this;
+        if (!isset($instances[$id])) {
+            $instances[$id] = 0;
+        } else {
+            $instances[$id]++;
+        }
+        if ($instances[$id] > 0) $id = $id.$instances[$id];
+        $this->id = $id;
+        $this->setAttr('id', $this->getId());
+        return $this;
     }
 
     /**

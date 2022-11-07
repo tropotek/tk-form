@@ -104,7 +104,7 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
     /**
      * Setting the id also adds/updates the id value in the attributes array
      */
-    public function setId(string $id): static
+    protected function setId(string $id): static
     {
         $this->id = $id;
         $this->setAttr('id', $id);
