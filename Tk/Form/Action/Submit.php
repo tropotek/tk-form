@@ -20,7 +20,7 @@ class Submit extends ActionInterface
     protected string $iconPosition = self::ICON_LEFT;
 
 
-    public function __construct(string $name, $callback = null)
+    public function __construct(string $name, callable $callback = null)
     {
         parent::__construct($name, self::TYPE_SUBMIT, $callback);
     }
@@ -30,7 +30,7 @@ class Submit extends ActionInterface
         return $this->icon;
     }
 
-    public function setIcon(string $icon, ?string $iconPosition = null): static
+    public function setIcon(string $icon, string $iconPosition = null): static
     {
         $this->icon = $icon;
         if ($iconPosition) $this->setIconPosition($iconPosition);
@@ -69,6 +69,9 @@ class Submit extends ActionInterface
                 $template->setVisible('icon-r');
                 $template->addCss('icon-r', $this->getIcon());
             }
+        } else {
+            // this removed HTMX bug with tags in the button???
+            $template->setText('element', $this->getLabel());
         }
 
         $this->getOnShow()?->execute($template, $this);

@@ -17,7 +17,7 @@ abstract class ActionInterface extends Field\FieldInterface
     protected ?Uri $redirect = null;
 
 
-    public function __construct(string $name, $type = 'button', ?callable $callback = null)
+    public function __construct(string $name, $type = 'button', callable $callback = null)
     {
         $this->callbackList = CallbackCollection::create();
         parent::__construct($name, $type);
