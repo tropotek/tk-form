@@ -36,6 +36,10 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_BUTTON   = 'button';
     const TYPE_SUBMIT   = 'submit';
 
+    const GROUP_NONE    = 'none';
+    const GROUP_ACTIONS = 'actions';
+
+
     protected mixed $value = '';
 
     protected string $type = '';
@@ -44,23 +48,35 @@ abstract class FieldInterface extends Element implements RendererInterface
 
     protected CallbackCollection $onShow;
 
-    protected Attributes $groupAttr;
+    /**
+     * attributes that affect the outer field parent template element
+     */
+    protected Attributes $fieldAttr;
 
-    // TODO: review if these should reside in the render system???
-
-    protected string $tabGroup = '';
 
     protected string $fieldset = '';
 
-    protected Css $fieldsetCss;
+    protected Attributes $fieldsetAttr;
+
+    /**
+     * The group name could relate to a tab group, column group, etc
+     * It will be up to the renderer where these are placed.
+     * You may need to build a custom render to place the fields where you need them
+     */
+    protected string $group = '';
+
+    protected Attributes $groupAttr;
+
 
 
     public function __construct(string $name, string $type = 'text')
     {
-        $this->groupAttr = new Attributes();
-        $this->fieldsetCss = new Css();
-        $this->onShow = new CallbackCollection();
-        $this->type = $type;
+        $this->fieldAttr    = new Attributes();
+        $this->groupAttr    = new Attributes();
+        $this->fieldsetAttr = new Attributes();
+        $this->onShow       = new CallbackCollection();
+        $this->type         = $type;
+
         $this->setName($name);
         $this->setType($type);
     }
@@ -94,7 +110,7 @@ abstract class FieldInterface extends Element implements RendererInterface
         $this->getOnShow()->execute($this, $template);
 
         // Add any attributes
-        $template->setAttr('field', $this->getGroupAttr()->getAttrList());
+        $template->setAttr('field', $this->getFieldAttr()->getAttrList());
         $template->setAttr('element', $this->getAttrList());
         $template->addCss('element', $this->getCssList());
 
@@ -287,47 +303,54 @@ abstract class FieldInterface extends Element implements RendererInterface
      * attributes, use this to add attributes to the fields
      * root element, use setGroupAttr() to set an attribute
      */
-    public function getGroupAttr(): Attributes
+    public function getFieldAttr(): Attributes
     {
-        return $this->groupAttr;
+        return $this->fieldAttr;
     }
 
-    public function setGroupAttr(string $name, string $value): FieldInterface
+    public function setFieldAttr(string $name, string $value): FieldInterface
     {
-        $this->groupAttr->setAttr($name, $value);
+        $this->fieldAttr->setAttr($name, $value);
         return $this;
     }
 
-    // TODO: Tabgroups and fieldsets lets see if this belongs here? they are a rendering item???
 
     public function getFieldset(): string
     {
         return $this->fieldset;
     }
 
-    public function getFieldsetCss(): string
+    public function getFieldsetAttr(): Attributes
     {
-        return $this->fieldsetCss->getCssString();
+        return $this->fieldsetAttr;
     }
 
-    public function setFieldset(string $fieldset, string $css = ''): static
+    public function setFieldset(string $fieldset, array $attrs = null): static
     {
         $this->fieldset = $fieldset;
-        if ($css) {
-            $this->fieldsetCss->addCss($css);
+        if ($attrs) {
+            $this->getFieldsetAttr()->setAttr($attrs);
         }
         return $this;
     }
 
-    public function getTabGroup(): string
+    public function getGroup(): string
     {
-        return $this->tabGroup;
+        return $this->group;
     }
 
-    public function setTabGroup(string $tabGroup): static
+    public function setGroup(string $group, array $attrs = null): static
     {
-        $this->tabGroup = $tabGroup;
+        $this->group = $group;
+        if ($attrs) {
+            $this->getGroupAttr()->setAttr($attrs);
+        }
         return $this;
+    }
+
+    public function getGroupAttr(): Attributes
+    {
+        return $this->groupAttr;
     }
 
     protected function cleanName(string $str, string $replace = '-'): string

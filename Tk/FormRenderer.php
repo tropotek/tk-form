@@ -3,6 +3,7 @@ namespace Tk;
 
 use Dom\Builder;
 use Dom\Renderer\Renderer;
+use Dom\Repeat;
 use Dom\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Form\Event\FormEvent;
@@ -16,9 +17,18 @@ class FormRenderer extends Renderer
 {
     use SystemTrait;
 
+    /**
+     * Constants for field render tree
+     */
+    const GROUP       = '__group';
+    const FIELDSET    = '__fieldset';
+    const FIELD       = '__field';
+
     protected Form $form;
 
-    protected array $tabGroupTemplates = [];
+    protected Builder $builder;
+
+    protected array $groupTemplates = [];
 
     protected array $fieldsetTemplates = [];
 
@@ -28,6 +38,7 @@ class FormRenderer extends Renderer
     public function __construct(Form $form, string $tplFile)
     {
         $this->form = $form;
+        $this->builder = new Builder($tplFile);
         $this->init($tplFile);
     }
 
@@ -40,10 +51,8 @@ class FormRenderer extends Renderer
             'valid-css' => 'is-valid',
         ];
 
-        $builder = new Builder($tplFile);
-
         // get any data-opt options from the template and remove them
-        $formEl = $builder->getDocument()->getElementById('tpl-form');
+        $formEl = $this->builder->getDocument()->getElementById('tpl-form');
         $cssPre = 'data-opt-';
         /** @var \DOMAttr $attr */
         foreach ($formEl->attributes as $attr) {
@@ -57,20 +66,26 @@ class FormRenderer extends Renderer
             $formEl->removeAttribute($cssPre . $k);
         }
 
-        $this->setTemplate($builder->getTemplate('tpl-form'));
+        $this->setTemplate($this->builder->getTemplate('tpl-form'));
         /** @var Form\Field\FieldInterface $field */
         foreach ($this->getForm()->getFields() as $field) {
             if ($field->hasTemplate()) continue;
-            $field->setTemplate($this->buildTemplate($field->getType(), $builder));
+            $field->setTemplate($this->buildFieldTemplate($field->getType()));
         }
     }
 
-    public function buildTemplate(string $type, Builder $builder): ?Template
+    public function buildFieldTemplate(string $type): Template
     {
-        $tpl = $builder->getTemplate('tpl-form-' . $type);
+        $tpl = $this->builder->getTemplate('tpl-form-' . $type);
         if (!$tpl) {
-            $tpl = $builder->getTemplate('tpl-form-input');
+            $tpl = $this->builder->getTemplate('tpl-form-input');
         }
+        return $tpl;
+    }
+
+    public function buildTemplate(string $type): ?Template
+    {
+        $tpl = $this->builder->getTemplate('tpl-form-' . $type);
         return $tpl;
     }
 
@@ -83,6 +98,11 @@ class FormRenderer extends Renderer
     {
         $this->form = $form;
         return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     public function getParam(string $name, mixed $default = null): mixed
@@ -98,16 +118,12 @@ class FormRenderer extends Renderer
         $e = new FormEvent($this->getForm());
         $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
 
-        // Field name attribute
-        $template->setAttr('form', 'id', $this->getForm()->getId());
-
-        // All other attributes
-        $template->setAttr('form' ,$this->getForm()->getAttrList());
-
-        // Element css class names
-        $template->addCss('form', $this->getForm()->getCssList());
-
+        // Show all fields
         $this->showFields($template);
+
+        // Set form attrs
+        $template->setAttr('form' ,$this->getForm()->getAttrList());
+        $template->addCss('form', $this->getForm()->getCssList());
 
         $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
         return $template;
@@ -118,15 +134,172 @@ class FormRenderer extends Renderer
      */
     protected function showFields(Template $template)
     {
-        /** @var Form\Field\FieldInterface $field */
-        foreach ($this->form->getFields() as $row => $field) {
-            if ($field instanceof Form\Action\ActionInterface) {
-                $template->appendTemplate('actions', $field->show());
+        // Build a render tree with the groups, fieldsets in the correct order
+        $fields = $this->getRenderTree($this->getForm()->getFields());
+
+        /* @var $children Form\Field\FieldInterface|Form\Field\FieldInterface[] */
+        foreach ($fields as $id => $children) {
+            if ($id == self::GROUP) {
+                foreach ($children as $group => $grpFields) {
+                    $tpl = $this->showGroup($grpFields, $group);
+                    if ($tpl instanceof Repeat) {
+                        $tpl->appendRepeat();
+                    } else {
+                        $template->appendTemplate('fields', $tpl);
+                    }
+                }
+            } else if ($id == self::FIELDSET) {
+                foreach ($children as $fieldset => $fsFields) {
+                    $tpl = $this->showFieldset($fsFields, $fieldset);
+                    if ($tpl instanceof Repeat) {
+                        $tpl->appendRepeat();
+                    } else {
+                        $template->appendTemplate('fields', $tpl);
+                    }
+                }
             } else {
-                $field->replaceParams($this->params);
-                $template->appendTemplate('fields', $field->show());
+                foreach ($children as $field) {
+                    if ($field instanceof Form\Field\Hidden) {
+                        $template->prependTemplate('form',  $field->show());
+                        continue;
+                    }
+                    $template->appendTemplate('fields', $field->show());
+                }
             }
         }
     }
 
+    protected function showGroup(array $fields, string $group): Template
+    {
+        if (!$this->hasGroupTemplate($group)) {
+            $template = $this->getGroupTemplate($group);
+            if ($template != $this->getTemplate()) {
+                $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $group));
+                $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('grp-' . $id));
+                $template->setAttr('fields', 'data-name', $id);
+                $template->addCss('fields', 'grp-' . $id);
+            }
+        }
+        $template = $this->getGroupTemplate($group);
+
+        /* @var $children Form\Field\FieldInterface|array */
+        foreach ($fields as $key => $children) {
+            if ($key == self::FIELDSET) {
+                foreach ($children as $fieldset => $fsChildren) {
+                    $tpl = $this->showFieldset($fsChildren, $fieldset, $group);
+                    if ($tpl instanceof Repeat) {
+                        $tpl->appendRepeat();
+                    } else {
+                        $template->appendTemplate('fields', $tpl);
+                    }
+                }
+            } else {
+                $template->appendTemplate('fields', $children->show());
+            }
+        }
+
+        return $template;
+    }
+
+    protected function showFieldset(array $fields, string $fieldset, string $group = ''): Template
+    {
+        if (!$this->hasFieldsetTemplate($fieldset, $group)) {
+            $template = $this->getFieldsetTemplate($fieldset, $group);
+            if ($template != $this->getTemplate()) {
+                $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $fieldset));
+                $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('fs-' . $id));
+                $template->setAttr('fields', 'data-name', $id);
+                $template->addCss('fields', 'fs-' . $id);
+            }
+        }
+        $template = $this->getFieldsetTemplate($fieldset, $group);
+
+        if ($template->hasVar('legend')) {
+            $template->setText('legend', $fieldset);
+        }
+
+        /** @var Form\Field\FieldInterface $field */
+        foreach ($fields as $field) {
+            $template->setAttr('fields', $field->getFieldsetAttr()->getAttrList());
+            $template->appendTemplate('fields', $field->show());
+        }
+
+        return $template;
+    }
+
+
+    /**
+     * Sort all fields into their groups and fieldsets
+     */
+    protected function getRenderTree($fieldList): array
+    {
+        $sets = [
+            self::GROUP => [],
+            self::FIELDSET => [],
+            self::FIELD => [],
+        ];
+        /* @var $field Form\Field\FieldInterface */
+        foreach ($fieldList as $field) {
+            if ($field instanceof Form\Field\Hidden) {
+                $sets[self::FIELD][] = $field;
+                continue;
+            }
+
+            if ($field->getGroup()) {
+                if ($field->getFieldset()) {
+                    $sets[self::GROUP][$field->getGroup()][self::FIELDSET][$field->getFieldset()][] = $field;
+                } else {
+                    $sets[self::GROUP][$field->getGroup()][] = $field;
+                }
+            } else {
+                if ($field->getFieldset()) {
+                    $sets[self::FIELDSET][$field->getFieldset()][] = $field;
+                } else {
+                    $sets[self::FIELD][] = $field;
+                }
+            }
+        }
+        //vd(Collection::arrayToString($sets));
+        return $sets;
+    }
+
+    public function hasGroupTemplate(string $group): bool
+    {
+        return isset($this->groupTemplates[$group]);
+    }
+
+    public function getGroupTemplate(string $group): Template
+    {
+        if (!$this->hasGroupTemplate($group)) {
+            $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('group-' . $group);
+            if (!$this->hasGroupTemplate($group)) {
+                $this->groupTemplates[$group] = $this->buildTemplate('group-' . $group);
+            }
+            if (!$this->hasGroupTemplate($group)) {
+                $this->groupTemplates[$group] = $this->buildTemplate('group');
+            }
+            if (!$this->hasGroupTemplate($group)) return $this->getTemplate();
+        }
+        return $this->groupTemplates[$group];
+    }
+
+    public function hasFieldsetTemplate(string $fieldset, string $group = ''): bool
+    {
+        return isset($this->fieldsetTemplates[$group][$fieldset]);
+    }
+
+    public function getFieldsetTemplate(string $fieldset, string $group = ''): Template
+    {
+        if (!$this->hasFieldsetTemplate($fieldset, $group)) {
+            $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('fieldset-' . $fieldset);
+            if (!$this->hasFieldsetTemplate($fieldset, $group)) {
+                $this->fieldsetTemplates[$group][$fieldset] = $this->buildTemplate('fieldset-' . $fieldset);
+            }
+            if (!$this->hasFieldsetTemplate($fieldset, $group)) {
+                $this->fieldsetTemplates[$group][$fieldset] = $this->buildTemplate('fieldset');
+            }
+            if (!$this->hasFieldsetTemplate($fieldset, $group)) return $this->getTemplate();
+        }
+        return $this->fieldsetTemplates[$group][$fieldset];
+    }
 }

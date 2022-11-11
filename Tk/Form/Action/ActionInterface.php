@@ -11,7 +11,6 @@ use Tk\Uri;
  */
 abstract class ActionInterface extends Field\FieldInterface
 {
-
     protected CallbackCollection $callbackList;
 
     protected ?Uri $redirect = null;
@@ -21,6 +20,7 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         $this->callbackList = CallbackCollection::create();
         parent::__construct($name, $type);
+        $this->setGroup(self::GROUP_ACTIONS);
         if ($callback) {
             $this->appendCallback($callback);
         }
@@ -44,7 +44,7 @@ abstract class ActionInterface extends Field\FieldInterface
     }
 
     /**
-     * Add a callback to the start of the event queue
+     * Add a callback to the start of the event queue that will be triggered onSubmit
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
      */
     public function prependCallback(callable $callback, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
@@ -54,7 +54,7 @@ abstract class ActionInterface extends Field\FieldInterface
     }
 
     /**
-     * Add a callback to the end of the event queue
+     * Add a callback to the end of the event queue that will be triggered onSubmit
      * function (\Tk\Form $form, \Tk\Form\Event\Iface $event) {}
      */
     public function appendCallback(callable $callback, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
