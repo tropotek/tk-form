@@ -67,9 +67,9 @@ class FormRenderer extends Renderer
 
     public function buildTemplate(string $type, Builder $builder): ?Template
     {
-        $tpl = $builder->getTemplate('tpl-' . $type);
+        $tpl = $builder->getTemplate('tpl-form-' . $type);
         if (!$tpl) {
-            $tpl = $builder->getTemplate('tpl-input');
+            $tpl = $builder->getTemplate('tpl-form-input');
         }
         return $tpl;
     }
