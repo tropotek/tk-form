@@ -3,6 +3,7 @@ namespace Tk;
 
 use Dom\Builder;
 use Dom\Renderer\Renderer;
+use Dom\Renderer\RendererInterface;
 use Dom\Repeat;
 use Dom\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -33,6 +34,7 @@ class FormRenderer extends Renderer
     protected array $fieldsetTemplates = [];
 
     protected array $params = [];
+
 
 
     public function __construct(Form $form, string $tplFile)
@@ -110,6 +112,7 @@ class FormRenderer extends Renderer
         return $this->params[$name] ?? $default;
     }
 
+
     function show(): ?Template
     {
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
@@ -144,7 +147,7 @@ class FormRenderer extends Renderer
                     $tpl = $this->showGroup($grpFields, $group);
                     if ($tpl instanceof Repeat) {
                         $tpl->appendRepeat();
-                    } else {
+                    } else if ($tpl !== $this->getTemplate()) {
                         $template->appendTemplate('fields', $tpl);
                     }
                 }
@@ -153,7 +156,7 @@ class FormRenderer extends Renderer
                     $tpl = $this->showFieldset($fsFields, $fieldset);
                     if ($tpl instanceof Repeat) {
                         $tpl->appendRepeat();
-                    } else {
+                    } else if ($tpl !== $this->getTemplate()) {
                         $template->appendTemplate('fields', $tpl);
                     }
                 }
@@ -161,9 +164,11 @@ class FormRenderer extends Renderer
                 foreach ($children as $field) {
                     if ($field instanceof Form\Field\Hidden) {
                         $template->prependTemplate('form',  $field->show());
-                        continue;
+                    } else if ($field instanceof Form\Action\ActionInterface) {
+                        $template->appendTemplate('actions', $field->show());
+                    } else {
+                        $template->appendTemplate('fields', $field->show());
                     }
-                    $template->appendTemplate('fields', $field->show());
                 }
             }
         }
@@ -189,7 +194,7 @@ class FormRenderer extends Renderer
                     $tpl = $this->showFieldset($fsChildren, $fieldset, $group);
                     if ($tpl instanceof Repeat) {
                         $tpl->appendRepeat();
-                    } else {
+                    } else if ($template !== $this->getTemplate()) {
                         $template->appendTemplate('fields', $tpl);
                     }
                 }
@@ -244,7 +249,6 @@ class FormRenderer extends Renderer
                 $sets[self::FIELD][] = $field;
                 continue;
             }
-
             if ($field->getGroup()) {
                 if ($field->getFieldset()) {
                     $sets[self::GROUP][$field->getGroup()][self::FIELDSET][$field->getFieldset()][] = $field;

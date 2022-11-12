@@ -20,7 +20,7 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         $this->callbackList = CallbackCollection::create();
         parent::__construct($name, $type);
-        $this->setGroup(self::GROUP_ACTIONS);
+        //$this->setGroup(self::GROUP_ACTIONS);
         if ($callback) {
             $this->appendCallback($callback);
         }
