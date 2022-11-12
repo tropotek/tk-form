@@ -152,7 +152,8 @@ class DomRenderer extends Iface
     protected function renderTabGroup($tabGroup, $fields)
     {
         $t = $this->getTabGroupTemplate($tabGroup);
-        $t->setAttr('tab-group', 'id', $this->getForm()->getId() . $this->cleanName($tabGroup));
+        $tgName = preg_replace('/[^a-z0-9]/i', '_', $tabGroup);
+        $t->setAttr('tab-group', 'id', $this->getForm()->getId() . $tgName);
         $t->setAttr('tab-group', 'data-name', $tabGroup);
 
         /* @var $children Field\Iface|array */
@@ -331,14 +332,5 @@ HTML;
 HTML;
 
         return \Dom\Loader::load($xhtml);
-    }
-
-    /**
-     * @param string $str
-     * @return string
-     */
-    protected function cleanName($str)
-    {
-        return preg_replace('/[^a-z0-9]/i', '_', $str);
     }
 }
