@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.2.16 [2022-11-16]:
+-------------------------------
+
+
 Ver 3.2.14 [2022-08-15]:
 -------------------------------
   - Added new \Bs\Form\Field\File object for \Bs\Db\File objects
