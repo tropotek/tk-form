@@ -37,11 +37,22 @@ class FormRenderer extends Renderer
 
 
 
-    public function __construct(Form $form, string $tplFile)
+    public function __construct(Form $form, string $tplFile = null)
     {
         $this->form = $form;
+        if (!$tplFile) {
+            $tplFile = $this->makePath($this->getConfig()->get('path.template.form'));
+        }
         $this->builder = new Builder($tplFile);
         $this->init($tplFile);
+    }
+
+    public static function createInlineRenderer(Form $form, string $tplFile = null): static
+    {
+        if (!$tplFile) {
+            $tplFile = System::instance()->makePath(Config::instance()->get('path.template.form.inline'));
+        }
+        return new static($form, $tplFile);
     }
 
     protected function init(string $tplFile)
