@@ -4,7 +4,7 @@ namespace Tk\Form\Field;
 
 use Dom\Template;
 use Tk\CallbackCollection;
-use Tk\Db\Mapper\ModelIface;
+use Tk\Db\Mapper\ModelInterface;
 use Tk\Db\Mapper\Result;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option\ArrayIterator;
@@ -47,7 +47,7 @@ class Select extends FieldInterface
             $curr = current($optionIterator);
             if (is_array($curr)) {
                 $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
-            } elseif ($curr instanceof ModelIface) {
+            } elseif ($curr instanceof ModelInterface) {
                 $optionIterator = new Option\ArrayObjectIterator($optionIterator, $selectAttr);
             } else {
                 $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
