@@ -188,7 +188,8 @@ class File extends Input
             $cnt = $this->moveFile($this->dataPath . $this->destPath);
         } else {
             // Check if the delete file checkbox is checked.
-            if (\Tk\Request::createFromGlobals()->has($this->getDeleteEventName())) {
+            if ($this->getRequest()->has($this->getDeleteEventName())) {
+            //if (\Tk\Request::createFromGlobals()->has($this->getDeleteEventName())) {
                 $this->deleteFile($this->getValue());
             }
         }
