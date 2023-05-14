@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-
 use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
@@ -10,10 +9,6 @@ use Tk\Form\Element;
 use Tk\Ui\Attributes;
 use Tk\Ui\Css;
 
-/**
- *
- * @author Tropotek <http://www.tropotek.com/>
- */
 abstract class FieldInterface extends Element implements RendererInterface
 {
     use RendererTrait;
@@ -53,6 +48,10 @@ abstract class FieldInterface extends Element implements RendererInterface
      */
     protected Attributes $fieldAttr;
 
+    /**
+     * Css that affect the outer field parent template element
+     */
+    protected Css $fieldCss;
 
     protected string $fieldset = '';
 
@@ -68,10 +67,10 @@ abstract class FieldInterface extends Element implements RendererInterface
     protected Attributes $groupAttr;
 
 
-
     public function __construct(string $name, string $type = 'text')
     {
         $this->fieldAttr    = new Attributes();
+        $this->fieldCss     = new Css();
         $this->groupAttr    = new Attributes();
         $this->fieldsetAttr = new Attributes();
         $this->onShow       = new CallbackCollection();
@@ -94,7 +93,7 @@ abstract class FieldInterface extends Element implements RendererInterface
     protected function decorate(Template $template): Template
     {
         if ($this->getNotes()) {
-            $template->replaceHtml('notes', $this->getNotes());
+            $template->insertHtml('notes', $this->getNotes());
         }
         if ($this->hasError()) {
             if ($this->hasParam('error-css')) {
@@ -110,6 +109,7 @@ abstract class FieldInterface extends Element implements RendererInterface
         $this->getOnShow()->execute($this, $template);
 
         // Add any attributes
+        $template->addCss('field', $this->getFieldCss()->getCssList());
         $template->setAttr('field', $this->getFieldAttr()->getAttrList());
         $template->setAttr('element', $this->getAttrList());
         $template->addCss('element', $this->getCssList());
@@ -120,8 +120,6 @@ abstract class FieldInterface extends Element implements RendererInterface
             $template->setAttr('label', 'for', $this->getId());
             $template->setVisible('label');
         }
-
-
         return $template;
     }
 
@@ -193,7 +191,7 @@ abstract class FieldInterface extends Element implements RendererInterface
      *
      * @see: https://www.w3schools.com/tags/att_input_type.asp
      */
-    public function setType(string $type): FieldInterface
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
@@ -204,7 +202,7 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this->error;
     }
 
-    public function setError(string $error): FieldInterface
+    public function setError(string $error): static
     {
         $this->error = $error;
         return $this;
@@ -308,12 +306,22 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this->fieldAttr;
     }
 
-    public function setFieldAttr(string $name, string $value): FieldInterface
+    public function setFieldAttr(string $name, string $value): static
     {
         $this->fieldAttr->setAttr($name, $value);
         return $this;
     }
 
+    public function addFieldCss(string $css): static
+    {
+        $this->fieldCss->addCss($css);
+        return $this;
+    }
+
+    public function getFieldCss(): Css
+    {
+        return $this->fieldCss;
+    }
 
     public function getFieldset(): string
     {

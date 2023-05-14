@@ -130,7 +130,9 @@ class Select extends FieldInterface
                         $option->setSelected();
                     }
                 } else {
-                    $option->setSelected($this->getValue() ?: false);
+                    if ($option->getValue() == $value) {
+                        $option->setSelected($this->getValue() ?: false);
+                    }
                 }
             }
         }

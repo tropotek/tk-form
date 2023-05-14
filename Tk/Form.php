@@ -72,7 +72,7 @@ class Form extends Form\Element implements FormInterface
         } else {
             $instances[$id]++;
         }
-        if ($instances[$id] > 0) $id = $id.$instances[$id];
+        if ($instances[$id] > 0) $id = $id.'-'.$instances[$id];
         $this->id = $id;
         $this->setAttr('id', $this->getId());
         return $this;
@@ -111,6 +111,8 @@ class Form extends Form\Element implements FormInterface
 
         // get the triggered action, this also set up the form ready to fire an action if present.
         $this->getTriggeredAction()->execute($values);
+        $url = $this->getTriggeredAction()->getRedirect();
+        vd($url);
     }
 
     /**
@@ -308,10 +310,9 @@ class Form extends Form\Element implements FormInterface
      */
     public function addFieldError(string $fieldName, string $msg = ''): static
     {
+        /** @var FieldInterface $field */
         $field = $this->getFields()->get($fieldName);
-        if ($field) {
-            $field->addError($msg);
-        }
+        $field?->setError($msg);
         return $this;
     }
 
