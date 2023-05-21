@@ -112,7 +112,6 @@ class Form extends Form\Element implements FormInterface
         // get the triggered action, this also set up the form ready to fire an action if present.
         $this->getTriggeredAction()->execute($values);
         $url = $this->getTriggeredAction()->getRedirect();
-        vd($url);
     }
 
     /**
@@ -122,6 +121,7 @@ class Form extends Form\Element implements FormInterface
      */
     public function setFieldValues(array $values): static
     {
+        /** @var FieldInterface $field */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             $field->setValue($values[$field->getName()] ?? '');

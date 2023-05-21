@@ -117,6 +117,9 @@ class Select extends FieldInterface
     public function setValue(mixed $value): static
     {
         $this->value = $value;
+        if ($this->isMultiple() && empty($value)) {
+            $this->value = [];
+        }
         $this->clearSelected();
         /** @var Option $option */
         foreach ($this->getOptions() as $option) {

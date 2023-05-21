@@ -23,6 +23,7 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_FILE     = 'file';
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_RADIO    = 'radio';
+    const TYPE_HTML     = 'html';
 
     const TYPE_SELECT   = 'select';
     const TYPE_TEXTAREA = 'textarea';

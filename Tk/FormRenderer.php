@@ -59,6 +59,7 @@ class FormRenderer extends Renderer
     {
         // Setup default options.
         // These can be set in the form attributes data...
+        $prefix = 'data-opt-';
         $this->params = [
             'error-css' => 'is-invalid',
             'valid-css' => 'is-valid',
@@ -66,22 +67,22 @@ class FormRenderer extends Renderer
 
         // get any data-opt options from the template and remove them
         $formEl = $this->builder->getDocument()->getElementById('tpl-form');
-        $cssPre = 'data-opt-';
         /** @var \DOMAttr $attr */
         foreach ($formEl->attributes as $attr) {
-            if (str_starts_with($attr->name, $cssPre)) {
-                $name = str_replace($cssPre, '', $attr->name);
+            if (str_starts_with($attr->name, $prefix)) {
+                $name = str_replace($prefix, '', $attr->name);
                 $this->params[$name] = $attr->value;
             }
         }
         // Remove option attributes
         foreach ($this->params as $k => $v) {
-            $formEl->removeAttribute($cssPre . $k);
+            $formEl->removeAttribute($prefix . $k);
         }
 
         $this->setTemplate($this->builder->getTemplate('tpl-form'));
         /** @var Form\Field\FieldInterface $field */
         foreach ($this->getForm()->getFields() as $field) {
+            $field->replaceParams($this->getParams());
             if ($field->hasTemplate()) continue;
             $field->setTemplate($this->buildFieldTemplate($field->getType()));
         }

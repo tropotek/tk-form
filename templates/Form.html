@@ -28,7 +28,7 @@
   <!--
   Main Form container
   -->
-  <form method="post" class="tk-form row g-3 needs-validation" novalidate="novalidate"
+  <form method="post" class="tk-form row g-3" novalidate="novalidate"
         data-opt-valid-css="is-valid"  data-opt-error-css="is-invalid"
         id="tpl-form" var="form">
 
@@ -87,14 +87,21 @@
 
     <input type="hidden" var="element" id="tpl-form-hidden">
 
-    <div class="mb-3" var="field" id="tpl-form-input">
+    <div var="field" id="tpl-form-input">
       <label class="form-label" var="label"></label>
       <input type="text" class="form-control" var="element">
       <div class="form-text text-secondary" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-file">
+    <div var="field" id="tpl-form-html">
+      <label class="form-label" var="label"></label>
+      <div var="element"></div>
+      <div class="form-text text-secondary" var="notes"></div>
+      <div class="invalid-feedback" var="error"></div>
+    </div>
+
+    <div var="field" id="tpl-form-file">
       <label class="form-label" var="label"></label>
       <input type="file" class="form-control" var="element">
       <div class="form-text" choice="file-notes"></div>
@@ -102,14 +109,14 @@
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-textarea">
+    <div var="field" id="tpl-form-textarea">
       <label class="form-label" var="label"></label>
       <textarea class="form-control" var="element"></textarea>
       <div class="form-text text-secondary" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-select">
+    <div var="field" id="tpl-form-select">
       <label class="form-label" var="label"></label>
       <select class="form-select" var="element">
         <option repeat="option"></option>
@@ -118,7 +125,7 @@
       <div class="invalid-feedback" choice="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-checkbox">
+    <div var="field" id="tpl-form-checkbox">
       <label class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="checkbox" class="form-check-input" var="element">
@@ -128,7 +135,7 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-radio">
+    <div var="field" id="tpl-form-radio">
       <label class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="radio" class="form-check-input" var="element">
@@ -138,7 +145,7 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div class="mb-3" var="field" id="tpl-form-switch">
+    <div var="field" id="tpl-form-switch">
       <label class="form-check-label" choice="label"></label>
       <div class="form-check form-switch" repeat="option">
         <input type="checkbox" role="switch" class="form-check-input" var="element">
@@ -148,7 +155,7 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div class="mb-3" id="tpl-form-null">
+    <div id="tpl-form-null">
       <!-- Just here to allow us to view repeats above - ignore -->
       <div repeat="option"></div>
 
