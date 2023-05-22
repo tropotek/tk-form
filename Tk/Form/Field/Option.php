@@ -5,7 +5,6 @@ use Tk\Ui\Traits\AttributesTrait;
 use Tk\Ui\Traits\CssTrait;
 
 /**
- * @author tropotek <http://www.tropotek.com/>
  * @see http://www.w3schools.com/tags/tag_option.asp
  */
 class Option

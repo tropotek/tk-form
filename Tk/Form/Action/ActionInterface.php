@@ -6,9 +6,6 @@ use Tk\Form;
 use Tk\Form\Field;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 abstract class ActionInterface extends Field\FieldInterface
 {
     protected CallbackCollection $callbackList;

@@ -27,7 +27,6 @@ use Tk\Form\Field\Option;
  *     ...
  *   )
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class OptGroupIterator extends ArrayIterator
 {

@@ -3,9 +3,6 @@ namespace Tk\Form\Action;
 
 use Dom\Template;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Submit extends ActionInterface
 {
 

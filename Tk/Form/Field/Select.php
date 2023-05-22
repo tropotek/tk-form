@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-
 use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Db\Mapper\ModelInterface;
@@ -9,9 +8,6 @@ use Tk\Db\Mapper\Result;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option\ArrayIterator;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Select extends FieldInterface
 {
     use OptionList;

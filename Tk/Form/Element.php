@@ -4,9 +4,6 @@ namespace Tk\Form;
 use Tk\Form;
 use Tk\InstanceKey;
 
-/**
- * @author tropotek <http://www.tropotek.com/>
- */
 abstract class Element extends \Tk\Ui\Element implements InstanceKey
 {
 

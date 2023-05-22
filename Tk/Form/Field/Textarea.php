@@ -1,12 +1,8 @@
 <?php
 namespace Tk\Form\Field;
 
-
 use Dom\Template;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Textarea extends Input
 {
 

@@ -1,10 +1,6 @@
 <?php
 namespace Tk\Form\Action;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Button extends Submit
 {
 

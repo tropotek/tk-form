@@ -13,7 +13,6 @@ use Tk\Form\Field\Option;
  *   $list = new ObjectArrayIterator(\App\Db\User::getMapper()->findAll(), 'name', 'id');
  * ?>
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayObjectIterator extends ArrayIterator
 {

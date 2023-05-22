@@ -19,7 +19,6 @@ use Tk\Form\Field\Option;
  *     3 => 'label'      // Option Label (optional)
  *   )
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayArrayIterator extends ArrayIterator
 {

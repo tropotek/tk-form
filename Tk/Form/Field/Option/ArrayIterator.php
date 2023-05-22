@@ -11,7 +11,6 @@ use Tk\Form\Field\Option;
  *   $iterator = new ArrayIterator(array('-- Select --' => '', 'Admin' => 'admin', 'Moderator' => 'moderator', 'User' => 'user'));
  * ?>
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class ArrayIterator implements \Iterator, \Countable
 {

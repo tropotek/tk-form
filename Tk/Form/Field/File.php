@@ -1,15 +1,11 @@
 <?php
 namespace Tk\Form\Field;
 
-
 use Dom\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tk\FileUtil;
 use Tk\Form;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class File extends Input
 {
 

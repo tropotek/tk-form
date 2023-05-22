@@ -44,7 +44,6 @@ class FormRenderer extends Renderer
             $tplFile = $this->makePath($this->getConfig()->get('path.template.form'));
         }
         $this->builder = new Builder($tplFile);
-        $this->init($tplFile);
     }
 
     public static function createInlineRenderer(Form $form, string $tplFile = null): static
@@ -55,7 +54,7 @@ class FormRenderer extends Renderer
         return new static($form, $tplFile);
     }
 
-    protected function init(string $tplFile)
+    protected function init()
     {
         // Setup default options.
         // These can be set in the form attributes data...
@@ -127,6 +126,8 @@ class FormRenderer extends Renderer
 
     function show(): ?Template
     {
+        $this->init();
+
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
         $template = $this->getTemplate();
 

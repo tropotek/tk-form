@@ -20,6 +20,7 @@ abstract class FieldInterface extends Element implements RendererInterface
     const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_TEXT     = 'text';
+    const TYPE_PASSWORD = 'password';
     const TYPE_FILE     = 'file';
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_RADIO    = 'radio';

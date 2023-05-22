@@ -1,10 +1,6 @@
 <?php
-
 namespace Tk\Form\Field;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 trait OptionList
 {
     /**

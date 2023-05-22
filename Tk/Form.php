@@ -18,12 +18,9 @@ use Tk\Traits\EventDispatcherTrait;
  * --------------------------------------|---------------------------------------
  *  application/x-www-form-urlencoded    |  All characters are encoded before sent (this is default)
  *  multipart/form-data                  |  No characters are encoded. This value is required when you are using forms that have a file upload control
- *  text/plain                           |  Spaces are conve
-     *
-     * rted to "+" symbols, but no special characters are encoded
+ *  text/plain                           |  Spaces are converted to "+" symbols, but no special characters are encoded
  * </code>
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class Form extends Form\Element implements FormInterface
 {
@@ -327,7 +324,7 @@ class Form extends Form\Element implements FormInterface
         foreach ($errors as $fieldName => $errorList) {
             $field = $this->getFields()->get($fieldName);
             if ($field) {
-                $field->addError($errorList);
+                $field->setError($errorList);
             }
         }
         return $this;

@@ -1,14 +1,10 @@
 <?php
 namespace Tk\Form\Field;
 
-
 use Dom\Template;
 use Tk\Db\Mapper\Result;
 use Tk\Form\Field\Option\ArrayIterator;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Checkbox extends Select
 {
 
