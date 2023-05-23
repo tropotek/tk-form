@@ -3,12 +3,9 @@ namespace Tk;
 
 use Dom\Builder;
 use Dom\Renderer\Renderer;
-use Dom\Renderer\RendererInterface;
 use Dom\Repeat;
 use Dom\Template;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Form\Event\FormEvent;
-use Tk\Form;
 use Tk\Traits\SystemTrait;
 
 /**
@@ -140,6 +137,14 @@ class FormRenderer extends Renderer
         // Set form attrs
         $template->setAttr('form' ,$this->getForm()->getAttrList());
         $template->addCss('form', $this->getForm()->getCssList());
+
+        // Show form errors
+        foreach ($this->getForm()->getErrors() as $error) {
+            $r = $template->getRepeat('error');
+            $r->insertHtml('error', $error);
+            $r->appendRepeat();
+            $template->setVisible('errors');
+        }
 
         $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
         return $template;
@@ -276,7 +281,6 @@ class FormRenderer extends Renderer
                 }
             }
         }
-        //vd(Collection::arrayToString($sets));
         return $sets;
     }
 

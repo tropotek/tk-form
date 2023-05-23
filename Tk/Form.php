@@ -40,6 +40,8 @@ class Form extends Form\Element implements FormInterface
 
     protected ?ActionInterface $triggeredAction = null;
 
+    protected array $errors = [];
+
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
@@ -109,6 +111,78 @@ class Form extends Form\Element implements FormInterface
         // get the triggered action, this also set up the form ready to fire an action if present.
         $this->getTriggeredAction()->execute($values);
         $url = $this->getTriggeredAction()->getRedirect();
+    }
+
+    /**
+     * Does this form contain errors
+     */
+    public function hasErrors(): bool
+    {
+        if (count($this->getErrors())) return true;
+        foreach ($this->getFields() as $field) {
+            if ($field->hasError()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function addError(string $error): static
+    {
+        if (trim($error)) {
+            $this->errors[] = trim($error);
+        }
+        return $this;
+    }
+
+    public function setErrors(array $errors): static
+    {
+        $this->errors = $errors;
+        return $this;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    public function getAllErrors(): array
+    {
+        $e = $this->getErrors();
+        foreach($this->getFields() as $field) {
+            if ($field->hasError()) {
+                $e[$field->getName()] = $field->getError();
+            }
+        }
+        return $e;
+    }
+
+    /**
+     * Adds field error message.
+     */
+    public function addFieldError(string $fieldName, string $msg = ''): static
+    {
+        /** @var FieldInterface $field */
+        $field = $this->getFields()->get($fieldName);
+        $field?->setError($msg);
+        return $this;
+    }
+
+    /**
+     * Adds form field errors from a map of (field name, list of errors) message pairs.
+     *
+     * If the field is not found in the form then the error message is added to
+     * the form error messages.
+     */
+    public function addFieldErrors(array $errors): static
+    {
+        foreach ($errors as $fieldName => $errorList) {
+            $field = $this->getFields()->get($fieldName);
+            if ($field) {
+                $field->setError($errorList);
+            }
+        }
+        return $this;
     }
 
     /**
@@ -268,65 +342,4 @@ class Form extends Form\Element implements FormInterface
         return $field;
     }
 
-    /**
-     * Does this form contain errors
-     */
-    public function hasErrors(): bool
-    {
-        foreach ($this->getFields() as $field) {
-            if ($field->hasError()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function setErrors(array $errors): static
-    {
-        foreach($errors as $fieldName => $error) {
-            if ($error) {
-                $this->getField($fieldName)?->setError($error);
-            }
-        }
-        return $this;
-    }
-
-    public function getErrors(): array
-    {
-        $e = [];
-        foreach($this->getFields() as $field) {
-            if ($field->hasError()) {
-                $e[$field->getName()] = $field->getError();
-            }
-        }
-        return $e;
-    }
-
-    /**
-     * Adds field error message.
-     */
-    public function addFieldError(string $fieldName, string $msg = ''): static
-    {
-        /** @var FieldInterface $field */
-        $field = $this->getFields()->get($fieldName);
-        $field?->setError($msg);
-        return $this;
-    }
-
-    /**
-     * Adds form field errors from a map of (field name, list of errors) message pairs.
-     *
-     * If the field is not found in the form then the error message is added to
-     * the form error messages.
-     */
-    public function addFieldErrors(array $errors): static
-    {
-        foreach ($errors as $fieldName => $errorList) {
-            $field = $this->getFields()->get($fieldName);
-            if ($field) {
-                $field->setError($errorList);
-            }
-        }
-        return $this;
-    }
 }

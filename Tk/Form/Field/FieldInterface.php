@@ -80,6 +80,7 @@ abstract class FieldInterface extends Element implements RendererInterface
 
         $this->setName($name);
         $this->setType($type);
+        $this->addFieldCss('fld fld-'.$this->getHtmlName() . ' fld-'.$this->getType());
     }
 
     /**
