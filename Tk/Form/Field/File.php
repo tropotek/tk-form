@@ -33,7 +33,7 @@ class File extends Input
      */
     public function getValue(): mixed
     {
-        $default = null;
+        $default = '';
         if ($this->isMultiple()) $default = [];
         return $this->getRequest()->files->get($this->getName(), $default);
     }
