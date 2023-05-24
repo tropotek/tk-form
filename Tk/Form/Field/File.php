@@ -29,13 +29,19 @@ class File extends Input
 
     /**
      * The value in a string/array format that can be rendered to the template
-     * Recommended that values be PHP native types not objects, use the data mapper for complex typess
+     * Recommended that values be PHP native types not objects, use the data mapper for complex types
      */
     public function getValue(): mixed
     {
         $default = null;
         if ($this->isMultiple()) $default = [];
         return $this->getRequest()->files->get($this->getName(), $default);
+    }
+
+    public function hasFile(): bool
+    {
+        if ($this->isMultiple()) return count($this->getValue());
+        return is_object($this->getValue());
     }
 
     /**
@@ -82,6 +88,10 @@ class File extends Input
         $this->setAttr('name', $this->getHtmlName());
         $this->setAttr('id', $this->getId());
         $this->setAttr('type', $this->getType());
+        //vd($this->getValue());
+        if (is_string($this->getValue())) {
+            $this->setAttr('value', $this->getValue());
+        }
 
         $template->insertHtml('file-notes', 'Max File Size: <b>' . \Tk\FileUtil::bytes2String($this->maxBytes, 0) . '</b><br/>');
 
