@@ -32,17 +32,25 @@ class File extends Input
             \Tk\FileUtil::string2Bytes(ini_get('post_max_size')) );
     }
 
-    /**
-     * The value in a string/array format that can be rendered to the template
-     * Recommended that values be PHP native types not objects, use the data mapper for complex types
-     */
-    public function getValue(): mixed
-    {
-        if ($this->hasFile()) {
-            return $this->getUploaded();
-        }
-        return parent::getValue();
-    }
+//    public function setValue(mixed $value): static
+//    {
+//        if (!$this->hasFile()) {
+//            $this->value = $value;
+//        }
+//        return $this;
+//    }
+
+//    /**
+//     * The value in a string/array format that can be rendered to the template
+//     * Recommended that values be PHP native types not objects, use the data mapper for complex types
+//     */
+//    public function getValue(): mixed
+//    {
+//        if ($this->hasFile()) {
+//            return $this->getUploaded();
+//        }
+//        return parent::getValue();
+//    }
 
     public function hasFile(): bool
     {
@@ -108,18 +116,18 @@ class File extends Input
         $this->setAttr('id', $this->getId());
         $this->setAttr('type', $this->getType());
 
-        if ($this->getValue()) {
-            if ($this->getViewUrl()) {
-                $template->setAttr('view', 'href', $this->getViewUrl());
-                $template->setAttr('view', 'title', 'View: ' . basename($this->getValue()));
-                $template->setVisible('view');
-            }
-            if ($this->getDeleteUrl()) {
-                $template->setAttr('delete', 'href', $this->getDeleteUrl());
-                $template->setAttr('delete', 'title', 'Delete: ' . basename($this->getValue()));
-                $template->setVisible('delete');
-            }
+
+        if ($this->getViewUrl()) {
+            $template->setAttr('view', 'href', $this->getViewUrl());
+            $template->setAttr('view', 'title', 'View: ' . $this->getViewUrl()->basename());
+            $template->setVisible('view');
         }
+        if ($this->getDeleteUrl()) {
+            $template->setAttr('delete', 'href', $this->getDeleteUrl());
+            $template->setAttr('delete', 'title', 'Delete');
+            $template->setVisible('delete');
+        }
+
 
         $this->decorate($template);
 
