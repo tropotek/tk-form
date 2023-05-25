@@ -313,6 +313,7 @@ class Form extends Form\Element implements FormInterface
 
     /**
      * Get the field list Collection
+     * @return Collection | Form\Field\FieldInterface[]
      */
     public function getFields(): Collection
     {

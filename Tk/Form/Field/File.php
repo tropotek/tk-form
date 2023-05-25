@@ -7,6 +7,13 @@ use Tk\FileUtil;
 use Tk\Form;
 use Tk\Uri;
 
+/**
+ * A file upload field
+ *
+ * Note: This field UI is not designed to handle multi uploads.
+ *       For multiple uploads do not user the view/delete icons
+ *       you will need to develop your own UI
+ */
 class File extends Input
 {
 

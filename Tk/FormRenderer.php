@@ -43,6 +43,9 @@ class FormRenderer extends Renderer
             $tplFile = $this->makePath($this->getConfig()->get('path.template.form'));
         }
         $this->builder = new Builder($tplFile);
+
+        // Putting this call here means that the form must have
+        //   all fields added before the renderer is instantiated...
         $this->init();
     }
 
@@ -123,12 +126,29 @@ class FormRenderer extends Renderer
         return $this->params[$name] ?? $default;
     }
 
+    /**
+     * Add CSS to every field group element in the form
+     */
+    public function addFieldCss(string $css)
+    {
+        foreach ($this->getForm()->getFields() as $field) {
+            $field->getFieldCss()->addCss($css);
+        }
+    }
+
+    /**
+     * Remove CSS from every field group element in the form
+     */
+    public function removeFieldCss(string $css)
+    {
+        foreach ($this->getForm()->getFields() as $field) {
+            $field->getFieldCss()->removeCss($css);
+        }
+    }
+
 
     function show(): ?Template
     {
-        // TODO: cannot remember why I put this here, revisit this when the issue occurs again????
-        //$this->init();
-
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
         $template = $this->getTemplate();
 
