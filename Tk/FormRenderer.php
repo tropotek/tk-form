@@ -9,7 +9,10 @@ use Tk\Form\Event\FormEvent;
 use Tk\Traits\SystemTrait;
 
 /**
- * @author Tropotek <http://www.tropotek.com/>
+ * When creating the renderer be sure to create the instance
+ * only after all fields have been added to the form.
+ *
+ *
  */
 class FormRenderer extends Renderer
 {
@@ -33,7 +36,6 @@ class FormRenderer extends Renderer
     protected array $params = [];
 
 
-
     public function __construct(Form $form, string $tplFile = null)
     {
         $this->form = $form;
@@ -41,6 +43,7 @@ class FormRenderer extends Renderer
             $tplFile = $this->makePath($this->getConfig()->get('path.template.form'));
         }
         $this->builder = new Builder($tplFile);
+        $this->init();
     }
 
     public static function createInlineRenderer(Form $form, string $tplFile = null): static
@@ -123,7 +126,8 @@ class FormRenderer extends Renderer
 
     function show(): ?Template
     {
-        $this->init();
+        // TODO: cannot remember why I put this here, revisit this when the issue occurs again????
+        //$this->init();
 
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
         $template = $this->getTemplate();

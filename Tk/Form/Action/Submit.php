@@ -56,6 +56,7 @@ class Submit extends ActionInterface
             $template->setAttr('element', 'type', $this->getType());
             $template->setAttr('element', 'value', $this->getValue());
         }
+        $template->setAttr('element', 'title', ucfirst($this->getValue()));
         $template->setText('text', $this->getLabel());
 
         if ($this->getIcon()) {

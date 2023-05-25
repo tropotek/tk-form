@@ -90,6 +90,7 @@ class Form extends Form\Element implements FormInterface
             if (!$field instanceof ActionInterface) continue;
             if (array_key_exists($field->getId(), $values)) {
                 $this->triggeredAction = $field;
+                $this->triggeredAction->setValue($values[$field->getId()]);
                 break;
             }
         }
@@ -110,7 +111,6 @@ class Form extends Form\Element implements FormInterface
 
         // get the triggered action, this also set up the form ready to fire an action if present.
         $this->getTriggeredAction()->execute($values);
-        $url = $this->getTriggeredAction()->getRedirect();
     }
 
     /**

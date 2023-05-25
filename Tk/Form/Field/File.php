@@ -5,6 +5,7 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tk\FileUtil;
 use Tk\Form;
+use Tk\Uri;
 
 class File extends Input
 {
@@ -18,6 +19,10 @@ class File extends Input
      * @var array|UploadedFile[]
      */
     protected array $files = [];
+
+    protected ?Uri $deleteUrl = null;
+
+    protected ?Uri $viewUrl = null;
 
 
     public function __construct(string $name)
@@ -33,15 +38,23 @@ class File extends Input
      */
     public function getValue(): mixed
     {
-        $default = '';
-        if ($this->isMultiple()) $default = [];
-        return $this->getRequest()->files->get($this->getName(), $default);
+        if ($this->hasFile()) {
+            return $this->getUploaded();
+        }
+        return parent::getValue();
     }
 
     public function hasFile(): bool
     {
-        if ($this->isMultiple()) return count($this->getValue());
-        return is_object($this->getValue());
+        if ($this->isMultiple()) return (count($this->getUploaded()) > 0);
+        return is_object($this->getUploaded());
+    }
+
+    public function getUploaded(): mixed
+    {
+        $default = null;
+        if ($this->isMultiple()) $default = [];
+        return $this->getRequest()->files->get($this->getName(), $default);
     }
 
     /**
@@ -59,19 +72,25 @@ class File extends Input
      * The file names will be what the original uploaded file name was.
      *
      * Any existing files will be overwritten.
+     * Returns an array of file path locations or a single path when not mutiple
      *
-     * Note: This is just a basic file move function, develop your own for more control.
-     *
-     * Returns an array of file path locations
+     * @param string $filename (optional) Only used in single file upload mode
      */
-    public function move(string $path): array
+    public function move(string $path, string $filename = ''): string|array
     {
-        $files = [];
+        $files = null;
         try {
             FileUtil::mkdir($path);
-            foreach ($this->getValue() as $uploadedFile) {
-                $uploadedFile->move($path, $uploadedFile->getClientOriginalName());
-                $files[] = $path.'/'.$uploadedFile->getClientOriginalName();
+            if ($this->isMultiple()) {
+                $files = [];
+                foreach ($this->getUploaded() as $uploadedFile) {
+                    $uploadedFile->move($path, $uploadedFile->getClientOriginalName());
+                    $files[] = $path . '/' . $uploadedFile->getClientOriginalName();
+                }
+            } else {
+                $files = '';
+                $uploadedFile = $this->getUploaded();
+                $files = $uploadedFile->move($path, $filename ?: $uploadedFile->getClientOriginalName());
             }
         } catch (\Exception $e) {
             $this->setError($e->getMessage());
@@ -88,15 +107,49 @@ class File extends Input
         $this->setAttr('name', $this->getHtmlName());
         $this->setAttr('id', $this->getId());
         $this->setAttr('type', $this->getType());
-        //vd($this->getValue());
-        if (is_string($this->getValue())) {
-            $this->setAttr('value', $this->getValue());
-        }
 
-        $template->insertHtml('file-notes', 'Max File Size: <b>' . \Tk\FileUtil::bytes2String($this->maxBytes, 0) . '</b><br/>');
+        if ($this->getValue()) {
+            if ($this->getViewUrl()) {
+                $template->setAttr('view', 'href', $this->getViewUrl());
+                $template->setAttr('view', 'title', 'View: ' . basename($this->getValue()));
+                $template->setVisible('view');
+            }
+            if ($this->getDeleteUrl()) {
+                $template->setAttr('delete', 'href', $this->getDeleteUrl());
+                $template->setAttr('delete', 'title', 'Delete: ' . basename($this->getValue()));
+                $template->setVisible('delete');
+            }
+        }
 
         $this->decorate($template);
 
+        $preNotes = sprintf('Max File Size: <b>%s</b><br/>', \Tk\FileUtil::bytes2String($this->maxBytes, 0));
+        $notes = $template->getVar('notes')->nodeValue;
+        $template->insertHtml('notes', $preNotes . $notes);
+
         return $template;
     }
+
+    public function getDeleteUrl(): ?Uri
+    {
+        return $this->deleteUrl;
+    }
+
+    public function setDeleteUrl(string|Uri $deleteUrl): static
+    {
+        $this->deleteUrl = Uri::create($deleteUrl);
+        return $this;
+    }
+
+    public function getViewUrl(): ?Uri
+    {
+        return $this->viewUrl;
+    }
+
+    public function setViewUrl(string|Uri $viewUrl): static
+    {
+        $this->viewUrl = Uri::create($viewUrl);
+        return $this;
+    }
+
 }

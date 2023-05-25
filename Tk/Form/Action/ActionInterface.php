@@ -17,7 +17,7 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         $this->callbackList = CallbackCollection::create();
         parent::__construct($name, $type);
-        //$this->setGroup(self::GROUP_ACTIONS);
+        $this->setValue($name);
         if ($callback) {
             $this->appendCallback($callback);
         }
@@ -71,9 +71,9 @@ abstract class ActionInterface extends Field\FieldInterface
         return $this;
     }
 
-    public function getValue(): string
-    {
-        return $this->getName();
-    }
+//    public function getValue(): string
+//    {
+//        return $this->getName();
+//    }
 
 }

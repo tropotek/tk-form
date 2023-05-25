@@ -105,6 +105,18 @@
 
     <div var="field" id="tpl-form-file">
       <label class="form-label" var="label"></label>
+      <div class="input-group mb-3">
+        <input type="file" class="form-control" var="element" />
+        <a class="btn btn-outline-secondary border-light-subtle" target="_blank" type="button" choice="view"><i class="fa fa-eye"></i></a>
+        <a class="btn btn-outline-secondary border-light-subtle" type="button" choice="delete" data-confirm="Are you sure you want to delete this file?"><i class="fa fa-trash"></i></a>
+      </div>
+      <div class="form-text" choice="file-notes"></div>
+      <div class="form-text text-secondary" var="notes"></div>
+      <div class="invalid-feedback" var="error"></div>
+    </div>
+
+    <div var="field" id="tpl-form-file-bak">
+      <label class="form-label" var="label"></label>
       <input type="file" class="form-control" var="element">
       <div class="form-text" choice="file-notes"></div>
       <div class="form-text text-secondary" var="notes"></div>
@@ -161,9 +173,13 @@
       <!-- Just here to allow us to view repeats above - ignore -->
       <div repeat="option"></div>
 
-      <a href="#" class="btn btn-secondary" var="element" id="tpl-form-link"><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
-      <button type="button" class="btn btn-secondary" var="element" id="tpl-form-button"><i choice="icon-l"></i><span var="text">Button</span><i choice="iconR"></i></button>
+      <a href="#" class="btn btn-outline-secondary" var="element" id="tpl-form-link"><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
+      <button type="button" class="btn btn-outline-secondary" var="element" id="tpl-form-button"><i choice="icon-l"></i><span var="text">Button</span><i choice="iconR"></i></button>
       <button type="submit" class="btn btn-primary" var="element" id="tpl-form-submit"><i choice="icon-l"></i><span var="text">Submit</span><i choice="iconR"></i></button>
+      <div class="btn-group" id="tpl-form-submit-exit">
+        <button type="submit" class="btn btn-outline-primary" var="exit"><i class="fa fa-caret-left"></i></button>
+        <button type="submit" class="btn btn-outline-primary" var="element"><i choice="icon-l"></i><span var="text">Submit</span><i choice="iconR"></i></button>
+      </div>
 
     </div>
 
