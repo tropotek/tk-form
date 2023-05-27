@@ -101,8 +101,10 @@ abstract class FieldInterface extends Element implements RendererInterface
         if ($this->hasError()) {
             if ($this->hasParam('error-css')) {
                 $this->addCss($this->getParam('error-css'));
+                $template->addCss('is-error', $this->getParam('error-css'));
             }
             $template->insertHtml('error', $this->getError());
+
         } else {
 //            if ($this->hasParam('valid-css')) {
 //                $this->addCss($this->getParam('valid-css'));

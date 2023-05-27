@@ -22,11 +22,6 @@ class File extends Input
      */
     protected int $maxBytes = 0;
 
-    /**
-     * @var array|UploadedFile[]
-     */
-    protected array $files = [];
-
     protected ?Uri $deleteUrl = null;
 
     protected ?Uri $viewUrl = null;
@@ -39,37 +34,31 @@ class File extends Input
             \Tk\FileUtil::string2Bytes(ini_get('post_max_size')) );
     }
 
-//    public function setValue(mixed $value): static
-//    {
-//        if (!$this->hasFile()) {
-//            $this->value = $value;
-//        }
-//        return $this;
-//    }
-
-//    /**
-//     * The value in a string/array format that can be rendered to the template
-//     * Recommended that values be PHP native types not objects, use the data mapper for complex types
-//     */
-//    public function getValue(): mixed
-//    {
-//        if ($this->hasFile()) {
-//            return $this->getUploaded();
-//        }
-//        return parent::getValue();
-//    }
-
     public function hasFile(): bool
     {
-        if ($this->isMultiple()) return (count($this->getUploaded()) > 0);
-        return is_object($this->getUploaded());
+        return (count($this->getUploaded()) > 0);
     }
 
+    /**
+     * returns an object or an array depending on the uploaded files
+     */
     public function getUploaded(): mixed
     {
         $default = null;
         if ($this->isMultiple()) $default = [];
         return $this->getRequest()->files->get($this->getName(), $default);
+    }
+
+    /**
+     * Always returns an array of uploads
+     *
+     * @return array|UploadedFile[]
+     */
+    public function getUploads(): array
+    {
+        $up = $this->getRequest()->files->get($this->getName(), []);
+        if (!is_array($up)) $up = [$up];
+        return $up;
     }
 
     /**
