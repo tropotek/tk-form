@@ -36,7 +36,7 @@ class File extends Input
 
     public function hasFile(): bool
     {
-        return (count($this->getUploaded()) > 0);
+        return (count($this->getUploads()) > 0);
     }
 
     /**
@@ -56,9 +56,9 @@ class File extends Input
      */
     public function getUploads(): array
     {
-        $up = $this->getRequest()->files->get($this->getName(), []);
-        if (!is_array($up)) $up = [$up];
-        return $up;
+        $up = $this->getRequest()->files->get($this->getName()) ?? [];
+        if (is_array($up)) return $up;
+        return [$up];
     }
 
     /**
