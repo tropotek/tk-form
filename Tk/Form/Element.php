@@ -50,7 +50,11 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
     {
         $this->form = $form;
         if (!$this->getId()) {
-            $this->setId($this->makeInstanceKey($this->getName()));
+            $id = $this->getName();
+            if (!$this instanceof Form) {
+                $id = $this->makeInstanceKey($this->getName());
+            }
+            $this->setId($id);
             $this->setLabel(self::makeLabel($this->getName()));
         }
         return $this;
@@ -92,7 +96,8 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
      */
     public function makeInstanceKey(string $key): string
     {
-        if ($this->getForm() && $this->getForm() !== $this) {
+        //if ($this->getForm() && $this->getForm() !== $this) {
+        if ($this->getForm()) {
             return $this->getForm()->getId() . '-' . $key;
         }
         return $key;
