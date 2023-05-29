@@ -195,6 +195,7 @@ class Form extends Form\Element implements FormInterface
         /** @var FieldInterface $field */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
+            if (!array_key_exists($field->getName(), $values)) continue;
             $field->setValue($values[$field->getName()] ?? '');
         }
         return $this;
