@@ -24,13 +24,12 @@ composer require ttek/tk-form
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-form": "~8.0.0"
+{
+  "require": {
+    "ttek/tk-form": "~8.0.0"
+  }
+}
 ```
-
-If you do not use Composer, you can grab the code from GitHub, and use any
-PSR-0 compatible autoloader to load the classes.
-
-
 
 
 ### TODO
