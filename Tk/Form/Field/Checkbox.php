@@ -55,6 +55,12 @@ class Checkbox extends Select
         if ($option->isSelected()) {
             $option->setAttr($option->getSelectAttr());
         }
+        if ($this->isReadonly()) {
+            $option->setAttr('readonly', 'readonly');
+        }
+        if ($this->isDisabled()) {
+            $option->setAttr('disabled', 'disabled');
+        }
         $option->setAttr('name', $this->getHtmlName());
         $option->setAttr('value', $option->getValue());
         //$option->setAttr('value', $option->getName());
