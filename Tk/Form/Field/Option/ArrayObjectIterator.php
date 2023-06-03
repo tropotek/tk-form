@@ -32,7 +32,7 @@ class ArrayObjectIterator extends ArrayIterator
     protected string $selectedPrepend = '';
 
 
-    public function __construct(array|Result $list = [], string $selectAttr = 'selected', callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = '')
+    public function __construct(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $selectAttr = 'selected', string $disableParam = '', string $labelParam = '')
     {
         if ($list instanceof Result) {
             $list = $list->toArray();
@@ -45,9 +45,9 @@ class ArrayObjectIterator extends ArrayIterator
         $this->labelParam = $labelParam;
     }
 
-    static function create(array|Result $list = [], string $selectAttr = 'selected', callable|string $textParam = 'name', callable|string $valueParam = 'id', string $disableParam = '', string $labelParam = ''): static
+    static function create(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $selectAttr = 'selected', string $disableParam = '', string $labelParam = ''): static
     {
-        return new self($list, $selectAttr, $textParam, $valueParam, $disableParam, $labelParam);
+        return new self($list, $textParam, $valueParam, $selectAttr, $disableParam, $labelParam);
     }
 
     public function setSelectedValue(string $value): static

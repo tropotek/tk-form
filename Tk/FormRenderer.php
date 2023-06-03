@@ -223,7 +223,7 @@ class FormRenderer extends Renderer
             if ($template !== $this->getTemplate()) {
                 $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $group));
                 $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('grp-' . $id));
-                $template->setAttr('fields', 'data-name', ucwords($id));
+                $template->setAttr('fields', 'data-name', $group);
                 $template->addCss('fields', 'grp-' . $id);
             }
         }
