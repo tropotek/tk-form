@@ -17,7 +17,7 @@ class Checkbox extends Select
         $this->setType(self::TYPE_CHECKBOX);
     }
 
-    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $selectAttr = 'selected'): ?Option\ArrayIterator
+    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id'): ?Option\ArrayIterator
     {
         return parent::createIterator($optionIterator, 'checked');
     }

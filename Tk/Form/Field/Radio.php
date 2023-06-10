@@ -7,7 +7,6 @@ use Tk\Form\Field\Option\ArrayIterator;
 class Radio extends Checkbox
 {
 
-
     public function __construct(string $name, null|array|Result|ArrayIterator $optionIterator = null)
     {
         parent::__construct($name, $optionIterator);
@@ -39,8 +38,5 @@ class Radio extends Checkbox
     {
         return parent::setMultiple(false);
     }
-
-
-
 
 }
