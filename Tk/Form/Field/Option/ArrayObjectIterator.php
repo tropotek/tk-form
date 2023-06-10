@@ -3,6 +3,7 @@ namespace Tk\Form\Field\Option;
 
 use Tk\Db\Mapper\Result;
 use Tk\Form\Field\Option;
+use Tk\ObjectUtil;
 
 /**
  * Use this iterator to create an option list from
@@ -74,13 +75,11 @@ class ArrayObjectIterator extends ArrayIterator
     public function current(): mixed
     {
         $obj = $this->list[$this->getKey($this->idx)];
-        $text = '';
-        $value = '';
 
-        if ( is_callable($this->valueParam) ) {
+        if (is_callable($this->valueParam)) {
             $value = call_user_func_array($this->valueParam, array($obj));
-        } else if (property_exists($obj, $this->valueParam)) {
-            $value = $obj->{$this->valueParam};
+        } else {
+            $value = ObjectUtil::getPropertyValue($obj, $this->valueParam);
         }
 
         $pre = $app = '';
@@ -89,14 +88,11 @@ class ArrayObjectIterator extends ArrayIterator
             $app = $this->selectedAppend;
         }
 
-        $method = 'get'.ucfirst($this->textParam);
-
         if (is_callable($this->textParam)) {
             $text = call_user_func_array($this->textParam, array($obj));
-        } else if ($method && method_exists($obj, $method) && is_string($obj->$method())) {
-            $text = $pre . $obj->$method() . $app;
-        } else if (property_exists($obj, $this->textParam)) {
-            $text = $pre . $obj->{$this->textParam} . $app;
+        } else {
+            $text = ObjectUtil::getPropertyValue($obj, $this->textParam);
+            $text = sprintf('%s%s%s', $pre, $text, $app);
         }
 
         $option = Option::create($text, $value, $this->getSelectAttr());

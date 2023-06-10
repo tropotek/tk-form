@@ -21,12 +21,12 @@ class Select extends FieldInterface
     protected bool $strict = false;
 
 
-    public function __construct(string $name, array|Result|ArrayIterator $optionIterator = null)
+    public function __construct(string $name, array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id')
     {
         $this->onShowOption = CallbackCollection::create();
         parent::__construct($name, self::TYPE_SELECT);
 
-        $optionIterator = $this->createIterator($optionIterator, 'selected');
+        $optionIterator = $this->createIterator($optionIterator, $nameParam, $valueParam);
 
         if ($optionIterator) {
             $this->appendOptionIterator($optionIterator);
@@ -35,18 +35,18 @@ class Select extends FieldInterface
         }
     }
 
-    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $selectAttr = 'selected'): ?Option\ArrayIterator
+    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id'): ?Option\ArrayIterator
     {
         if ($optionIterator instanceof Result) {
-            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $selectAttr);
+            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam);
         } elseif (is_array($optionIterator)) {
             $curr = current($optionIterator);
             if (is_array($curr)) {
-                $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
+                $optionIterator = new Option\ArrayArrayIterator($optionIterator);
             } elseif ($curr instanceof ModelInterface) {
-                $optionIterator = new Option\ArrayObjectIterator($optionIterator, $selectAttr);
+                $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam);
             } else {
-                $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
+                $optionIterator = new Option\ArrayIterator($optionIterator);
             }
         }
         return $optionIterator;
