@@ -70,6 +70,7 @@ class Checkbox extends Select
         $template->setAttr('label', 'for', $id);
         $option->setAttr('id', $id);
 
+        $template->setAttr('shadow', 'name', $this->getHtmlName());
         $template->setAttr('element', $option->getAttrList());
         $template->addCss('element', $option->getCssString());
     }
