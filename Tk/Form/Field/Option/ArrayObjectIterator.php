@@ -46,11 +46,6 @@ class ArrayObjectIterator extends ArrayIterator
         $this->labelParam = $labelParam;
     }
 
-    static function create(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $selectAttr = 'selected', string $disableParam = '', string $labelParam = ''): static
-    {
-        return new self($list, $textParam, $valueParam, $selectAttr, $disableParam, $labelParam);
-    }
-
     public function setSelectedValue(string $value): static
     {
         $this->selectedValue = $value;

@@ -35,18 +35,18 @@ class Select extends FieldInterface
         }
     }
 
-    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id'): ?Option\ArrayIterator
+    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'selected'): ?Option\ArrayIterator
     {
         if ($optionIterator instanceof Result) {
-            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam);
+            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
         } elseif (is_array($optionIterator)) {
             $curr = current($optionIterator);
             if (is_array($curr)) {
-                $optionIterator = new Option\ArrayArrayIterator($optionIterator);
+                $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
             } elseif ($curr instanceof ModelInterface) {
-                $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam);
+                $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
             } else {
-                $optionIterator = new Option\ArrayIterator($optionIterator);
+                $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
             }
         }
         return $optionIterator;

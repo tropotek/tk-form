@@ -31,11 +31,6 @@ class ArrayIterator implements \Iterator, \Countable
         $this->list = $list;
     }
 
-    static function create(array $list, string $selectAttr = 'selected'): static
-    {
-        return new static($list, $selectAttr);
-    }
-
     /**
      * @interface \Iterator
      */
