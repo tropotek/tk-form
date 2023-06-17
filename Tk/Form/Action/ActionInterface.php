@@ -71,6 +71,16 @@ abstract class ActionInterface extends Field\FieldInterface
         return $this;
     }
 
+    /**
+     * @todo: See if this method is really needed or is there a better way
+     *        to discover if this action is meant to be just a cancel action and
+     *        not submit the form, maybe we need a flag like canSubmit or similar?
+     */
+    public function isExit(): bool
+    {
+        return str_ends_with($this->getValue(), '-exit');
+    }
+
 //    public function getValue(): string
 //    {
 //        return $this->getName();

@@ -23,9 +23,4 @@ class SubmitExit extends Submit
 
         return $template;
     }
-
-    public function isExit(): bool
-    {
-        return str_ends_with($this->getValue(), '-exit');
-    }
 }
