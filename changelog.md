@@ -1,5 +1,21 @@
 #CHANGELOG#
 
+Ver 8.0.0 [2023-06-27]:
+-------------------------------
+  - Fix checkboxes, and add disable secret mod
+  - Added secret edit functions
+  - Add user can change own password
+  - Added maintenance and form tabs
+  - Cleaned up File object
+  - Added new alert object for flash messages
+  - implemented account recover and registration
+  - Added account recover page
+  - Added form params back in
+  - Finished basic form functionality and fields
+  - update requirements to PHP 8.1
+  - Added field group attributes to fields
+
+
 Ver 3.2.14 [2022-08-15]:
 -------------------------------
   - Added new \Bs\Form\Field\File object for \Bs\Db\File objects
