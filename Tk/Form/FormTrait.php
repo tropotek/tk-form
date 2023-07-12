@@ -4,6 +4,9 @@ namespace Tk\Form;
 use Tk\Form;
 use Tk\FormRenderer;
 
+/**
+ * @deprecated Remove once all controllers are using \Bs\Form\EditTrait
+ */
 trait FormTrait
 {
     protected ?Form $form = null;
