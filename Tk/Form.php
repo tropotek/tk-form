@@ -83,7 +83,7 @@ class Form extends Form\Element implements FormInterface
      * The values should be that from a get or post request
      * this is left up to the user to source and send through.
      */
-    public function execute(array $values = []): void
+    public function execute(array $values = []): static
     {
         // Find the triggered action
         foreach($this->getFields() as $field) {
@@ -97,7 +97,7 @@ class Form extends Form\Element implements FormInterface
 
         if (!$this->isSubmitted()) {
             $this->executeFields($values);
-            return;
+            return $this;
         }
 
         $e = new FormEvent($this);
@@ -111,6 +111,8 @@ class Form extends Form\Element implements FormInterface
 
         // get the triggered action, this also set up the form ready to fire an action if present.
         $this->getTriggeredAction()->execute($values);
+
+        return $this;
     }
 
     /**

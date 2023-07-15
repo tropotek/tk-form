@@ -26,7 +26,7 @@ abstract class ActionInterface extends Field\FieldInterface
     /**
      * Execute this events callback methods/functions
      */
-    public function execute(array $values = []): void
+    public function execute(array $values = []): static
     {
         $this->getCallbackList()->execute($this->getForm(), $this);
         if ($this->getRedirect()) {
@@ -72,8 +72,8 @@ abstract class ActionInterface extends Field\FieldInterface
     }
 
     /**
-     * @todo: See if this method is really needed or is there a better way
-     *        to discover if this action is meant to be just a cancel action and
+     * @todo: See if there is a better way to determin if a button is exiting a page or reloading the page.
+     *        discover if this action is meant to be just a cancel action and
      *        not submit the form, maybe we need a flag like canSubmit or similar?
      */
     public function isExit(): bool

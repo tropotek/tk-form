@@ -88,7 +88,7 @@ abstract class FieldInterface extends Element implements RendererInterface
      * Should be called after the form is initialised and loaded with values and before the
      * form is rendered.
      */
-    public function execute(array $values = []): void { }
+    public function execute(array $values = []): static { return $this; }
 
     /**
      * A basic common field renderer.
