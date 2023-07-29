@@ -26,7 +26,7 @@
   <!--
   Main Form container
   -->
-  <form method="post" class="tk-form row g-3" novalidate="novalidate"
+  <form method="post" class="tk-form g-3" novalidate="novalidate"
         data-opt-valid-css="is-valid"  data-opt-error-css="is-invalid"
         id="tpl-form" var="form">
 
@@ -57,7 +57,7 @@
       <span class="error text-danger" repeat="error" var="error"></span>
     </div>
 
-    <div class="tk-form-fields row g-3" var="fields"></div>
+    <div class="tk-form-fields row g-3 mt-1" var="fields"></div>
 
     <div class="tk-actions d-grid gap-2 d-md-flex" var="actions"></div>
 
@@ -76,7 +76,7 @@
     Edit these to match the design framework you are using.
     Make sure the var,choice,repeat attributes are set in the new templates as they are here
   -->
-  <div class="row g-3">
+  <div class="row">
 
     <!-- default group template if no repeat defined in the form-->
     <div class="tk-form-group row" var="fields" id="tpl-form-group"></div>

@@ -32,6 +32,7 @@ abstract class ActionInterface extends Field\FieldInterface
         if ($this->getRedirect()) {
             Uri::create($this->getRedirect())->redirect();
         }
+        return $this;
     }
 
 
