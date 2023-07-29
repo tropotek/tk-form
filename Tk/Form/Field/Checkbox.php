@@ -7,7 +7,10 @@ use Tk\Form\Field\Option\ArrayIterator;
 
 class Checkbox extends Select
 {
-
+    /**
+     * Add toggle switch classes to template
+     */
+    protected bool $switch = false;
 
     public function __construct(string $name, null|array|Result|ArrayIterator $optionIterator = null)
     {
@@ -15,6 +18,17 @@ class Checkbox extends Select
         parent::__construct($name, $optionIterator);
         if (count($optionIterator) > 1) $this->setMultiple(true);
         $this->setType(self::TYPE_CHECKBOX);
+    }
+
+    public function isSwitch(): bool
+    {
+        return $this->switch;
+    }
+
+    public function setSwitch(bool $switch): Checkbox
+    {
+        $this->switch = $switch;
+        return $this;
     }
 
     protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'checked'): ?Option\ArrayIterator
@@ -48,6 +62,10 @@ class Checkbox extends Select
 
     protected function showOption(Template $template, Option $option, string $var = 'option'): void
     {
+        if ($this->isSwitch()) {
+            $template->addCss($var, 'form-switch');
+        }
+
         if ($this->getOnShowOption()->isCallable()) {
             $b = $this->getOnShowOption()->execute($template, $option, $var);
             if ($b === false) return;
