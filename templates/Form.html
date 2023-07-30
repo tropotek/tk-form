@@ -98,9 +98,9 @@
 
     <div var="field" id="tpl-form-input-button">
       <label class="form-label" var="label"></label>
-      <div class="input-group" var="is-error input-group">
+      <div class="input-group input-group-merge" var="is-error input-group">
         <input type="file" class="form-control" var="element" />
-        <button class="btn btn-outline-secondary border-light-subtle" type="button" var="button"></button>
+        <button class="btn btn-white" type="button" var="button"></button>
       </div>
       <div class="form-text text-secondary" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
@@ -108,9 +108,9 @@
 
     <div var="field" id="tpl-form-input-link">
       <label class="form-label" var="label"></label>
-      <div class="input-group" var="is-error input-group">
+      <div class="input-group input-group-merge" var="is-error input-group">
         <input type="file" class="form-control" var="element" />
-        <a class="btn btn-outline-secondary border-light-subtle" target="_blank" type="button" var="button"></a>
+        <a class="btn btn-white" target="_blank" type="button" var="button"></a>
       </div>
       <div class="form-text" choice="file-notes"></div>
       <div class="form-text text-secondary" var="notes"></div>
@@ -126,10 +126,10 @@
 
     <div var="field" id="tpl-form-file">
       <label class="form-label" var="label"></label>
-      <div class="input-group" var="is-error">
+      <div class="input-group input-group-merge" var="is-error">
         <input type="file" class="form-control" var="element" />
-        <a class="btn btn-outline-secondary border-light-subtle" target="_blank" type="button" choice="view"><i class="fa fa-eye"></i></a>
-        <a class="btn btn-outline-secondary border-light-subtle" type="button" choice="delete" data-confirm="Are you sure you want to delete this file?"><i class="fa fa-trash"></i></a>
+        <a class="btn btn-white" target="_blank" type="button" choice="view"><i class="fa fa-eye"></i></a>
+        <a class="btn btn-white" type="button" choice="delete" data-confirm="Are you sure you want to delete this file?"><i class="fa fa-trash"></i></a>
       </div>
       <div class="form-text" choice="file-notes"></div>
       <div class="form-text text-secondary" var="notes"></div>
