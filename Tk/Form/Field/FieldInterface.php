@@ -140,7 +140,7 @@ abstract class FieldInterface extends Element implements RendererInterface
 
     /**
      * The value in a string/array format that can be rendered to the template
-     * Recommended that values be PHP native types not objects, use the data mapper for complex typess
+     * Recommended that values be PHP native types not objects, use the data mapper for complex types
      */
     public function getValue(): mixed
     {
@@ -184,11 +184,6 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $n;
     }
 
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
     /**
      * Set the type of element this is
      * However custom types are allowed, the TYPES_ constants are only common types
@@ -202,9 +197,9 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function getError(): string
+    public function getType(): string
     {
-        return $this->error;
+        return $this->type;
     }
 
     public function setError(string $error): static
@@ -213,14 +208,14 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
+    public function getError(): string
+    {
+        return $this->error;
+    }
+
     public function hasError(): bool
     {
         return !empty($this->error);
-    }
-
-    public function getOnShow(): CallbackCollection
-    {
-        return $this->onShow;
     }
 
     /**
@@ -232,17 +227,12 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
-    // Attribute helper methods
-
-    /**
-     * Does this fields data come as an array.
-     * If the name ends in [] then it will be flagged as a multiple
-     * EG: name=`name[]`
-     */
-    public function isMultiple(): bool
+    public function getOnShow(): CallbackCollection
     {
-        return $this->hasAttr('multiple');
+        return $this->onShow;
     }
+
+    // Attribute helper methods
 
     /**
      * Set to true if this element is an array set
@@ -258,9 +248,14 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function isDisabled(): bool
+    /**
+     * Does this fields data come as an array.
+     * If the name ends in [] then it will be flagged as a multiple
+     * EG: name=`name[]`
+     */
+    public function isMultiple(): bool
     {
-        return $this->hasAttr('disabled');
+        return $this->hasAttr('multiple');
     }
 
     public function setDisabled(bool $disabled = true): static
@@ -272,9 +267,9 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function isReadonly(): bool
+    public function isDisabled(): bool
     {
-        return $this->hasAttr('readonly');
+        return $this->hasAttr('disabled');
     }
 
     public function setReadonly(bool $readonly = true): static
@@ -286,9 +281,9 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function isRequired(): bool
+    public function isReadonly(): bool
     {
-        return $this->hasAttr('required');
+        return $this->hasAttr('readonly');
     }
 
     public function setRequired(bool $required = true): static
@@ -298,6 +293,17 @@ abstract class FieldInterface extends Element implements RendererInterface
         } else {
             $this->removeAttr('required');
         }
+        return $this;
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->hasAttr('required');
+    }
+
+    public function setFieldAttr(string $name, string $value): static
+    {
+        $this->fieldAttr->setAttr($name, $value);
         return $this;
     }
 
@@ -311,12 +317,6 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this->fieldAttr;
     }
 
-    public function setFieldAttr(string $name, string $value): static
-    {
-        $this->fieldAttr->setAttr($name, $value);
-        return $this;
-    }
-
     public function addFieldCss(string $css): static
     {
         $this->fieldCss->addCss($css);
@@ -326,6 +326,15 @@ abstract class FieldInterface extends Element implements RendererInterface
     public function getFieldCss(): Css
     {
         return $this->fieldCss;
+    }
+
+    public function setFieldset(string $fieldset, array $attrs = null): static
+    {
+        $this->fieldset = $fieldset;
+        if ($attrs) {
+            $this->getFieldsetAttr()->setAttr($attrs);
+        }
+        return $this;
     }
 
     public function getFieldset(): string
@@ -338,20 +347,6 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this->fieldsetAttr;
     }
 
-    public function setFieldset(string $fieldset, array $attrs = null): static
-    {
-        $this->fieldset = $fieldset;
-        if ($attrs) {
-            $this->getFieldsetAttr()->setAttr($attrs);
-        }
-        return $this;
-    }
-
-    public function getGroup(): string
-    {
-        return $this->group;
-    }
-
     public function setGroup(string $group, array $attrs = null): static
     {
         $this->group = $group;
@@ -359,6 +354,11 @@ abstract class FieldInterface extends Element implements RendererInterface
             $this->getGroupAttr()->setAttr($attrs);
         }
         return $this;
+    }
+
+    public function getGroup(): string
+    {
+        return $this->group;
     }
 
     public function getGroupAttr(): Attributes
