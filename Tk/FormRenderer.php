@@ -57,7 +57,7 @@ class FormRenderer extends Renderer
         return new static($form, $tplFile);
     }
 
-    protected function init()
+    protected function init(): void
     {
         // Setup default options.
         // These can be set in the form attributes data...
@@ -101,8 +101,7 @@ class FormRenderer extends Renderer
 
     public function buildTemplate(string $type): ?Template
     {
-        $tpl = $this->builder->getTemplate('tpl-form-' . $type);
-        return $tpl;
+        return $this->builder->getTemplate('tpl-form-' . $type);
     }
 
     public function getForm(): Form
@@ -129,21 +128,23 @@ class FormRenderer extends Renderer
     /**
      * Add CSS to every field group element in the form
      */
-    public function addFieldCss(string $css)
+    public function addFieldCss(string $css): static
     {
         foreach ($this->getForm()->getFields() as $field) {
             $field->getFieldCss()->addCss($css);
         }
+        return $this;
     }
 
     /**
      * Remove CSS from every field group element in the form
      */
-    public function removeFieldCss(string $css)
+    public function removeFieldCss(string $css): static
     {
         foreach ($this->getForm()->getFields() as $field) {
             $field->getFieldCss()->removeCss($css);
         }
+        return $this;
     }
 
 
@@ -177,7 +178,7 @@ class FormRenderer extends Renderer
     /**
      * Render Fields
      */
-    protected function showFields(Template $template)
+    protected function showFields(Template $template): void
     {
         // Build a render tree with the groups, fieldsets in the correct order
         $fields = $this->getRenderTree($this->getForm()->getFields());
@@ -252,7 +253,7 @@ class FormRenderer extends Renderer
     {
         if (!$this->hasFieldsetTemplate($fieldset, $group)) {
             $template = $this->getFieldsetTemplate($fieldset, $group);
-            if ($template != $this->getTemplate()) {
+            if ($template !== $this->getTemplate()) {
                 $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $fieldset));
                 $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('fs-' . $id));
                 $template->setAttr('fields', 'data-name', $id);
