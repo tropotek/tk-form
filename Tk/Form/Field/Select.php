@@ -18,7 +18,7 @@ class Select extends FieldInterface
     /**
      * Enable strict type checking for null, '', 0, false, etc
      */
-    protected bool $strict = true;
+    protected bool $strict = false;
 
 
     public function __construct(string $name, array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id')
