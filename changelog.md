@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.10 [2023-08-15]:
+-------------------------------
+  - Added title, first, last and display names to user obj
+
+
 Ver 8.0.8 [2023-08-09]:
 -------------------------------
   - Update data mapper objects
