@@ -10,6 +10,8 @@ namespace Tk\Form\Field;
 class CheckboxGroup extends Select
 {
 
+    protected $optionNotes = [];
+
     /**
      * @param string $name
      * @param Option\ArrayIterator $optionIterator
@@ -97,11 +99,28 @@ class CheckboxGroup extends Select
             $tOpt->setAttr('element', 'id', $this->getId() . '-' . $i);
             $tOpt->setAttr('label', 'for', $this->getId() . '-' . $i);
 
+            if (!empty($this->optionNotes[$option->getValue()])) {
+                $tOpt->setVisible('notes');
+                $tOpt->insertHtml('notes', $this->optionNotes[$option->getValue()]);
+                vd($this->optionNotes, $option->getValue());
+            }
+
             $tOpt->appendRepeat();
         }
 
         $this->decorateElement($template, 'group');
         return $template;
+    }
+
+    public function getOptionNotes(): array
+    {
+        return $this->optionNotes;
+    }
+
+    public function setOptionNotes(array $optionNotes): CheckboxGroup
+    {
+        $this->optionNotes = $optionNotes;
+        return $this;
     }
 
     /**
@@ -117,6 +136,7 @@ class CheckboxGroup extends Select
     <label var="label">
       <input type="checkbox" var="element" />
       <span var="text"></span>
+      <p class="m-0 cb-notes text-muted" choice="notes" var="notes"></p>
     </label>
   </div>
 </div>
