@@ -102,7 +102,6 @@ class CheckboxGroup extends Select
             if (!empty($this->optionNotes[$option->getValue()])) {
                 $tOpt->setVisible('notes');
                 $tOpt->insertHtml('notes', $this->optionNotes[$option->getValue()]);
-                vd($this->optionNotes, $option->getValue());
             }
 
             $tOpt->appendRepeat();
