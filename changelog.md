@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 3.2.20 [2023-09-06]:
+-------------------------------
+  - Add permission descriptions
+  - Tagging and releasing branch `3.2` with version `3.2.18`.
+  - fixed logo upload
+  - Tagging and releasing branch `3.2` with version `3.2.16`.
+
+
 Ver 3.2.18 [2023-02-07]:
 -------------------------------
   - fixed logo upload
