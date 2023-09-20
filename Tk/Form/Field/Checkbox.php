@@ -7,6 +7,9 @@ use Tk\Form\Field\Option\ArrayIterator;
 
 class Checkbox extends Select
 {
+
+    protected array $optionNotes = [];
+
     /**
      * Add toggle switch classes to template
      */
@@ -28,6 +31,17 @@ class Checkbox extends Select
     public function setSwitch(bool $switch): Checkbox
     {
         $this->switch = $switch;
+        return $this;
+    }
+
+    public function getOptionNotes(): array
+    {
+        return $this->optionNotes;
+    }
+
+    public function setOptionNotes(array $optionNotes): Checkbox
+    {
+        $this->optionNotes = $optionNotes;
         return $this;
     }
 
@@ -81,12 +95,16 @@ class Checkbox extends Select
         }
         $option->setAttr('name', $this->getHtmlName());
         $option->setAttr('value', $option->getValue());
-        //$option->setAttr('value', $option->getName());
 
         $template->setText('label', $option->getName());
         $id = $this->getId().'-'.$this->cleanName($option->getName());
         $template->setAttr('label', 'for', $id);
         $option->setAttr('id', $id);
+
+        if (!empty($this->optionNotes[$option->getValue()])) {
+            $template->setVisible('notes');
+            $template->setHtml('notes', $this->optionNotes[$option->getValue()]);
+        }
 
         $template->setAttr('shadow', 'name', $this->getHtmlName());
         $template->setAttr('element', $option->getAttrList());

@@ -2,7 +2,6 @@
 namespace Tk\Form\Action;
 
 use Tk\CallbackCollection;
-use Tk\Form;
 use Tk\Form\Field;
 use Tk\Uri;
 

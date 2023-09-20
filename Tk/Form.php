@@ -5,7 +5,6 @@ use Tk\Form\Event\FormEvent;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Traits\EventDispatcherTrait;
 
 
@@ -280,7 +279,7 @@ class Form extends Form\Element implements FormInterface
     public function appendField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
         if ($this->getFields()->has($field->getName())) {
-            throw new \Tk\Table\Exception("Field with name '{$field->getName()}' already exists.");
+            throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
         }
         $field->setForm($this);
         return $this->getFields()->append($field->getName(), $field, $refField);
@@ -289,7 +288,7 @@ class Form extends Form\Element implements FormInterface
     public function prependField(FieldInterface $field, ?string $refField = null): FieldInterface
     {
         if ($this->getFields()->has($field->getName())) {
-            throw new \Tk\Table\Exception("Field with name '{$field->getName()}' already exists.");
+            throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
         }
         $field->setForm($this);
         $this->getFields()->prepend($field->getName(), $field, $refField);
