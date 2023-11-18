@@ -1,5 +1,15 @@
 #CHANGELOG#
 
+Ver 3.2.24 [2023-11-18]:
+-------------------------------
+  - Tagging and releasing branch `3.2` with version `3.2.22`.
+  - Add permission descriptions
+  - Tagging and releasing branch `3.2` with version `3.2.20`.
+  - Tagging and releasing branch `3.2` with version `3.2.18`.
+  - fixed logo upload
+  - Tagging and releasing branch `3.2` with version `3.2.16`.
+
+
 Ver 3.2.22 [2023-09-06]:
 -------------------------------
   - Add permission descriptions
