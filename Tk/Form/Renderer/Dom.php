@@ -58,7 +58,7 @@ class Dom extends Iface
         if ($this->getForm()->getDispatcher()) {
             $e = new \Tk\Event\FormEvent($this->getForm());
             $e->set('form', $this->getForm());
-            $this->getForm()->getDispatcher()->dispatch(\Tk\Form\FormEvents::FORM_SHOW, $e);
+            $this->getForm()->getDispatcher()->dispatch($e, \Tk\Form\FormEvents::FORM_SHOW);
         }
 
         $template = $this->getTemplate();
