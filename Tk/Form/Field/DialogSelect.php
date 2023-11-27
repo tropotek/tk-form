@@ -80,9 +80,13 @@ jQuery(function($) {
     dialog.on('DialogForm:submit', function (e, data) {
       // Add the new contact/id to the select and select it
       var select = $('#' + $(this).data('formId') + ' #' + $(this).data('selectId'));
+      var text = data.name;
+      if (data.email) {
+          text += ' [' + data.email + ']';
+      }
       var option = $('<option></option>')
           .attr('selected', 'selected')
-          .text(data.name + ' (' + data.email + ')')
+          .text(text)
           //.attr('disabled', 'disabled')
           .val(data.id);
       option.appendTo(select);
