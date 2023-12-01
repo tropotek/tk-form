@@ -26,13 +26,14 @@ class Autocomplete extends Input
         $this->onAjax = Callback::create();
         parent::__construct($name);
         $this->addCss('tk-autocomplete');
+        $this->setAttr('placeholder', 'Type for suggestions...');
     }
 
     public function load($values)
     {
         $request = $this->getForm()->getRequest();
-        if ($request->has('a')) {
-            $data = $this->getOnAjax()->execute($this);
+        if ($request->get('a', '') == $this->getId()) {
+            $data = $this->getOnAjax()->execute($this, $request);
             if (is_array($data) | is_object($data)) {
                 \Tk\ResponseJson::createJson($data)->send();
                 exit();
@@ -51,7 +52,7 @@ class Autocomplete extends Input
 
     /**
      * the callback should return an array of name/value pairs to use for the autocomplete
-     *  function ($autocomplete): array|object { }
+     *  function (Autocomplete $field, \Tk\Request $request): array|object { }
      *
      * @param callable $callable
      * @param int $priority
@@ -86,26 +87,35 @@ class Autocomplete extends Input
     public function show()
     {
         $template = parent::show();
+
         $js = <<<JS
 jQuery(function ($) {
   
-  if (typeof $.autocomplete === 'undefined') {
-    return;
-  }
+  // if (typeof $.autocomplete === 'undefined') {
+  //   console.warn('jQuery-ui not installed');
+  //   return;
+  // }
   
-  var cache = {};
+  
   $('input.tk-autocomplete[type=text]').autocomplete({
     minLength: 2,
     source: function (request, response) {
+      var el = $(this.element);
       var term = request.term;
+      var cache = {};
+      if (el.data('cache')) {
+          cache = el.data('cache');
+      }
+      
       if (term in cache) {
         response(cache[term]);
         return;
       }
 
-      request.a = 'a';
+      request.a = el.attr('id');
       $.getJSON(window.document.location.href, request, function (data, status, xhr) {
         cache[term] = data;
+        el.data('cache', cache);
         response(data);
       });
     }
