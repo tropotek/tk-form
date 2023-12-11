@@ -497,7 +497,6 @@
         // Clone input field
         // --------------------------------------------------------------------------------------
 
-
         let parent = $(this).parent();
         let _input = $(this);
         let clone = _input.clone(true, true);   // No file data
@@ -580,6 +579,11 @@
       elementName = $element.data('name').replace('[]', '');
 
       $element.closest('.input-group').parent().append(table);
+
+      if ($element.prop('readonly')) {
+        $element.attr('disabled', 'disabled');
+        $('tfi-btn-input input[type=file]', $inputGroup).addClass('disabled');
+      }
 
       // Setup initial field value files
       // TODO: add this to a function so we can use an api call to get the files
