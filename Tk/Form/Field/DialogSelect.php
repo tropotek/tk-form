@@ -8,10 +8,6 @@ use Tk\Form\Field\Option\ArrayIterator;
  * Allows for a dialog with a form to be added to a select field
  *    for creating new records and selecting in one field
  *
- *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @link http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
  */
 class DialogSelect extends \Tk\Form\Field\Select
 {
@@ -96,7 +92,16 @@ jQuery(function($) {
     });
   };
   
-  $('.tk-dialog-select form').on('init', 'body', init).each(init);
+  //$('.tk-dialog-select form').on('init', 'body', init).each(init);
+  $('.tk-dialog-select form').each(init);
+  
+  // disable button if readonly or disabled
+  $('.tk-dialogselect').each(function () {
+      if ($('select', this).attr('readonly') === 'readonly' || $('select', this).attr('disabled') === 'disabled') {
+          $('.btn', this).attr('disabled', 'disabled').addClass('disabled');
+      }
+  });
+  
 });
 JS;
 
