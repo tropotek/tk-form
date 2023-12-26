@@ -33,7 +33,7 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
     public static function makeLabel(string $name): string
     {
         $label = $name;
-        $label = str_replace(array('_', '-'), ' ', $label);
+        $label = str_replace(['_', '-'], ' ', $label);
         $label = ucwords(preg_replace('/[A-Z]/', ' $0', $label));
         $label = preg_replace('/(\[\])/', '', $label);
         if (str_ends_with($label, 'Id')) {
@@ -96,7 +96,6 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
      */
     public function makeInstanceKey(string $key): string
     {
-        //if ($this->getForm() && $this->getForm() !== $this) {
         if ($this->getForm()) {
             return $this->getForm()->getId() . '-' . $key;
         }
@@ -118,7 +117,7 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
      */
     public function getId(): string
     {
-        return $this->id;
+        return $this->getAttr('id');
     }
 
     /**
@@ -154,6 +153,7 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
     {
         return $this->notes;
     }
+
 
     public function setParam(string $name, mixed $value): static
     {

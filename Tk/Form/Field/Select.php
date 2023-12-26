@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Db\Mapper\ModelInterface;
 use Tk\Db\Mapper\Result;
@@ -11,7 +10,6 @@ use Tk\Form\Field\Option\ArrayIterator;
 class Select extends FieldInterface
 {
     use OptionList;
-
 
     protected CallbackCollection $onShowOption;
 
@@ -144,55 +142,6 @@ class Select extends FieldInterface
     public function getValue(): mixed
     {
         return $this->value;
-    }
-
-
-    function show(): ?Template
-    {
-        $template = $this->getTemplate();
-
-        // Render Element
-        $this->setAttr('name', $this->getHtmlName());
-        $this->setAttr('id', $this->getId());
-        $this->setAttr('type', $this->getType());
-
-        /* @var Option $option */
-        foreach($this->getOptions() as $option) {
-            $tOpt = null;
-            if ($option instanceof OptionGroup) {
-                $tOptGroup = $template->getRepeat('optgroup');
-                $tOptGroup->setAttr('optgroup', 'label', $option->getName());
-                foreach ($option->getOptions() as $opt) {
-                    $tOpt = $tOptGroup->getRepeat('option');
-                    $this->showOption($tOpt, $opt);
-                    $tOpt->appendRepeat();
-                }
-                $tOptGroup->appendRepeat();
-            } else {
-                $tOpt = $template->getRepeat('option');
-                $this->showOption($tOpt, $option);
-                $tOpt->appendRepeat();
-            }
-        }
-
-        $this->decorate($template);
-
-        return $template;
-    }
-
-    protected function showOption(Template $template, Option $option, string $var = 'option'): void
-    {
-        if ($this->getOnShowOption()->isCallable()) {
-            $b = $this->getOnShowOption()->execute($template, $option, $var);
-            if ($b === false) return;
-        }
-        if ($option->isSelected()) {
-            $option->setAttr($option->getSelectAttr());
-        }
-
-        $template->setText($var, $option->getName());
-        $template->setAttr($var, $option->getAttrList());
-        $template->addCss($var, $option->getCssString());
     }
 
     /**

@@ -1,8 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Template;
-
 class Html extends FieldInterface
 {
 
@@ -18,16 +16,4 @@ class Html extends FieldInterface
         return $this;
     }
 
-    function show(): ?Template
-    {
-        $template = $this->getTemplate();
-
-        // Render Element
-        $this->setAttr('name', $this->getHtmlName());
-        $this->setAttr('id', $this->getId());
-        $template->insertHtml('element', $this->getValue());
-        $this->decorate($template);
-
-        return $template;
-    }
 }

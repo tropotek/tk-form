@@ -2,12 +2,11 @@
 namespace Tk\Form;
 
 use Tk\Form;
-use Tk\FormRenderer;
 
 trait FormTrait
 {
     protected ?Form $form = null;
-    protected ?FormRenderer $formRenderer;
+    protected ?Form\Renderer\Dom\Renderer $formRenderer;
 
 
     public function setForm(Form $form): static
@@ -21,13 +20,13 @@ trait FormTrait
         return $this->form;
     }
 
-    public function setFormRenderer(FormRenderer $renderer): static
+    public function setFormRenderer(Form\Renderer\Dom\Renderer $renderer): static
     {
         $this->formRenderer = $renderer;
         return $this;
     }
 
-    public function getFormRenderer(): ?FormRenderer
+    public function getFormRenderer(): ?Form\Renderer\Dom\Renderer
     {
         return $this->formRenderer;
     }

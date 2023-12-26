@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Template;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tk\FileUtil;
 use Tk\Form;
@@ -102,38 +101,6 @@ class File extends Input
         return $files;
     }
 
-    function show(): ?Template
-    {
-        $template = $this->getTemplate();
-
-        // Render Element
-        $this->setAttr('data-maxsize', $this->maxBytes);
-        $this->setAttr('name', $this->getHtmlName());
-        $this->setAttr('id', $this->getId());
-        $this->setAttr('type', $this->getType());
-
-
-        if ($this->getViewUrl()) {
-            $template->setAttr('view', 'href', $this->getViewUrl());
-            $template->setAttr('view', 'title', 'View: ' . $this->getViewUrl()->basename());
-            $template->setVisible('view');
-        }
-        if ($this->getDeleteUrl()) {
-            $template->setAttr('delete', 'href', $this->getDeleteUrl());
-            $template->setAttr('delete', 'title', 'Delete');
-            $template->setVisible('delete');
-        }
-
-
-        $this->decorate($template);
-
-        $preNotes = sprintf('Max File Size: <b>%s</b><br/>', \Tk\FileUtil::bytes2String($this->maxBytes, 0));
-        $notes = $template->getVar('notes')->nodeValue;
-        $template->insertHtml('notes', $preNotes . $notes);
-
-        return $template;
-    }
-
     public function getDeleteUrl(): ?Uri
     {
         return $this->deleteUrl;
@@ -154,6 +121,11 @@ class File extends Input
     {
         $this->viewUrl = Uri::create($viewUrl);
         return $this;
+    }
+
+    public function getMaxBytes(): int
+    {
+        return $this->maxBytes;
     }
 
 }

@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Template;
 use Tk\Ui\Attributes;
 use Tk\Ui\Css;
 
@@ -22,21 +21,22 @@ class InputButton extends Input
         $this->btnAttr = new Attributes();
         $this->btnCss = new Css();
         $this->btnText = $btnText;
+        $this->setAttr('target', '_blank');
     }
 
-    function show(): ?Template
+    public function getBtnText(): string
     {
-        $template = $this->getTemplate();
+        return $this->btnText;
+    }
 
-        if ($this->btnText) {
-            $template->appendHtml('button', $this->btnText);
-        }
-        $template->setAttr('button', $this->btnAttr->getAttrList());
-        $template->addCss('button', $this->btnCss->getCssString());
+    public function getBtnAttr(): Attributes
+    {
+        return $this->btnAttr;
+    }
 
-        parent::show();
-
-        return $template;
+    public function getBtnCss(): Css
+    {
+        return $this->btnCss;
     }
 
     public function addBtnCss(string $css): static

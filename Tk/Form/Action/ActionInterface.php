@@ -72,7 +72,7 @@ abstract class ActionInterface extends Field\FieldInterface
     }
 
     /**
-     * @todo: See if there is a better way to determin if a button is exiting a page or reloading the page.
+     * @todo: See if there is a better way to determine if a button is exiting a page or reloading the page.
      *        discover if this action is meant to be just a cancel action and
      *        not submit the form, maybe we need a flag like canSubmit or similar?
      */
@@ -80,10 +80,5 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         return str_ends_with($this->getValue(), '-exit');
     }
-
-//    public function getValue(): string
-//    {
-//        return $this->getName();
-//    }
 
 }

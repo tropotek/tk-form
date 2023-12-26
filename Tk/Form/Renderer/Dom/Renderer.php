@@ -1,20 +1,21 @@
 <?php
-namespace Tk;
+namespace Tk\Form\Renderer\Dom;
 
 use Dom\Builder;
-use Dom\Renderer\Renderer;
 use Dom\Repeat;
 use Dom\Template;
+use Tk\Exception;
 use Tk\Form\Event\FormEvent;
+use Tk\Form\Field\FieldInterface;
 use Tk\Traits\SystemTrait;
+use Tk\Form;
+use Tk\Config;
+use Tk\System;
 
 /**
- * When creating the renderer be sure to create the instance
- * only after all fields have been added to the form.
- *
- *
+ * Use the DOM template to render a form
  */
-class FormRenderer extends Renderer
+class Renderer extends \Dom\Renderer\Renderer
 {
     use SystemTrait;
 
@@ -40,19 +41,20 @@ class FormRenderer extends Renderer
     {
         $this->form = $form;
         if (!$tplFile) {
-            $tplFile = $this->makePath($this->getConfig()->get('path.template.form'));
+            $tplFile = $this->makePath($this->getConfig()->get('path.template.form.dom'));
+        }
+        if (!is_file($tplFile)) {
+            throw new Exception('Cannot read file: ' . $tplFile);
         }
         $this->builder = new Builder($tplFile);
 
-        // Putting this call here means that the form must have
-        //   all fields added before the renderer is instantiated...
         $this->init();
     }
 
     public static function createInlineRenderer(Form $form, string $tplFile = null): static
     {
         if (!$tplFile) {
-            $tplFile = System::instance()->makePath(Config::instance()->get('path.template.form.inline'));
+            $tplFile = System::instance()->makePath(Config::instance()->get('path.template.form.dom.inline'));
         }
         return new static($form, $tplFile);
     }
@@ -82,12 +84,6 @@ class FormRenderer extends Renderer
         }
 
         $this->setTemplate($this->builder->getTemplate('tpl-form'));
-        /** @var Form\Field\FieldInterface $field */
-        foreach ($this->getForm()->getFields() as $field) {
-            $field->replaceParams($this->getParams());
-            if ($field->hasTemplate()) continue;
-            $field->setTemplate($this->buildFieldTemplate($field->getType()));
-        }
     }
 
     public function buildFieldTemplate(string $type): Template
@@ -160,13 +156,15 @@ class FormRenderer extends Renderer
         $this->showFields($template);
 
         // Set form attrs
-        $template->setAttr('form' ,$this->getForm()->getAttrList());
+        $list = $this->getForm()->getAttrList();
+        //unset($list['name']); // remove name from the attrs as the form does not need it
+        $template->setAttr('form', $list);
         $template->addCss('form', $this->getForm()->getCssList());
 
         // Show form errors
         foreach ($this->getForm()->getErrors() as $error) {
             $r = $template->getRepeat('error');
-            $r->insertHtml('error', $error);
+            $r->setHtml('error', $error);
             $r->appendRepeat();
             $template->setVisible('errors');
         }
@@ -205,16 +203,32 @@ class FormRenderer extends Renderer
                 }
             } else {
                 foreach ($children as $field) {
+                    $tpl = $this->showField($field);
+                    if (!$tpl) continue;
+
                     if ($field instanceof Form\Field\Hidden) {
-                        $template->prependTemplate('form',  $field->show());
+                        $template->prependTemplate('form',  $tpl);
                     } else if ($field instanceof Form\Action\ActionInterface) {
-                        $template->appendTemplate('actions', $field->show());
+                        $template->appendTemplate('actions', $tpl);
                     } else {
-                        $template->appendTemplate('fields', $field->show());
+                        $template->appendTemplate('fields', $tpl);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Render Fields
+     */
+    protected function showField(FieldInterface $field): ?Template
+    {
+        $template = $this->buildFieldTemplate($field->getType());
+        //$field->replaceParams($this->getParams());      // TODO: do we need this, would be good to deprecate field params
+
+        $renderer = FieldRendererInterface::createRenderer($field, $this);
+        $renderer->setTemplate($template);
+        return $renderer->show();
     }
 
     protected function showGroup(array $fields, string $group): Template
@@ -242,7 +256,8 @@ class FormRenderer extends Renderer
                     }
                 }
             } else {
-                $template->appendTemplate('fields', $children->show());
+                $ftpl = $this->showField($children);
+                if ($ftpl) $template->appendTemplate('fields', $ftpl);
             }
         }
 
@@ -269,7 +284,9 @@ class FormRenderer extends Renderer
         /** @var Form\Field\FieldInterface $field */
         foreach ($fields as $field) {
             $template->setAttr('fields', $field->getFieldsetAttr()->getAttrList());
-            $template->appendTemplate('fields', $field->show());
+            $ftpl = $this->showField($field);
+            if ($ftpl) $template->appendTemplate('fields', $ftpl);
+            //$template->appendTemplate('fields', $field->show());
         }
 
         return $template;

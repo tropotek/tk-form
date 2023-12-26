@@ -1,17 +1,13 @@
 <?php
 namespace Tk\Form\Field;
 
-use Dom\Renderer\RendererInterface;
-use Dom\Renderer\Traits\RendererTrait;
-use Dom\Template;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
 use Tk\Ui\Attributes;
 use Tk\Ui\Css;
 
-abstract class FieldInterface extends Element implements RendererInterface
+abstract class FieldInterface extends Element
 {
-    use RendererTrait;
 
     /**
      * Some basic element types
@@ -90,43 +86,6 @@ abstract class FieldInterface extends Element implements RendererInterface
      */
     public function execute(array $values = []): static { return $this; }
 
-    /**
-     * A basic common field renderer.
-     */
-    protected function decorate(Template $template): Template
-    {
-        if ($this->getNotes()) {
-            $template->insertHtml('notes', $this->getNotes());
-        }
-        if ($this->hasError()) {
-            if ($this->hasParam('error-css')) {
-                $this->addCss($this->getParam('error-css'));
-                $template->addCss('is-error', $this->getParam('error-css'));
-            }
-            $template->insertHtml('error', $this->getError());
-
-        } else {
-//            if ($this->hasParam('valid-css')) {
-//                $this->addCss($this->getParam('valid-css'));
-//            }
-        }
-
-        $this->getOnShow()->execute($this, $template);
-
-        // Add any attributes
-        $template->addCss('field', $this->getFieldCss()->getCssList());
-        $template->setAttr('field', $this->getFieldAttr()->getAttrList());
-        $template->setAttr('element', $this->getAttrList());
-        $template->addCss('element', $this->getCssList());
-
-        // Render Label
-        if($this->getLabel()) {
-            $template->setText('label', $this->getLabel());
-            $template->setAttr('label', 'for', $this->getId());
-            $template->setVisible('label');
-        }
-        return $template;
-    }
 
     /**
      * The value in a string format that can be rendered to the template
@@ -169,6 +128,7 @@ abstract class FieldInterface extends Element implements RendererInterface
             $n = substr($n, 0, -2);
         }
         parent::setName($n);
+        $this->setAttr('name', $this->getHtmlName());
         return $this;
     }
 
@@ -194,12 +154,14 @@ abstract class FieldInterface extends Element implements RendererInterface
     public function setType(string $type): static
     {
         $this->type = $type;
+        $this->setAttr('type', $type);
         return $this;
     }
 
     public function getType(): string
     {
-        return $this->type;
+        //return $this->type;
+        return $this->getAttr('type');
     }
 
     public function setError(string $error): static
@@ -366,7 +328,7 @@ abstract class FieldInterface extends Element implements RendererInterface
         return $this->groupAttr;
     }
 
-    protected function cleanName(string $str, string $replace = '-'): string
+    public function cleanName(string $str, string $replace = '-'): string
     {
         return preg_replace('/[^a-z0-9]/i', $replace, $str);
     }

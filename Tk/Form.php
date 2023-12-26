@@ -21,7 +21,7 @@ use Tk\Traits\EventDispatcherTrait;
  * </code>
  *
  */
-class Form extends Form\Element implements FormInterface
+class Form extends Form\Element
 {
     use EventDispatcherTrait;
 
@@ -47,6 +47,7 @@ class Form extends Form\Element implements FormInterface
         $this->fields = new Collection();
         $this->setDispatcher($this->getFactory()->getEventDispatcher());
         $this->setName($formId);
+        $this->setId($formId);
         $this->setForm($this);
         $this->setAttr('method', self::METHOD_POST);
         $this->setAttr('action', Uri::create());
@@ -72,7 +73,7 @@ class Form extends Form\Element implements FormInterface
         }
         if ($instances[$id] > 0) $id = $id.'-'.$instances[$id];
         $this->id = $id;
-        $this->setAttr('id', $this->getId());
+        $this->setAttr('id', $id);
         return $this;
     }
 
