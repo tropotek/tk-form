@@ -96,10 +96,23 @@ jQuery(function($) {
   $('.tk-dialog-select form').each(init);
   
   // disable button if readonly or disabled
-  $('.tk-dialogselect').each(function () {
-      if ($('select', this).attr('readonly') === 'readonly' || $('select', this).attr('disabled') === 'disabled') {
-          $('.btn', this).attr('disabled', 'disabled').addClass('disabled');
+  $('.tk-dialogselect').each(function () { 
+      var select = $('select', this);
+      var btn = $('.btn', this);
+      
+      if (select.attr('readonly') === 'readonly' || select.attr('disabled') === 'disabled') {
+          btn.prop('disabled', true).addClass('disabled');
+      } else {
+          btn.prop('disabled', false).removeClass('disabled');
       }
+      
+      // TODO: Would be nice if we could watch for an event when the disabled prop is changed
+      select.on('disable', function() {
+          btn.prop('disabled', true).addClass('disabled');
+      }).on('enable', function() {
+          btn.prop('disabled', false).removeClass('disabled');
+      });
+           
   });
   
 });
