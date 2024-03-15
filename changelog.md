@@ -1,5 +1,19 @@
 #CHANGELOG#
 
+Ver 3.2.28 [2024-03-15]:
+-------------------------------
+  - disable pathcase client contact field when no company selected
+  - Tagging and releasing branch `3.2` with version `3.2.26`.
+  - Implemented company and contact objects and tables
+  - Tagging and releasing branch `3.2` with version `3.2.24`.
+  - Tagging and releasing branch `3.2` with version `3.2.22`.
+  - Add permission descriptions
+  - Tagging and releasing branch `3.2` with version `3.2.20`.
+  - Tagging and releasing branch `3.2` with version `3.2.18`.
+  - fixed logo upload
+  - Tagging and releasing branch `3.2` with version `3.2.16`.
+
+
 Ver 3.2.26 [2023-12-19]:
 -------------------------------
   - Implemented company and contact objects and tables
