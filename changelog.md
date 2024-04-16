@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.0.14 [2024-04-16]:
+-------------------------------
+  - move template paths
+  - Added new Dom and Std form renderers
+
+
 Ver 8.0.12 [2023-09-28]:
 -------------------------------
   - Some template updates
