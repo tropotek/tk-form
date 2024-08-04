@@ -41,7 +41,6 @@ abstract class FieldRendererInterface implements RendererInterface
             $template->setVisible('notes');
         }
         if ($field->hasError()) {
-                vd($this->getFormRenderer()->getParam('error-css'));
             if ($this->getFormRenderer()->getParam('error-css')) {
                 $field->addCss($this->getFormRenderer()->getParam('error-css'));
                 $template->addCss('is-error', $this->getFormRenderer()->getParam('error-css'));

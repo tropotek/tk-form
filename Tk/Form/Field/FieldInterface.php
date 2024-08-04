@@ -4,7 +4,7 @@ namespace Tk\Form\Field;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
 use Tk\Ui\Attributes;
-use Tk\Ui\Css;
+use Tt\DataMap\DataTypeInterface;
 
 abstract class FieldInterface extends Element
 {
@@ -39,6 +39,8 @@ abstract class FieldInterface extends Element
 
     protected string $error = '';
 
+    private ?DataTypeInterface $dataType = null;
+
     protected CallbackCollection $onShow;
 
     /**
@@ -46,29 +48,20 @@ abstract class FieldInterface extends Element
      */
     protected Attributes $fieldAttr;
 
-    /**
-     * Css that affect the outer field parent template element
-     */
-    protected Css $fieldCss;
-
     protected string $fieldset = '';
 
     protected Attributes $fieldsetAttr;
 
-    /**
-     * The group name could relate to a tab group, column group, etc
-     * It will be up to the renderer where these are placed.
-     * You may need to build a custom render to place the fields where you need them
-     */
     protected string $group = '';
 
     protected Attributes $groupAttr;
+
+    protected ?bool $requested = null;
 
 
     public function __construct(string $name, string $type = 'text')
     {
         $this->fieldAttr    = new Attributes();
-        $this->fieldCss     = new Css();
         $this->groupAttr    = new Attributes();
         $this->fieldsetAttr = new Attributes();
         $this->onShow       = new CallbackCollection();
@@ -87,8 +80,23 @@ abstract class FieldInterface extends Element
     public function execute(array $values = []): static { return $this; }
 
 
+    public function getDataType(): ?DataTypeInterface
+    {
+        return $this->dataType;
+    }
+
+    public function setDataType(string|DataTypeInterface $dataType): FieldInterface
+    {
+        if (is_string($dataType)) {
+            $dataType = new $dataType($this->getName());
+        }
+        $this->dataType = $dataType;
+        return $this;
+    }
+
+
     /**
-     * The value in a string format that can be rendered to the template
+     * Set the form native value type
      * Recommended that values be PHP native types not objects, use the data mapper for complex types
      */
     public function setValue(mixed $value): static
@@ -98,12 +106,28 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * The value in a string/array format that can be rendered to the template
+     * The value returned from the form
      * Recommended that values be PHP native types not objects, use the data mapper for complex types
      */
     public function getValue(): mixed
     {
         return $this->value;
+    }
+
+    /**
+     * did the value exist in the recent request
+     * value only valid after form execution
+     * null = request not executed yet
+     */
+    public function isRequested(): ?bool
+    {
+        return $this->requested;
+    }
+
+    public function setRequested(?bool $requested): FieldInterface
+    {
+        $this->requested = $requested;
+        return $this;
     }
 
     /**
@@ -281,13 +305,13 @@ abstract class FieldInterface extends Element
 
     public function addFieldCss(string $css): static
     {
-        $this->fieldCss->addCss($css);
+        $this->fieldAttr->addCss($css);
         return $this;
     }
 
-    public function getFieldCss(): Css
+    public function getFieldCss(): Attributes
     {
-        return $this->fieldCss;
+        return $this->fieldAttr;
     }
 
     public function setFieldset(string $fieldset, array $attrs = null): static
@@ -309,6 +333,11 @@ abstract class FieldInterface extends Element
         return $this->fieldsetAttr;
     }
 
+    /**
+     * The group name could relate to a tab group, column group, etc
+     * It will be up to the renderer where these are placed.
+     * You may need to build a custom render to place the fields where you need them
+     */
     public function setGroup(string $group, array $attrs = null): static
     {
         $this->group = $group;

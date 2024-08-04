@@ -6,6 +6,7 @@ use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\FormEvents;
 use Tk\Traits\EventDispatcherTrait;
+use Tt\DataMap\Form\Value;
 
 
 /**
@@ -35,7 +36,7 @@ class Form extends Form\Element
 
     protected string $id = '';
 
-    protected Collection $fields;
+    protected array $fields = [];
 
     protected ?ActionInterface $triggeredAction = null;
 
@@ -44,7 +45,6 @@ class Form extends Form\Element
 
     public function __construct(string $formId = 'form', string $charset = 'UTF-8')
     {
-        $this->fields = new Collection();
         $this->setDispatcher($this->getFactory()->getEventDispatcher());
         $this->setName($formId);
         $this->setId($formId);
@@ -159,13 +159,9 @@ class Form extends Form\Element
         return $e;
     }
 
-    /**
-     * Adds field error message.
-     */
     public function addFieldError(string $fieldName, string $msg = ''): static
     {
-        /** @var FieldInterface $field */
-        $field = $this->getFields()->get($fieldName);
+        $field = $this->getField($fieldName);
         $field?->setError($msg);
         return $this;
     }
@@ -179,7 +175,7 @@ class Form extends Form\Element
     public function addFieldErrors(array $errors): static
     {
         foreach ($errors as $fieldName => $errorList) {
-            $field = $this->getFields()->get($fieldName);
+            $field = $this->getField($fieldName);
             if ($field) {
                 $field->setError($errorList);
             }
@@ -197,7 +193,11 @@ class Form extends Form\Element
         /** @var FieldInterface $field */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
-            if (!array_key_exists($field->getName(), $values)) continue;
+            if (!array_key_exists($field->getName(), $values)) {
+                $field->setRequested(false);
+                continue;
+            }
+            $field->setRequested(true);
             $field->setValue($values[$field->getName()]);
         }
         return $this;
@@ -205,6 +205,8 @@ class Form extends Form\Element
 
     /**
      * This will return an array of the field's values,
+     * $search can be a regex string to filter value keys using preg_match()
+     * or it can be an array of field names that will be returned
      */
     public function getFieldValues(string|array|null $search = null): array
     {
@@ -231,6 +233,43 @@ class Form extends Form\Element
         }
         return $array;
     }
+
+    /**
+     * return an array of field native values from an object
+     * use DataTypeInterface objects to convert values
+     *
+     * @todo This should be moved to a parent level form object (FormModel ? )
+     *       when we refactor to make \Tk\Form a standalone lib
+     */
+    public function unmapValues(object $object): array
+    {
+        $vals = [];
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ActionInterface) continue;
+            $type = $field->getDataType() ?? new Value($field->getName());
+            $vals[$field->getName()] = $type->getColumnValue($object);
+        }
+        return $vals;
+    }
+
+    /**
+     * load an object with field values mapped to their complex types
+     *
+     * @todo This should be moved to a parent level form object (FormModel ? )
+     *       when we refactor to make \Tk\Form a standalone lib
+     */
+    public function mapValues(object &$object): static
+    {
+        $values = $this->getFieldValues();
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ActionInterface) continue;
+            if (!$field->isRequested()) continue;
+            $type = $field->getDataType() ?? new Value($field->getName());
+            $type->loadObject($object, $values);
+        }
+        return $this;
+    }
+
 
     /**
      * This is called after new data loaded into the fields
@@ -277,71 +316,76 @@ class Form extends Form\Element
         return $this->getTriggeredAction() != null;
     }
 
-    public function appendField(FieldInterface $field, ?string $refField = null): FieldInterface
+    public function appendField(FieldInterface $field, string $refField = ''): FieldInterface
     {
-        if ($this->getFields()->has($field->getName())) {
+        if ($this->getField($field->getName())) {
             throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
         }
         $field->setForm($this);
-        return $this->getFields()->append($field->getName(), $field, $refField);
-    }
 
-    public function prependField(FieldInterface $field, ?string $refField = null): FieldInterface
-    {
-        if ($this->getFields()->has($field->getName())) {
-            throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
+        $ref = $this->getField($refField);
+        if ($ref instanceof FieldInterface) {
+            $a = [];
+            foreach ($this->fields as $k => $v) {
+                $a[$k] = $v;
+                if ($k === $refField) $a[$field->getName()] = $field;
+            }
+            $this->fields = $a;
+        } else {
+            $this->fields[$field->getName()] = $field;
         }
-        $field->setForm($this);
-        $this->getFields()->prepend($field->getName(), $field, $refField);
         return $field;
     }
 
-    /**
-     * Remove a field from the form
-     */
+    public function prependField(FieldInterface $field, string $refField = ''): FieldInterface
+    {
+        if ($this->getField($field->getName())) {
+            throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
+        }
+        $field->setForm($this);
+
+        $ref = $this->getField($refField);
+        if ($ref instanceof FieldInterface) {
+            $a = [];
+            foreach ($this->fields as $k => $v) {
+                if ($k === $refField) $a[$field->getName()] = $field;
+                $a[$k] = $v;
+            }
+            $this->fields = $a;
+        } else {
+            $this->fields = [$field->getName() => $field] + $this->fields;
+        }
+        return $field;
+    }
+
     public function removeField(string $fieldName): ?FieldInterface
     {
-        $field = $this->getFields()->get($fieldName);
-        $this->getFields()->remove($fieldName);
+        $field = $this->getField($fieldName);
+        if (array_key_exists($fieldName, $this->fields)) {
+            unset($this->fields[$fieldName]);
+        }
         return $field;
     }
 
-    /**
-     * Return a field object or null if not found
-     */
     public function getField(string $fieldName): ?FieldInterface
     {
-        return $this->getFields()->get($fieldName);
+        return $this->fields[$fieldName] ?? null;
     }
 
-    /**
-     * Get the field list Collection
-     * @return Collection | Form\Field\FieldInterface[]
-     */
-    public function getFields(): Collection
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    /**
-     * Returns a form field value. Returns NULL if no field exists
-     */
     public function getFieldValue(string $fieldName): mixed
     {
-        $field = $this->getFields()->get($fieldName);
-        if ($field) {
-            return $field->getValue();
-        }
-        return null;
+        $field = $this->getField($fieldName);
+        return $field?->getValue();
     }
 
-    /**
-     * Sets the value of an element type.
-     */
-    public function setFieldValue($fieldName, $value): ?FieldInterface
+    public function setFieldValue(string $fieldName, mixed $value): ?FieldInterface
     {
-        /** @var FieldInterface $field */
-        $field = $this->getFields()->get($fieldName);
+        $field = $this->getField($fieldName);
         $field?->setValue($value);
         return $field;
     }

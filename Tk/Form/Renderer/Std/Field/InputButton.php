@@ -14,7 +14,7 @@ class InputButton extends FieldRendererInterface
 
         $data = $this->decorate($data);
 
-        $data['buttonCss'] = $field->getBtnCss()->getCssString();
+        $data['buttonCss'] = $field->getBtnAttr()->getCssString();
         $data['buttonAttrs'] = $field->getBtnAttr()->getAttrString();
 
         $data['buttonText'] = '';
@@ -29,5 +29,5 @@ class InputButton extends FieldRendererInterface
 
         return $this->getTemplate()->parse($data);
     }
-    
+
 }

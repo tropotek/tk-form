@@ -2,7 +2,6 @@
 namespace Tk\Form\Field;
 
 use Tk\Ui\Traits\AttributesTrait;
-use Tk\Ui\Traits\CssTrait;
 
 /**
  * @see http://www.w3schools.com/tags/tag_option.asp
@@ -10,7 +9,6 @@ use Tk\Ui\Traits\CssTrait;
 class Option
 {
     use AttributesTrait;
-    use CssTrait;
 
     protected string $name = '';
 
