@@ -74,7 +74,7 @@ abstract class FieldInterface extends Element
 
     /**
      * Called by the parent form when the request is executed.
-     * Should be called after the form is initialised and loaded with values and before the
+     * Called after the form is initialized and loaded with values and before the
      * form is rendered.
      */
     public function execute(array $values = []): static { return $this; }

@@ -31,10 +31,6 @@ class Submit extends FieldRendererInterface
                 ];
             }
         }
-//        else {
-//            // this removed HTMX bug with tags in the button???
-//            $template->setText('element', $field->getLabel());
-//        }
 
         $field->getOnShow()?->execute($field);
 
@@ -43,5 +39,5 @@ class Submit extends FieldRendererInterface
 
         return $this->getTemplate()->parse($data);
     }
-    
+
 }

@@ -4,7 +4,7 @@ namespace Tk\Form;
 use Tk\Form;
 use Tk\InstanceKey;
 
-abstract class Element extends \Tk\Ui\Element implements InstanceKey
+abstract class Element extends \Tk\Ui\Element
 {
 
     protected ?Form $form = null;
@@ -52,7 +52,7 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
         if (!$this->getId()) {
             $id = $this->getName();
             if (!$this instanceof Form) {
-                $id = $this->makeInstanceKey($this->getName());
+                $id = $this->makeRequestKey($this->getName());
             }
             $this->setId($id);
             $this->setLabel(self::makeLabel($this->getName()));
@@ -89,15 +89,15 @@ abstract class Element extends \Tk\Ui\Element implements InstanceKey
     /**
      * Create request keys with prepended string
      *
-     * returns: `{formId}-{$key}`
+     * returns: `{formId}_{$key}`
      *
      * The form->id is used as the instance key and must exist
      *   otherwise the key is returned unmodified.
      */
-    public function makeInstanceKey(string $key): string
+    public function makeRequestKey(string $key): string
     {
         if ($this->getForm()) {
-            return $this->getForm()->getId() . '-' . $key;
+            return $this->getForm()->getId() . '_' . $key;
         }
         return $key;
     }

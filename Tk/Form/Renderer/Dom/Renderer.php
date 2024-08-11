@@ -237,7 +237,7 @@ class Renderer extends \Dom\Renderer\Renderer
             $template = $this->getGroupTemplate($group);
             if ($template !== $this->getTemplate()) {
                 $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $group));
-                $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('grp-' . $id));
+                $template->setAttr('fields', 'id', $this->getForm()->makeRequestKey('grp-' . $id));
                 $template->setAttr('fields', 'data-name', $group);
                 $template->addCss('fields', 'grp-' . $id);
             }
@@ -270,7 +270,7 @@ class Renderer extends \Dom\Renderer\Renderer
             $template = $this->getFieldsetTemplate($fieldset, $group);
             if ($template !== $this->getTemplate()) {
                 $id = strtolower(preg_replace('/[^a-z0-9]/i', '-', $fieldset));
-                $template->setAttr('fields', 'id', $this->getForm()->makeInstanceKey('fs-' . $id));
+                $template->setAttr('fields', 'id', $this->getForm()->makeRequestKey('fs-' . $id));
                 $template->setAttr('fields', 'data-name', $id);
                 $template->addCss('fields', 'fs-' . $id);
             }

@@ -8,55 +8,51 @@ use Tk\Form\FormEvents;
 use Tk\Traits\EventDispatcherTrait;
 use Tt\DataMap\Form\Value;
 
-
 /**
- * The dynamic form processor
+ * TODO: document using the form
  *
- * `enctype` Attribute Values:
- * <code>
- *              Value                    |                 Description
- * --------------------------------------|---------------------------------------
- *  application/x-www-form-urlencoded    |  All characters are encoded before sent (this is default)
- *  multipart/form-data                  |  No characters are encoded. This value is required when you are using forms that have a file upload control
- *  text/plain                           |  Spaces are converted to "+" symbols, but no special characters are encoded
- * </code>
+ *
  *
  */
 class Form extends Form\Element
 {
     use EventDispatcherTrait;
 
+    public static string $CHARSET   = 'UTF-8';
+
+    // All characters are encoded before sent (this is default)
     const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
+    // No characters are encoded. This value is required when you are using forms that have a file upload control
     const ENCTYPE_MULTIPART         = 'multipart/form-data';
+    // Spaces are converted to "+" symbols, but no special characters are encoded
     const ENCTYPE_PLAIN             = 'text/plain';
 
     const METHOD_POST               = 'post';
     const METHOD_GET                = 'get';
+    const METHOD_PUT                = 'put';
+    const METHOD_DELETE             = 'delete';
 
-
-    protected string $id = '';
-
-    protected array $fields = [];
+    protected string $id      = '';
+    protected array  $fields  = [];
+    protected array  $errors  = [];
 
     protected ?ActionInterface $triggeredAction = null;
 
-    protected array $errors = [];
 
-
-    public function __construct(string $formId = 'form', string $charset = 'UTF-8')
+    public function __construct(string $formId = 'form')
     {
         $this->setDispatcher($this->getFactory()->getEventDispatcher());
         $this->setName($formId);
         $this->setId($formId);
         $this->setForm($this);
-        $this->setAttr('method', self::METHOD_POST);
-        $this->setAttr('action', Uri::create());
-        $this->setAttr('accept-charset', $charset);
+        $this->setMethod(self::METHOD_POST);
+        $this->setAction(Uri::create());
+        $this->setAttr('accept-charset', self::$CHARSET);
     }
 
-    public static function create(string $formId = 'form', string $charset = 'UTF-8'): static
+    public static function create(string $formId = 'form'): static
     {
-        return new static($formId, $charset);
+        return new static($formId);
     }
 
     /**
@@ -109,8 +105,8 @@ class Form extends Form\Element
         $e = new FormEvent($this);
         $this->getDispatcher()?->dispatch($e, FormEvents::FORM_SUBMIT);
 
-        // get the triggered action, this also set up the form ready to fire an action if present.
-        $this->getTriggeredAction()->execute($values);
+        // get the triggered Form event action and execute callbacks if present.
+        $this->getTriggeredAction()?->execute($values);
 
         return $this;
     }
@@ -176,9 +172,7 @@ class Form extends Form\Element
     {
         foreach ($errors as $fieldName => $errorList) {
             $field = $this->getField($fieldName);
-            if ($field) {
-                $field->setError($errorList);
-            }
+            $field?->setError($errorList);
         }
         return $this;
     }
@@ -210,28 +204,39 @@ class Form extends Form\Element
      */
     public function getFieldValues(string|array|null $search = null): array
     {
-        $array = [];
+        $values = [];
+
         /* @var $field FieldInterface */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
-            if ($search) {
-                if (is_string($search) && !preg_match($search, $field->getName())) {
-                    continue;
-                } else if (is_array($search) && !in_array($field->getName(), $search)) {
-                    continue;
-                }
-            }
             $value = $field->getValue();
-
             if (!$field->isMultiple() && is_array($value)) {
                 foreach ($value as $k => $v) {  // pull values out if the element is not an array
-                    $array[$k] = $v;
+                    $values[$k] = $v;
                 }
             } else {
-                $array[$field->getName()] = $value;
+                $values[$field->getName()] = $value;
             }
         }
-        return $array;
+
+        // filter results
+        if (!is_null($search)) {
+            $a = [];
+            if (is_string($search)) {
+                foreach ($values as $k => $v) {
+                    if (!preg_match($search, $k)) continue;
+                    $a[$k] = $v;
+                }
+            } elseif (is_array($search)) {
+                foreach ($values as $k => $v) {
+                    if (!in_array($k, $search)) continue;
+                    $a[$k] = $v;
+                }
+            }
+            $values = $a;
+        }
+
+        return $values;
     }
 
     /**
@@ -390,4 +395,21 @@ class Form extends Form\Element
         return $field;
     }
 
+    public function setMethod(string $method): static
+    {
+        $this->setAttr('method', $method);
+        return $this;
+    }
+
+    public function setAction(string|Uri $url): static
+    {
+        $this->setAttr('action', $url);
+        return $this;
+    }
+
+    public function setEncType(string $enctype): static
+    {
+        $this->setAttr('enctype', $enctype);
+        return $this;
+    }
 }
