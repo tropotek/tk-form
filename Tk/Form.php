@@ -263,7 +263,7 @@ class Form extends Form\Element
      * @todo This should be moved to a parent level form object (FormModel ? )
      *       when we refactor to make \Tk\Form a standalone lib
      */
-    public function mapValues(object &$object): static
+    public function mapValues(object $object): static
     {
         $values = $this->getFieldValues();
         foreach ($this->getFields() as $field) {
