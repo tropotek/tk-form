@@ -15,12 +15,12 @@ class Textarea extends FieldRendererInterface
         $this->getField()->removeAttr('type');
 
         if (!is_array($this->getField()->getValue()) && !is_object($this->getField()->getValue())) {
-            $template->setText('element', $this->getField()->getValue());
+            $template->setText('element', strval($this->getField()->getValue()));
         }
 
         $this->decorate();
 
         return $template;
     }
-    
+
 }
