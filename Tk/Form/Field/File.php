@@ -29,8 +29,10 @@ class File extends Input
     public function __construct(string $name)
     {
         parent::__construct($name, self::TYPE_FILE);
-        $this->maxBytes = min( \Tk\FileUtil::string2Bytes(ini_get('upload_max_filesize')),
-            \Tk\FileUtil::string2Bytes(ini_get('post_max_size')) );
+        $this->maxBytes = min(
+            \Tk\FileUtil::string2Bytes(ini_get('upload_max_filesize')),
+            \Tk\FileUtil::string2Bytes(ini_get('post_max_size'))
+        );
     }
 
     public function hasFile(): bool
@@ -41,23 +43,24 @@ class File extends Input
     /**
      * returns an object or an array depending on the uploaded files
      */
-    public function getUploaded(): mixed
+    public function getUploaded(): ?array
     {
-        $default = null;
-        if ($this->isMultiple()) $default = [];
-        return $this->getRequest()->files->get($this->getName(), $default);
+        //$default = null;
+        //if ($this->isMultiple()) $default = [];
+        //vd($_FILES, $this->getRequest()->files->all());
+        //return $this->getRequest()->files->get($this->getName(), $default);
+        return $_FILES[$this->getName()] ?? null;
     }
 
     /**
      * Always returns an array of uploads
-     *
-     * @return array|UploadedFile[]
      */
     public function getUploads(): array
     {
-        $up = $this->getRequest()->files->get($this->getName()) ?? [];
-        if (is_array($up)) return $up;
-        return [$up];
+        //$up = $this->getRequest()->files->get($this->getName()) ?? [];
+        $up = $_FILES[$this->getName()] ?? [];
+        if (isset($up['name'])) return [$up];
+        return $up;
     }
 
     /**
@@ -75,7 +78,18 @@ class File extends Input
      * The file names will be what the original uploaded file name was.
      *
      * Any existing files will be overwritten.
-     * Returns an array of file path locations or a single path when not mutiple
+     * Returns an array of file path locations or a single path when not multiple
+     *
+     * Array[1] (
+     *   [file] => Array[6] (
+     *     [name] => 'filename.csv'
+     *     [full_path] => 'filename.csv'
+     *     [type] => 'text/csv'
+     *     [tmp_name] => '/tmp/php0DLsG5'
+     *     [error] => 0
+     *     [size] => 29221
+     *   )
+     * )
      *
      * @param string $filename (optional) Only used in single file upload mode
      */
@@ -86,14 +100,18 @@ class File extends Input
             FileUtil::mkdir($path);
             if ($this->isMultiple()) {
                 $files = [];
-                foreach ($this->getUploaded() as $uploadedFile) {
-                    $uploadedFile->move($path, $uploadedFile->getClientOriginalName());
-                    $files[] = $path . '/' . $uploadedFile->getClientOriginalName();
+                foreach ($this->getUploaded() as $file) {
+                    move_uploaded_file($file['tmp_name'], "$path/{$file['name']}");
+                    $files[] = $path . '/' . $file['name'];
+                    //$uploadedFile->move($path, $uploadedFile->getClientOriginalName());
+                    //$files[] = $path . '/' . $uploadedFile->getClientOriginalName();
                 }
             } else {
                 $files = '';
-                $uploadedFile = $this->getUploaded();
-                $files = $uploadedFile->move($path, $filename ?: $uploadedFile->getClientOriginalName());
+                $file = $this->getUploaded();
+                if (empty($filename)) $filename = $file['name'];
+                move_uploaded_file($file['tmp_name'], "$path/$filename");
+                //$files = $uploadedFile->move($path, $filename ?: $uploadedFile->getClientOriginalName());
             }
         } catch (\Exception $e) {
             $this->setError($e->getMessage());
