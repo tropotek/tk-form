@@ -6,6 +6,7 @@ use Tk\Db\Mapper\ModelInterface;
 use Tk\Db\Mapper\Result;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option\ArrayIterator;
+use Tt\DbModel;
 
 class Select extends FieldInterface
 {
@@ -41,7 +42,7 @@ class Select extends FieldInterface
             $curr = current($optionIterator);
             if (is_array($curr)) {
                 $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
-            } elseif ($curr instanceof ModelInterface) {
+            } elseif ($curr instanceof DbModel || $curr instanceof ModelInterface) {
                 $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
             } else {
                 $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
