@@ -13,6 +13,7 @@ class Select extends FieldRendererInterface
     function show(): ?Template
     {
         $template = $this->getTemplate();
+        $this->getField()->removeAttr('type');
 
         /* @var Option $option */
         foreach($this->getField()->getOptions() as $option) {
@@ -44,13 +45,10 @@ class Select extends FieldRendererInterface
             $b = $this->getField()->getOnShowOption()->execute($template, $option, $var);
             if ($b === false) return;
         }
-        if ($option->isSelected()) {
-            $option->setAttr($option->getSelectAttr());
-        }
 
         $template->setText($var, $option->getName());
         $template->setAttr($var, $option->getAttrList());
         $template->addCss($var, $option->getCssString());
     }
-    
+
 }

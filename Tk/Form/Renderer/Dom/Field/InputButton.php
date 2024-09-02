@@ -18,6 +18,11 @@ class InputButton extends FieldRendererInterface
         $template->setAttr('button', $this->getField()->getBtnAttr()->getAttrList());
         $template->addCss('button', $this->getField()->getBtnAttr()->getCssString());
 
+        // Render Element
+        if (!(is_array($this->getField()->getValue()) || is_object($this->getField()->getValue()))) {
+            $this->getField()->setAttr('value', $this->getField()->getValue() ?? '');
+        }
+
         $this->decorate();
 
         return $template;

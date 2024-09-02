@@ -193,6 +193,7 @@ class Form extends Form\Element
             }
             $field->setRequested(true);
             $field->setValue($values[$field->getName()]);
+
         }
         return $this;
     }
@@ -252,7 +253,9 @@ class Form extends Form\Element
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             $type = $field->getDataType() ?? new Value($field->getName());
-            $vals[$field->getName()] = $type->getColumnValue($object);
+            if ($type->hasProperty($object)) {
+                $vals[$field->getName()] = $type->getColumnValue($object);
+            }
         }
         return $vals;
     }
