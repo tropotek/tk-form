@@ -28,7 +28,7 @@ class Select extends FieldInterface
         $optionIterator = $this->createIterator($optionIterator, $nameParam, $valueParam);
 
         if ($optionIterator) {
-            $this->appendOptionIterator($optionIterator);
+            $this->setOptionIterator($optionIterator);
         } else {
             throw new Exception('Invalid optionIterator.');
         }
@@ -56,8 +56,9 @@ class Select extends FieldInterface
         return new static($name, $optionIterator);
     }
 
-    public function appendOptionIterator(Option\ArrayIterator $optionIterator): static
+    public function setOptionIterator(Option\ArrayIterator $optionIterator): static
     {
+        $this->setOptions([]);
         foreach($optionIterator as $option) {
             $this->append($option);
         }
