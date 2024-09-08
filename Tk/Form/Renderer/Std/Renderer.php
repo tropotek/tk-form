@@ -40,7 +40,7 @@ class Renderer
     {
         $this->form = $form;
         if (!$tplFile) {
-            $tplFile = $this->makePath($this->getConfig()->get('path.template.form.std'));
+            $tplFile = dirname(__DIR__, 4) . '/templates/bs5_std.php';
         }
 
         if (!is_file($tplFile)) {
@@ -53,7 +53,7 @@ class Renderer
     public static function createInlineRenderer(Form $form, string $tplFile = null): static
     {
         if (!$tplFile) {
-            $tplFile = System::instance()->makePath(Config::instance()->get('path.template.form.std.inline'));
+            $tplFile = dirname(__DIR__, 4) . '/templates/bs5_std_inline.php';
         }
         return new static($form, $tplFile);
     }

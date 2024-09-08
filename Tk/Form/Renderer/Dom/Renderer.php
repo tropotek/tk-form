@@ -41,7 +41,7 @@ class Renderer extends \Dom\Renderer\Renderer
     {
         $this->form = $form;
         if (!$tplFile) {
-            $tplFile = $this->makePath($this->getConfig()->get('path.template.form.dom'));
+            $tplFile = dirname(__DIR__, 4) . '/templates/bs5_dom.html';
         }
         if (!is_file($tplFile)) {
             throw new Exception('Cannot read file: ' . $tplFile);
@@ -54,7 +54,7 @@ class Renderer extends \Dom\Renderer\Renderer
     public static function createInlineRenderer(Form $form, string $tplFile = null): static
     {
         if (!$tplFile) {
-            $tplFile = System::instance()->makePath(Config::instance()->get('path.template.form.dom.inline'));
+            $tplFile = dirname(__DIR__, 4) . '/templates/bs5_dom_inline.html';
         }
         return new static($form, $tplFile);
     }
