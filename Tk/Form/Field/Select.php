@@ -2,11 +2,9 @@
 namespace Tk\Form\Field;
 
 use Tk\CallbackCollection;
-use Tk\Db\Mapper\ModelInterface;
-use Tk\Db\Mapper\Result;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option\ArrayIterator;
-use Tt\DbModel;
+use Tk\Db\Model;
 
 class Select extends FieldInterface
 {
@@ -20,7 +18,7 @@ class Select extends FieldInterface
     protected bool $strict = false;
 
 
-    public function __construct(string $name, array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id')
+    public function __construct(string $name, array|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id')
     {
         $this->onShowOption = CallbackCollection::create();
         parent::__construct($name, self::TYPE_SELECT);
@@ -34,15 +32,13 @@ class Select extends FieldInterface
         }
     }
 
-    protected function createIterator(array|Result|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'selected'): ?Option\ArrayIterator
+    protected function createIterator(array|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'selected'): ?Option\ArrayIterator
     {
-        if ($optionIterator instanceof Result) {
-            $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
-        } elseif (is_array($optionIterator)) {
+        if (is_array($optionIterator)) {
             $curr = current($optionIterator);
             if (is_array($curr)) {
                 $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
-            } elseif ($curr instanceof DbModel || $curr instanceof ModelInterface) {
+            } elseif ($curr instanceof Model) {
                 $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
             } else {
                 $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
@@ -51,7 +47,7 @@ class Select extends FieldInterface
         return $optionIterator;
     }
 
-    public static function createSelect(string $name, array|Result|ArrayIterator $optionIterator = null): static
+    public static function createSelect(string $name, array|ArrayIterator $optionIterator = null): static
     {
         return new static($name, $optionIterator);
     }

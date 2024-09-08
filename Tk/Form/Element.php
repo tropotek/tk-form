@@ -2,7 +2,6 @@
 namespace Tk\Form;
 
 use Tk\Form;
-use Tk\InstanceKey;
 
 abstract class Element extends \Tk\Ui\Element
 {

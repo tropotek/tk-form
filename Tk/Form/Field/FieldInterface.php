@@ -4,7 +4,7 @@ namespace Tk\Form\Field;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
 use Tk\Ui\Attributes;
-use Tt\DataMap\DataTypeInterface;
+use Tk\DataMap\DataTypeInterface;
 
 abstract class FieldInterface extends Element
 {
