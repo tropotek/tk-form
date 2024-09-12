@@ -7,17 +7,13 @@ use Dom\Template;
 use Tk\Exception;
 use Tk\Form\Event\FormEvent;
 use Tk\Form\Field\FieldInterface;
-use Tk\Traits\SystemTrait;
 use Tk\Form;
-use Tk\Config;
-use Tk\System;
 
 /**
  * Use the DOM template to render a form
  */
 class Renderer extends \Dom\Renderer\Renderer
 {
-    use SystemTrait;
 
     /**
      * Constants for field render tree
@@ -149,8 +145,8 @@ class Renderer extends \Dom\Renderer\Renderer
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
         $template = $this->getTemplate();
 
-        $e = new FormEvent($this->getForm());
-        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
+//        $e = new FormEvent($this->getForm());
+//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
 
         // Show all fields
         $this->showFields($template);
@@ -169,7 +165,7 @@ class Renderer extends \Dom\Renderer\Renderer
             $template->setVisible('errors');
         }
 
-        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
+//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
         return $template;
     }
 

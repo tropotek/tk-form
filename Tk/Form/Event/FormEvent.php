@@ -4,6 +4,10 @@ namespace Tk\Form\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 use Tk\Form;
 
+
+/**
+ * @deprecated To be removed
+ */
 class FormEvent extends Event
 {
 

@@ -5,10 +5,7 @@ use Tk\CurlyTemplate;
 use Tk\Exception;
 use Tk\Form\Event\FormEvent;
 use Tk\Form\Field\FieldInterface;
-use Tk\Traits\SystemTrait;
 use Tk\Form;
-use Tk\Config;
-use Tk\System;
 
 /**
  * When creating the renderer be sure to create the instance
@@ -16,7 +13,6 @@ use Tk\System;
  */
 class Renderer
 {
-    use SystemTrait;
 
     /**
      * Constants for field render tree
@@ -64,8 +60,8 @@ class Renderer
      */
     function show(): string
     {
-        $e = new FormEvent($this->getForm());
-        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
+//        $e = new FormEvent($this->getForm());
+//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
 
         $this->params += $this->formTemplates['form']['options'] ?? [];
 
@@ -86,7 +82,7 @@ class Renderer
         // Show all fields
         $data = $data + $this->showFields();
 
-        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
+//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
 
         $html = $ctForm->parse($data);
         $script = $this->formTemplates['form']['script'] ?? '';

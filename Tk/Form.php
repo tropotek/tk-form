@@ -1,11 +1,8 @@
 <?php
 namespace Tk;
 
-use Tk\Form\Event\FormEvent;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
-use Tk\Form\FormEvents;
-use Tk\Traits\EventDispatcherTrait;
 use Tk\DataMap\Form\Value;
 
 /**
@@ -16,7 +13,6 @@ use Tk\DataMap\Form\Value;
  */
 class Form extends Form\Element
 {
-    use EventDispatcherTrait;
 
     public static string $CHARSET   = 'UTF-8';
 
@@ -41,7 +37,6 @@ class Form extends Form\Element
 
     public function __construct(string $formId = 'form')
     {
-        $this->setDispatcher($this->getFactory()->getEventDispatcher());
         $this->setName($formId);
         $this->setId($formId);
         $this->setForm($this);
@@ -96,14 +91,15 @@ class Form extends Form\Element
             return $this;
         }
 
-        $e = new FormEvent($this);
-        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
+        // todo implement our own event system for the form
+//        $e = new FormEvent($this);
+//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
 
         $this->setFieldValues($values);
         $this->executeFields($values);
 
-        $e = new FormEvent($this);
-        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_SUBMIT);
+//        $e = new FormEvent($this);
+//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_SUBMIT);
 
         // get the triggered Form event action and execute callbacks if present.
         $this->getTriggeredAction()?->execute($values);
