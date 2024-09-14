@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.18 [2024-09-14]:
+-------------------------------
+  - Move Factory update System and registry
+
+
 Ver 8.0.16 [2024-09-08]:
 -------------------------------
   - Update libs with new table object
