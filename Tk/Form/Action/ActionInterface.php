@@ -29,6 +29,9 @@ abstract class ActionInterface extends Field\FieldInterface
     {
         $this->getCallbackList()->execute($this->getForm(), $this);
         if ($this->getRedirect()) {
+            if (!$this->getForm()->hasErrors()) {
+                $this->getForm()->clearCsrf();
+            }
             Uri::create($this->getRedirect())->redirect();
         }
         return $this;

@@ -1,9 +1,11 @@
 <?php
 namespace Tk;
 
+use Tk\Db\Session;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\DataMap\Form\Value;
+use Tk\Form\Field\Hidden;
 
 /**
  * TODO: document using the form
@@ -28,6 +30,8 @@ class Form extends Form\Element
     const METHOD_PUT                = 'put';
     const METHOD_DELETE             = 'delete';
 
+    const CSRF_TOKEN                = '_csrf_token';
+
     protected string $id      = '';
     protected array  $fields  = [];
     protected array  $errors  = [];
@@ -43,6 +47,15 @@ class Form extends Form\Element
         $this->setMethod(self::METHOD_POST);
         $this->setAction(Uri::create());
         $this->setAttr('accept-charset', self::$CHARSET);
+
+        if (!Session::instance()->has($this->getCsrfId())) {
+            $token = md5(uniqid());
+            if (function_exists('openssl_random_pseudo_bytes')) {
+                $token = md5(openssl_random_pseudo_bytes(16));
+            }
+            Session::instance()->set($this->getCsrfId(), $token, 60*15);
+        }
+        $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
     }
 
     public static function create(string $formId = 'form'): static
@@ -95,6 +108,14 @@ class Form extends Form\Element
 //        $e = new FormEvent($this);
 //        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
 
+        // validate csrf_token
+        if (strtolower($_SERVER['REQUEST_METHOD']) == self::METHOD_POST) {
+            $token = trim(Session::instance()->get($this->getCsrfId(), ''));
+            if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
+                $this->addError('Form submission error. Please try again.');
+            }
+        }
+
         $this->setFieldValues($values);
         $this->executeFields($values);
 
@@ -105,6 +126,17 @@ class Form extends Form\Element
         $this->getTriggeredAction()?->execute($values);
 
         return $this;
+    }
+
+    public function clearCsrf(): static
+    {
+        Session::instance()->remove($this->getId().self::CSRF_TOKEN);
+        return $this;
+    }
+
+    public function getCsrfId(): string
+    {
+        return $this->getId().self::CSRF_TOKEN;
     }
 
     /**
