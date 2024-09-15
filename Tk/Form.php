@@ -1,22 +1,14 @@
 <?php
 namespace Tk;
 
-use Tk\DataMap\Form\Text;
 use Tk\Db\Model;
 use Tk\Db\Session;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\Field\Hidden;
 
-/**
- * TODO: document using the form
- *
- *
- *
- */
 class Form extends Form\Element
 {
-
     public static string $CHARSET   = 'UTF-8';
 
     // All characters are encoded before sent (this is default)
