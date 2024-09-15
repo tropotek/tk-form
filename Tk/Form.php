@@ -1,10 +1,11 @@
 <?php
 namespace Tk;
 
+use Tk\DataMap\Form\Text;
+use Tk\Db\Model;
 use Tk\Db\Session;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
-use Tk\DataMap\Form\Value;
 use Tk\Form\Field\Hidden;
 
 /**
@@ -30,7 +31,9 @@ class Form extends Form\Element
     const METHOD_PUT                = 'put';
     const METHOD_DELETE             = 'delete';
 
+    const CSRF_TTL                  = 60*15;    // secs
     const CSRF_TOKEN                = '_csrf_token';
+    const FORM_ID                   = '_formid';
 
     protected string $id      = '';
     protected array  $fields  = [];
@@ -47,15 +50,6 @@ class Form extends Form\Element
         $this->setMethod(self::METHOD_POST);
         $this->setAction(Uri::create());
         $this->setAttr('accept-charset', self::$CHARSET);
-
-        if (!Session::instance()->has($this->getCsrfId())) {
-            $token = md5(uniqid());
-            if (function_exists('openssl_random_pseudo_bytes')) {
-                $token = md5(openssl_random_pseudo_bytes(16));
-            }
-            Session::instance()->set($this->getCsrfId(), $token, 60*15);
-        }
-        $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
     }
 
     public static function create(string $formId = 'form'): static
@@ -89,43 +83,153 @@ class Form extends Form\Element
      */
     public function execute(array $values = []): static
     {
+        // add csrf token
+        if ($this->getMethod() == self::METHOD_POST) {
+            if (!Session::instance()->has($this->getCsrfId())) {
+                $token = md5(uniqid());
+                if (function_exists('openssl_random_pseudo_bytes')) {
+                    $token = md5(openssl_random_pseudo_bytes(16));
+                }
+                Session::instance()->set($this->getCsrfId(), $token, self::CSRF_TTL);
+            }
+            $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
+            $this->appendField(new Hidden(self::FORM_ID, $this->getId()));
+        }
+
         // Find the triggered action
-        foreach($this->getFields() as $field) {
-            if (!$field instanceof ActionInterface) continue;
-            if (array_key_exists($field->getId(), $values)) {
-                $this->triggeredAction = $field;
-                $this->triggeredAction->setValue($values[$field->getId()]);
-                break;
+        if ($this->getMethod() == self::METHOD_POST) {
+            foreach ($this->getFields() as $field) {
+                if (!$field instanceof ActionInterface) continue;
+                if (array_key_exists($field->getId(), $values)) {
+                    $this->triggeredAction = $field;
+                    $this->triggeredAction->setValue($values[$field->getId()]);
+                    break;
+                }
             }
         }
 
-        if (!$this->isSubmitted()) {
+        if (!$this->isSubmitted() || $_REQUEST[self::FORM_ID] != $this->getId()) {
             $this->executeFields($values);
             return $this;
         }
 
-        // todo implement our own event system for the form
-//        $e = new FormEvent($this);
-//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_LOAD_REQUEST);
-
         // validate csrf_token
-        if (strtolower($_SERVER['REQUEST_METHOD']) == self::METHOD_POST) {
+        if ($this->getMethod() == self::METHOD_POST) {
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
             if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
-                $this->addError('Form submission error. Please try again.');
+                $this->addError('Form submission error. Reload page and try again.');
             }
         }
 
         $this->setFieldValues($values);
         $this->executeFields($values);
 
-//        $e = new FormEvent($this);
-//        $this->getDispatcher()?->dispatch($e, FormEvents::FORM_SUBMIT);
-
         // get the triggered Form event action and execute callbacks if present.
         $this->getTriggeredAction()?->execute($values);
 
         return $this;
+    }
+
+
+    public function mapModel(Model $object): static
+    {
+        $values = $this->getFieldValues();
+        $map = $object::getFormMap();
+        $map->loadObject($object, $values);
+        return $this;
+    }
+
+    public function unmapModel(Model $object): array
+    {
+        $map = $object::getFormMap();
+        $values = [];
+        $map->loadArray($values, $object);
+        return $values;
+    }
+
+    /**
+     * Loads the fields with values from the array.
+     * EG:
+     *   $array['field1'] = 'value1';
+     */
+    public function setFieldValues(array $values): static
+    {
+        /** @var FieldInterface $field */
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ActionInterface) continue;
+            if (!array_key_exists($field->getName(), $values)) {
+                $field->setRequested(false);
+                continue;
+            }
+            $field->setRequested(true);
+            $field->setValue($values[$field->getName()]);
+
+        }
+        return $this;
+    }
+
+    /**
+     * This will return an array of the field's values,
+     * $search can be a regex string to filter value keys using preg_match()
+     * or it can be an array of field names that will be returned
+     */
+    public function getFieldValues(string|array|null $search = null): array
+    {
+        $values = [];
+
+        /* @var $field FieldInterface */
+        foreach ($this->getFields() as $field) {
+            // remove values from array
+            if ($field->isReadonly() || $field->isDisabled()) continue;
+            if (!$field->isRequested()) continue;
+
+            $value = $field->getValue();
+            if (!$field->isMultiple() && is_array($value)) {
+                foreach ($value as $k => $v) {
+                    $values[$k] = $v;
+                }
+            } else {
+                $values[$field->getName()] = $value;
+            }
+        }
+
+        // filter results using supplied filter param
+        if (!is_null($search)) {
+            $a = [];
+            if (is_string($search)) {
+                foreach ($values as $k => $v) {
+                    if (!preg_match($search, $k)) continue;
+                    $a[$k] = $v;
+                }
+            } elseif (is_array($search)) {
+                foreach ($values as $k => $v) {
+                    if (!in_array($k, $search)) continue;
+                    $a[$k] = $v;
+                }
+            }
+            $values = $a;
+        }
+
+        return $values;
+    }
+
+    /**
+     * Get the field event to execute
+     *
+     * This will only return a valid value <b>after</b> the
+     *   execute() method has been called.
+     */
+    public function getTriggeredAction(): ?ActionInterface
+    {
+        return $this->triggeredAction;
+    }
+
+    /**
+     * Check if the form has been submitted
+     */
+    public function isSubmitted(): bool
+    {
+        return $this->getTriggeredAction() != null;
     }
 
     public function clearCsrf(): static
@@ -140,7 +244,7 @@ class Form extends Form\Element
     }
 
     /**
-     * Does this form contain errors
+     * returns true on field and form errors
      */
     public function hasErrors(): bool
     {
@@ -206,108 +310,6 @@ class Form extends Form\Element
     }
 
     /**
-     * Loads the fields with values from the array.
-     * EG:
-     *   $array['field1'] = 'value1';
-     */
-    public function setFieldValues(array $values): static
-    {
-        /** @var FieldInterface $field */
-        foreach ($this->getFields() as $field) {
-            if ($field instanceof ActionInterface) continue;
-            if (!array_key_exists($field->getName(), $values)) {
-                $field->setRequested(false);
-                continue;
-            }
-            $field->setRequested(true);
-            $field->setValue($values[$field->getName()]);
-
-        }
-        return $this;
-    }
-
-    /**
-     * This will return an array of the field's values,
-     * $search can be a regex string to filter value keys using preg_match()
-     * or it can be an array of field names that will be returned
-     */
-    public function getFieldValues(string|array|null $search = null): array
-    {
-        $values = [];
-
-        /* @var $field FieldInterface */
-        foreach ($this->getFields() as $field) {
-            if ($field instanceof ActionInterface) continue;
-            $value = $field->getValue();
-            if (!$field->isMultiple() && is_array($value)) {
-                foreach ($value as $k => $v) {  // pull values out if the element is not an array
-                    $values[$k] = $v;
-                }
-            } else {
-                $values[$field->getName()] = $value;
-            }
-        }
-
-        // filter results
-        if (!is_null($search)) {
-            $a = [];
-            if (is_string($search)) {
-                foreach ($values as $k => $v) {
-                    if (!preg_match($search, $k)) continue;
-                    $a[$k] = $v;
-                }
-            } elseif (is_array($search)) {
-                foreach ($values as $k => $v) {
-                    if (!in_array($k, $search)) continue;
-                    $a[$k] = $v;
-                }
-            }
-            $values = $a;
-        }
-
-        return $values;
-    }
-
-    /**
-     * return an array of field native values from an object
-     * use DataTypeInterface objects to convert values
-     *
-     * @todo This should be moved to a parent level form object (FormModel ? )
-     *       when we refactor to make \Tk\Form a standalone lib
-     */
-    public function unmapValues(object $object): array
-    {
-        $vals = [];
-        foreach ($this->getFields() as $field) {
-            if ($field instanceof ActionInterface) continue;
-            $type = $field->getDataType() ?? new Value($field->getName());
-            if ($type->hasProperty($object)) {
-                $vals[$field->getName()] = $type->getColumnValue($object);
-            }
-        }
-        return $vals;
-    }
-
-    /**
-     * load an object with field values mapped to their complex types
-     *
-     * @todo This should be moved to a parent level form object (FormModel ? )
-     *       when we refactor to make \Tk\Form a standalone lib
-     */
-    public function mapValues(object $object): static
-    {
-        $values = $this->getFieldValues();
-        foreach ($this->getFields() as $field) {
-            if ($field instanceof ActionInterface) continue;
-            if (!$field->isRequested()) continue;
-            $type = $field->getDataType() ?? new Value($field->getName());
-            $type->loadObject($object, $values);
-        }
-        return $this;
-    }
-
-
-    /**
      * This is called after new data loaded into the fields
      */
     protected function executeFields(array $values): static
@@ -331,25 +333,6 @@ class Form extends Form\Element
             if ($field instanceof ActionInterface) $list[] = $field;
         }
         return $list;
-    }
-
-    /**
-     * Get the field event to execute
-     *
-     * This will only return a valid value <b>after</b> the
-     *   execute() method has been called.
-     */
-    public function getTriggeredAction(): ?ActionInterface
-    {
-        return $this->triggeredAction;
-    }
-
-    /**
-     * Check if the form has been submitted
-     */
-    public function isSubmitted(): bool
-    {
-        return $this->getTriggeredAction() != null;
     }
 
     public function appendField(FieldInterface $field, string $refField = ''): FieldInterface
@@ -426,16 +409,31 @@ class Form extends Form\Element
         return $field;
     }
 
+    public function getMethod(): string
+    {
+        return $this->getAttr('method', self::METHOD_POST);
+    }
+
     public function setMethod(string $method): static
     {
         $this->setAttr('method', $method);
         return $this;
     }
 
+    public function getAction(): string
+    {
+        return $this->getAttr('action', '');
+    }
+
     public function setAction(string|Uri $url): static
     {
         $this->setAttr('action', $url);
         return $this;
+    }
+
+    public function getEncType(): string
+    {
+        return $this->getAttr('enctype', '');
     }
 
     public function setEncType(string $enctype): static

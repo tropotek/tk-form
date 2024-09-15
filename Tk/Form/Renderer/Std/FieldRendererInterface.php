@@ -46,8 +46,6 @@ abstract class FieldRendererInterface
             if ($this->getFormRenderer()->getParam('error-css')) {
                 $field->getFieldCss()->addCss($this->getFormRenderer()->getParam('error-css'));
                 $field->addCss($this->getFormRenderer()->getParam('error-css'));
-                //$data['fieldCss'] = $this->getFormRenderer()->getParam('error-css') . ' ';
-                //$data['fieldAttrs'] = $this->getFormRenderer()->getParam('error-css') . ' ';
             }
             $data['errorBlock'][] = [
                 'error' => $field->getError()
@@ -109,7 +107,6 @@ abstract class FieldRendererInterface
         if (!class_exists($rendererClass)) {
             $rendererClass = 'Tk\Form\Renderer\Std\Field\Input';
         }
-        //vd($field::class, $fieldNS, $fieldClass, $rendererClass);
 
         return new $rendererClass($field, $formRenderer);
 

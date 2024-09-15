@@ -33,30 +33,20 @@ abstract class FieldInterface extends Element
     const GROUP_ACTIONS = 'actions';
 
 
-    protected mixed $value = '';
-
-    protected string $type = '';
-
-    protected string $error = '';
-
-    private ?DataTypeInterface $dataType = null;
-
-    protected CallbackCollection $onShow;
+    protected string|array $value = '';
+    protected string $type        = '';
+    protected string $error       = '';
+    protected string $group       = '';
+    protected string $fieldset    = '';
+    protected ?bool  $requested   = null;  // was this element passed in the request string
 
     /**
-     * attributes that affect the outer field parent template element
+     * attributes that affect the outer parent elements
      */
-    protected Attributes $fieldAttr;
-
-    protected string $fieldset = '';
-
-    protected Attributes $fieldsetAttr;
-
-    protected string $group = '';
-
-    protected Attributes $groupAttr;
-
-    protected ?bool $requested = null;
+    protected Attributes $fieldAttr;    // input parent element attrs
+    protected Attributes $fieldsetAttr; // fieldset element attrs
+    protected Attributes $groupAttr;    // group/tab element attrs
+    protected CallbackCollection $onShow;
 
 
     public function __construct(string $name, string $type = 'text')
@@ -73,50 +63,27 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * Called by the parent form when the request is executed.
-     * Called after the form is initialized and loaded with values and before the
-     * form is rendered.
+     * Called by the form when executed with a request/values array.
      */
     public function execute(array $values = []): static { return $this; }
 
 
-    public function getDataType(): ?DataTypeInterface
-    {
-        return $this->dataType;
-    }
-
-    public function setDataType(string|DataTypeInterface $dataType): FieldInterface
-    {
-        if (is_string($dataType)) {
-            $dataType = new $dataType($this->getName());
-        }
-        $this->dataType = $dataType;
-        return $this;
-    }
-
-
     /**
-     * Set the form native value type
-     * Recommended that values be PHP native types not objects, use the data mapper for complex types
+     * the value can be an array for a radio/checkbox group or select field
      */
-    public function setValue(mixed $value): static
+    public function setValue(string|array $value): static
     {
         $this->value = $value;
         return $this;
     }
 
-    /**
-     * The value returned from the form
-     * Recommended that values be PHP native types not objects, use the data mapper for complex types
-     */
-    public function getValue(): mixed
+    public function getValue(): string|array
     {
         return $this->value;
     }
 
     /**
-     * did the value exist in the recent request
-     * value only valid after form execution
+     * does value exist in the recent executed request
      * null = request not executed yet
      */
     public function isRequested(): ?bool
@@ -184,8 +151,7 @@ abstract class FieldInterface extends Element
 
     public function getType(): string
     {
-        //return $this->type;
-        return $this->getAttr('type');
+        return $this->getAttr('type', '');
     }
 
     public function setError(string $error): static

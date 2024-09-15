@@ -137,7 +137,7 @@ class Select extends FieldInterface
     /**
      * The value in a string format
      */
-    public function getValue(): mixed
+    public function getValue(): string|array
     {
         return $this->value;
     }
@@ -152,8 +152,7 @@ class Select extends FieldInterface
      */
     public static function arrayToSelectList(array $arr, bool $modify = true): array
     {
-        //$arr = array('test', 'twoWord', 'three_word_test', 'another test');
-        $new = array();
+        $new = [];
         foreach ($arr  as $v) {
             $n = $v;
             if ($modify) {

@@ -1,13 +1,12 @@
 <?php
 namespace Tk\Form\Field;
 
-use Tk\Db\Mapper\Result;
 use Tk\Form\Field\Option\ArrayIterator;
 
 class Radio extends Checkbox
 {
 
-    public function __construct(string $name, null|array|Result|ArrayIterator $optionIterator = null)
+    public function __construct(string $name, null|array|ArrayIterator $optionIterator = null)
     {
         parent::__construct($name, $optionIterator);
         $this->setType(self::TYPE_RADIO);

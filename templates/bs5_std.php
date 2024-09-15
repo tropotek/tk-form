@@ -29,18 +29,20 @@ $fieldTemplates['form'] = [
     'template' => <<<HTML
       <form class="tk-form g-3 {css}" {attrs}>
         {hidden}
-    
+
         {errors}
           <div class="tk-form-errors row">
-            {error}
-              <span class="error text-danger">{message}</span>
-            {/error}
+            <p>
+              {error}
+                <span class="error text-danger">{message}</span>
+              {/error}
+            </p>
           </div>
         {/errors}
-        
+
         <div class="tk-form-fields row g-3 mt-1">{fields}</div>
         <div class="tk-actions d-grid gap-2 d-md-flex mt-2">{actions}</div>
-        
+
       </form>
     HTML,
 ];
@@ -129,7 +131,7 @@ $fieldTemplates['tpl-form-file'] = [
         {labelBlock}
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
-        
+
         <div class="input-group input-group-merge {inputGroupCss}" {inputGroupAttrs}>
           <input class="form-control {css}" {attrs}/>
           {viewBlock}
@@ -139,7 +141,7 @@ $fieldTemplates['tpl-form-file'] = [
             <a class="btn btn-white" href="{deleteUrl}" title="Delete" data-confirm="Are you sure you want to delete this file?" {deleteAttrs}><i class="fa fa-trash"></i></a>
           {/deleteBlock}
         </div>
-        
+
         {noteBlock}
           <div class="form-text text-secondary">{notes}</div>
         {/noteBlock}

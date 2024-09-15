@@ -5,17 +5,16 @@ use Tk\Form\Field\Option\ArrayIterator;
 
 class Checkbox extends Select
 {
-
-    protected array $optionNotes = [];
-
     /**
      * Add toggle switch classes to template
      */
-    protected bool $switch = false;
+    protected bool  $switch      = false;
+    protected array $optionNotes = [];
+
 
     public function __construct(string $name, null|array|ArrayIterator $optionIterator = null)
     {
-        if (!$optionIterator) $optionIterator = [1];
+        if (!$optionIterator) $optionIterator = ['' => '1'];
         parent::__construct($name, $optionIterator);
         if (count($optionIterator) > 1) $this->setMultiple(true);
         $this->setType(self::TYPE_CHECKBOX);

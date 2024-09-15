@@ -24,8 +24,6 @@ class Checkbox extends FieldRendererInterface
 
         $this->decorate();
 
-        // TODO: use the first option as the for attribute for the group label
-
         return $template;
     }
 

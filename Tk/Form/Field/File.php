@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tk\FileUtil;
 use Tk\Form;
 use Tk\Uri;
@@ -45,10 +44,6 @@ class File extends Input
      */
     public function getUploaded(): ?array
     {
-        //$default = null;
-        //if ($this->isMultiple()) $default = [];
-        //vd($_FILES, $this->getRequest()->files->all());
-        //return $this->getRequest()->files->get($this->getName(), $default);
         return $_FILES[$this->getName()] ?? null;
     }
 
@@ -57,7 +52,6 @@ class File extends Input
      */
     public function getUploads(): array
     {
-        //$up = $this->getRequest()->files->get($this->getName()) ?? [];
         $up = $_FILES[$this->getName()] ?? [];
         if (isset($up['name'])) return [$up];
         return $up;
@@ -103,15 +97,12 @@ class File extends Input
                 foreach ($this->getUploaded() as $file) {
                     move_uploaded_file($file['tmp_name'], "$path/{$file['name']}");
                     $files[] = $path . '/' . $file['name'];
-                    //$uploadedFile->move($path, $uploadedFile->getClientOriginalName());
-                    //$files[] = $path . '/' . $uploadedFile->getClientOriginalName();
                 }
             } else {
                 $files = '';
                 $file = $this->getUploaded();
                 if (empty($filename)) $filename = $file['name'];
                 move_uploaded_file($file['tmp_name'], "$path/$filename");
-                //$files = $uploadedFile->move($path, $filename ?: $uploadedFile->getClientOriginalName());
             }
         } catch (\Exception $e) {
             $this->setError($e->getMessage());
