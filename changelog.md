@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.0.22 [2024-09-16]:
+-------------------------------
+  - refactor form mapping and csrf token
+  - Implement csrf token on forms
+
+
 Ver 8.0.20 [2024-09-14]:
 -------------------------------
   - fix single checkbox value
