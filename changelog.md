@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.24 [2024-09-19]:
+-------------------------------
+  - secret replace id with hash
+
+
 Ver 8.0.22 [2024-09-16]:
 -------------------------------
   - refactor form mapping and csrf token
