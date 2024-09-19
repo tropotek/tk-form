@@ -40,6 +40,7 @@ class Checkbox extends FieldRendererInterface
         if ($option->isSelected()) {
             $option->setAttr($option->getSelectAttr());
         }
+
         if ($this->getField()->isReadonly()) {
             $option->setAttr('readonly', 'readonly');
         }
