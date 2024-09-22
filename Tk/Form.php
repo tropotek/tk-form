@@ -23,7 +23,7 @@ class Form extends Form\Element
     const METHOD_PUT                = 'put';
     const METHOD_DELETE             = 'delete';
 
-    const CSRF_TTL                  = 60*15;    // secs
+    const CSRF_TTL                  = 60*25;    // secs
     const CSRF_TOKEN                = '_csrf_token';
     const FORM_ID                   = '_formid';
 
@@ -110,6 +110,7 @@ class Form extends Form\Element
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
             if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
                 $this->addError('Form submission error. Reload page and try again.');
+                // TODO: can we refresh the token at this point??
             }
         }
 
