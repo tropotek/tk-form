@@ -23,13 +23,17 @@ class Form extends Form\Element
     const METHOD_PUT                = 'put';
     const METHOD_DELETE             = 'delete';
 
-    const CSRF_TTL                  = 60*25;    // secs
+    /**
+     * Default CSRF TTL seconds (15 mins)
+     */
+    const CSRF_TTL                  = 60*15;
     const CSRF_TOKEN                = '_csrf_token';
     const FORM_ID                   = '_formid';
 
     protected string $id      = '';
     protected array  $fields  = [];
     protected array  $errors  = [];
+    protected int    $csrfTtl = self::CSRF_TTL;
 
     protected ?ActionInterface $triggeredAction = null;
 
@@ -82,7 +86,7 @@ class Form extends Form\Element
                 if (function_exists('openssl_random_pseudo_bytes')) {
                     $token = md5(openssl_random_pseudo_bytes(16));
                 }
-                Session::instance()->set($this->getCsrfId(), $token, self::CSRF_TTL);
+                Session::instance()->set($this->getCsrfId(), $token, $this->getCsrfTtl());
             }
             $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
             $this->appendField(new Hidden(self::FORM_ID, $this->getId()));
@@ -432,6 +436,21 @@ class Form extends Form\Element
     public function setEncType(string $enctype): static
     {
         $this->setAttr('enctype', $enctype);
+        return $this;
+    }
+
+    public function getCsrfTtl(): int
+    {
+        return $this->csrfTtl;
+    }
+
+    /**
+     * Set the CSRF token time to live in seconds
+     * Default: 15 mins
+     */
+    public function setCsrfTtl(int $seconds): Form
+    {
+        $this->csrfTtl = $seconds;
         return $this;
     }
 }
