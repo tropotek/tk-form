@@ -18,11 +18,9 @@ class File extends Input
     /**
      * The max size for this file upload in bytes
      */
-    protected int $maxBytes = 0;
-
+    protected int  $maxBytes  = 0;
     protected ?Uri $deleteUrl = null;
-
-    protected ?Uri $viewUrl = null;
+    protected ?Uri $viewUrl   = null;
 
 
     public function __construct(string $name)
