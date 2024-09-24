@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.0.26 [2024-09-25]:
+-------------------------------
+  - Update user system
+  - Added guest token system
+
+
 Ver 8.0.24 [2024-09-19]:
 -------------------------------
   - secret replace id with hash
