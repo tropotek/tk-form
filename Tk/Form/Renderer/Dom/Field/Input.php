@@ -12,14 +12,16 @@ class Input extends FieldRendererInterface
     {
         $template = $this->getTemplate();
 
-        // Render Element
-        if (!(is_array($this->getField()->getValue()) || is_object($this->getField()->getValue()))) {
-            $this->getField()->setAttr('value', $this->getField()->getValue() ?? '');
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Input) {
+            if (!(is_array($field->getValue()) || is_object($field->getValue()))) {
+                $field->setAttr('value', $field->getValue());
+            }
         }
 
         $this->decorate();
 
         return $template;
     }
-    
+
 }

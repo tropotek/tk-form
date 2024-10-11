@@ -12,27 +12,31 @@ class File extends FieldRendererInterface
     {
         $template = $this->getTemplate();
 
-        // Render Element
-        $this->getField()->setAttr('data-maxsize', $this->getField()->getMaxBytes());
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\File) {
+            $this->getField()->setAttr('data-maxsize', strval($field->getMaxBytes()));
 
-        if ($this->getField()->getViewUrl()) {
-            $template->setAttr('view', 'href', $this->getField()->getViewUrl());
-            $template->setAttr('view', 'title', 'View: ' . $this->getField()->getViewUrl()->basename());
-            $template->setVisible('view');
+            if ($field->getViewUrl()) {
+                $template->setAttr('view', 'href', $field->getViewUrl());
+                $template->setAttr('view', 'title', 'View: ' . $field->getViewUrl()->basename());
+                $template->setVisible('view');
+            }
+            if ($field->getDeleteUrl()) {
+                $template->setAttr('delete', 'href', $field->getDeleteUrl());
+                $template->setVisible('delete');
+            }
         }
-        if ($this->getField()->getDeleteUrl()) {
-            $template->setAttr('delete', 'href', $this->getField()->getDeleteUrl());
-            $template->setVisible('delete');
-        }
-
 
         $this->decorate();
 
-        $preNotes = sprintf('Max File Size: <b>%s</b><br/>', \Tk\FileUtil::bytes2String($this->getField()->getMaxBytes(), 0));
+        $preNotes = '';
+        if ($field instanceof \Tk\Form\Field\File) {
+            $preNotes = sprintf('Max File Size: <b>%s</b><br/>', \Tk\FileUtil::bytes2String($field->getMaxBytes(), 0));
+        }
         $notes = $template->getVar('notes')->nodeValue;
         $template->setHtml('notes', $preNotes . $notes);
 
         return $template;
     }
-    
+
 }

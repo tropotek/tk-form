@@ -21,15 +21,11 @@ class Renderer
     const FIELDSET    = '__fieldset';
     const FIELD       = '__field';
 
-    protected Form $form;
-
-    protected array $formTemplates = [];
-
-    protected array $groupTemplates = [];
-
+    protected array $formTemplates     = [];
+    protected array $groupTemplates    = [];
     protected array $fieldsetTemplates = [];
-
-    protected array $params = [];
+    protected array $params            = [];
+    protected Form  $form;
 
 
     public function __construct(Form $form, string $tplFile = null)
@@ -46,12 +42,12 @@ class Renderer
 
     }
 
-    public static function createInlineRenderer(Form $form, string $tplFile = null): static
+    public static function createInlineRenderer(Form $form, string $tplFile = null): self
     {
         if (!$tplFile) {
             $tplFile = dirname(__DIR__, 4) . '/templates/bs5_std_inline.php';
         }
-        return new static($form, $tplFile);
+        return new self($form, $tplFile);
     }
 
 
@@ -221,7 +217,7 @@ class Renderer
     /**
      * Sort all fields into their groups and fieldsets
      */
-    protected function getRenderTree($fieldList): array
+    protected function getRenderTree(array $fieldList): array
     {
         $sets = [
             self::GROUP => [],

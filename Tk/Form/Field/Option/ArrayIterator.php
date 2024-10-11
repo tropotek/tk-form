@@ -11,6 +11,7 @@ use Tk\Form\Field\Option;
  *   $iterator = new ArrayIterator(array('-- Select --' => '', 'Admin' => 'admin', 'Moderator' => 'moderator', 'User' => 'user'));
  * ?>
  *
+ * @implements \Iterator<mixed,mixed>
  */
 class ArrayIterator implements \Iterator, \Countable
 {
@@ -36,7 +37,7 @@ class ArrayIterator implements \Iterator, \Countable
      */
     public function current(): mixed
     {
-        $key = $this->getKey($this->idx);
+        $key = $this->getKey(strval($this->idx));
         $el = $this->list[$key];
         return new Option($key, $el, $this->getSelectAttr());
     }

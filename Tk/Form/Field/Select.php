@@ -47,9 +47,9 @@ class Select extends FieldInterface
         return $optionIterator;
     }
 
-    public static function createSelect(string $name, array|ArrayIterator $optionIterator = null): static
+    public static function createSelect(string $name, array|ArrayIterator $optionIterator = null): self
     {
-        return new static($name, $optionIterator);
+        return new self($name, $optionIterator);
     }
 
     public function setOptionIterator(Option\ArrayIterator $optionIterator): static
@@ -88,7 +88,7 @@ class Select extends FieldInterface
     /**
      *  function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) { }
      */
-    public function addOnShowOption(callable $callable, $priority = CallbackCollection::DEFAULT_PRIORITY): static
+    public function addOnShowOption(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
         $this->getOnShowOption()->append($callable, $priority);
         return $this;

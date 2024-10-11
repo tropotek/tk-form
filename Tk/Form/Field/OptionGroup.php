@@ -8,4 +8,9 @@ class OptionGroup extends Option
 {
     use OptionList;
 
+
+    static function create(string $name, string $value = '', string $selectAttr = 'selected'): self
+    {
+        return new self($name, $value, $selectAttr);
+    }
 }

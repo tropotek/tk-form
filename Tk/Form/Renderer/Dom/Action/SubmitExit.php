@@ -12,10 +12,12 @@ class SubmitExit extends Submit
     {
         $template = parent::show();
 
-        // Render Element
-        $template->setAttr('exit', 'name', $this->getField()->getId());
-        $template->setAttr('exit', 'value', $this->getField()->getValue().'-exit');
-        $template->setAttr('exit', 'title', ucfirst($this->getField()->getValue()) . ' and exit');
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Action\SubmitExit) {
+            $template->setAttr('exit', 'name', $field->getId());
+            $template->setAttr('exit', 'value', $field->getValue() . '-exit');
+            $template->setAttr('exit', 'title', ucfirst($field->getValue()) . ' and exit');
+        }
 
         return $template;
     }

@@ -13,7 +13,7 @@ class File extends FieldRendererInterface
         $field = $this->getField();
 
         // Render Element
-        $field->setAttr('data-maxsize', $field->getMaxBytes());
+        $field->setAttr('data-maxsize', strval($field->getMaxBytes()));
 
         if ($field->getViewUrl()) {
             $data['viewBlock'][] = [
@@ -46,5 +46,5 @@ class File extends FieldRendererInterface
 
         return $this->getTemplate()->parse($data);
     }
-    
+
 }

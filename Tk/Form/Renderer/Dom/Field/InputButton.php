@@ -12,15 +12,18 @@ class InputButton extends FieldRendererInterface
     {
         $template = $this->getTemplate();
 
-        if ($this->getField()->getBtnText()) {
-            $template->appendHtml('button', $this->getField()->getBtnText());
-        }
-        $template->setAttr('button', $this->getField()->getBtnAttr()->getAttrList());
-        $template->addCss('button', $this->getField()->getBtnAttr()->getCssString());
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\InputButton) {
+            if ($field->getBtnText()) {
+                $template->appendHtml('button', $field->getBtnText());
+            }
+            $template->setAttr('button', $field->getBtnAttr()->getAttrList());
+            $template->addCss('button', $field->getBtnAttr()->getCssString());
 
-        // Render Element
-        if (!(is_array($this->getField()->getValue()) || is_object($this->getField()->getValue()))) {
-            $this->getField()->setAttr('value', $this->getField()->getValue() ?? '');
+            // Render Element
+            if (!(is_array($field->getValue()) || is_object($field->getValue()))) {
+                $this->getField()->setAttr('value', $field->getValue());
+            }
         }
 
         $this->decorate();

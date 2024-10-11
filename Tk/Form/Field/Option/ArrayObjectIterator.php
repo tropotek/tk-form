@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Form\Field\Option;
 
-use Tk\Db\Mapper\Result;
 use Tk\Form\Field\Option;
 use Tk\ObjectUtil;
 
@@ -18,26 +17,23 @@ use Tk\ObjectUtil;
 class ArrayObjectIterator extends ArrayIterator
 {
 
-    protected string $textParam = '';
-
-    protected string $valueParam = '';
-
-    protected string $disableParam = '';
-
-    protected string $labelParam = '';
-
-    protected string $selectedValue = '';
-
-    protected string $selectedAppend = ' (Current)';
-
+    protected string $textParam       = '';
+    protected string $valueParam      = '';
+    protected string $disableParam    = '';
+    protected string $labelParam      = '';
+    protected string $selectedValue   = '';
+    protected string $selectedAppend  = ' (Current)';
     protected string $selectedPrepend = '';
 
 
-    public function __construct(array|Result $list = [], callable|string $textParam = 'name', callable|string $valueParam = 'id', string $selectAttr = 'selected', string $disableParam = '', string $labelParam = '')
-    {
-        if ($list instanceof Result) {
-            $list = $list->toArray();
-        }
+    public function __construct(
+        array $list = [],
+        callable|string $textParam = 'name',
+        callable|string $valueParam = 'id',
+        string $selectAttr = 'selected',
+        string $disableParam = '',
+        string $labelParam = ''
+    ) {
         parent::__construct($list, $selectAttr);
 
         $this->textParam = $textParam;
@@ -67,9 +63,9 @@ class ArrayObjectIterator extends ArrayIterator
     /**
      * @interface \Iterator
      */
-    public function current(): mixed
+    public function current(): Option
     {
-        $obj = $this->list[$this->getKey($this->idx)];
+        $obj = $this->list[$this->getKey(strval($this->idx))];
 
         if (is_callable($this->valueParam)) {
             $value = call_user_func_array($this->valueParam, array($obj));

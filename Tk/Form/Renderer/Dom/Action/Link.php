@@ -11,7 +11,10 @@ class Link extends Submit
     {
         $template = parent::show();
 
-        $template->setAttr('element', 'href', $this->getField()->getUrl());
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Action\Link) {
+            $template->setAttr('element', 'href', $field->getUrl());
+        }
 
         return $template;
     }

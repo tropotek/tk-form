@@ -14,8 +14,11 @@ class Textarea extends FieldRendererInterface
         // no type needed for textarea
         $this->getField()->removeAttr('type');
 
-        if (!is_array($this->getField()->getValue()) && !is_object($this->getField()->getValue())) {
-            $template->setText('element', strval($this->getField()->getValue()));
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Textarea) {
+            if (!is_array($field->getValue()) && !is_object($field->getValue())) {
+                $template->setText('element', strval($field->getValue()));
+            }
         }
 
         $this->decorate();

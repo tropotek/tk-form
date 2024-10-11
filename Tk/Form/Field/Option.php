@@ -22,9 +22,9 @@ class Option
         $this->setValue($value);
     }
 
-    static function create(string $name, string $value = '', string $selectAttr = 'selected'): static
+    static function create(string $name, string $value = '', string $selectAttr = 'selected'): self
     {
-        return new static($name, $value, $selectAttr);
+        return new self($name, $value, $selectAttr);
     }
 
     public function getName(): string

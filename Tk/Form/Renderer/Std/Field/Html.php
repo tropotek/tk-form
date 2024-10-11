@@ -10,9 +10,13 @@ class Html extends FieldRendererInterface
     function show(array $data = []): string
     {
         $data = $this->decorate($data);
-        $data['html'] = $this->getField()->getValue();
+
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Html) {
+            $data['html'] = $field->getValue();
+        }
 
         return $this->getTemplate()->parse($data);
     }
-    
+
 }

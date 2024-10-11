@@ -28,7 +28,7 @@ class ArrayArrayIterator extends ArrayIterator
      */
     public function current(): mixed
     {
-        $key = $this->getKey($this->idx);
+        $key = $this->getKey(strval($this->idx));
         $arr = $this->list[$key];
         $text = '';
         if (isset($arr[0])) {

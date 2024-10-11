@@ -48,15 +48,15 @@ class Form extends Form\Element
         $this->setAttr('accept-charset', self::$CHARSET);
     }
 
-    public static function create(string $formId = 'form'): static
+    public static function create(string $formId = 'form'): self
     {
-        return new static($formId);
+        return new self($formId);
     }
 
     /**
      * The id can only be set once unless it is cleared first
      */
-    protected function setId($id): static
+    protected function setId(string $id): static
     {
         static $instances = [];
         if ($this->getId()) return $this;

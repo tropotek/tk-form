@@ -32,7 +32,9 @@ class Submit extends FieldRendererInterface
             }
         }
 
-        $field->getOnShow()?->execute($field);
+        if ($field instanceof \Tk\Form\Action\Submit) {
+            $field->getOnShow()->execute($field);
+        }
 
         $data = $this->decorate($data);
         $data['text'] = $field->getLabel();

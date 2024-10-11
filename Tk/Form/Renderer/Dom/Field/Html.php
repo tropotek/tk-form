@@ -12,12 +12,14 @@ class Html extends FieldRendererInterface
     {
         $template = $this->getTemplate();
 
-        // Render Element
-        $template->setHtml('element', $this->getField()->getValue());
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Input) {
+            $template->setHtml('element', $field->getValue());
+        }
 
         $this->decorate();
 
         return $template;
     }
-    
+
 }

@@ -31,13 +31,12 @@ use Tk\Form\Field\Option;
 class OptGroupIterator extends ArrayIterator
 {
 
-
     /**
      * @interface \Iterator
      */
-    public function current(): mixed
+    public function current(): OptionGroup|Option
     {
-        $key = $this->getKey($this->idx);
+        $key = $this->getKey(strval($this->idx));
         $arr = $this->list[$key];
 
         $option = null;

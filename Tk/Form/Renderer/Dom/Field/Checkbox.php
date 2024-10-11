@@ -14,12 +14,15 @@ class Checkbox extends FieldRendererInterface
     {
         $template = $this->getTemplate();
 
-        /* @var Option $option */
-        foreach($this->getField()->getOptions() as $option) {
-            $tOpt = null;
-            $tOpt = $template->getRepeat('option');
-            $this->showOption($tOpt, $option);
-            $tOpt->appendRepeat();
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Checkbox) {
+            /* @var Option $option */
+            foreach($field->getOptions() as $option) {
+                $tOpt = null;
+                $tOpt = $template->getRepeat('option');
+                $this->showOption($tOpt, $option);
+                $tOpt->appendRepeat();
+            }
         }
 
         $this->decorate();
@@ -29,38 +32,41 @@ class Checkbox extends FieldRendererInterface
 
     protected function showOption(Template $template, Option $option, string $var = 'option'): void
     {
-        if ($this->getField()->isSwitch()) {
-            $template->addCss($var, 'form-switch');
-        }
+        $field = $this->getField();
+        if ($field instanceof \Tk\Form\Field\Checkbox) {
+            if ($field->isSwitch()) {
+                $template->addCss($var, 'form-switch');
+            }
 
-        if ($this->getField()->getOnShowOption()->isCallable()) {
-            $b = $this->getField()->getOnShowOption()->execute($template, $option, $var);
-            if ($b === false) return;
-        }
-        if ($option->isSelected()) {
-            $option->setAttr($option->getSelectAttr());
-        }
+            if ($field->getOnShowOption()->isCallable()) {
+                $b = $field->getOnShowOption()->execute($template, $option, $var);
+                if ($b === false) return;
+            }
+            if ($option->isSelected()) {
+                $option->setAttr($option->getSelectAttr());
+            }
 
-        if ($this->getField()->isReadonly()) {
-            $option->setAttr('readonly', 'readonly');
-        }
-        if ($this->getField()->isDisabled()) {
-            $option->setAttr('disabled', 'disabled');
-        }
-        $option->setAttr('name', $this->getField()->getHtmlName());
-        $option->setAttr('value', $option->getValue());
+            if ($field->isReadonly()) {
+                $option->setAttr('readonly', 'readonly');
+            }
+            if ($field->isDisabled()) {
+                $option->setAttr('disabled', 'disabled');
+            }
+            $option->setAttr('name', $field->getHtmlName());
+            $option->setAttr('value', $option->getValue());
 
-        $template->setText('label', $option->getName());
-        $id = $this->getField()->getId().'-'.$this->getField()->cleanName($option->getName());
-        $template->setAttr('label', 'for', $id);
-        $option->setAttr('id', $id);
+            $template->setText('label', $option->getName());
+            $id = $field->getId() . '-' . $field->cleanName($option->getName());
+            $template->setAttr('label', 'for', $id);
+            $option->setAttr('id', $id);
 
-        if (!empty($this->optionNotes[$option->getValue()])) {
-            $template->setVisible('notes');
-            $template->setHtml('notes', $this->optionNotes[$option->getValue()]);
+            if (!empty($this->optionNotes[$option->getValue()])) {
+                $template->setVisible('notes');
+                $template->setHtml('notes', $this->optionNotes[$option->getValue()]);
+            }
+
+            $template->setAttr('shadow', 'name', $field->getHtmlName());
         }
-
-        $template->setAttr('shadow', 'name', $this->getField()->getHtmlName());
         $template->setAttr('element', $option->getAttrList());
         $template->addCss('element', $option->getCssString());
     }
