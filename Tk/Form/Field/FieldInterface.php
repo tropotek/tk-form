@@ -13,24 +13,24 @@ abstract class FieldInterface extends Element
      * Some basic element types
      * for a full list of input types see: https://www.w3schools.com/tags/att_input_type.asp
      */
-    const TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
-    const TYPE_HIDDEN   = 'hidden';
-    const TYPE_TEXT     = 'text';
-    const TYPE_PASSWORD = 'password';
-    const TYPE_FILE     = 'file';
-    const TYPE_CHECKBOX = 'checkbox';
-    const TYPE_RADIO    = 'radio';
-    const TYPE_HTML     = 'html';
+    const string TYPE_NONE     = 'none';       // Use this when wanting to render the value as a html/text string not in an element
+    const string TYPE_HIDDEN   = 'hidden';
+    const string TYPE_TEXT     = 'text';
+    const string TYPE_PASSWORD = 'password';
+    const string TYPE_FILE     = 'file';
+    const string TYPE_CHECKBOX = 'checkbox';
+    const string TYPE_RADIO    = 'radio';
+    const string TYPE_HTML     = 'html';
 
-    const TYPE_SELECT   = 'select';
-    const TYPE_TEXTAREA = 'textarea';
+    const string TYPE_SELECT   = 'select';
+    const string TYPE_TEXTAREA = 'textarea';
 
-    const TYPE_LINK     = 'link';
-    const TYPE_BUTTON   = 'button';
-    const TYPE_SUBMIT   = 'submit';
+    const string TYPE_LINK     = 'link';
+    const string TYPE_BUTTON   = 'button';
+    const string TYPE_SUBMIT   = 'submit';
 
-    const GROUP_NONE    = 'none';
-    const GROUP_ACTIONS = 'actions';
+    const string GROUP_NONE    = 'none';
+    const string GROUP_ACTIONS = 'actions';
 
 
     protected string|array $value = '';
