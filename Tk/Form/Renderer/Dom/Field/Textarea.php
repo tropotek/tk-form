@@ -3,6 +3,7 @@
 namespace Tk\Form\Renderer\Dom\Field;
 
 use Dom\Template;
+use Tk\Form\Exception;
 use Tk\Form\Renderer\Dom\FieldRendererInterface;
 
 class Textarea extends FieldRendererInterface
@@ -15,10 +16,12 @@ class Textarea extends FieldRendererInterface
         $this->getField()->removeAttr('type');
 
         $field = $this->getField();
-        if ($field instanceof \Tk\Form\Field\Textarea) {
-            if (!is_array($field->getValue()) && !is_object($field->getValue())) {
-                $template->setText('element', strval($field->getValue()));
-            }
+        if (!($field instanceof \Tk\Form\Field\Textarea)) {
+            throw new Exception("Invalid field renderer selected");
+        }
+
+        if (!is_array($field->getValue()) && !is_object($field->getValue())) {
+            $template->setText('element', strval($field->getValue()));
         }
 
         $this->decorate();

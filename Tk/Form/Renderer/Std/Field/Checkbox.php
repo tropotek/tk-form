@@ -2,6 +2,7 @@
 
 namespace Tk\Form\Renderer\Std\Field;
 
+use Tk\Form\Exception;
 use Tk\Form\Field\Option;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
 
@@ -12,6 +13,9 @@ class Checkbox extends FieldRendererInterface
     {
         /** @var \Tk\Form\Field\Checkbox $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\Checkbox)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         /* @var Option $option */
         foreach($field->getOptions() as $option) {
@@ -27,6 +31,9 @@ class Checkbox extends FieldRendererInterface
     {
         /** @var \Tk\Form\Field\Checkbox $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\Checkbox)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         if ($field->getOnShowOption()->isCallable()) {
             $b = $field->getOnShowOption()->execute($field, $option);

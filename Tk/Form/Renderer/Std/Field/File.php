@@ -2,6 +2,8 @@
 
 namespace Tk\Form\Renderer\Std\Field;
 
+use Tk\Form\Exception;
+use Tk\Form\Field\FieldInterface;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
 
 class File extends FieldRendererInterface
@@ -9,8 +11,10 @@ class File extends FieldRendererInterface
 
     function show(array $data = []): string
     {
-        /** @var \Tk\Form\Field\File $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\File)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         // Render Element
         $field->setAttr('data-maxsize', strval($field->getMaxBytes()));

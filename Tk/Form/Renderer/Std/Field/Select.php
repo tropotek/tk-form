@@ -2,6 +2,7 @@
 
 namespace Tk\Form\Renderer\Std\Field;
 
+use Tk\Form\Exception;
 use Tk\Form\Field\Option;
 use Tk\Form\Field\OptionGroup;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
@@ -11,8 +12,10 @@ class Select extends FieldRendererInterface
 
     function show(array $data = []): string
     {
-        /** @var \Tk\Form\Field\Select $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\Select)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         $optionsHtml = '';
         /* @var Option $option */
@@ -36,8 +39,10 @@ class Select extends FieldRendererInterface
 
     protected function showOption(Option $option): string
     {
-        /** @var \Tk\Form\Field\Select $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\Select)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         if ($field->getOnShowOption()->isCallable()) {
             $b = $field->getOnShowOption()->execute($field, $option);
@@ -56,5 +61,5 @@ class Select extends FieldRendererInterface
             $option->getName()
         );
     }
-    
+
 }

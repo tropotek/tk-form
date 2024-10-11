@@ -2,6 +2,8 @@
 
 namespace Tk\Form\Renderer\Std\Field;
 
+use Tk\Form\Exception;
+use Tk\Form\Field\FieldInterface;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
 
 class InputButton extends FieldRendererInterface
@@ -9,8 +11,10 @@ class InputButton extends FieldRendererInterface
 
     function show(array $data = []): string
     {
-        /** @var \Tk\Form\Field\InputButton $field */
         $field = $this->getField();
+        if (!($field instanceof \Tk\Form\Field\InputButton)) {
+            throw new Exception("Invalid field renderer selected");
+        }
 
         $data = $this->decorate($data);
 
