@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 8.0.28 [2024-10-14]:
+-------------------------------
+  - main src cleanup
+  - fix secret edit page
+  - fix form renderers
+  - phpstan lvl6 compliance
+
+
 Ver 8.0.26 [2024-09-25]:
 -------------------------------
   - Update user system
