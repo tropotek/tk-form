@@ -16,8 +16,10 @@ class SubmitExit extends Submit
             throw new Exception("Invalid field renderer selected");
         }
 
-        $data['value'] = $field->getValue() . '-exit';
-        $data['title'] = ucfirst($field->getValue()) . ' and exit';
+        if (is_string($field->getValue())) {
+            $data['value'] = $field->getValue() . '-exit';
+            $data['title'] = ucfirst($field->getValue()) . ' and exit';
+        }
 
         return parent::show($data);
     }

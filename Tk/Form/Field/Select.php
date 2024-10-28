@@ -125,8 +125,9 @@ class Select extends FieldInterface
                         $option->setSelected();
                     }
                 } else {
-                    if ($option->getValue() == $value) {
-                        $option->setSelected($this->getValue() ?: false);
+                    if (!empty($value) && $option->getValue() == $value) {
+                        //$option->setSelected($this->getValue() ?: false);
+                        $option->setSelected();
                     }
                 }
             }
@@ -158,9 +159,11 @@ class Select extends FieldInterface
             if ($modify) {
                 $n = preg_replace('/[^A-Z0-9]/i', ' ', $n);
                 $n = preg_replace('/[A-Z]/', ' $0', $n);
-                $n = ucwords($n);
+                if (is_string($n)) {
+                    $n = ucwords($n);
+                }
             }
-            $new[$n] =  $v;
+            $new[$n] = $v;
         }
         return $new;
     }

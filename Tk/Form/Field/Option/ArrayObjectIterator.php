@@ -17,8 +17,8 @@ use Tk\ObjectUtil;
 class ArrayObjectIterator extends ArrayIterator
 {
 
-    protected string $textParam       = '';
-    protected string $valueParam      = '';
+    protected mixed  $textParam       = '';
+    protected mixed  $valueParam      = '';
     protected string $disableParam    = '';
     protected string $labelParam      = '';
     protected string $selectedValue   = '';

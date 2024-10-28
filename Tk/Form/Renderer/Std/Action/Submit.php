@@ -17,10 +17,14 @@ class Submit extends FieldRendererInterface
 
         if ($field->getType() != FieldInterface::TYPE_LINK) {
             $field->setAttr('name', $field->getId());
-            $field->setAttr('value', $field->getValue());
+            if (is_string($field->getValue())) {
+                $field->setAttr('value', $field->getValue());
+            }
         }
 
-        $field->setAttr('title', ucfirst($field->getValue()));
+        if (is_string($field->getValue())) {
+            $field->setAttr('title', ucfirst($field->getValue()));
+        }
 
         if ($field->getIcon()) {
             if ($field->getIconPosition() == \Tk\Form\Action\Submit::ICON_LEFT) {

@@ -19,7 +19,9 @@ class Html extends FieldRendererInterface
             throw new Exception("Invalid field renderer selected");
         }
 
-        $template->setHtml('element', $field->getValue());
+        if (is_string($field->getValue())) {
+            $template->setHtml('element', $field->getValue());
+        }
 
         $this->decorate();
 

@@ -81,7 +81,10 @@ abstract class ActionInterface extends Field\FieldInterface
      */
     public function isExit(): bool
     {
-        return str_ends_with($this->getValue(), '-exit');
+        if (is_string($this->getValue())) {
+            return str_ends_with($this->getValue(), '-exit');
+        }
+        return false;
     }
 
 }

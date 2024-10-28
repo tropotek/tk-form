@@ -95,7 +95,11 @@ abstract class FieldRendererInterface
     public static function createRenderer(FieldInterface $field, Renderer $formRenderer): ?FieldRendererInterface
     {
         // field class and namespace
-        [$fieldNS, $fieldClass] = str_split($field::class, strrpos($field::class, '\\')+1);
+        $pos = intval(strrpos($field::class, '\\'));
+        if ($pos < 1) {
+            return null;
+        }
+        [$fieldNS, $fieldClass] = str_split($field::class, ($pos+1));
         $fieldNS = rtrim($fieldNS, '\\');
         $subNS = substr($fieldNS, strrpos($fieldNS, '\\')+1);
 
@@ -108,7 +112,8 @@ abstract class FieldRendererInterface
             $rendererClass = 'Tk\Form\Renderer\Std\Field\Input';
         }
 
-        return new $rendererClass($field, $formRenderer);
-
+        $obj = new $rendererClass($field, $formRenderer);
+        if ($obj instanceof FieldRendererInterface) return $obj;
+        return null;
     }
 }

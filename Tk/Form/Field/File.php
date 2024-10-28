@@ -27,8 +27,8 @@ class File extends Input
     {
         parent::__construct($name, self::TYPE_FILE);
         $this->maxBytes = min(
-            \Tk\FileUtil::string2Bytes(ini_get('upload_max_filesize')),
-            \Tk\FileUtil::string2Bytes(ini_get('post_max_size'))
+            \Tk\FileUtil::string2Bytes(strval(ini_get('upload_max_filesize'))),
+            \Tk\FileUtil::string2Bytes(strval(ini_get('post_max_size')))
         );
     }
 

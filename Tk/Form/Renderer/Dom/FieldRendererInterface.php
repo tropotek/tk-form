@@ -6,6 +6,7 @@ use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Tk\Form\Element;
 use Tk\Form\Field\FieldInterface;
+use Tk\ObjectUtil;
 
 abstract class FieldRendererInterface implements RendererInterface
 {
@@ -79,7 +80,11 @@ abstract class FieldRendererInterface implements RendererInterface
     public static function createRenderer(FieldInterface $field, Renderer $formRenderer): ?FieldRendererInterface
     {
         // field class and namespace
-        [$fieldNS, $fieldClass] = str_split($field::class, strrpos($field::class, '\\')+1);
+        $pos = intval(strrpos($field::class, '\\'));
+        if ($pos < 1) {
+            return null;
+        }
+        [$fieldNS, $fieldClass] = str_split($field::class, ($pos+1));
         $fieldNS = rtrim($fieldNS, '\\');
         $subNS = substr($fieldNS, strrpos($fieldNS, '\\')+1);
 
@@ -92,7 +97,9 @@ abstract class FieldRendererInterface implements RendererInterface
         if (!class_exists($rendererClass)) {
             $rendererClass = 'Tk\Form\Renderer\Dom\Field\Input';
         }
-        return new $rendererClass($field, $formRenderer);
 
+        $obj = new $rendererClass($field, $formRenderer);
+        if ($obj instanceof FieldRendererInterface) return $obj;
+        return null;
     }
 }

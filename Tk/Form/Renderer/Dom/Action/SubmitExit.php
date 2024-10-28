@@ -19,8 +19,10 @@ class SubmitExit extends Submit
         }
 
         $template->setAttr('exit', 'name', $field->getId());
-        $template->setAttr('exit', 'value', $field->getValue() . '-exit');
-        $template->setAttr('exit', 'title', ucfirst($field->getValue()) . ' and exit');
+        if (is_string($field->getValue())) {
+            $template->setAttr('exit', 'value', $field->getValue() . '-exit');
+            $template->setAttr('exit', 'title', ucfirst($field->getValue()) . ' and exit');
+        }
 
         return $template;
     }
