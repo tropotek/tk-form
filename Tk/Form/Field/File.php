@@ -14,6 +14,16 @@ use Tk\Uri;
  */
 class File extends Input
 {
+    const array ERROR_MSG = [
+        UPLOAD_ERR_OK         => 'There is no error, the file uploaded with success.',
+        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+        UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+        UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded.',
+        UPLOAD_ERR_NO_FILE    => 'No file was uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.',
+    ];
 
     /**
      * The max size for this file upload in bytes
@@ -42,7 +52,7 @@ class File extends Input
      */
     public function getUploaded(): ?array
     {
-        return $_FILES[$this->getName()] ?? null;
+        return $this->getUploads()[0] ?? null;
     }
 
     /**
@@ -50,9 +60,33 @@ class File extends Input
      */
     public function getUploads(): array
     {
-        $up = $_FILES[$this->getName()] ?? [];
-        if (isset($up['name'])) return [$up];
+        $files = self::normalize($_FILES);
+        $up = [];
+
+        if (isset($files[$this->getName()]['name'])) {    // single file returned
+            if (($files[$this->getName()]['error'] ?? 0) != UPLOAD_ERR_NO_FILE) {
+                $up[] = $files[$this->getName()];
+            }
+        } else {    // multiple files returned
+            foreach ($files[$this->getName()] ?? [] as $file) {
+                if (($file['error'] ?? 0) != UPLOAD_ERR_NO_FILE) {
+                    $up[] = $file;
+                }
+            }
+        }
+
         return $up;
+    }
+
+    public function isValid(): bool
+    {
+        foreach ($this->getUploads() as $file) {
+            if ($file['error'] != UPLOAD_ERR_OK) {
+                $this->setError(self::ERROR_MSG[$file['error']]);
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -135,4 +169,31 @@ class File extends Input
         return $this->maxBytes;
     }
 
+    public static function normalize(array $_files, $top = TRUE): array
+    {
+        $files = [];
+        foreach ($_files as $name => $file) {
+            if ($top) {
+                $subName = $file['name'];
+            } else {
+                $subName = $name;
+            }
+
+            if (is_array($subName)) {
+                foreach (array_keys($subName) as $key) {
+                    $files[$name][$key] = array(
+                        'name'     => $file['name'][$key],
+                        'type'     => $file['type'][$key],
+                        'tmp_name' => $file['tmp_name'][$key],
+                        'error'    => $file['error'][$key],
+                        'size'     => $file['size'][$key],
+                    );
+                    $files[$name] = self::normalize($files[$name], FALSE);
+                }
+            } else {
+                $files[$name] = $file;
+            }
+        }
+        return $files;
+    }
 }
