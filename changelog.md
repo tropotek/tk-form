@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.32 [2024-11-08]:
+-------------------------------
+  - Updated Model to handle DateTimeImmutable
+
+
 Ver 8.0.30 [2024-11-03]:
 -------------------------------
   - Add util pages
