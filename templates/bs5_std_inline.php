@@ -6,7 +6,7 @@ $fieldTemplates['form'] = [
     'template' => <<<HTML
       <form class="tk-form tk-form-inline {css}" {attrs}>
         {hidden}
-        <div class="tk-form-fields row gy-1 gx-2 align-items-center">{fields} {actions}</div>        
+        <div class="tk-form-fields row gy-1 gx-2 align-items-center">{fields} {actions}</div>
       </form>
     HTML,
 ];
@@ -95,7 +95,7 @@ $fieldTemplates['tpl-form-file'] = [
         {labelBlock}
         <label class="form-label visually-hidden {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
-        
+
         <div class="input-group input-group-merge {inputGroupCss}" {inputGroupAttrs}>
           <input class="form-control form-control-sm {css}" {attrs}/>
           {viewBlock}
@@ -105,7 +105,7 @@ $fieldTemplates['tpl-form-file'] = [
             <a class="btn btn-white" href="{deleteUrl}" title="Delete" data-confirm="Are you sure you want to delete this file?" {deleteAttrs}><i class="fa fa-trash"></i></a>
           {/deleteBlock}
         </div>
-        
+
         {noteBlock}
           <div class="form-text text-secondary">{notes}</div>
         {/noteBlock}

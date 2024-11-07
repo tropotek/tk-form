@@ -32,10 +32,10 @@ abstract class Element extends \Tk\Ui\Element
     public static function makeLabel(string $name): string
     {
         $label = $name;
-        $label = str_replace(['_', '-'], ' ', $label);
+        $label = str_replace(['_', '-', '.'], ' ', $label);
         $label = ucwords(preg_replace('/[A-Z]/', ' $0', $label));
         $label = preg_replace('/(\[\])/', '', $label);
-        if (str_ends_with($label, 'Id')) {
+        if (str_ends_with($label, ' Id')) {
             $label = substr($label, 0, -3);
         }
         return $label;
@@ -54,7 +54,9 @@ abstract class Element extends \Tk\Ui\Element
                 $id = $this->makeRequestKey($this->getName());
             }
             $this->setId($id);
-            $this->setLabel(self::makeLabel($this->getName()));
+            if (empty($this->getLabel())) {
+                $this->setLabel(self::makeLabel($this->getName()));
+            }
         }
         return $this;
     }
