@@ -86,7 +86,7 @@ class ArrayObjectIterator extends ArrayIterator
             $text = sprintf('%s%s%s', $pre, $text, $app);
         }
 
-        $option = Option::create($text, $value, $this->getSelectAttr());
+        $option = Option::create($text, strval($value), $this->getSelectAttr());
 
         if (property_exists($obj, $this->disableParam)) {
             if ($obj->{$this->disableParam})

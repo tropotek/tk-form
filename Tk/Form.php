@@ -173,7 +173,7 @@ class Form extends Form\Element
         foreach ($this->getFields() as $field) {
             // remove values from array
             if ($field->isReadonly() || $field->isDisabled()) continue;
-            if (!$field->isRequested()) continue;
+            if ($this->isSubmitted() && !$field->isRequested()) continue;
 
             $value = $field->getValue();
             if (!$field->isMultiple() && is_array($value)) {
@@ -185,7 +185,7 @@ class Form extends Form\Element
             }
         }
 
-        // filter results using supplied filter param
+        // filter results using supplied filter param if exists
         if (!is_null($search)) {
             $a = [];
             if (is_string($search)) {

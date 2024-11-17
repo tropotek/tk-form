@@ -5,6 +5,7 @@ use Tk\CallbackCollection;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option\ArrayIterator;
 use Tk\Db\Model;
+use Tk\ObjectUtil;
 
 class Select extends FieldInterface
 {
@@ -18,7 +19,7 @@ class Select extends FieldInterface
     protected bool $strict = false;
 
 
-    public function __construct(string $name, array|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id')
+    public function __construct(string $name, array|ArrayIterator $optionIterator = null, string $nameParam = '', string $valueParam = '')
     {
         $this->onShowOption = CallbackCollection::create();
         parent::__construct($name, self::TYPE_SELECT);
@@ -32,13 +33,17 @@ class Select extends FieldInterface
         }
     }
 
-    protected function createIterator(array|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'selected'): ?Option\ArrayIterator
+    protected function createIterator(array|ArrayIterator $optionIterator = null, string $nameParam = '', string $valueParam = '', string $selectAttr = 'selected'): ?Option\ArrayIterator
     {
         if (is_array($optionIterator)) {
             $curr = current($optionIterator);
             if (is_array($curr)) {
                 $optionIterator = new Option\ArrayArrayIterator($optionIterator, $selectAttr);
             } elseif ($curr instanceof Model) {
+                if (empty($nameParam)) $nameParam = 'name';
+                if (empty($valueParam)) {
+                    $valueParam = strtolower(ObjectUtil::basename($curr)) . 'Id';
+                }
                 $optionIterator = new Option\ArrayObjectIterator($optionIterator, $nameParam, $valueParam, $selectAttr);
             } else {
                 $optionIterator = new Option\ArrayIterator($optionIterator, $selectAttr);
