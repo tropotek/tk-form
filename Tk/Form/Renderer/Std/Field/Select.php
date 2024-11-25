@@ -49,7 +49,7 @@ class Select extends FieldRendererInterface
             if ($b === false) return '';
         }
         if ($option->isSelected()) {
-            $option->setAttr($option->getSelectAttr());
+            $option->setAttr($option->getSelectedAttr());
         }
 
         $css = $option->getCssString();

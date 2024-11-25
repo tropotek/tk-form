@@ -191,12 +191,12 @@ $fieldTemplates['tpl-form-select'] = [
 $fieldTemplates['tpl-form-checkbox'] = [
     'template' => <<<HTML
       <div class="{fieldCss}" {fieldAttrs}>
+        <input type="hidden" name="{shadowName}" value="">
         {labelBlock}
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
         {optionsBlock}
           <div class="form-check {optionCss}">
-            <input type="hidden" name="{shadowName}" value="">
             <input type="checkbox" class="form-check-input {css}" {attrs}>
             <label class="form-check-label" for="{id}">{label}</label>
             {noteBlock}
@@ -217,12 +217,12 @@ $fieldTemplates['tpl-form-checkbox'] = [
 $fieldTemplates['tpl-form-radio'] = [
     'template' => <<<HTML
       <div class="{fieldCss}" {fieldAttrs}>
+        <input type="hidden" name="{shadowName}" value="">
         {labelBlock}
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
         {optionsBlock}
           <div class="form-check {optionCss}">
-            <input type="hidden" name="{shadowName}" value="">
             <input type="radio" class="form-check-input {css}" {attrs}>
             <label class="form-check-label" for="{id}">{label}</label>
             {noteBlock}

@@ -4,15 +4,27 @@ namespace Tk\Form\Field;
 trait OptionList
 {
     /**
-     * @var array|Option[]
+     * @var array<int,Option>
      */
     protected array $options = [];
 
 
-    public function setOptions(array $options): static
+    /**
+     * returns all options as a flat array, OptionGroups are removed
+     */
+    public function getAllOptions(): array
     {
-        $this->options = $options;
-        return $this;
+        $options = [];
+        foreach ($this->options as $option) {
+            if ($option instanceof OptionGroup) {
+                foreach ($option->getOptions() as $o) {
+                    $options[] = $o;
+                }
+            } else {
+                $options[] = $option;
+            }
+        }
+        return $options;
     }
 
     public function getOptions(): array
@@ -44,10 +56,5 @@ trait OptionList
     {
         array_unshift($this->options, $option);
         return $this;
-    }
-
-    public function getValue(): string
-    {
-        return '';
     }
 }

@@ -156,6 +156,9 @@
     <div var="field" id="tpl-form-select">
       <label class="form-label" var="label"></label>
       <select class="form-select" var="element">
+        <optgroup repeat="optgroup">
+          <option repeat="option"></option>
+        </optgroup>
         <option repeat="option"></option>
       </select>
       <div class="form-text text-secondary" choice="notes"></div>
@@ -163,9 +166,9 @@
     </div>
 
     <div var="field" id="tpl-form-checkbox">
+      <input type="hidden" var="shadow" value="">
       <label class="form-label" choice="label"></label>
       <div class="form-check" repeat="option">
-        <input type="hidden" var="shadow" value="">
         <input type="checkbox" class="form-check-input" var="element">
         <label class="form-check-label" var="label"></label>
         <p class="m-0 cb-notes text-muted" choice="notes"></p>
@@ -175,6 +178,7 @@
     </div>
 
     <div var="field" id="tpl-form-radio">
+      <input type="hidden" var="shadow" value="">
       <label class="form-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="radio" class="form-check-input" var="element">
@@ -185,17 +189,17 @@
       <div class="form-text text-danger" choice="error"></div>
     </div>
 
-<!--    <div var="field" id="tpl-form-switch">-->
-<!--      <label class="form-label" choice="label"></label>-->
-<!--      <div class="form-check form-switch" repeat="option">-->
-<!--        <input type="hidden" var="shadow" value="">-->
-<!--        <input type="checkbox" role="switch" class="form-check-input" var="element">-->
-<!--        <label class="form-check-label" var="label"></label>-->
-<!--        <p class="m-0 cb-notes text-muted" choice="notes"></p>-->
-<!--      </div>-->
-<!--      <div class="form-text text-secondary" choice="notes"></div>-->
-<!--      <div class="form-text text-danger" choice="error"></div>-->
-<!--    </div>-->
+    <div var="field" id="tpl-form-switch">
+      <input type="hidden" var="shadow" value="">
+      <label class="form-label" choice="label"></label>
+      <div class="form-check form-switch" repeat="option">
+        <input type="checkbox" role="switch" class="form-check-input" var="element">
+        <label class="form-check-label" var="label"></label>
+        <p class="m-0 cb-notes text-muted" choice="notes"></p>
+      </div>
+      <div class="form-text text-secondary" choice="notes"></div>
+      <div class="form-text text-danger" choice="error"></div>
+    </div>
 
     <div id="tpl-form-null">
       <!-- Just here to allow us to view repeats above - ignore -->

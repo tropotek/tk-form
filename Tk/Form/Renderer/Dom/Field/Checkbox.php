@@ -28,6 +28,9 @@ class Checkbox extends FieldRendererInterface
             $tOpt->appendRepeat();
         }
 
+        // ensure value for unselected checkboxes
+        $template->setAttr('shadow', 'name', $field->getName());
+
         $this->decorate();
 
         return $template;
@@ -48,8 +51,9 @@ class Checkbox extends FieldRendererInterface
             $b = $field->getOnShowOption()->execute($template, $option, $var);
             if ($b === false) return;
         }
+
         if ($option->isSelected()) {
-            $option->setAttr($option->getSelectAttr());
+            $option->setAttr($option->getSelectedAttr());
         }
 
         if ($field->isReadonly()) {
@@ -62,7 +66,8 @@ class Checkbox extends FieldRendererInterface
         $option->setAttr('value', $option->getValue());
 
         $template->setText('label', $option->getName());
-        $id = $field->getId() . '-' . $field->cleanName($option->getName());
+
+        $id = $field->getId() . '-' . $field->cleanName($option->getName() ?: $option->getAttr('name'));
         $template->setAttr('label', 'for', $id);
         $option->setAttr('id', $id);
 
@@ -70,8 +75,6 @@ class Checkbox extends FieldRendererInterface
             $template->setVisible('notes');
             $template->setHtml('notes', $this->optionNotes[$option->getValue()]);
         }
-
-        $template->setAttr('shadow', 'name', $field->getHtmlName());
 
         $template->setAttr('element', $option->getAttrList());
         $template->addCss('element', $option->getCssString());

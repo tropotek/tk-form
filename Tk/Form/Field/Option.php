@@ -10,21 +10,16 @@ class Option
 {
     use AttributesTrait;
 
-    protected string $name = '';
+    protected string       $name         = '';
+    protected string       $selectedAttr = '';
+    protected ?OptionGroup $optgroup     = null;
 
-    protected string $selectAttr = 'selected';
 
-
-    public function __construct(string $name, string $value, string $selectAttr = 'selected')
+    public function __construct(string $name, string $value, string $selectedAttr = 'selected')
     {
-        $this->selectAttr = $selectAttr;
         $this->name = $name;
+        $this->selectedAttr = $selectedAttr;
         $this->setValue($value);
-    }
-
-    static function create(string $name, string $value = '', string $selectAttr = 'selected'): self
-    {
-        return new self($name, $value, $selectAttr);
     }
 
     public function getName(): string
@@ -66,22 +61,33 @@ class Option
 
     public function isSelected(): bool
     {
-        return $this->hasAttr($this->selectAttr);
+        return $this->hasAttr($this->getSelectedAttr());
     }
 
     public function setSelected(bool $b = true): static
     {
         if ($b) {
-            $this->setAttr($this->selectAttr);
+            $this->setAttr($this->getSelectedAttr());
         } else {
-            $this->removeAttr($this->selectAttr);
+            $this->removeAttr($this->getSelectedAttr());
         }
         return $this;
     }
 
-    public function getSelectAttr(): string
+    public function getSelectedAttr(): string
     {
-        return $this->selectAttr;
+        return $this->selectedAttr;
+    }
+
+    public function getOptgroup(): ?OptionGroup
+    {
+        return $this->optgroup;
+    }
+
+    public function setOptgroup(?OptionGroup $optgroup): Option
+    {
+        $this->optgroup = $optgroup;
+        return $this;
     }
 
 }

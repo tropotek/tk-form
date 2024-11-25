@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form\Field;
 
-use Tk\Form\Field\Option\ArrayIterator;
+use Tk\CallbackCollection;
 
 class Checkbox extends Select
 {
@@ -12,12 +12,13 @@ class Checkbox extends Select
     protected array $optionNotes = [];
 
 
-    public function __construct(string $name, null|array|ArrayIterator $optionIterator = null)
+    public function __construct(string $name, array $optionList = [], string $type = self::TYPE_CHECKBOX)
     {
-        if (!$optionIterator) $optionIterator = ['' => '1'];
-        parent::__construct($name, $optionIterator);
-        if (count($optionIterator) > 1) $this->setMultiple(true);
-        $this->setType(self::TYPE_CHECKBOX);
+        $this->onShowOption = CallbackCollection::create();
+
+        if (!$optionList) $optionList = ['1' => ''];
+        if (count($optionList) > 1) $this->setMultiple(true);
+        parent::__construct($name, $optionList, $type);
     }
 
     public function isSwitch(): bool
@@ -40,11 +41,6 @@ class Checkbox extends Select
     {
         $this->optionNotes = $optionNotes;
         return $this;
-    }
-
-    protected function createIterator(array|ArrayIterator $optionIterator = null, string $nameParam = 'name', string $valueParam = 'id', string $selectAttr = 'checked'): ?Option\ArrayIterator
-    {
-        return parent::createIterator($optionIterator, $nameParam,  $valueParam, $selectAttr);
     }
 
 }

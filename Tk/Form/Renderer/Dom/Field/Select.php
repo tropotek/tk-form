@@ -32,11 +32,13 @@ class Select extends FieldRendererInterface
                     $this->showOption($tOpt, $opt);
                     $tOpt->appendRepeat();
                 }
-                $tOptGroup->appendRepeat();
+                $tOptGroup->setAttr('optgroup', $option->getAttrList());
+                $tOptGroup->addCss('optgroup', $option->getCssString());
+                $tOptGroup->appendRepeat('element');
             } else {
                 $tOpt = $template->getRepeat('option');
                 $this->showOption($tOpt, $option);
-                $tOpt->appendRepeat();
+                $tOpt->appendRepeat('element');
             }
         }
 

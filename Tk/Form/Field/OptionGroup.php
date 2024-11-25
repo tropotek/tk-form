@@ -9,8 +9,18 @@ class OptionGroup extends Option
     use OptionList;
 
 
-    static function create(string $name, string $value = '', string $selectAttr = 'selected'): self
+    public function __construct(string $name, string $value = '')
     {
-        return new self($name, $value, $selectAttr);
+        parent::__construct($name, $value);
+    }
+
+    public function getValue(): string
+    {
+        return '';
+    }
+
+    public function setValue(string $value): static
+    {
+        return $this;
     }
 }
