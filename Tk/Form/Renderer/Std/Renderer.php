@@ -17,9 +17,9 @@ class Renderer
     /**
      * Constants for field render tree
      */
-    const GROUP       = '__group';
-    const FIELDSET    = '__fieldset';
-    const FIELD       = '__field';
+    const string GROUP       = '__group';
+    const string FIELDSET    = '__fieldset';
+    const string FIELD       = '__field';
 
     protected array $formTemplates     = [];
     protected array $groupTemplates    = [];
@@ -59,6 +59,7 @@ class Renderer
 //        $e = new FormEvent($this->getForm());
 //        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
 
+        $this->params['renderer'] = $this;
         $this->params += $this->formTemplates['form']['options'] ?? [];
 
         $this->getForm()->setAttr('novalidate', 'novalidate');

@@ -89,25 +89,25 @@ class Select extends FieldInterface
      */
     public function setValue(mixed $value): static
     {
-        $this->value = $value;
         if ($this->isMultiple() && empty($value)) {
-            $this->value = [];
+            $value = [];
         }
+        $this->value = $value;
         $this->clearSelected();
 
         /** @var Option $option */
         foreach ($this->getAllOptions() as $option) {
             if ($this->isMultiple()) {
-                if (is_array($value) && in_array($option->getValue(), $value, $this->isStrict())) {
+                if (is_array($this->value) && in_array($option->getValue(), $this->value, $this->isStrict())) {
                     $option->setSelected();
                 }
             } else {
                 if ($this->isStrict()) {
-                    if ($option->getValue() === $value) {
+                    if ($option->getValue() === $this->value) {
                         $option->setSelected();
                     }
                 } else {
-                    if (!empty($value) && $option->getValue() == $value) {
+                    if (!empty($this->value) && $option->getValue() == $this->value) {
                         $option->setSelected();
                     }
                 }

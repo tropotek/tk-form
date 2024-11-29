@@ -4,14 +4,13 @@ namespace Tk\Form\Action;
 class Submit extends ActionInterface
 {
 
-    const ICON_LEFT = 'left';
-    const ICON_RIGHT = 'right';
+    const string ICON_LEFT = 'left';
+    const string ICON_RIGHT = 'right';
 
     /**
      * The css value for the icon eg `fa fa-check`
      */
     protected string $icon = '';
-
     protected string $iconPosition = self::ICON_LEFT;
 
 

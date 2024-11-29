@@ -15,20 +15,17 @@ abstract class FieldRendererInterface implements RendererInterface
     /**
      * Native form field namespace
      */
-    const FIELD_NS_LIST = [
+    const array FIELD_NS_LIST = [
         'Tk\\Form\\Field',
         'Tk\\Form\\Action'
     ];
 
-    protected Element|null $field = null;
-
-    protected Renderer|null $formRenderer = null;
+    protected ?Element  $field        = null;
 
 
-    public function __construct(Element $field, Renderer $formRenderer)
+    public function __construct(Element $field)
     {
         $this->field = $field;
-        $this->formRenderer = $formRenderer;
     }
 
     protected function decorate(): void
@@ -42,13 +39,15 @@ abstract class FieldRendererInterface implements RendererInterface
             $template->setVisible('notes');
         }
         if ($field->hasError()) {
-            if ($this->getFormRenderer()->getParam('error-css')) {
-                $field->addCss($this->getFormRenderer()->getParam('error-css'));
-                $template->addCss('is-error', $this->getFormRenderer()->getParam('error-css'));
+            if ($field->getParam('error-css')) {
+                $field->addCss($field->getParam('error-css'));
+                $template->addCss('is-error', $field->getParam('error-css'));
             }
             $template->setHtml('error', $field->getError());
             $template->setVisible('error');
         }
+
+        $field->setAttr('name', $field->getHtmlName());
 
         $field->getOnShow()->execute($this, $template);
 
@@ -60,7 +59,7 @@ abstract class FieldRendererInterface implements RendererInterface
 
         // Render Label
         if($field->getLabel()) {
-            $template->setText('label', $field->getLabel());
+            $template->setHtml('label', $field->getLabel());
             $template->setAttr('label', 'for', $field->getId());
             $template->setVisible('label');
         }
@@ -72,12 +71,7 @@ abstract class FieldRendererInterface implements RendererInterface
         return $this->field;
     }
 
-    public function getFormRenderer(): ?Renderer
-    {
-        return $this->formRenderer;
-    }
-
-    public static function createRenderer(FieldInterface $field, Renderer $formRenderer): ?FieldRendererInterface
+    public static function createRenderer(FieldInterface $field): ?FieldRendererInterface
     {
         // field class and namespace
         $pos = intval(strrpos($field::class, '\\'));
@@ -98,7 +92,7 @@ abstract class FieldRendererInterface implements RendererInterface
             $rendererClass = 'Tk\Form\Renderer\Dom\Field\Input';
         }
 
-        $obj = new $rendererClass($field, $formRenderer);
+        $obj = new $rendererClass($field);
         if ($obj instanceof FieldRendererInterface) return $obj;
         return null;
     }

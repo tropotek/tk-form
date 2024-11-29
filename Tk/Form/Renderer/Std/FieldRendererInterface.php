@@ -12,22 +12,18 @@ abstract class FieldRendererInterface
     /**
      * Native form field namespace
      */
-    const FIELD_NS_LIST = [
+    const array FIELD_NS_LIST = [
         'Tk\\Form\\Field',
         'Tk\\Form\\Action'
     ];
 
-    protected Element|null $field = null;
-
-    protected Renderer|null $formRenderer = null;
-
-    protected CurlyTemplate|null $template = null;
+    protected ?Element       $field = null;
+    protected ?CurlyTemplate $template = null;
 
 
-    public function __construct(Element $field, Renderer $formRenderer)
+    public function __construct(Element $field)
     {
         $this->field = $field;
-        $this->formRenderer = $formRenderer;
     }
 
     abstract function show(array $data = []): string;
@@ -43,14 +39,16 @@ abstract class FieldRendererInterface
             ];
         }
         if ($field->hasError()) {
-            if ($this->getFormRenderer()->getParam('error-css')) {
-                $field->getFieldCss()->addCss($this->getFormRenderer()->getParam('error-css'));
-                $field->addCss($this->getFormRenderer()->getParam('error-css'));
+            if ($field->getParam('error-css')) {
+                $field->getFieldCss()->addCss($field->getParam('error-css'));
+                $field->addCss($field->getParam('error-css'));
             }
             $data['errorBlock'][] = [
                 'error' => $field->getError()
             ];
         }
+
+        $field->setAttr('name', $field->getHtmlName());
 
         $field->getOnShow()->execute($this, $data);
 
@@ -74,11 +72,6 @@ abstract class FieldRendererInterface
     public function getField(): ?Element
     {
         return $this->field;
-    }
-
-    public function getFormRenderer(): ?Renderer
-    {
-        return $this->formRenderer;
     }
 
     public function getTemplate(): ?CurlyTemplate

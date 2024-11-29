@@ -6,17 +6,12 @@ use Tk\Form;
 abstract class Element extends \Tk\Ui\Element
 {
 
-    protected ?Form $form = null;
-
-    protected string $id = '';
-
-    protected string $name = '';
-
-    protected string $label = '';
-
-    protected string $notes = '';
-
-    protected array $params = [];
+    protected ?Form  $form   = null;
+    protected string $id     = '';
+    protected string $name   = '';
+    protected string $label  = '';
+    protected string $notes  = '';
+    protected array  $params = [];
 
 
     /**
@@ -54,9 +49,9 @@ abstract class Element extends \Tk\Ui\Element
                 $id = $this->makeRequestKey($this->getName());
             }
             $this->setId($id);
-            if (empty($this->getLabel())) {
-                $this->setLabel(self::makeLabel($this->getName()));
-            }
+//            if (empty($this->getLabel())) {
+//                $this->setLabel(self::makeLabel($this->getName()));
+//            }
         }
         return $this;
     }

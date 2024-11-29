@@ -28,7 +28,7 @@ class InputButton extends FieldRendererInterface
 
         $data['inputGroupCss'] = '';
         if ($field->hasError()) {
-            $data['inputGroupCss'] = $this->getFormRenderer()->getParam('error-css');
+            $data['inputGroupCss'] = $field->getParam('error-css');
         }
 
         return $this->getTemplate()->parse($data);

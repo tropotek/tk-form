@@ -4,7 +4,6 @@ namespace Tk\Form\Field;
 use Tk\CallbackCollection;
 use Tk\Form\Element;
 use Tk\Ui\Attributes;
-use Tk\DataMap\DataTypeInterface;
 
 abstract class FieldInterface extends Element
 {
@@ -38,7 +37,8 @@ abstract class FieldInterface extends Element
     protected string $error       = '';
     protected string $group       = '';
     protected string $fieldset    = '';
-    protected ?bool  $requested   = null;  // was this element passed in the request string
+    protected ?bool  $requested   = null;   // was this element passed in the request string
+    protected bool   $persistent  = false;  // force an empty value when not exists
 
     /**
      * attributes that affect the outer parent elements
@@ -59,6 +59,7 @@ abstract class FieldInterface extends Element
 
         $this->setName($name);
         $this->setType($type);
+        $this->setLabel(self::makeLabel($name));
         $this->addFieldCss('fld fld-'.$this->getHtmlName() . ' fld-'.$this->getType());
     }
 
@@ -91,9 +92,25 @@ abstract class FieldInterface extends Element
         return $this->requested;
     }
 
-    public function setRequested(?bool $requested): FieldInterface
+    public function setRequested(?bool $requested): static
     {
         $this->requested = $requested;
+        return $this;
+    }
+
+    public function isPersistent(): bool
+    {
+        return $this->persistent;
+    }
+
+    /**
+     * Force an empty value (''|[]) to exist in values array when calling Form::setFieldValues()
+     * Use for fields missing $_POST/$_GET value.
+     * Occurs to checkboxes and selects when nothing is selected
+     */
+    public function setPersistent(bool $persistent): static
+    {
+        $this->persistent = $persistent;
         return $this;
     }
 
@@ -118,9 +135,7 @@ abstract class FieldInterface extends Element
             $this->setMultiple(true);
             $n = substr($n, 0, -2);
         }
-        parent::setName($n);
-        $this->setAttr('name', $this->getHtmlName());
-        return $this;
+        return parent::setName($n);
     }
 
     /**

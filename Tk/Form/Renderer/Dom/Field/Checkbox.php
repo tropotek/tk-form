@@ -2,7 +2,6 @@
 
 namespace Tk\Form\Renderer\Dom\Field;
 
-use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Tk\Form\Exception;
 use Tk\Form\Field\Option;
@@ -31,6 +30,9 @@ class Checkbox extends FieldRendererInterface
         // ensure value for unselected checkboxes
         $template->setAttr('shadow', 'name', $field->getName());
 
+//        if (empty($field->getLabel()) && count($field->getOptions()) == 1) {
+//            $field->setLabel('&nbsp;');
+//        }
         $this->decorate();
 
         return $template;
@@ -65,7 +67,7 @@ class Checkbox extends FieldRendererInterface
         $option->setAttr('name', $field->getHtmlName());
         $option->setAttr('value', $option->getValue());
 
-        $template->setText('label', $option->getName());
+        $template->setText('label', $option->getName() ?: '&nbsp;');
 
         $id = $field->getId() . '-' . $field->cleanName($option->getName() ?: $option->getAttr('name'));
         $template->setAttr('label', 'for', $id);

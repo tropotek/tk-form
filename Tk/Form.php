@@ -9,26 +9,26 @@ use Tk\Form\Field\Hidden;
 
 class Form extends Form\Element
 {
-    public static string $CHARSET   = 'UTF-8';
+    public static string $CHARSET          = 'UTF-8';
 
     // All characters are encoded before sent (this is default)
-    const ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
+    const string ENCTYPE_URLENCODED        = 'application/x-www-form-urlencoded';
     // No characters are encoded. This value is required when you are using forms that have a file upload control
-    const ENCTYPE_MULTIPART         = 'multipart/form-data';
+    const string ENCTYPE_MULTIPART         = 'multipart/form-data';
     // Spaces are converted to "+" symbols, but no special characters are encoded
-    const ENCTYPE_PLAIN             = 'text/plain';
+    const string ENCTYPE_PLAIN             = 'text/plain';
 
-    const METHOD_POST               = 'post';
-    const METHOD_GET                = 'get';
-    const METHOD_PUT                = 'put';
-    const METHOD_DELETE             = 'delete';
+    const string METHOD_POST               = 'POST';
+    const string METHOD_GET                = 'GET';
+    const string METHOD_PUT                = 'PUT';
+    const string METHOD_DELETE             = 'DELETE';
 
     /**
      * Default CSRF TTL seconds (15 mins)
      */
-    const CSRF_TTL                  = 60*15;
-    const CSRF_TOKEN                = '_csrf_token';
-    const FORM_ID                   = '_formid';
+    const int    CSRF_TTL                  = 60*15;
+    const string CSRF_TOKEN                = '_csrf_token';
+    const string FORM_ID                   = '_formid';
 
     protected string $id      = '';
     protected array  $fields  = [];
@@ -74,6 +74,8 @@ class Form extends Form\Element
      */
     public function execute(array $values = []): static
     {
+        $this->appendField(new Hidden(self::FORM_ID, $this->getId()));
+
         // add csrf token
         if ($this->getMethod() == self::METHOD_POST) {
             if (!Session::instance()->has($this->getCsrfId())) {
@@ -84,25 +86,23 @@ class Form extends Form\Element
                 Session::instance()->set($this->getCsrfId(), $token, $this->getCsrfTtl());
             }
             $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
-            $this->appendField(new Hidden(self::FORM_ID, $this->getId()));
         }
 
-        // Find the triggered action
-        if ($this->getMethod() == self::METHOD_POST) {
-            foreach ($this->getFields() as $field) {
-                if (!$field instanceof ActionInterface) continue;
-                if (array_key_exists($field->getId(), $values)) {
-                    $this->triggeredAction = $field;
-                    $this->triggeredAction->setValue($values[$field->getId()]);
-                    break;
-                }
-            }
-        }
-
-        if (!$this->isSubmitted() || $_REQUEST[self::FORM_ID] != $this->getId()) {
+        if (!$this->isSubmitted()) {
             $this->executeFields($values);
             return $this;
         }
+
+        // Find the triggered action
+        foreach ($this->getFields() as $field) {
+            if (!$field instanceof ActionInterface) continue;
+            if (array_key_exists($field->getId(), $values)) {
+                $this->triggeredAction = $field;
+                $this->triggeredAction->setValue($values[$field->getId()]);
+                break;
+            }
+        }
+
 
         // validate csrf_token
         if ($this->getMethod() == self::METHOD_POST) {
@@ -149,13 +149,13 @@ class Form extends Form\Element
         /** @var FieldInterface $field */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
-            if (!array_key_exists($field->getName(), $values)) {
+            if (!($field->isPersistent() || array_key_exists($field->getName(), $values))) {
                 $field->setRequested(false);
                 continue;
             }
             $field->setRequested(true);
-            $field->setValue($values[$field->getName()]);
-
+            $default = $field->isMultiple() ? [] : '';
+            $field->setValue($values[$field->getName()] ?? $default);
         }
         return $this;
     }
@@ -221,7 +221,11 @@ class Form extends Form\Element
      */
     public function isSubmitted(): bool
     {
-        return $this->getTriggeredAction() != null;
+        return (
+            (strtoupper($this->getMethod()) == $_SERVER['REQUEST_METHOD']) &&
+            ($_POST[self::FORM_ID] ?? $_GET[self::FORM_ID] ?? '') == $this->getId()
+        );
+        //return $this->getTriggeredAction() != null;
     }
 
     public function clearCsrf(): static
@@ -403,7 +407,7 @@ class Form extends Form\Element
 
     public function getMethod(): string
     {
-        return $this->getAttr('method', self::METHOD_POST);
+        return strtoupper($this->getAttr('method', self::METHOD_POST));
     }
 
     public function setMethod(string $method): static

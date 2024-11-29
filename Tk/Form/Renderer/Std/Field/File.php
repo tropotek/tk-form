@@ -3,7 +3,6 @@
 namespace Tk\Form\Renderer\Std\Field;
 
 use Tk\Form\Exception;
-use Tk\Form\Field\FieldInterface;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
 
 class File extends FieldRendererInterface
@@ -45,7 +44,7 @@ class File extends FieldRendererInterface
         $data['inputGroupAttrs'] = '';
         $data['inputGroupCss'] = '';
         if ($field->hasError()) {
-            $data['inputGroupCss'] = $this->getFormRenderer()->getParam('error-css');
+            $data['inputGroupCss'] = $field->getParam('error-css');
         }
 
         return $this->getTemplate()->parse($data);

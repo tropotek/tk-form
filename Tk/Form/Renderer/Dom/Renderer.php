@@ -2,6 +2,8 @@
 namespace Tk\Form\Renderer\Dom;
 
 use Dom\Builder;
+use Dom\Renderer\DisplayInterface;
+use Dom\Renderer\RendererInterface;
 use Dom\Repeat;
 use Dom\Template;
 use Tk\Exception;
@@ -59,6 +61,7 @@ class Renderer extends \Dom\Renderer\Renderer
         $this->params = [
             'error-css' => 'is-invalid',
             'valid-css' => 'is-valid',
+            'renderer'  => $this,
         ];
 
         // get any data-opt options from the template and remove them
@@ -215,12 +218,25 @@ class Renderer extends \Dom\Renderer\Renderer
      */
     protected function showField(FieldInterface $field): ?Template
     {
-        $template = $this->buildFieldTemplate($field->getType());
-        //$field->replaceParams($this->getParams());      // TODO: do we need this, would be good to deprecate field params
+        if ($field instanceof RendererInterface) {
+            // get template from field object if it is a renderer
+            $template = $field->getTemplate();
+        } else {
+            $template = $this->buildFieldTemplate($field->getType());
+        }
 
-        $renderer = FieldRendererInterface::createRenderer($field, $this);
-        $renderer->setTemplate($template);
-        return $renderer->show();
+        $field->replaceParams($this->getParams());
+
+        if ($field instanceof DisplayInterface) {
+            // render from field object if it is its own renderer
+            $template = $field->show();
+        } else {
+            $renderer = FieldRendererInterface::createRenderer($field);
+            $renderer->setTemplate($template);
+            $template = $renderer->show();
+        }
+
+        return $template;
     }
 
     protected function showGroup(array $fields, string $group): Template
