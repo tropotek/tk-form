@@ -8,7 +8,6 @@ class Html extends FieldInterface
     {
         parent::__construct($name, self::TYPE_HTML);
         parent::setValue($html);
-        $this->setReadonly();
     }
 
     public function setValue(mixed $value): static

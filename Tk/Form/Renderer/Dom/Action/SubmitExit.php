@@ -22,6 +22,9 @@ class SubmitExit extends Submit
         if (is_string($field->getValue())) {
             $template->setAttr('exit', 'value', $field->getValue() . '-exit');
             $template->setAttr('exit', 'title', ucfirst($field->getValue()) . ' and exit');
+            if ($field->isDisabled()) {
+                $template->setAttr('exit', 'disabled', 'disabled');
+            }
         }
 
         return $template;

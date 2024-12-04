@@ -186,7 +186,7 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * Callback: function (FieldInterface $element, Template $template) { }
+     * Callback: function (FieldInterface $field, null|Template|array $template) { }
      */
     public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {

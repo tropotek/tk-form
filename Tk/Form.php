@@ -77,7 +77,7 @@ class Form extends Form\Element
         $this->appendField(new Hidden(self::FORM_ID, $this->getId()));
 
         // add csrf token
-        if ($this->getMethod() == self::METHOD_POST) {
+        if ($this->getMethod() == self::METHOD_POST && $this->csrfTtl > 0) {
             if (!Session::instance()->has($this->getCsrfId())) {
                 $token = md5(uniqid());
                 if (function_exists('openssl_random_pseudo_bytes')) {
@@ -105,11 +105,12 @@ class Form extends Form\Element
 
 
         // validate csrf_token
-        if ($this->getMethod() == self::METHOD_POST) {
+        if ($this->getMethod() == self::METHOD_POST && $this->csrfTtl > 0) {
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
             if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
-                $this->addError('Form submission error. Reload page and try again.');
-                // TODO: can we refresh the token at this point??
+                Session::instance()->remove($this->getCsrfId());
+                Alert::addError('Your form submission time has expired, please try again');
+                Uri::create()->redirect();
             }
         }
 
@@ -387,6 +388,9 @@ class Form extends Form\Element
         return $this->fields[$fieldName] ?? null;
     }
 
+    /**
+     * @return array<string,FieldInterface>
+     */
     public function getFields(): array
     {
         return $this->fields;
