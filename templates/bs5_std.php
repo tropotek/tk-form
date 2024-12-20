@@ -58,12 +58,12 @@ $fieldTemplates['tpl-form-input'] = [
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
         <input class="form-control {css}" {attrs}>
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -78,12 +78,12 @@ $fieldTemplates['tpl-form-input-button'] = [
           <input class="form-control {css}" {attrs}>
           <button class="btn btn-white {buttonCss}" type="button" {buttonAttrs}>{buttonText}</button>
         </div>
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -96,14 +96,14 @@ $fieldTemplates['tpl-form-input-link'] = [
         {/labelBlock}
         <div class="input-group input-group-merge {inputGroupCss}">
           <input class="form-control {css}" {attrs}>
+          {errorBlock}
+            <div class="invalid-feedback" var="error">{error}</div>
+          {/errorBlock}
           <a class="btn btn-white {buttonCss}" {buttonAttrs}>{buttonText}</a>
         </div>
         {noteBlock}
           <div class="form-text text-secondary">{notes}</div>
         {/noteBlock}
-        {errorBlock}
-          <div class="invalid-feedback" var="error">{error}</div>
-        {/errorBlock}
       </div>
     HTML,
 ];
@@ -115,12 +115,12 @@ $fieldTemplates['tpl-form-html'] = [
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
         <div class="{css}" {attrs}>{html}</div>
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -142,12 +142,12 @@ $fieldTemplates['tpl-form-file'] = [
           {/deleteBlock}
         </div>
 
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -159,12 +159,12 @@ $fieldTemplates['tpl-form-textarea'] = [
         <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
         {/labelBlock}
         <textarea class="form-control {css}" {attrs}>{value}</textarea>
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -178,12 +178,12 @@ $fieldTemplates['tpl-form-select'] = [
         <select class="form-select {css}" {attrs}>
           {options}
         </select>
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -204,12 +204,12 @@ $fieldTemplates['tpl-form-checkbox'] = [
             {/noteBlock}
           </div>
         {/optionsBlock}
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];
@@ -230,12 +230,12 @@ $fieldTemplates['tpl-form-radio'] = [
             {/noteBlock}
           </div>
         {/optionsBlock}
-        {noteBlock}
-          <div class="form-text text-secondary">{notes}</div>
-        {/noteBlock}
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
         {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
       </div>
     HTML,
 ];

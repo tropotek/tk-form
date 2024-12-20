@@ -38,8 +38,9 @@ class Form extends Form\Element
     protected ?ActionInterface $triggeredAction = null;
 
 
-    public function __construct(string $formId = 'form')
+    public function __construct(?string $formId = null)
     {
+        if (is_null($formId)) $formId = 'theform';
         $this->setName($formId);
         $this->setId($formId);
         $this->setForm($this);
