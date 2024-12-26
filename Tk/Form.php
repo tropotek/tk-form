@@ -40,7 +40,7 @@ class Form extends Form\Element
 
     public function __construct(?string $formId = null)
     {
-        if (is_null($formId)) $formId = 'theform';
+        if (is_null($formId)) $formId = 'form';
         $this->setName($formId);
         $this->setId($formId);
         $this->setForm($this);
