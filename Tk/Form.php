@@ -23,17 +23,14 @@ class Form extends Form\Element
     const string METHOD_PUT                = 'PUT';
     const string METHOD_DELETE             = 'DELETE';
 
-    /**
-     * Default CSRF TTL seconds (15 mins)
-     */
-    const int    CSRF_TTL                  = 60*15;
+    const int    DEFAULT_CSRF_TTL          = 60*15;     // 15 min
     const string CSRF_TOKEN                = '_csrf_token';
     const string FORM_ID                   = '_formid';
 
     protected string $id      = '';
     protected array  $fields  = [];
     protected array  $errors  = [];
-    protected int    $csrfTtl = self::CSRF_TTL;
+    protected int    $csrfTtl = 0;
 
     protected ?ActionInterface $triggeredAction = null;
 

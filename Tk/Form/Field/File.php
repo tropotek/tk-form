@@ -103,9 +103,6 @@ class File extends Input
      * Use this to move the attached files to a directory in $path
      * The file names will be what the original uploaded file name was.
      *
-     * Any existing files will be overwritten.
-     * Returns an array of file path locations or a single path when not multiple
-     *
      * Array[1] (
      *   [file] => Array[6] (
      *     [name] => 'filename.csv'
@@ -119,27 +116,20 @@ class File extends Input
      *
      * @param string $filename (optional) Only used in single file upload mode
      */
-    public function move(string $path, string $filename = ''): string|array
+    public function move(string $path, string $filename = ''): bool
     {
-        $files = null;
-        try {
-            FileUtil::mkdir($path);
-            if ($this->isMultiple()) {
-                $files = [];
-                foreach ($this->getUploaded() as $file) {
-                    move_uploaded_file($file['tmp_name'], "$path/{$file['name']}");
-                    $files[] = $path . '/' . $file['name'];
-                }
-            } else {
-                $files = '';
-                $file = $this->getUploaded();
-                if (empty($filename)) $filename = $file['name'];
-                move_uploaded_file($file['tmp_name'], "$path/$filename");
+        FileUtil::mkdir($path);
+        if ($this->isMultiple()) {
+            foreach ($this->getUploaded() as $file) {
+                $ok = move_uploaded_file($file['tmp_name'], "$path/{$file['name']}");
+                if (!$ok) return false;
             }
-        } catch (\Exception $e) {
-            $this->setError($e->getMessage());
+        } else {
+            $file = $this->getUploaded();
+            if (empty($filename)) $filename = $file['name'];
+            return move_uploaded_file($file['tmp_name'], "$path/$filename");
         }
-        return $files;
+        return true;
     }
 
     public function getDeleteUrl(): ?Uri
