@@ -108,7 +108,7 @@ abstract class FieldInterface extends Element
      * Use for fields missing $_POST/$_GET value.
      * Occurs to checkboxes and selects when nothing is selected
      */
-    public function setPersistent(bool $persistent): static
+    public function setPersistent(bool $persistent = true): static
     {
         $this->persistent = $persistent;
         return $this;
