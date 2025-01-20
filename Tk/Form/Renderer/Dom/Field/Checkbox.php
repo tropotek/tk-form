@@ -70,9 +70,10 @@ class Checkbox extends FieldRendererInterface
         $template->setAttr('label', 'for', $id);
         $option->setAttr('id', $id);
 
-        if (!empty($this->optionNotes[$option->getValue()])) {
+        $optionNotes = $field->getOptionNotes();
+        if (!empty($optionNotes[$option->getValue()])) {
             $template->setVisible('notes');
-            $template->setHtml('notes', $this->optionNotes[$option->getValue()]);
+            $template->setHtml('notes', $optionNotes[$option->getValue()]);
         }
 
         $template->setAttr('element', $option->getAttrList());
