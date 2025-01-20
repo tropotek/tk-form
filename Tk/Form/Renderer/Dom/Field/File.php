@@ -22,7 +22,7 @@ class File extends FieldRendererInterface
 
         if ($field->getViewUrl()) {
             $template->setAttr('view', 'href', $field->getViewUrl());
-            $template->setAttr('view', 'title', 'View: ' . $field->getViewUrl()->basename());
+            $template->setAttr('view', 'title', 'View: ' . basename($field->getViewUrl()->getPath()));
             $template->setVisible('view');
         }
         if ($field->getDeleteUrl()) {
