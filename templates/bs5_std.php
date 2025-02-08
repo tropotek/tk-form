@@ -40,8 +40,8 @@ $fieldTemplates['form'] = [
           </div>
         {/errors}
 
-        <div class="tk-form-fields row g-3 mt-1">{fields}</div>
-        <div class="tk-actions d-grid gap-2 d-md-flex mt-2">{actions}</div>
+        <div class="tk-form-fields row g-3">{fields}</div>
+        <div class="tk-actions d-grid gap-2 d-md-flex mt-3">{actions}</div>
 
       </form>
     HTML,
