@@ -330,19 +330,19 @@ class Form extends Form\Element
         return $list;
     }
 
-    public function appendField(FieldInterface $field, string $refField = ''): FieldInterface
+    public function appendField(FieldInterface $field, string $after = ''): FieldInterface
     {
         if ($this->getField($field->getName())) {
             throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
         }
         $field->setForm($this);
 
-        $ref = $this->getField($refField);
+        $ref = $this->getField($after);
         if ($ref instanceof FieldInterface) {
             $a = [];
             foreach ($this->fields as $k => $v) {
                 $a[$k] = $v;
-                if ($k === $refField) $a[$field->getName()] = $field;
+                if ($k === $after) $a[$field->getName()] = $field;
             }
             $this->fields = $a;
         } else {
@@ -351,18 +351,18 @@ class Form extends Form\Element
         return $field;
     }
 
-    public function prependField(FieldInterface $field, string $refField = ''): FieldInterface
+    public function prependField(FieldInterface $field, string $before = ''): FieldInterface
     {
         if ($this->getField($field->getName())) {
             throw new \Tk\Form\Exception("Field with name '{$field->getName()}' already exists.");
         }
         $field->setForm($this);
 
-        $ref = $this->getField($refField);
+        $ref = $this->getField($before);
         if ($ref instanceof FieldInterface) {
             $a = [];
             foreach ($this->fields as $k => $v) {
-                if ($k === $refField) $a[$field->getName()] = $field;
+                if ($k === $before) $a[$field->getName()] = $field;
                 $a[$k] = $v;
             }
             $this->fields = $a;
