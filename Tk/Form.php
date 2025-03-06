@@ -153,8 +153,9 @@ class Form extends Form\Element
                 continue;
             }
             $field->setRequested(true);
-            $default = $field->isMultiple() ? [] : '';
-            $field->setValue($values[$field->getName()] ?? $default);
+//            $default = $field->isMultiple() ? [] : '';
+//            $field->setValue($values[$field->getName()] ?? $default);
+            $field->load($values);
         }
         return $this;
     }
@@ -174,14 +175,15 @@ class Form extends Form\Element
             if ($field->isReadonly() || $field->isDisabled()) continue;
             if ($this->isSubmitted() && !$field->isRequested()) continue;
 
-            $value = $field->getValue();
-            if (!$field->isMultiple() && is_array($value)) {
-                foreach ($value as $k => $v) {
-                    $values[$k] = $v;
-                }
-            } else {
-                $values[$field->getName()] = $value;
-            }
+//            $value = $field->getValue();
+//            if (!$field->isMultiple() && is_array($value)) {
+//                foreach ($value as $k => $v) {
+//                    $values[$k] = $v;
+//                }
+//            } else {
+//                $values[$field->getName()] = $value;
+//            }
+            $field->unload($values);
         }
 
         // filter results using supplied filter param if exists

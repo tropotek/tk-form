@@ -68,6 +68,36 @@ abstract class FieldInterface extends Element
      */
     public function execute(array $values = []): static { return $this; }
 
+    /**
+     * Load/set the field with a value from supplied values array
+     *
+     * @param array<string,mixed> $values
+     */
+    public function load(array $values): static
+    {
+        $default = $this->isMultiple() ? [] : '';
+        $this->setValue($values[$this->getName()] ?? $default);
+        return $this;
+    }
+
+    /**
+     * get and set the field value to the supplied values array
+     *
+     * @param array<string,mixed> $values
+     * @return $this
+     */
+    public function unload(array &$values): static
+    {
+        $value = $this->getValue();
+        if (!$this->isMultiple() && is_array($value)) {
+            foreach ($value as $k => $v) {
+                $values[$k] = $v;
+            }
+        } else {
+            $values[$this->getName()] = $value;
+        }
+        return $this;
+    }
 
     /**
      * the value can be an array for a radio/checkbox group or select field
