@@ -122,6 +122,9 @@ class Form extends Form\Element
     }
 
 
+    /**
+     * @deprecated Use Model::mapForm($values)
+     */
     public function mapModel(Model $object): static
     {
         $values = $this->getFieldValues();
@@ -130,6 +133,9 @@ class Form extends Form\Element
         return $this;
     }
 
+    /**
+     * @deprecated Use Model::unmapForm()
+     */
     public function unmapModel(Model $object): array
     {
         $map = $object::getFormMap();
