@@ -28,7 +28,7 @@ class Renderer
     protected Form  $form;
 
 
-    public function __construct(Form $form, string $tplFile = null)
+    public function __construct(Form $form, ?string $tplFile = null)
     {
         $this->form = $form;
         if (!$tplFile) {
@@ -42,7 +42,7 @@ class Renderer
 
     }
 
-    public static function createInlineRenderer(Form $form, string $tplFile = null): self
+    public static function createInlineRenderer(Form $form, ?string $tplFile = null): self
     {
         if (!$tplFile) {
             $tplFile = dirname(__DIR__, 4) . '/templates/bs5_std_inline.php';

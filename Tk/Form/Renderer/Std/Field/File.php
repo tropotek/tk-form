@@ -21,7 +21,7 @@ class File extends FieldRendererInterface
         if ($field->getViewUrl()) {
             $data['viewBlock'][] = [
                 'viewUrl' => '$this->getField()->getViewUrl()',
-                'viewAttrs' => 'title="'.'View: ' . $field->getViewUrl()->basename() . '"',
+                'viewAttrs' => 'title="'.'View: ' . basename($field->getViewUrl()) . '"',
             ];
         }
         if ($field->getDeleteUrl()) {

@@ -20,9 +20,9 @@ class Renderer extends \Dom\Renderer\Renderer
     /**
      * Constants for field render tree
      */
-    const GROUP       = '__group';
-    const FIELDSET    = '__fieldset';
-    const FIELD       = '__field';
+    const string GROUP       = '__group';
+    const string FIELDSET    = '__fieldset';
+    const string FIELD       = '__field';
 
     protected array   $groupTemplates    = [];
     protected array   $fieldsetTemplates = [];
@@ -31,7 +31,7 @@ class Renderer extends \Dom\Renderer\Renderer
     protected Builder $builder;
 
 
-    public function __construct(Form $form, string $tplFile = null)
+    public function __construct(Form $form, ?string $tplFile = null)
     {
         $this->form = $form;
         if (!$tplFile) {
@@ -45,7 +45,7 @@ class Renderer extends \Dom\Renderer\Renderer
         $this->init();
     }
 
-    public static function createInlineRenderer(Form $form, string $tplFile = null): self
+    public static function createInlineRenderer(Form $form, ?string $tplFile = null): self
     {
         if (!$tplFile) {
             $tplFile = dirname(__DIR__, 4) . '/templates/bs5_dom_inline.html';

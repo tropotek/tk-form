@@ -14,7 +14,7 @@ class Submit extends ActionInterface
     protected string $iconPosition = self::ICON_LEFT;
 
 
-    public function __construct(string $name, callable $callback = null)
+    public function __construct(string $name, ?callable $callback = null)
     {
         parent::__construct($name, self::TYPE_SUBMIT, $callback);
     }
@@ -24,7 +24,7 @@ class Submit extends ActionInterface
         return $this->icon;
     }
 
-    public function setIcon(string $icon, string $iconPosition = null): static
+    public function setIcon(string $icon, ?string $iconPosition = null): static
     {
         $this->icon = $icon;
         if ($iconPosition) $this->setIconPosition($iconPosition);

@@ -159,7 +159,7 @@ class File extends Input
         return $this->maxBytes;
     }
 
-    public static function normalize(array $_files, $top = TRUE): array
+    public static function normalize(array $_files, bool $top = true): array
     {
         $files = [];
         foreach ($_files as $name => $file) {

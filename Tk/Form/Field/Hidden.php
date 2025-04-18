@@ -11,12 +11,12 @@ class Hidden extends FieldInterface
         $this->setGroup(self::GROUP_NONE);
     }
 
-    public function setFieldset(string $fieldset, array $attrs = null): static
+    public function setFieldset(string $fieldset, ?array $attrs = null): static
     {
         $this->fieldset = '';
         return $this;
     }
-    public function setGroup(string $group, array $attrs = null): static
+    public function setGroup(string $group, ?array $attrs = null): static
     {
         $this->group = '';
         return $this;

@@ -83,7 +83,7 @@ abstract class FieldInterface extends Element
     /**
      * get and set the field value to the supplied values array
      *
-     * @param array<string,mixed> $values
+     * @param array $values
      * @return $this
      */
     public function unload(array &$values): static
@@ -325,7 +325,7 @@ abstract class FieldInterface extends Element
         return $this->fieldAttr;
     }
 
-    public function setFieldset(string $fieldset, array $attrs = null): static
+    public function setFieldset(string $fieldset, ?array $attrs = null): static
     {
         $this->fieldset = $fieldset;
         if ($attrs) {
@@ -349,7 +349,7 @@ abstract class FieldInterface extends Element
      * It will be up to the renderer where these are placed.
      * You may need to build a custom render to place the fields where you need them
      */
-    public function setGroup(string $group, array $attrs = null): static
+    public function setGroup(string $group, ?array $attrs = null): static
     {
         $this->group = $group;
         if ($attrs) {
