@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 8.0.34 [2025-04-20]:
+-------------------------------
+  - Added students and updated settings
+  - Add checkSelect field and persistand form fields
+  - update form select options
+  - Added orderBy table cell
+
+
 Ver 8.0.32 [2024-11-08]:
 -------------------------------
   - Updated Model to handle DateTimeImmutable
