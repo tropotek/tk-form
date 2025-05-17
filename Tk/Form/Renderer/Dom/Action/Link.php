@@ -4,7 +4,6 @@ namespace Tk\Form\Renderer\Dom\Action;
 
 use Dom\Template;
 use Tk\Form\Exception;
-use Tk\Form\Renderer\Dom\FieldRendererInterface;
 
 class Link extends Submit
 {

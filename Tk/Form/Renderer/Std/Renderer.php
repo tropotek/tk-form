@@ -3,7 +3,6 @@ namespace Tk\Form\Renderer\Std;
 
 use Tk\CurlyTemplate;
 use Tk\Exception;
-use Tk\Form\Event\FormEvent;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form;
 

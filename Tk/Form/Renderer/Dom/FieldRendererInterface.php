@@ -6,7 +6,6 @@ use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Tk\Form\Element;
 use Tk\Form\Field\FieldInterface;
-use Tk\ObjectUtil;
 
 abstract class FieldRendererInterface implements RendererInterface
 {

@@ -2,7 +2,6 @@
 namespace Tk\Form\Renderer\Std\Action;
 
 use Tk\Form\Exception;
-use Tk\Form\Field\FieldInterface;
 
 class SubmitExit extends Submit
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Form;
 
-use Tk\Form;
+//use Tk\Form;
 
 //trait FormTrait
 //{

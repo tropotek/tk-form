@@ -7,7 +7,6 @@ use Dom\Renderer\RendererInterface;
 use Dom\Repeat;
 use Dom\Template;
 use Tk\Exception;
-use Tk\Form\Event\FormEvent;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form;
 
