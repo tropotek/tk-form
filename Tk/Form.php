@@ -2,7 +2,6 @@
 namespace Tk;
 
 use Tk\Db\Model;
-use Tk\Db\Session;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Field\FieldInterface;
 use Tk\Form\Field\Hidden;
