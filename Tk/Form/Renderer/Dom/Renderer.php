@@ -284,7 +284,7 @@ class Renderer extends \Dom\Renderer\Renderer
         }
         $template = $this->getFieldsetTemplate($fieldset, $group);
 
-        if ($template->hasVar('legend')) {
+        if ($template->varExists('legend')) {
             $template->setText('legend', $fieldset);
         }
 
