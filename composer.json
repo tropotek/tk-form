@@ -20,7 +20,8 @@
         }
     },
     "require":  {
-        "ttek/tk-framework": "~8.0.0"
+        "ttek/tk-framework": "~8.0.0",
+        "ttek/tk-domtemplate": "~8.0"
     },
     "extra":  {
         "branch-alias":  {
