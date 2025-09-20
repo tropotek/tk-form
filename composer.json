@@ -1,7 +1,7 @@
 {
     "name": "ttek/tk-form",
     "type": "library",
-    "description": "Tk8 Lib: Form rendering with DOM and PHP templates",
+    "description": "Tk Lib: Form render with DOM and PHP templates",
     "keywords":  [
         "tropotek",
         "Form"
@@ -20,12 +20,12 @@
         }
     },
     "require":  {
-        "ttek/tk-framework": "~8.0.0",
+        "ttek/tk-framework": "~8.0",
         "ttek/tk-domtemplate": "~8.0"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "8.0.x-dev"
+            "dev-master": "8.1.x-dev"
         }
     }
 }
