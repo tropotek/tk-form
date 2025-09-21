@@ -41,7 +41,8 @@ class Form extends Form\Element
         $this->setId($formId);
         $this->setForm($this);
         $this->setMethod(self::METHOD_POST);
-        $this->setAction(Uri::create());
+        $this->setAction('');
+        //$this->setAction(Uri::create());
         $this->setAttr('accept-charset', self::$CHARSET);
     }
 
