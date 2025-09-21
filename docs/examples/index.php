@@ -1,6 +1,5 @@
 <?php
-$basepath = dirname(__FILE__, 3);
-include_once $basepath . '/vendor/autoload.php';
+include_once __DIR__ . '/_prepend.php';
 
 ?>
 <!doctype html>
