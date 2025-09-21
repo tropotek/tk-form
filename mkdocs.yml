@@ -1,0 +1,33 @@
+site_name: PHP TkForm
+site_url: https://tkform.tropotek.com/
+repo_url: https://github.com/tropotek/tk-form/
+site_description: 'A Form lib for the Tk Framework'
+site_author: 'Michael Mifsud <http://www.tropotek.com/>'
+copyright: 'Copyright (c) 2008-present Tropotek'
+use_directory_urls: false
+theme: readthedocs
+
+nav:
+  - Home: index.md
+#  - Dom Template: domTemplate.md
+#  - Dom Form: domForm.md
+#  - Dom Renderer: domRenderer.md
+#  - Dom Parser: domParser.md
+#  - Dom Modifier: domModifier.md
+#  - Dom Builder: domBuilder.md
+  - Form State Chart: stateChart.md
+  - Examples: examples/index.php
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+
+plugins:
+  - search
+
+exclude_docs: |
+  *.py

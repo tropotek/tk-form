@@ -4,7 +4,7 @@ __Project:__ [ttek/tk-form](http://packagist.org/packages/ttek/tk-form)
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
-This is the lib for the Tk Framework HTML Forms
+A Form lib for the Tk Framework
 
 ## Contents
 
