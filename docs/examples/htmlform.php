@@ -2,10 +2,12 @@
 include_once __DIR__ . '/_prepend.php';
 
 
+//vd(\Tk\Uri::create().'');
+
 $form = new \Tk\Form('html-form');
 
 $form->setMethod('post');
-//$form->setAction(\Tk\Uri::create());
+$form->setAction(\Tk\Uri::create());
 $form->setEncType(\Tk\Form::ENCTYPE_MULTIPART);
 
 
