@@ -7,11 +7,6 @@ class Select extends FieldInterface
 {
     use OptionList;
 
-    const array ATTR_SELECTED = [
-        self::TYPE_SELECT   => 'selected',
-        self::TYPE_CHECKBOX => 'checked',
-    ];
-
     protected CallbackCollection $onShowOption;
 
     /**
@@ -19,7 +14,9 @@ class Select extends FieldInterface
      */
     protected bool $strict = false;
 
-
+    /**
+     * @param array<int|string,string> $optionList
+     */
     public function __construct(string $name, array $optionList = [], string $type = self::TYPE_SELECT)
     {
         $this->onShowOption = CallbackCollection::create();
@@ -27,11 +24,14 @@ class Select extends FieldInterface
         $this->initOptionList($optionList);
     }
 
+    /**
+     * @param array<int|string,string> $optionList
+     */
     protected function initOptionList(array $optionList): void
     {
         $selectedAttr = match($this->getType()) {
-            self::TYPE_CHECKBOX => 'checked',
-            default => 'selected',
+            self::TYPE_SELECT => 'selected',
+            default => 'checked',
         };
 
         foreach ($optionList as $value => $name) {
@@ -45,7 +45,7 @@ class Select extends FieldInterface
                 }
                 $this->append($optgroup);
             } else {
-                $this->append(new Option($name, $value, $selectedAttr));
+                $this->append(new Option($name, strval($value), $selectedAttr));
             }
         }
     }

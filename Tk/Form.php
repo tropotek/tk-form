@@ -27,7 +27,9 @@ class Form extends Form\Element
     const string FORM_ID                   = '_formid';
 
     protected string $id      = '';
+    /** @var array<string,FieldInterface> */
     protected array  $fields  = [];
+    /** @var list<string> */
     protected array  $errors  = [];
     protected int    $csrfTtl = 0;
 
@@ -66,8 +68,10 @@ class Form extends Form\Element
     /**
      * Process the form request.
      *
-     * The values should be that from a get or post request
+     * The values should be that from a GET or POST request
      * this is left up to the user to source and send through.
+     *
+     * @param array<string,mixed> $values
      */
     public function execute(array $values = []): static
     {
@@ -100,18 +104,19 @@ class Form extends Form\Element
             }
         }
 
-
         // validate csrf_token
         if ($this->getMethod() == self::METHOD_POST && $this->csrfTtl > 0) {
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
             if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
                 Session::instance()->remove($this->getCsrfId());
-                Alert::addError('Your form submission time has expired, please try again');
+                //Alert::addError('Your form submission time has expired, please try again');
+                $this->addError('Your form submission time has expired, please try again');
                 Uri::create()->redirect();
             }
         }
 
         $this->setFieldValues($values);
+        $this->validateFields($values);
         $this->executeFields($values);
 
         // get the triggered Form event action and execute callbacks if present.
@@ -120,6 +125,17 @@ class Form extends Form\Element
         return $this;
     }
 
+    /**
+     * @param array<string,mixed> $values
+     */
+    protected function validateFields(array $values): static
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ActionInterface) continue;
+            $field->getValidators()->execute($field, $values);
+        }
+        return $this;
+    }
 
     /**
      * @deprecated Use Model::mapForm($values)
@@ -134,6 +150,8 @@ class Form extends Form\Element
 
     /**
      * @deprecated Use Model::unmapForm()
+     *
+     * @return array<string,mixed>
      */
     public function unmapModel(Model $object): array
     {
@@ -147,10 +165,11 @@ class Form extends Form\Element
      * Loads the fields with values from the array.
      * EG:
      *   $array['field1'] = 'value1';
+     *
+     * @param array<string,mixed> $values
      */
     public function setFieldValues(array $values): static
     {
-        /** @var FieldInterface $field */
         foreach ($this->getFields() as $field) {
             if ($field instanceof ActionInterface) continue;
             if (!($field->isPersistent() || array_key_exists($field->getName(), $values))) {
@@ -158,8 +177,6 @@ class Form extends Form\Element
                 continue;
             }
             $field->setRequested(true);
-//            $default = $field->isMultiple() ? [] : '';
-//            $field->setValue($values[$field->getName()] ?? $default);
             $field->load($values);
         }
         return $this;
@@ -169,25 +186,18 @@ class Form extends Form\Element
      * This will return an array of the field's values,
      * $search can be a regex string to filter value keys using preg_match()
      * or it can be an array of field names that will be returned
+     *
+     * @param string|list<string>|null $search
+     * @return array<string,mixed>
      */
     public function getFieldValues(string|array|null $search = null): array
     {
         $values = [];
 
-        /* @var $field FieldInterface */
         foreach ($this->getFields() as $field) {
             // remove values from array
             if ($field->isReadonly() || $field->isDisabled()) continue;
             if ($this->isSubmitted() && !$field->isRequested()) continue;
-
-//            $value = $field->getValue();
-//            if (!$field->isMultiple() && is_array($value)) {
-//                foreach ($value as $k => $v) {
-//                    $values[$k] = $v;
-//                }
-//            } else {
-//                $values[$field->getName()] = $value;
-//            }
             $field->unload($values);
         }
 
@@ -196,7 +206,7 @@ class Form extends Form\Element
             $a = [];
             if (is_string($search)) {
                 foreach ($values as $k => $v) {
-                    if (!preg_match($search, $k)) continue;
+                    if (!preg_match($search, strval($k))) continue;
                     $a[$k] = $v;
                 }
             } elseif (is_array($search)) {
@@ -231,7 +241,6 @@ class Form extends Form\Element
             (strtoupper($this->getMethod()) == $_SERVER['REQUEST_METHOD']) &&
             ($_POST[self::FORM_ID] ?? $_GET[self::FORM_ID] ?? '') == $this->getId()
         );
-        //return $this->getTriggeredAction() != null;
     }
 
     public function clearCsrf(): static
@@ -267,17 +276,26 @@ class Form extends Form\Element
         return $this;
     }
 
+    /**
+     * @param list<string> $errors
+     */
     public function setErrors(array $errors): static
     {
         $this->errors = $errors;
         return $this;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getErrors(): array
     {
         return $this->errors;
     }
 
+    /**
+     * @return array<int|string,string>
+     */
     public function getAllErrors(): array
     {
         $e = $this->getErrors();
@@ -301,18 +319,22 @@ class Form extends Form\Element
      *
      * If the field is not found in the form then the error message is added to
      * the form error messages.
+     *
+     * @param array<string,string> $errors
      */
     public function addFieldErrors(array $errors): static
     {
-        foreach ($errors as $fieldName => $errorList) {
+        foreach ($errors as $fieldName => $error) {
             $field = $this->getField($fieldName);
-            $field?->setError($errorList);
+            $field?->setError($error);
         }
         return $this;
     }
 
     /**
      * This is called after new data loaded into the fields
+     *
+     * @param array<string,mixed> $values
      */
     protected function executeFields(array $values): static
     {
@@ -326,7 +348,7 @@ class Form extends Form\Element
     /**
      * Return all submit/button event fields
      *
-     * @return ActionInterface[]|array
+     * @return array<int,ActionInterface>
      */
     protected function getEventFields(): array
     {

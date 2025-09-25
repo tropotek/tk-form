@@ -68,6 +68,27 @@ $fieldTemplates['tpl-form-input'] = [
     HTML,
 ];
 
+$fieldTemplates['tpl-form-input-group'] = [
+    'template' => <<<HTML
+      <div class="{fieldCss}" {fieldAttrs}>
+        {labelBlock}
+        <label class="form-label {labelCss}" {labelAttrs}>{label}</label>
+        {/labelBlock}
+        <div class="input-group input-group-merge {inputGroupCss}">
+          {preBlock}<span class="input-group-text">{pre}</span>{/preBlock}
+          <input class="form-control {css}" {attrs}>
+          {postBlock}<span class="input-group-text">{post}</span>{/postBlock}
+        </div>
+        {errorBlock}
+          <div class="invalid-feedback" var="error">{error}</div>
+        {/errorBlock}
+        {noteBlock}
+          <div class="form-text text-secondary">{notes}</div>
+        {/noteBlock}
+      </div>
+    HTML,
+];
+
 $fieldTemplates['tpl-form-input-button'] = [
     'template' => <<<HTML
       <div class="{fieldCss}" {fieldAttrs}>
@@ -76,7 +97,7 @@ $fieldTemplates['tpl-form-input-button'] = [
         {/labelBlock}
         <div class="input-group input-group-merge {inputGroupCss}">
           <input class="form-control {css}" {attrs}>
-          <button class="btn btn-white {buttonCss}" type="button" {buttonAttrs}>{buttonText}</button>
+          <button class="btn btn-outline-secondary {buttonCss}" type="button" {buttonAttrs}>{buttonText}</button>
         </div>
         {errorBlock}
           <div class="invalid-feedback" var="error">{error}</div>
@@ -99,7 +120,7 @@ $fieldTemplates['tpl-form-input-link'] = [
           {errorBlock}
             <div class="invalid-feedback" var="error">{error}</div>
           {/errorBlock}
-          <a class="btn btn-white {buttonCss}" {buttonAttrs}>{buttonText}</a>
+          <a class="btn btn-outline-secondary {buttonCss}" {buttonAttrs}>{buttonText}</a>
         </div>
         {noteBlock}
           <div class="form-text text-secondary">{notes}</div>
@@ -135,10 +156,10 @@ $fieldTemplates['tpl-form-file'] = [
         <div class="input-group input-group-merge {inputGroupCss}" {inputGroupAttrs}>
           <input class="form-control {css}" {attrs}/>
           {viewBlock}
-            <a class="btn btn-white" href="{viewUrl}" target="_blank" {viewAttrs}><i class="fa fa-eye"></i></a>
+            <a class="btn btn-outline-secondary" href="{viewUrl}" target="_blank" {viewAttrs}><i class="fa fa-eye"></i></a>
           {/viewBlock}
           {deleteBlock}
-            <a class="btn btn-white" href="{deleteUrl}" title="Delete" data-confirm="Are you sure you want to delete this file?" {deleteAttrs}><i class="fa fa-trash"></i></a>
+            <a class="btn btn-outline-secondary" href="{deleteUrl}" title="Delete" data-confirm="Are you sure you want to delete this file?" {deleteAttrs}><i class="fa fa-trash"></i></a>
           {/deleteBlock}
         </div>
 
@@ -282,10 +303,5 @@ $fieldTemplates['tpl-form-link'] = [
       </a>
     HTML,
 ];
-
-
-
-
-
 
 return $fieldTemplates;

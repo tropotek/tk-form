@@ -9,6 +9,9 @@ use Tk\Form\Renderer\Std\FieldRendererInterface;
 class Checkbox extends FieldRendererInterface
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         /** @var \Tk\Form\Field\Checkbox $field */
@@ -27,6 +30,9 @@ class Checkbox extends FieldRendererInterface
         return $this->getTemplate()->parse($data);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function showOption(Option $option): array
     {
         /** @var \Tk\Form\Field\Checkbox $field */

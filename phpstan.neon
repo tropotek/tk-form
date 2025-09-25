@@ -10,7 +10,7 @@ parameters:
     - docs
     - site
   paths:
-    - Dom
-  ignoreErrors:
-    - identifier: class.notFound
+    - Tk
+#  ignoreErrors:
+#    - identifier: class.notFound
 #    - identifier: missingType.iterableValue

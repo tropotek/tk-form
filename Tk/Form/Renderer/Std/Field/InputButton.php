@@ -8,11 +8,18 @@ use Tk\Form\Renderer\Std\FieldRendererInterface;
 class InputButton extends FieldRendererInterface
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         $field = $this->getField();
         if (!($field instanceof \Tk\Form\Field\InputButton)) {
             throw new Exception("Invalid field renderer selected");
+        }
+
+        if (!(is_array($field->getValue()) || is_object($field->getValue()))) {
+            $field->setAttr('value', $field->getValue());
         }
 
         $data = $this->decorate($data);

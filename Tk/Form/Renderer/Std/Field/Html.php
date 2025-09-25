@@ -9,6 +9,9 @@ use Tk\Form\Renderer\Std\FieldRendererInterface;
 class Html extends FieldRendererInterface
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         $data = $this->decorate($data);

@@ -26,8 +26,15 @@ abstract class FieldRendererInterface
         $this->field = $field;
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     abstract function show(array $data = []): string;
 
+    /**
+     * @param array<string,mixed> $data
+     * @return array<string,mixed>
+     */
     protected function decorate(array $data = []): array
     {
         /** @var FieldInterface $field */
@@ -48,7 +55,9 @@ abstract class FieldRendererInterface
             ];
         }
 
-        $field->setAttr('name', $field->getHtmlName());
+        if (empty($field->getAttr('name'))) {
+            $field->setAttr('name', $field->getHtmlName());
+        }
 
         $field->getOnShow()->execute($this, $data);
 

@@ -8,6 +8,9 @@ use Tk\Form\Renderer\Std\FieldRendererInterface;
 class File extends FieldRendererInterface
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         $field = $this->getField();

@@ -19,7 +19,7 @@ abstract class FieldRendererInterface implements RendererInterface
         'Tk\\Form\\Action'
     ];
 
-    protected ?Element  $field        = null;
+    protected ?Element  $field = null;
 
 
     public function __construct(Element $field)
@@ -48,7 +48,7 @@ abstract class FieldRendererInterface implements RendererInterface
 
         $field->setAttr('name', $field->getHtmlName());
 
-        $field->getOnShow()->execute($this, $template);
+        $field->getOnShow()->execute($field, $template);
 
         // Add any attributes
         $template->addCss('field', $field->getFieldCss()->getCssList());

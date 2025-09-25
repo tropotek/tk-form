@@ -1,0 +1,10 @@
+
+
+
+pre {
+    border: 1px solid #CCC;
+    padding: 1em;
+    background-color: #EEE;
+    text-align: left;
+    overflow: auto;
+}

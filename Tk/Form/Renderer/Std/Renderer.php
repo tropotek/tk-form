@@ -20,9 +20,13 @@ class Renderer
     const string FIELDSET    = '__fieldset';
     const string FIELD       = '__field';
 
+    /** @var array<string,array<string,string>> */
     protected array $formTemplates     = [];
+    /** @var array<string,array<string,string>> */
     protected array $groupTemplates    = [];
+    /** @var array<string,array<string,string>> */
     protected array $fieldsetTemplates = [];
+    /** @var array<string,mixed> */
     protected array $params            = [];
     protected Form  $form;
 
@@ -55,13 +59,8 @@ class Renderer
      */
     function show(): string
     {
-//        $e = new FormEvent($this->getForm());
-//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
-
         $this->params['renderer'] = $this;
         $this->params += $this->formTemplates['form']['options'] ?? [];
-
-        $this->getForm()->setAttr('novalidate', 'novalidate');
 
         $ctForm = new CurlyTemplate($this->formTemplates['form']['template'] ?? '');
 
@@ -78,8 +77,6 @@ class Renderer
         // Show all fields
         $data = $data + $this->showFields();
 
-//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
-
         $html = $ctForm->parse($data);
         $script = $this->formTemplates['form']['script'] ?? '';
 
@@ -88,6 +85,8 @@ class Renderer
 
     /**
      * Render Fields
+     *
+     * @return array<string,string>
      */
     protected function showFields(): array
     {
@@ -145,6 +144,8 @@ class Renderer
     protected function showField(FieldInterface $field): string
     {
         $tpl = $this->buildFieldTemplate($field->getType());
+
+        $field->replaceParams($this->getParams());
 
         $renderer = FieldRendererInterface::createRenderer($field, $this);
         $renderer->setTemplate($tpl);
@@ -216,6 +217,9 @@ class Renderer
 
     /**
      * Sort all fields into their groups and fieldsets
+     *
+     * @param array<string,FieldInterface> $fieldList
+     * @return array<string,mixed>
      */
     protected function getRenderTree(array $fieldList): array
     {
@@ -232,6 +236,7 @@ class Renderer
             }
             if ($field->getGroup()) {
                 if ($field->getFieldset()) {
+                    // @phpstan-ignore-next-line
                     $sets[self::GROUP][$field->getGroup()][self::FIELDSET][$field->getFieldset()][] = $field;
                 } else {
                     $sets[self::GROUP][$field->getGroup()][] = $field;
@@ -320,6 +325,9 @@ class Renderer
         return $this;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getParams(): array
     {
         return $this->params;

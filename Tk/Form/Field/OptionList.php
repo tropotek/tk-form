@@ -11,6 +11,8 @@ trait OptionList
 
     /**
      * returns all options as a flat array, OptionGroups are removed
+     *
+     * @return array<int,Option>
      */
     public function getAllOptions(): array
     {
@@ -27,6 +29,9 @@ trait OptionList
         return $options;
     }
 
+    /**
+     * @return array<int,Option>
+     */
     public function getOptions(): array
     {
         return $this->options;

@@ -9,6 +9,7 @@ theme: readthedocs
 
 nav:
   - Home: index.md
+  - Form: Form.md
 #  - Dom Template: domTemplate.md
 #  - Dom Form: domForm.md
 #  - Dom Renderer: domRenderer.md
@@ -16,7 +17,6 @@ nav:
 #  - Dom Modifier: domModifier.md
 #  - Dom Builder: domBuilder.md
   - Form State Chart: stateChart.md
-  - Examples: examples/index.php
 
 markdown_extensions:
   - toc:

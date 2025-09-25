@@ -11,12 +11,15 @@ abstract class Element extends \Tk\Ui\Element
     protected string $name   = '';
     protected string $label  = '';
     protected string $notes  = '';
+    /** @var array<string,mixed> */
     protected array  $params = [];
 
 
     /**
      * The parent form should call all child fields and action execute() methods
      * once called.
+     *
+     * @param array<string,mixed> $values
      */
     abstract public function execute(array $values = []): static;
 
@@ -167,12 +170,18 @@ abstract class Element extends \Tk\Ui\Element
         return array_key_exists($name, $this->params);
     }
 
+    /**
+     * @param array<string,mixed> $params
+     */
     public function replaceParams(array $params): static
     {
         $this->params = $params;
         return $this;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getParams(): array
     {
         return $this->params;

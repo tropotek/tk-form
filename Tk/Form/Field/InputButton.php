@@ -36,7 +36,10 @@ class InputButton extends Input
         return $this;
     }
 
-    public function setBtnAttr(array|string $name, ?string $value = null): static
+    /**
+     * @param string|array<string,string> $name
+     */
+    public function setBtnAttr(string|array $name, ?string $value = null): static
     {
         $this->btnAttr->setAttr($name, $value);
         return $this;

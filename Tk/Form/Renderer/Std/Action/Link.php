@@ -6,6 +6,9 @@ use Tk\Form\Exception;
 
 class Link extends Submit
 {
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         $field = $this->getField();

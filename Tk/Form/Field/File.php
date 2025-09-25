@@ -49,6 +49,8 @@ class File extends Input
 
     /**
      * returns an object or an array depending on the uploaded files
+     *
+     * @return array<string,mixed>|null
      */
     public function getUploaded(): ?array
     {
@@ -57,22 +59,24 @@ class File extends Input
 
     /**
      * Always returns an array of uploads
+     *
+     * @return array<int,array<string,mixed>>
      */
     public function getUploads(): array
     {
-        $files = self::normalize($_FILES);
         $up = [];
 
-        if (isset($files[$this->getName()]['name'])) {    // single file returned
-            if (($files[$this->getName()]['error'] ?? 0) != UPLOAD_ERR_NO_FILE) {
-                $up[] = $files[$this->getName()];
-            }
-        } else {    // multiple files returned
-            foreach ($files[$this->getName()] ?? [] as $file) {
-                if (($file['error'] ?? 0) != UPLOAD_ERR_NO_FILE) {
-                    $up[] = $file;
-                }
-            }
+        // single file returned
+        if (!is_array($_FILES[$this->getName()]['name'])) {
+            return [$_FILES[$this->getName()]];
+        }
+
+        // multiple files returned
+        $files = self::normalize($_FILES);
+        if (!count($files[$this->getName()])) return $up;
+
+        foreach ($files[$this->getName()] as $file) {
+            $up[] = $file;
         }
 
         return $up;
@@ -159,26 +163,26 @@ class File extends Input
         return $this->maxBytes;
     }
 
+    /**
+     * @param array<string, array<string, list<mixed>>> $_files
+     * @return array<string|int, mixed>
+     */
     public static function normalize(array $_files, bool $top = true): array
     {
         $files = [];
         foreach ($_files as $name => $file) {
-            if ($top) {
-                $subName = $file['name'];
-            } else {
-                $subName = $name;
-            }
+            $subName = $top ? $file['name'] : $name;
 
             if (is_array($subName)) {
                 foreach (array_keys($subName) as $key) {
-                    $files[$name][$key] = array(
+                    $files[$name][$key] = [
                         'name'     => $file['name'][$key],
                         'type'     => $file['type'][$key],
                         'tmp_name' => $file['tmp_name'][$key],
                         'error'    => $file['error'][$key],
                         'size'     => $file['size'][$key],
-                    );
-                    $files[$name] = self::normalize($files[$name], FALSE);
+                    ];
+                    $files[$name] = self::normalize($files[$name], false);
                 }
             } else {
                 $files[$name] = $file;

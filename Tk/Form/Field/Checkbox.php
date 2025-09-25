@@ -9,9 +9,13 @@ class Checkbox extends Select
      * Add toggle switch classes to template
      */
     protected bool  $switch      = false;
+    /** @var array<string,string>  */
     protected array $optionNotes = [];
 
 
+    /**
+     * @param array<int|string,string> $optionList
+     */
     public function __construct(string $name, array $optionList = [], string $type = self::TYPE_CHECKBOX)
     {
         $this->onShowOption = CallbackCollection::create();
@@ -32,11 +36,17 @@ class Checkbox extends Select
         return $this;
     }
 
+    /**
+     * @return array<string,string>
+     */
     public function getOptionNotes(): array
     {
         return $this->optionNotes;
     }
 
+    /**
+     * @param array<string,string> $optionNotes
+     */
     public function setOptionNotes(array $optionNotes): Checkbox
     {
         $this->optionNotes = $optionNotes;

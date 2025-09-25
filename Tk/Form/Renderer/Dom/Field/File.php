@@ -33,7 +33,7 @@ class File extends FieldRendererInterface
         $this->decorate();
 
         $preNotes = sprintf('Max File Size: <b>%s</b><br/>', \Tk\FileUtil::bytes2String($field->getMaxBytes(), 0));
-        $notes = $template->getVar('notes')->nodeValue;
+        $notes = $template->getNode(Template::TYPE_VAR, 'notes')->nodeValue;
         $template->setHtml('notes', $preNotes . $notes);
 
         return $template;

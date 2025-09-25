@@ -6,6 +6,9 @@ use Tk\Form\Exception;
 class SubmitExit extends Submit
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         $data['name'] = $this->getField()->getId();

@@ -23,8 +23,15 @@ class Renderer extends \Dom\Renderer\Renderer
     const string FIELDSET    = '__fieldset';
     const string FIELD       = '__field';
 
+    /** @var array<string,Template> */
+    protected array   $formTemplates     = [];
+    /** @var array<string,Template> */
+    protected array   $fieldTemplates    = [];
+    /** @var array<string,Template> */
     protected array   $groupTemplates    = [];
+    /** @var array<string,array<string,Template>> */
     protected array   $fieldsetTemplates = [];
+    /** @var array<string,mixed> */
     protected array   $params            = [];
     protected Form    $form;
     protected Builder $builder;
@@ -105,6 +112,9 @@ class Renderer extends \Dom\Renderer\Renderer
         return $this;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getParams(): array
     {
         return $this->params;
@@ -143,15 +153,11 @@ class Renderer extends \Dom\Renderer\Renderer
         if (!$this->hasTemplate()) throw new \Tk\Form\Exception('Form template not found!');
         $template = $this->getTemplate();
 
-//        $e = new FormEvent($this->getForm());
-//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW_PRE);
-
         // Show all fields
         $this->showFields($template);
 
         // Set form attrs
         $list = $this->getForm()->getAttrList();
-        //unset($list['name']); // remove name from the attrs as the form does not need it
         $template->setAttr('form', $list);
         $template->addCss('form', $this->getForm()->getCssList());
 
@@ -163,7 +169,6 @@ class Renderer extends \Dom\Renderer\Renderer
             $template->setVisible('errors');
         }
 
-//        $this->getForm()->getDispatcher()?->dispatch($e, Form\FormEvents::FORM_SHOW);
         return $template;
     }
 
@@ -175,7 +180,6 @@ class Renderer extends \Dom\Renderer\Renderer
         // Build a render tree with the groups, fieldsets in the correct order
         $fields = $this->getRenderTree($this->getForm()->getFields());
 
-        /* @var $children Form\Field\FieldInterface|Form\Field\FieldInterface[] */
         foreach ($fields as $id => $children) {
             if ($id == self::GROUP) {
                 foreach ($children as $group => $grpFields) {
@@ -238,6 +242,9 @@ class Renderer extends \Dom\Renderer\Renderer
         return $template;
     }
 
+    /**
+     * @param array<int, mixed> $fields
+     */
     protected function showGroup(array $fields, string $group): Template
     {
         if (!$this->hasGroupTemplate($group)) {
@@ -251,7 +258,6 @@ class Renderer extends \Dom\Renderer\Renderer
         }
         $template = $this->getGroupTemplate($group);
 
-        /* @var $children Form\Field\FieldInterface|array */
         foreach ($fields as $key => $children) {
             if ($key == self::FIELDSET) {
                 foreach ($children as $fieldset => $fsChildren) {
@@ -271,6 +277,9 @@ class Renderer extends \Dom\Renderer\Renderer
         return $template;
     }
 
+    /**
+     * @param array<string,FieldInterface> $fields
+     */
     protected function showFieldset(array $fields, string $fieldset, string $group = ''): Template
     {
         if (!$this->hasFieldsetTemplate($fieldset, $group)) {
@@ -288,20 +297,20 @@ class Renderer extends \Dom\Renderer\Renderer
             $template->setText('legend', $fieldset);
         }
 
-        /** @var Form\Field\FieldInterface $field */
         foreach ($fields as $field) {
             $template->setAttr('fields', $field->getFieldsetAttr()->getAttrList());
             $ftpl = $this->showField($field);
             if ($ftpl) $template->appendTemplate('fields', $ftpl);
-            //$template->appendTemplate('fields', $field->show());
         }
 
         return $template;
     }
 
-
     /**
      * Sort all fields into their groups and fieldsets
+     *
+     * @param array<string,FieldInterface> $fieldList
+     * @return array<string,mixed>
      */
     protected function getRenderTree(array $fieldList): array
     {
@@ -310,7 +319,7 @@ class Renderer extends \Dom\Renderer\Renderer
             self::FIELDSET => [],
             self::FIELD => [],
         ];
-        /* @var $field Form\Field\FieldInterface */
+
         foreach ($fieldList as $field) {
             if ($field instanceof Form\Field\Hidden) {
                 $sets[self::FIELD][] = $field;
@@ -318,6 +327,7 @@ class Renderer extends \Dom\Renderer\Renderer
             }
             if ($field->getGroup()) {
                 if ($field->getFieldset()) {
+                    // @phpstan-ignore-next-line
                     $sets[self::GROUP][$field->getGroup()][self::FIELDSET][$field->getFieldset()][] = $field;
                 } else {
                     $sets[self::GROUP][$field->getGroup()][] = $field;

@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . '/_prepend.php';
+require_once(__DIR__ . '/_prepend.php');
 
 ?>
 <!doctype html>
@@ -19,8 +19,20 @@ include_once __DIR__ . '/_prepend.php';
     <h1>Tk Form Examples</h1>
     <div class="col-lg-8 px-0">
         <p>
-            Descriptions and examples of Tk Form.
+            The TK Form library is a PHP library for creating forms.<br>
+            Originally created to facilitate the creation of forms for
+            <a href="https://github.com/tropotek/tk-framework" target="_blank">TkLib</a> PHP framework.
         </p>
+        <p>
+            Use these pages to test the library as it can be hard to test the different renderers within a project.
+        </p>
+
+        <hr class="col-1 my-4">
+
+        <ul>
+            <li><a href="htmlform.php">HTML Form example</a></li>
+            <li><a href="domform.php">DOM Form example</a></li>
+        </ul>
 
         <hr class="col-1 my-4">
 
@@ -29,6 +41,5 @@ include_once __DIR__ . '/_prepend.php';
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

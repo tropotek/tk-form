@@ -32,14 +32,6 @@ Or add the following to your composer.json file:
 ```
 
 
-### TODO
-
-- Implement fieldsets and tabgroups using javascript and tags data or role attributes
-- Add more functionality to file uploads using jquery
-- Implement a WYSIWYG editor in javascript, idealy using classes sowe can make them selectable
-- Implement select2 for multi select fields
-
-
 ### Form State Chart
 
 ```

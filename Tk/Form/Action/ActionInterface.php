@@ -23,7 +23,9 @@ abstract class ActionInterface extends Field\FieldInterface
     }
 
     /**
-     * Execute this events callback methods/functions
+     * Execute this event's callback methods/functions
+     *
+     * @param array<string,mixed> $values
      */
     public function execute(array $values = []): static
     {

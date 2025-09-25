@@ -3,10 +3,9 @@
 namespace Tk\Form\Renderer\Std\Field;
 
 use Tk\Form\Exception;
-use Tk\Form\Field\FieldInterface;
 use Tk\Form\Renderer\Std\FieldRendererInterface;
 
-class Input extends FieldRendererInterface
+class InputGroup extends FieldRendererInterface
 {
 
     /**
@@ -15,7 +14,7 @@ class Input extends FieldRendererInterface
     function show(array $data = []): string
     {
         $field = $this->getField();
-        if (!($field instanceof FieldInterface)) {
+        if (!($field instanceof \Tk\Form\Field\InputGroup)) {
             throw new Exception("Invalid field renderer selected");
         }
 
@@ -24,6 +23,19 @@ class Input extends FieldRendererInterface
         }
 
         $data = $this->decorate($data);
+
+        if ($field->getPreText()) {
+            $data['preBlock']['pre'] = $field->getPreText();
+        }
+        if ($field->getPostText()) {
+            $data['postBlock']['post'] = $field->getPostText();
+        }
+
+        $data['inputGroupCss'] = '';
+        if ($field->hasError()) {
+            $data['inputGroupCss'] = $field->getParam('error-css');
+        }
+
         return $this->getTemplate()->parse($data);
     }
 

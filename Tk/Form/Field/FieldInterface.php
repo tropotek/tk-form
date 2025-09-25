@@ -31,7 +31,7 @@ abstract class FieldInterface extends Element
     const string GROUP_NONE    = 'none';
     const string GROUP_ACTIONS = 'actions';
 
-
+    /** @var string|array<int|string,string> */
     protected string|array $value = '';
     protected string $type        = '';
     protected string $error       = '';
@@ -47,6 +47,7 @@ abstract class FieldInterface extends Element
     protected Attributes $fieldsetAttr; // fieldset element attrs
     protected Attributes $groupAttr;    // group/tab element attrs
     protected CallbackCollection $onShow;
+    protected CallbackCollection $onValidate;
 
 
     public function __construct(string $name, string $type = 'text')
@@ -55,6 +56,7 @@ abstract class FieldInterface extends Element
         $this->groupAttr    = new Attributes();
         $this->fieldsetAttr = new Attributes();
         $this->onShow       = new CallbackCollection();
+        $this->onValidate   = new CallbackCollection();
         $this->type         = $type;
 
         $this->setName($name);
@@ -69,7 +71,7 @@ abstract class FieldInterface extends Element
     public function execute(array $values = []): static { return $this; }
 
     /**
-     * Load/set the field with a value from supplied values array
+     * Load/set the field with a value from a supplied values array
      *
      * @param array<string,mixed> $values
      */
@@ -83,7 +85,7 @@ abstract class FieldInterface extends Element
     /**
      * get and set the field value to the supplied values array
      *
-     * @param array $values
+     * @param array<int|string, mixed> $values
      * @return $this
      */
     public function unload(array &$values): static
@@ -101,6 +103,8 @@ abstract class FieldInterface extends Element
 
     /**
      * the value can be an array for a radio/checkbox group or select field
+     *
+     * @param string|array<string, mixed> $value
      */
     public function setValue(string|array $value): static
     {
@@ -108,6 +112,9 @@ abstract class FieldInterface extends Element
         return $this;
     }
 
+    /**
+     * @return string|array<int|string, mixed>
+     */
     public function getValue(): string|array
     {
         return $this->value;
@@ -134,7 +141,7 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * Force an empty value (''|[]) to exist in values array when calling Form::setFieldValues()
+     * Force an empty value (''|[]) to exist in a value array when calling Form::setFieldValues()
      * Use for fields missing $_POST/$_GET value.
      * Occurs to checkboxes and selects when nothing is selected
      */
@@ -148,9 +155,9 @@ abstract class FieldInterface extends Element
      * Set the name for this element
      *
      * When using the element with an array name (EG: 'name[]')
-     * The '[]' are removed from the name but the isArray value is set to true.
+     * The '[]' is removed from the name, but the isArray value is set to true.
      *
-     * NOTE: only single dimensional numbered arrays are supported,
+     * NOTE: only single-dimension numbered arrays are supported,
      *  Multidimensional or named arrays are not.
      *  Invalid field name examples are:
      *   o 'name[key]'
@@ -181,8 +188,8 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * Set the type of element this is
-     * However custom types are allowed, the TYPES_ constants are only common types
+     * Set the element type.
+     * Custom types are allowed, the TYPES_ constants are only common types
      * Custom types for your own renders are also allowed.
      *
      * @see: https://www.w3schools.com/tags/att_input_type.asp
@@ -216,6 +223,20 @@ abstract class FieldInterface extends Element
     }
 
     /**
+     * Callback: function (FieldInterface $field, array $values) { }
+     */
+    public function addValidator(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
+    {
+        $this->getValidators()->append($callable, $priority);
+        return $this;
+    }
+
+    public function getValidators(): CallbackCollection
+    {
+        return $this->onValidate;
+    }
+
+    /**
      * Callback: function (FieldInterface $field, null|Template|array $template) { }
      */
     public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
@@ -236,7 +257,7 @@ abstract class FieldInterface extends Element
      *
      * EG: name=`name[]`
      */
-    public function setMultiple(bool $multiple): static
+    public function setMultiple(bool $multiple = true): static
     {
         if ($multiple)
             $this->setAttr('multiple');
@@ -246,7 +267,6 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * Does this fields data come as an array.
      * If the name ends in [] then it will be flagged as a multiple
      * EG: name=`name[]`
      */
@@ -306,7 +326,7 @@ abstract class FieldInterface extends Element
 
     /**
      * Get the object for managing the field groups
-     * attributes, use this to add attributes to the fields
+     * attributes, use this to add attributes to the field's
      * root element, use setGroupAttr() to set an attribute
      */
     public function getFieldAttr(): Attributes
@@ -325,6 +345,9 @@ abstract class FieldInterface extends Element
         return $this->fieldAttr;
     }
 
+    /**
+     * @param array<string,string>|null $attrs
+     */
     public function setFieldset(string $fieldset, ?array $attrs = null): static
     {
         $this->fieldset = $fieldset;
@@ -345,9 +368,11 @@ abstract class FieldInterface extends Element
     }
 
     /**
-     * The group name could relate to a tab group, column group, etc
+     * The group name could relate to a tab group, column group, etc.
      * It will be up to the renderer where these are placed.
      * You may need to build a custom render to place the fields where you need them
+     *
+     * @param array<string,string>|null $attrs
      */
     public function setGroup(string $group, ?array $attrs = null): static
     {

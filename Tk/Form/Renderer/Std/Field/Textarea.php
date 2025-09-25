@@ -8,6 +8,9 @@ use Tk\Form\Renderer\Std\FieldRendererInterface;
 class Textarea extends FieldRendererInterface
 {
 
+    /**
+     * @param array<string,mixed> $data
+     */
     function show(array $data = []): string
     {
         // no type needed for textarea
