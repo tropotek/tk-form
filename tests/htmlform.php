@@ -113,7 +113,7 @@ function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action) {
 
 <div class="container my-5">
     <h1>HTML Form Example</h1>
-    <div class="col-lg-8 px-0">
+    <div class="px-0">
         <p>
             This form uses the standard HTML form renderer.
             The HTML form template is located in <code>templates/bs5_std.php</code> and uses Bootstrap 5 markup.

@@ -115,7 +115,7 @@ function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action) {
 
 <div class="container my-5">
     <h1>DOM Form Example</h1>
-    <div class="col-lg-8 px-0">
+    <div class="px-0">
         <p>
             This form uses the <a href="https://domtemplate.tropotek.com/" target="_blank">DOM Template</a> form renderer.
             The DOM form template is located in <code>templates/bs5-dom.html</code> and uses Bootstrap 5 markup.
