@@ -351,8 +351,9 @@ class Renderer extends \Dom\Renderer\Renderer
     public function getGroupTemplate(string $group): Template
     {
         if (!$this->hasGroupTemplate($group)) {
-            $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('group-' . $group);
-            if (!$this->hasGroupTemplate($group)) {
+            if ($this->getTemplate()->hasNode(Template::TYPE_REPEAT, 'group-' . $group)) {
+                $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('group-' . $group);
+            } else {
                 $this->groupTemplates[$group] = $this->buildTemplate('group-' . $group);
             }
             if (!$this->hasGroupTemplate($group)) {
@@ -371,8 +372,9 @@ class Renderer extends \Dom\Renderer\Renderer
     public function getFieldsetTemplate(string $fieldset, string $group = ''): Template
     {
         if (!$this->hasFieldsetTemplate($fieldset, $group)) {
-            $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('fieldset-' . $fieldset);
-            if (!$this->hasFieldsetTemplate($fieldset, $group)) {
+            if ($this->getTemplate()->hasNode(Template::TYPE_REPEAT, 'fieldset-' . $fieldset)) {
+                $this->groupTemplates[$group] = $this->getTemplate()->getRepeat('fieldset-' . $fieldset);
+            } else {
                 $this->fieldsetTemplates[$group][$fieldset] = $this->buildTemplate('fieldset-' . $fieldset);
             }
             if (!$this->hasFieldsetTemplate($fieldset, $group)) {
