@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.1.0 [2025-09-30]:
+-------------------------------
+  - Merge branch '8.0' of github.com:tropotek/tk-form into 8.0
+  - Major refactor of DomTemplate lib
+
+
 Ver 8.0.42 [2025-08-19]:
 -------------------------------
 
