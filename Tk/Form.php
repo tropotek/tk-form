@@ -96,7 +96,7 @@ class Form extends Form\Element
 
         // Find the triggered action
         foreach ($this->getFields() as $field) {
-            if (!$field instanceof ActionInterface) continue;
+            if (!($field instanceof ActionInterface)) continue;
             if (array_key_exists($field->getId(), $values)) {
                 $this->triggeredAction = $field;
                 $this->triggeredAction->setValue($values[$field->getId()]);
@@ -109,7 +109,6 @@ class Form extends Form\Element
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
             if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
                 Session::instance()->remove($this->getCsrfId());
-                //Alert::addError('Your form submission time has expired, please try again');
                 $this->addError('Your form submission time has expired, please try again');
                 Uri::create()->redirect();
             }
@@ -119,7 +118,7 @@ class Form extends Form\Element
         $this->validateFields($values);
         $this->executeFields($values);
 
-        // get the triggered Form event action and execute callbacks if present.
+        // get the triggered Form event actions and execute callbacks if present.
         $this->getTriggeredAction()?->execute($values);
 
         return $this;
@@ -239,7 +238,7 @@ class Form extends Form\Element
     {
         return (
             (strtoupper($this->getMethod()) == $_SERVER['REQUEST_METHOD']) &&
-            ($_POST[self::FORM_ID] ?? $_GET[self::FORM_ID] ?? '') == $this->getId()
+            ($_REQUEST[self::FORM_ID] ?? '') == $this->getId()
         );
     }
 
