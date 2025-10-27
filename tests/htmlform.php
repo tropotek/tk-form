@@ -85,7 +85,8 @@ $formHtml = $renderer->show();
 /**
  * Callable to handle form submission and validation
  */
-function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action) {
+function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action): void
+{
 
     if ($form->hasErrors()) {
         $form->addError('Form submission failed');

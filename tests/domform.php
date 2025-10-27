@@ -84,7 +84,8 @@ $formHtml = $renderer->show();
 /**
  * Callable to handle form submission and validation
  */
-function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action) {
+function onFormSubmit(\Tk\Form $form, \Tk\Form\Action\Submit $action): void
+{
 
     /** @var \Tk\Form\Field\File $file */
     $file = $form->getField('file');
