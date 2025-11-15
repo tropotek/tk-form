@@ -104,7 +104,7 @@ abstract class FieldInterface extends Element
     /**
      * the value can be an array for a radio/checkbox group or select field
      *
-     * @param string|array<string, mixed> $value
+     * @param string|array<string|int, mixed> $value
      */
     public function setValue(string|array $value): static
     {

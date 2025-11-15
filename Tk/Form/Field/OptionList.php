@@ -37,9 +37,9 @@ trait OptionList
         return $this->options;
     }
 
-    public function prependOption(string $name, ?string $value = null, bool $replace = false): static
+    public function prependOption(string $name, null|string|int $value = null, bool $replace = false): static
     {
-        $opt = new Option($name, $value ?? '');
+        $opt = new Option($name, strval($value ?? ''));
         return $this->prepend($opt, $replace);
     }
 
@@ -58,9 +58,9 @@ trait OptionList
         return $this;
     }
 
-    public function appendOption(string $name, ?string $value = null, bool $replace = false): static
+    public function appendOption(string $name, null|string|int $value = null, bool $replace = false): static
     {
-        $opt = new Option($name, $value ?? '');
+        $opt = new Option($name, strval($value ?? ''));
         return $this->append($opt, $replace);
     }
 
