@@ -62,7 +62,9 @@ abstract class FieldInterface extends Element
         $this->setName($name);
         $this->setType($type);
         $this->setLabel(self::makeLabel($name));
-        $this->addFieldCss('fld fld-'.$this->getHtmlName() . ' fld-'.$this->getType());
+
+        $htmlName = str_replace('_', '', $this->getHtmlName());
+        $this->addFieldCss('fld fld-'.$htmlName . ' fld-'.$this->getType());
     }
 
     /**
