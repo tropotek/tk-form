@@ -66,6 +66,8 @@ class File extends Input
     {
         $up = [];
 
+        if (!isset($_FILES[$this->getName()])) return $up;
+
         // single file returned
         if (!is_array($_FILES[$this->getName()]['name'])) {
             return [$_FILES[$this->getName()]];
@@ -85,7 +87,7 @@ class File extends Input
     public function isValid(): bool
     {
         foreach ($this->getUploads() as $file) {
-            if ($file['error'] != UPLOAD_ERR_OK) {
+            if (($file['error'] ?? '') != UPLOAD_ERR_OK) {
                 $this->setError(self::ERROR_MSG[$file['error']]);
                 return false;
             }
