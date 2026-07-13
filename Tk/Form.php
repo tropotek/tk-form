@@ -80,10 +80,7 @@ class Form extends Form\Element
         // add csrf token
         if ($this->getMethod() == self::METHOD_POST && $this->csrfTtl > 0) {
             if (!Session::instance()->has($this->getCsrfId())) {
-                $token = md5(uniqid());
-                if (function_exists('openssl_random_pseudo_bytes')) {
-                    $token = md5(openssl_random_pseudo_bytes(16));
-                }
+                $token = bin2hex(random_bytes(32));
                 Session::instance()->set($this->getCsrfId(), $token, $this->getCsrfTtl());
             }
             $this->appendField(new Hidden(self::CSRF_TOKEN, Session::instance()->get($this->getCsrfId(), '')));
@@ -107,7 +104,8 @@ class Form extends Form\Element
         // validate csrf_token
         if ($this->getMethod() == self::METHOD_POST && $this->csrfTtl > 0) {
             $token = trim(Session::instance()->get($this->getCsrfId(), ''));
-            if (empty($token) || $values[self::CSRF_TOKEN] != $token) {
+            $submitted = trim($values[self::CSRF_TOKEN] ?? '');
+            if (empty($token) || !hash_equals($token, $submitted)) {
                 Session::instance()->remove($this->getCsrfId());
                 $this->addError('Your form submission time has expired, please try again');
                 Uri::create()->redirect();
