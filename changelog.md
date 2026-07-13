@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.54 [2026-07-13]:
+-------------------------------
+  - security: use CSPRNG + hash_equals for CSRF tokens
+
+
 Ver 8.0.52 [2025-12-22]:
 -------------------------------
   - Added all requests from client, ready for UA testing
