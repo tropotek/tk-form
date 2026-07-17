@@ -26,7 +26,7 @@ Or add the following to your composer.json file:
 ```json
 {
   "require": {
-    "ttek/tk-form": "~8.0.0"
+    "ttek/tk-form": "~8.1.0"
   }
 }
 ```
