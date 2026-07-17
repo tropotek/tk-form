@@ -30,10 +30,5 @@
         "branch-alias":  {
             "dev-main": "8.1.x-dev"
         }
-    },
-    "config": {
-        "preferred-install": {
-            "ttek/*": "source"
-        }
     }
 }
