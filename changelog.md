@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.56 [2026-07-17]:
+-------------------------------
+  - updates
+
+
 Ver 8.0.54 [2026-07-13]:
 -------------------------------
   - security: use CSPRNG + hash_equals for CSRF tokens
